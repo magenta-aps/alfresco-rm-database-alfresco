@@ -1,0 +1,6 @@
+<webscript>
+    <shortname>Entry</shortname>
+    <description>Get entry information</description>
+    <url>/entry</url>
+    <authentication>user</authentication>
+</webscript>

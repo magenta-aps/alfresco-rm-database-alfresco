@@ -1,0 +1,9 @@
+.idea/
+alf_data_dev/
+alfresco.iml
+out/
+target/
+*.iml
+.project
+.settings/
+.classpath

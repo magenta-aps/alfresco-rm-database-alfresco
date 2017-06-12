@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model name="rm:databaseModel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+
+    <!-- Optional meta-data about the model -->
+    <description>Model the Region Midts databaser</description>
+    <author>Magenta ApS</author>
+    <version>1.0</version>
+
+    <imports>
+        <!-- Import Alfresco Dictionary Definitions -->
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+        <!-- Import Alfresco Content Domain Model Definitions -->
+        <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+    </imports>
+
+    <!-- Custom namespace for Region Midt -->
+    <namespaces>
+        <namespace uri="http://www.rm.dk/model/database/1.0" prefix="rm"/>
+    </namespaces>
+
+    <!-- Constraints -->
+
+    <!-- Types -->
+
+    <types>
+        <type name="rm:forensicPsychiatryDeclaration">
+            <title>Retspsykiatrisk erklæring</title>
+            <parent>cm:folder</parent>
+            <properties>
+
+                <property name="rm:caseNumber">
+                    <title>Sagsnummer</title>
+                    <type>d:int</type>
+                </property>
+
+                <property name="rm:status">
+                    <title>Status</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:isClosed">
+                    <title>Sag afsluttet</title>
+                    <type>d:boolean</type>
+                </property>
+
+                <property name="rm:cprNumber">
+                    <title>CPR</title>
+                    <type>d:long</type>
+                </property>
+
+                <property name="rm:firstName">
+                    <title>Fornavn</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:lastName">
+                    <title>Efternavn</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:address">
+                    <title>Adresse</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:postbox">
+                    <title>Postnr.</title>
+                    <type>d:int</type>
+                </property>
+
+                <property name="rm:city">
+                    <title>By</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:ethnicity">
+                    <title>Etnicitet</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:motherEthnicity">
+                    <title>Mors etnicitet</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:fatherEthnicity">
+                    <title>Fars etnicitet</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:referingAgency">
+                    <title>Henvisende Instans</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:mainCharge">
+                    <title>Hovedsigtelse</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:placement">
+                    <title>Placering</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:sanctionProposal">
+                    <title>Sanktionsforslag</title>
+                    <type>d:text</type>
+                </property>
+
+                <!-- HISTORY -->
+
+                <property name="rm:verdictDate">
+                    <title>Kendelsesdato</title>
+                    <type>d:date</type>
+                </property>
+
+                <property name="rm:petitionDate">
+                    <title>Begæringsdato</title>
+                    <type>d:date</type>
+                </property>
+
+                <property name="rm:creationDate">
+                    <title>Sagen oprettet</title>
+                    <type>d:date</type>
+                </property>
+
+                <property name="rm:observationDate">
+                    <title>Observation påbegyndt</title>
+                    <type>d:date</type>
+                </property>
+
+                <property name="rm:declarationDate">
+                    <title>Erklæring afgivet</title>
+                    <type>d:date</type>
+                </property>
+
+                <property name="rm:endedWithoutDeclaration">
+                    <title>Afsluttet uden erklæring</title>
+                    <type>d:boolean</type>
+                </property>
+
+                <property name="rm:declaration">
+                    <title>Erklæring</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:sentTo">
+                    <title>Sendt til</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:forensicDoctorCouncil">
+                    <title>Retslægeråd</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:forensicDoctorCouncilText">
+                    <title>Retslægeråd tekst</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:finalVerdict">
+                    <title>Endelig dom</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:verdict">
+                    <title>Dom</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:remarks">
+                    <title>Bemærkninger</title>
+                    <type>d:text</type>
+                </property>
+
+                <!-- Declaration made by -->
+
+                <property name="rm:doctor1">
+                    <title>Læge 1</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:doctor2">
+                    <title>Læge 2</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:psychologist">
+                    <title>Psykolog</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:socialWorker">
+                    <title>Socialrådgiver</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:secretary">
+                    <title>Sekretær</title>
+                    <type>d:text</type>
+                </property>
+
+                <!-- ICD-10 diagnosis -->
+
+                <property name="rm:mainDiagnosis">
+                    <title>Hoveddiagnose</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:biDiagnoses">
+                    <title>Bidiagnoser</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                </property>
+
+            </properties>
+
+            <associations>
+                <!-- Content -->
+                <child-association name="rm:content">
+                    <source>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </source>
+                    <target>
+                        <class>cm:content</class>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </target>
+                    <duplicate>false</duplicate>
+                    <propagateTimestamps>false</propagateTimestamps>
+                </child-association>
+            </associations>
+
+        </type>
+    </types>
+
+    <!-- Aspects -->
+
+</model>
