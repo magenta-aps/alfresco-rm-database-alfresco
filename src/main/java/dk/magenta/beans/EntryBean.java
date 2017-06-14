@@ -4,23 +4,22 @@ import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
 import org.alfresco.model.ContentModel;
+import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
 import org.alfresco.service.cmr.search.SearchService;
-import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+import org.apache.xmlbeans.impl.xb.xmlconfig.Qnameconfig;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 
 public class EntryBean {
 
@@ -62,11 +61,10 @@ public class EntryBean {
             return null;
     }
 
-    public JSONObject addEntry (NodeRef parentRef, QName type, Map<QName, Serializable> properties) throws JSONException {
+    public JSONObject addEntry (String siteShortName, QName type, Map<QName, Serializable> properties) throws JSONException {
 
         //Get counter for this site document library
-        SiteInfo site = siteService.getSite(parentRef);
-        NodeRef docLibRef = siteService.getContainer(site.getShortName(), SiteService.DOCUMENT_LIBRARY);
+        NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
         Integer counter = (Integer) nodeService.getProperty(docLibRef, ContentModel.PROP_COUNTER);
         if(counter == null)
             counter = 0;
@@ -82,13 +80,38 @@ public class EntryBean {
         //Create name for node (This is not displayed anywhere)
         QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, counter.toString());
 
+        //Get current date folder to place the entry in
+        LocalDate date = LocalDate.now();
+        String year = ((Integer)date.getYear()).toString();
+        String month = ((Integer)date.getMonthValue()).toString();
+        String day = ((Integer)date.getDayOfMonth()).toString();
+
+        NodeRef yearRef = getOrCreateChildByName(docLibRef, year);
+        NodeRef monthRef = getOrCreateChildByName(yearRef, month);
+        NodeRef dayRef = getOrCreateChildByName(monthRef, day);
+
         //Create entry
-        nodeService.createNode(parentRef, ContentModel.ASSOC_CONTAINS, qName, type, properties);
+        nodeService.createNode(dayRef, ContentModel.ASSOC_CONTAINS, qName, type, properties);
 
         //Increment the site document library counter when the entry has been created successfully
         nodeService.setProperty(docLibRef, ContentModel.PROP_COUNTER, counter);
 
         return JSONUtils.getSuccess();
+    }
+
+    private NodeRef getOrCreateChildByName(NodeRef parentRef, String name) {
+
+        NodeRef childRef = nodeService.getChildByName(parentRef, ContentModel.ASSOC_CONTAINS, name);
+
+        if(childRef == null) {
+            Map<QName, Serializable> properties = new HashMap<>();
+            properties.put(ContentModel.PROP_NAME, name);
+            QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, name);
+            ChildAssociationRef childAssociationRef = nodeService.createNode(parentRef, ContentModel.ASSOC_CONTAINS, qName, ContentModel.TYPE_FOLDER, properties);
+            childRef = childAssociationRef.getChildRef();
+        }
+
+        return childRef;
     }
 
     public JSONObject updateEntry (NodeRef entryRef, Map<QName, Serializable> properties) throws JSONException {

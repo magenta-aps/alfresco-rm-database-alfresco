@@ -5,6 +5,7 @@ import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONObject;
 import org.springframework.extensions.surf.util.Content;
@@ -33,15 +34,14 @@ public class AddEntry extends AbstractWebScript {
 
         try {
             JSONObject json = new JSONObject(c.getContent());
-            String parentRefStr = JSONUtils.getString(json, "parentRef");
+            String siteShortName = JSONUtils.getString(json, "siteShortName");
             String typeStr = JSONUtils.getString(json, "type");
             JSONObject jsonProperties = JSONUtils.getObject(json, "properties");
 
-            NodeRef parentRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, parentRefStr);
             QName type = QName.createQName(DatabaseModel.RM_MODEL_URI, typeStr);
             Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
 
-            entryBean.addEntry(parentRef, type, properties);
+            entryBean.addEntry(siteShortName, type, properties);
             result = JSONUtils.getSuccess();
 
         } catch (Exception e) {
@@ -53,4 +53,4 @@ public class AddEntry extends AbstractWebScript {
     }
 }
 
-// F.eks curl -i -u admin:admin -X POST -H "Content-Type: application/json" -d '{ "parentRef" : "25c86e74-5c50-4009-a9b7-637d6e4e8314", "type" : "forensicPsychiatryDeclaration", "properties" : {"motherEthnicity":"Dansk","doctor1":"Doctor 33","verdictDate":"2017-08-3T00:00:00.000Z","isClosed":"false","petitionDate":"2006-07-20T00:00:00.000Z","endedWithoutDeclaration":"false"} }' http://localhost:8080/alfresco/s/entry
+// F.eks curl -i -u admin:admin -X POST -H "Content-Type: application/json" -d '{ "siteShortName" : "retspsyk", "type" : "forensicPsychiatryDeclaration", "properties" : {"motherEthnicity":"Dansk","doctor1":"Doctor 33","verdictDate":"2017-08-3T00:00:00.000Z","isClosed":"false","petitionDate":"2006-07-20T00:00:00.000Z","endedWithoutDeclaration":"false"} }' http://localhost:8080/alfresco/s/entry
