@@ -1,6 +1,6 @@
 <webscript>
-    <shortname>Entry</shortname>
-    <description>Get entry information</description>
+    <shortname>Get Entries</shortname>
+    <description>Get information about entries that match the query</description>
     <url>/entry</url>
     <authentication>user</authentication>
 </webscript>

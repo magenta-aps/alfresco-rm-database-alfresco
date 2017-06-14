@@ -1,0 +1,117 @@
+package dk.magenta.beans;
+
+import dk.magenta.model.DatabaseModel;
+import dk.magenta.utils.JSONUtils;
+import dk.magenta.utils.QueryUtils;
+import org.alfresco.model.ContentModel;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.search.ResultSet;
+import org.alfresco.service.cmr.search.ResultSetRow;
+import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.cmr.site.SiteInfo;
+import org.alfresco.service.cmr.site.SiteService;
+import org.alfresco.service.namespace.QName;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+public class EntryBean {
+
+    private NodeService nodeService;
+    private SearchService searchService;
+    private SiteService siteService;
+
+    public void setNodeService(NodeService nodeService) {
+        this.nodeService = nodeService;
+    }
+    public void setSearchService(SearchService searchService) {
+        this.searchService = searchService;
+    }
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    public Set<NodeRef> getEntries (String query) throws JSONException {
+
+        StoreRef storeRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
+        ResultSet resultSet = searchService.query(storeRef, "lucene", query);
+        Iterator<ResultSetRow> iterator = resultSet.iterator();
+
+        Set<NodeRef> nodeRefs = new HashSet<>();
+        while (iterator.hasNext()) {
+            ResultSetRow result = iterator.next();
+            nodeRefs.add(result.getNodeRef());
+        }
+        return nodeRefs;
+    }
+
+    public NodeRef getEntry (String type, String entryKey, String entryValue) throws JSONException {
+
+        String query = QueryUtils.getEntryQuery(type, entryKey, entryValue);
+        Set<NodeRef> nodeRefs = getEntries(query);
+        if (nodeRefs.iterator().hasNext())
+            return nodeRefs.iterator().next();
+        else
+            return null;
+    }
+
+    public JSONObject addEntry (NodeRef parentRef, QName type, Map<QName, Serializable> properties) throws JSONException {
+
+        //Get counter for this site document library
+        SiteInfo site = siteService.getSite(parentRef);
+        NodeRef docLibRef = siteService.getContainer(site.getShortName(), SiteService.DOCUMENT_LIBRARY);
+        Integer counter = (Integer) nodeService.getProperty(docLibRef, ContentModel.PROP_COUNTER);
+        if(counter == null)
+            counter = 0;
+        counter++;
+
+        //Remove value if set
+        if (properties.containsKey(DatabaseModel.PROP_CASE_NUMBER))
+            properties.remove(DatabaseModel.PROP_CASE_NUMBER);
+
+        //Set unique value
+        properties.put(DatabaseModel.PROP_CASE_NUMBER, counter);
+
+        //Create name for node (This is not displayed anywhere)
+        QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, counter.toString());
+
+        //Create entry
+        nodeService.createNode(parentRef, ContentModel.ASSOC_CONTAINS, qName, type, properties);
+
+        //Increment the site document library counter when the entry has been created successfully
+        nodeService.setProperty(docLibRef, ContentModel.PROP_COUNTER, counter);
+
+        return JSONUtils.getSuccess();
+    }
+
+    public JSONObject updateEntry (NodeRef entryRef, Map<QName, Serializable> properties) throws JSONException {
+        if(entryRef != null) {
+            for(Map.Entry<QName, Serializable> property : properties.entrySet()) {
+                nodeService.setProperty(entryRef, property.getKey(), property.getValue());
+            }
+        }
+        return JSONUtils.getObject("error", "Entry with nodeRef (" + entryRef.getId() + ") does not exist.");
+    }
+
+    public JSONObject deleteEntry (NodeRef entryRef) throws JSONException {
+        if(entryRef != null) {
+            nodeService.deleteNode(entryRef);
+        }
+        return JSONUtils.getObject("error", "Entry with nodeRef (" + entryRef.getId() + ") does not exist.");
+    }
+
+    public JSONObject toJSON (NodeRef entryRef) throws JSONException {
+        if(entryRef != null) {
+            Map<QName, Serializable> properties = nodeService.getProperties(entryRef);
+            return JSONUtils.getObject(properties);
+        }
+        return JSONUtils.getObject("error", "Entry with nodeRef (" + entryRef.getId() + ") does not exist.");
+    }
+}

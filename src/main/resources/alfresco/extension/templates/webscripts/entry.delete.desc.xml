@@ -1,0 +1,6 @@
+<webscript>
+    <shortname>Delete Entry</shortname>
+    <description>Delete entry</description>
+    <url>/entry</url>
+    <authentication>user</authentication>
+</webscript>

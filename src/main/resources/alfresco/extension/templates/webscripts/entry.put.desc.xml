@@ -1,0 +1,6 @@
+<webscript>
+    <shortname>Update Entry</shortname>
+    <description>Update entry information</description>
+    <url>/entry</url>
+    <authentication>user</authentication>
+</webscript>
