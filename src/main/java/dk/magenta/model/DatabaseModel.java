@@ -16,4 +16,12 @@ public interface DatabaseModel {
 
     public static QName PROP_CASE_NUMBER = QName.createQName(RM_MODEL_URI, "caseNumber");
 
+    public static QName PROP_LINK = QName.createQName(CONTENT_MODEL_URI, "link");
+
+    /**
+     * caselink properties
+     */
+    public static QName PROP_LINK_TARGET = QName.createQName(CONTENT_MODEL_URI, "targetproject");
+    public static QName PROP_LINK_TARGET_NODEREF = QName.createQName(CONTENT_MODEL_URI, "targetproject_noderef");
+
 }

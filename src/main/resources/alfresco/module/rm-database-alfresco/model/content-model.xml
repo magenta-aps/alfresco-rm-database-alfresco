@@ -221,6 +221,22 @@
                     <multiple>true</multiple>
                 </property>
 
+                <!-- generic -->
+
+                <property name="rm:locked4edit">
+                    <title>locked for edit</title>
+                    <type>d:boolean</type>
+                    <multiple>false</multiple>
+                </property>
+
+                <property name="rm:locked4editBy">
+                    <title>locked for edit</title>
+                    <type>d:text</type>
+                    <multiple>false</multiple>
+                </property>
+
+
+
             </properties>
 
             <mandatory-aspects>
