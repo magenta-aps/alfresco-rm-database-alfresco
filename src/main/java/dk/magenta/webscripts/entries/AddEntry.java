@@ -32,17 +32,21 @@ public class AddEntry extends AbstractWebScript {
         Writer webScriptWriter = webScriptResponse.getWriter();
         JSONObject result;
 
+
         try {
             JSONObject json = new JSONObject(c.getContent());
             String siteShortName = JSONUtils.getString(json, "siteShortName");
             String typeStr = JSONUtils.getString(json, "type");
+            System.out.println(json);
             JSONObject jsonProperties = JSONUtils.getObject(json, "properties");
 
             QName type = QName.createQName(DatabaseModel.RM_MODEL_URI, typeStr);
             Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
 
-            entryBean.addEntry(siteShortName, type, properties);
-            result = JSONUtils.getSuccess();
+            JSONObject caseNumber = entryBean.addEntry(siteShortName, type, properties);
+            System.out.println(caseNumber);
+            System.out.println(caseNumber.get("caseNumber"));
+            result = JSONUtils.getSuccess(caseNumber.getString("caseNumber"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,5 +56,3 @@ public class AddEntry extends AbstractWebScript {
         JSONUtils.write(webScriptWriter, result);
     }
 }
-
-// F.eks curl -i -u admin:admin -X POST -H "Content-Type: application/json" -d '{ "siteShortName" : "retspsyk", "type" : "forensicPsychiatryDeclaration", "properties" : {"motherEthnicity":"Dansk","doctor1":"Doctor 33","verdictDate":"2017-08-3T00:00:00.000Z","isClosed":"false","petitionDate":"2006-07-20T00:00:00.000Z","endedWithoutDeclaration":"false"} }' http://localhost:8080/alfresco/s/entry

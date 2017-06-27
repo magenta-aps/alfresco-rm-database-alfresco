@@ -96,7 +96,7 @@ public class EntryBean {
         //Increment the site document library counter when the entry has been created successfully
         nodeService.setProperty(docLibRef, ContentModel.PROP_COUNTER, counter);
 
-        return JSONUtils.getSuccess();
+        return JSONUtils.getSuccess(String.valueOf(counter));
     }
 
     private NodeRef getOrCreateChildByName(NodeRef parentRef, String name) {

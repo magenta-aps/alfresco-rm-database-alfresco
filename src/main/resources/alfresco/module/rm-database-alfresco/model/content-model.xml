@@ -176,6 +176,11 @@
                     <type>d:text</type>
                 </property>
 
+                <property name="rm:consent">
+                    <title>samtykke</title>
+                    <type>d:text</type>
+                </property>
+
                 <!-- Declaration made by -->
 
                 <property name="rm:doctor1">

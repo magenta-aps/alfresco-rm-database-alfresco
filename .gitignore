@@ -8,3 +8,5 @@ target/
 .settings/
 .classpath
 *.log
+alfresco*.log*
+solr.log*
