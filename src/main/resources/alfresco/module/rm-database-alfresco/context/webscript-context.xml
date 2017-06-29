@@ -28,4 +28,8 @@
 		<property name="siteService" ref="SiteService"/>
 	</bean>
 
+
+
+
 </beans>
+<!--curl -i -u admin:admin -X POST -H "Content-Type: application/json" -d '{"shortName":"retspsyk", "title":"retspsyk", "visibility":"PUBLIC"}' localhost:8080/alfresco/service/api/sites-->
