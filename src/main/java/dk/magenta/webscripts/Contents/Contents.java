@@ -74,7 +74,7 @@ public class Contents extends AbstractWebScript {
 
         try {
             String nodeId = params.get("node");
-            NodeRef nodeRef = new NodeRef("workspace://SpacesStore/" + nodeId);
+            NodeRef nodeRef = new NodeRef(nodeId);
             result = this.getChildNodes(nodeRef);
 
         } catch (Exception e) {
