@@ -11,4 +11,11 @@
         <property name="siteService" ref="SiteService"/>
     </bean>
 
+    <bean id="contentsBean" class="dk.magenta.beans.ContentsBean">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="personService" ref="PersonService"/>
+        <property name="permissionService" ref="PermissionService"/>
+        <property name="siteService" ref="SiteService"/>
+    </bean>
+
 </beans>

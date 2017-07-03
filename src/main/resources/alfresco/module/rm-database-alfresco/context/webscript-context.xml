@@ -22,14 +22,8 @@
 	</bean>
 
 	<bean id="webscript.contents.contents.get" class="dk.magenta.webscripts.contents.Contents" parent="webscript">
-		<property name="nodeService" ref="NodeService"/>
-		<property name="personService" ref="PersonService"/>
-		<property name="permissionService" ref="PermissionService"/>
-		<property name="siteService" ref="SiteService"/>
+		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
-
-
-
 
 </beans>
 <!--curl -i -u admin:admin -X POST -H "Content-Type: application/json" -d '{"shortName":"retspsyk", "title":"retspsyk", "visibility":"PUBLIC"}' localhost:8080/alfresco/service/api/sites-->
