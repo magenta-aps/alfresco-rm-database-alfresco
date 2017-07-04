@@ -1,25 +1,7 @@
-/*
-Licensed to the Apache Software Foundation (ASF) under one or more
-contributor license agreements.  See the NOTICE file distributed with
-this work for additional information regarding copyright ownership.
-The ASF licenses this file to You under the Apache License, Version 2.0
-(the "License"); you may not use this file except in compliance with
-the License.  You may obtain a copy of the License at
+package dk.magenta.beans;
 
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-package dk.magenta.webscripts.contents;
-
-import dk.magenta.utils.Utils;
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
-
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -33,59 +15,31 @@ import org.alfresco.service.namespace.QName;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.JSONArray;
-import org.springframework.extensions.webscripts.AbstractWebScript;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.WebScriptResponse;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.*;
 
+public class ContentsBean {
 
-public class Contents extends AbstractWebScript {
-
-    private PersonService personService;
     private NodeService nodeService;
     private PermissionService permissionService;
+    private PersonService personService;
     private SiteService siteService;
 
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
-    }
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
     }
     public void setPermissionService(PermissionService permissionService) {
         this.permissionService = permissionService;
     }
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
     }
 
 
-    @Override
-    public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
-
-        Map<String, String> params = Utils.parseParameters(webScriptRequest.getURL());
-
-        webScriptResponse.setContentEncoding("UTF-8");
-        Writer webScriptWriter = webScriptResponse.getWriter();
-        JSONArray result;
-
-        try {
-            String nodeId = params.get("node");
-            NodeRef nodeRef = new NodeRef(nodeId);
-            result = this.getChildNodes(nodeRef);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            result = Utils.getJSONError(e);
-            webScriptResponse.setStatus(400);
-        }
-        Utils.writeJSONArray(webScriptWriter, result);
-    }
-
-    private JSONArray getChildNodes(NodeRef parentNodeRef) throws JSONException {
+    public JSONArray getChildNodes(NodeRef parentNodeRef) throws JSONException {
 
         JSONArray result = new JSONArray();
 
@@ -94,7 +48,7 @@ public class Contents extends AbstractWebScript {
         contentTypes.add("cmis:folder");
         contentTypes.add("cmis:link");
 
-        Map<String, JSONArray> contentTypeMap = new HashMap();
+        Map<String, JSONArray> contentTypeMap = new HashMap<>();
         for (String contentType : contentTypes)
             contentTypeMap.put(contentType, new JSONArray());
 
@@ -137,13 +91,10 @@ public class Contents extends AbstractWebScript {
                     json.put("parentNodeRef", parent.getParentRef());
                     json.put("shortRef", childNodeRef.getId());
 
-
                     String modifier = (String) nodeService.getProperty(childNodeRef, ContentModel.PROP_MODIFIER);
                     NodeRef person = personService.getPerson(modifier);
 
-
                     json.put("lastChangedBy", nodeService.getProperty(person, ContentModel.PROP_FIRSTNAME) + " " + nodeService.getProperty(person, ContentModel.PROP_LASTNAME));
-
 
                     Date d = (Date) nodeService.getProperty(childNodeRef, ContentModel.PROP_MODIFIED);
                     json.put("lastChanged", d.getTime());
@@ -181,4 +132,6 @@ public class Contents extends AbstractWebScript {
 
         return result;
     }
+
 }
+
