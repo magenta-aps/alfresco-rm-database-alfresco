@@ -1,0 +1,67 @@
+package dk.magenta.webscripts;
+
+
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.cmr.security.AuthorityService;
+import org.alfresco.service.cmr.security.AuthorityType;
+import org.alfresco.service.cmr.site.SiteInfo;
+import org.alfresco.service.cmr.site.SiteService;
+import org.alfresco.service.cmr.site.SiteVisibility;
+import org.springframework.context.ApplicationEvent;
+
+import org.springframework.extensions.surf.util.AbstractLifecycleBean;
+
+import java.util.Iterator;
+
+public class Bootstrap extends AbstractLifecycleBean {
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    private SiteService siteService;
+    private AuthorityService authorityService;
+
+
+    public void setAuthorityService(AuthorityService authorityService) {
+        this.authorityService = authorityService;
+    }
+
+
+
+    private DropDownConf dropDownConf = new DropDownConf();
+
+    protected void onBootstrap(ApplicationEvent applicationEvent) {
+
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+
+        SiteInfo retspsyk = siteService.getSite("retspsyk");
+
+        if (retspsyk == null) {
+
+            SiteInfo site = siteService.createSite("site-dashboard", "retspsyk", "retspsyk", "container for retspsyk cases", SiteVisibility.PUBLIC);
+            System.out.println("created site: ");
+            System.out.println(site);
+        }
+
+
+        Iterator i = dropDownConf.groups_to_bootstrap.iterator();
+
+        while (i.hasNext()) {
+            DropDownConf.Dropdown dropdown = (DropDownConf.Dropdown)i.next();
+            String groupName = dropdown.getName();
+
+            if (!authorityService.authorityExists("GROUP_" + groupName)) {
+                authorityService.createAuthority(AuthorityType.GROUP, groupName, groupName, null);
+                System.out.println("Bootstrapped group: " + groupName);
+            }
+        }
+    }
+
+    @Override
+    protected void onShutdown(ApplicationEvent applicationEvent) {
+        // do nothing
+    }
+
+
+}

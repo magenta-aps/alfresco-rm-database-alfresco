@@ -29,6 +29,11 @@
 	</bean>
 
 
+	<bean id="initialload" class="dk.magenta.webscripts.Bootstrap">
+		<property name="siteService" ref="SiteService"/>
+		<property name="authorityService" ref="AuthorityService"/>
+	</bean>
+
 
 
 </beans>

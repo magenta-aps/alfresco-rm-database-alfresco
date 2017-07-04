@@ -230,7 +230,7 @@
                 </property>
 
                 <property name="rm:locked4editBy">
-                    <title>locked for edit</title>
+                    <title>locked for edit by</title>
                     <type>d:text</type>
                     <multiple>false</multiple>
                 </property>
