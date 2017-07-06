@@ -38,6 +38,8 @@ public class GetEntries extends AbstractWebScript {
             String entryValue = params.get("entryValue");
 
             String query = QueryUtils.getEntryQuery(type, entryKey, entryValue);
+            System.out.println("hvad er query");
+            System.out.println(query);
             Set<NodeRef> nodeRefs = entryBean.getEntries(query);
             Iterator<NodeRef> iterator = nodeRefs.iterator();
 

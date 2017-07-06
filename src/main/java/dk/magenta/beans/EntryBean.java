@@ -138,3 +138,4 @@ public class EntryBean {
         return JSONUtils.getObject("error", "Entry with nodeRef (" + entryRef.getId() + ") does not exist.");
     }
 }
+

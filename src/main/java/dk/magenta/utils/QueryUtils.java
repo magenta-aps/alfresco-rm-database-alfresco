@@ -17,6 +17,16 @@ public class QueryUtils {
     }
 
     public static String getEntryQuery (String type, String entryKey, String entryValue) {
-        return getTypeQuery(type) + " AND " + getParameterQuery(entryKey, entryValue);
+
+        System.out.println("hvad er entrykey");
+        System.out.println(entryKey);
+
+        if (entryKey == null) {
+            return getTypeQuery(type);
+        } else {
+
+            return getTypeQuery(type) + " AND " + getParameterQuery(entryKey, entryValue);
+
+        }
     }
 }

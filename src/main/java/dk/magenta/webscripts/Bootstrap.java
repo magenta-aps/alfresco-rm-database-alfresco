@@ -3,6 +3,8 @@ package dk.magenta.webscripts;
 
 
 import dk.magenta.conf.DropDownTestContentsConf;
+import dk.magenta.model.DatabaseModel;
+import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
@@ -56,6 +58,8 @@ public class Bootstrap extends AbstractLifecycleBean {
         if (retspsyk == null) {
 
             SiteInfo site = siteService.createSite("site-dashboard", "retspsyk", "retspsyk", "container for retspsyk cases", SiteVisibility.PUBLIC);
+            siteService.createContainer("retspsyk", DatabaseModel.DOC_LIBRARY, ContentModel.TYPE_FOLDER, null);
+
             System.out.println("created site: ");
             System.out.println(site);
         }
@@ -84,7 +88,7 @@ public class Bootstrap extends AbstractLifecycleBean {
         System.out.println(testdata);
 
         try {
-            for (int j=0;j<= testdata.length();j++) {
+            for (int j=0;j<= testdata.length()-1;j++) {
                 JSONObject group = testdata.getJSONObject(j);
 
                 String groupName = group.getString("name");

@@ -24,4 +24,7 @@ public interface DatabaseModel {
     public static QName PROP_LINK_TARGET = QName.createQName(CONTENT_MODEL_URI, "targetproject");
     public static QName PROP_LINK_TARGET_NODEREF = QName.createQName(CONTENT_MODEL_URI, "targetproject_noderef");
 
+    // Containers
+    public static String DOC_LIBRARY = "documentLibrary";
+
 }
