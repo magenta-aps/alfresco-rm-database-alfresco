@@ -25,6 +25,9 @@
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
+	<bean id="webscript.conf.conf.get" class="dk.magenta.webscripts.conf.Conf" parent="webscript">
+	</bean>
+
 	<bean id="initialload" class="dk.magenta.webscripts.Bootstrap">
 		<property name="siteService" ref="SiteService"/>
 		<property name="authorityService" ref="AuthorityService"/>

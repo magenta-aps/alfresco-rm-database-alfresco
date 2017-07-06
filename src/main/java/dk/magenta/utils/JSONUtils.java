@@ -128,4 +128,22 @@ public class JSONUtils {
             e.printStackTrace();
         }
     }
+
+    public static JSONArray getJSONArray(List<String> list) {
+        JSONArray result = new JSONArray();
+
+        Iterator i = list.iterator();
+
+        while (i.hasNext()) {
+            JSONObject o = new JSONObject();
+            try {
+                o.put("name", i.next());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            result.add(o);
+        }
+
+        return result;
+    }
 }

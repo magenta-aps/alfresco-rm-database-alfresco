@@ -1,6 +1,7 @@
-package dk.magenta.webscripts;
+package dk.magenta.conf;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
 
 
 
-class DropDownConf {
+public class DropDownConf {
 
     public List<Dropdown> groups_to_bootstrap;
 
@@ -34,8 +35,19 @@ class DropDownConf {
         groups_to_bootstrap.add(new Dropdown("biDiagnoses", ""));
     }
 
+    public List<String> getNames() {
 
-    class Dropdown {
+        Iterator iterator = groups_to_bootstrap.iterator();
+        List<String> result = new ArrayList<String>();
+
+        while (iterator.hasNext()) {
+            Dropdown dropdown = (Dropdown)iterator.next();
+            result.add(dropdown.getName());
+        }
+        return result;
+    }
+
+    public class Dropdown {
         public String getName() {
             return name;
         }
@@ -58,7 +70,6 @@ class DropDownConf {
         public Dropdown( String name, String source) {
             this.name = name;
             this.source = source;
-
         }
     }
 
