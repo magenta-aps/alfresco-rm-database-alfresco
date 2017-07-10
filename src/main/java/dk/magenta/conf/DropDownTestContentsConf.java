@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,21 +29,36 @@ public class DropDownTestContentsConf {
 
 
         try {
+
             testdata_to_bootstrap = new JSONArray();
 
-            String ethnicity1 = "Dansk";
-            String ethnicity2 = "Svensk";
-
             JSONArray entities = new JSONArray();
-            entities.put(ethnicity1);
-            entities.put(ethnicity2);
+            try(BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")  + "/src/main/java/dk/magenta/webscripts/etnicitet.txt"))) {
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
+
+                while (line != null) {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line = br.readLine();
+
+                    if (line != null) {
+                        entities.put(line);
+                    }
+                }
+
+                JSONObject ethnicity = new JSONObject();
+                ethnicity.put("name", "ethnicity");
+                ethnicity.put("entities", entities);
+
+                testdata_to_bootstrap.put(ethnicity);
+            }
 
 
-            JSONObject ethnicity = new JSONObject();
-            ethnicity.put("name", "ethnicity");
-            ethnicity.put("entities", entities);
 
-            testdata_to_bootstrap.put(ethnicity);
+
+
+
 
 
             //new
@@ -60,60 +77,104 @@ public class DropDownTestContentsConf {
             testdata_to_bootstrap.put(fatherEthnicity);
 
             //new
-            String referingAgency1 = "Agency1";
-            String referingAgency2 = "Agency2";
 
             entities = new JSONArray();
-            entities.put(referingAgency1);
-            entities.put(referingAgency2);
+            try(BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")  + "/src/main/java/dk/magenta/webscripts/henvisende_instans.txt/"))) {
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
 
-            JSONObject referingAgency = new JSONObject();
-            referingAgency.put("name", "referingAgency");
-            referingAgency.put("entities", entities);
+                while (line != null) {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line = br.readLine();
 
-            testdata_to_bootstrap.put(referingAgency);
+                    if (line != null) {
+                        System.out.println("what is the line" + line);
+                        entities.put(line);
+                    }
+                }
+
+                JSONObject referingAgency = new JSONObject();
+                referingAgency.put("name", "referingAgency");
+                referingAgency.put("entities", entities);
+
+                testdata_to_bootstrap.put(referingAgency);
+            }
+
 
             //new
-            String mainCharge1 = "mainCharge1";
-            String mainCharge2 = "mainCharge2";
+
             entities = new JSONArray();
+            try(BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")  + "/src/main/java/dk/magenta/webscripts/hovedsigtelser.txt/"))) {
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
 
-            entities.put(mainCharge1);
-            entities.put(mainCharge2);
+                while (line != null) {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line = br.readLine();
 
-            JSONObject mainCharge = new JSONObject();
-            mainCharge.put("name", "mainCharge");
-            mainCharge.put("entities", entities);
+                    if (line != null) {
+                        System.out.println("what is the line" + line);
+                        entities.put(line);
+                    }
+                }
 
-            testdata_to_bootstrap.put(mainCharge);
+                JSONObject mainCharge = new JSONObject();
+                mainCharge.put("name", "mainCharge");
+                mainCharge.put("entities", entities);
+
+                testdata_to_bootstrap.put(mainCharge);
+            }
+            //new
+
+            entities = new JSONArray();
+            try(BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")  + "/src/main/java/dk/magenta/webscripts/placering.txt/"))) {
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
+
+                while (line != null) {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line = br.readLine();
+
+                    if (line != null) {
+                        System.out.println("what is the line" + line);
+                        entities.put(line);
+                    }
+                }
+
+                JSONObject placement = new JSONObject();
+                placement.put("name", "placement");
+                placement.put("entities", entities);
+
+                testdata_to_bootstrap.put(placement);
+            }
 
             //new
-            String placement1 = "placement1";
-            String placement2 = "placement2";
+
             entities = new JSONArray();
+            try(BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")  + "/src/main/java/dk/magenta/webscripts/sanktionsforslag.txt/"))) {
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
 
-            entities.put(placement1);
-            entities.put(placement2);
+                while (line != null) {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line = br.readLine();
 
-            JSONObject placement = new JSONObject();
-            placement.put("name", "placement");
-            placement.put("entities", entities);
+                    if (line != null) {
+                        System.out.println("what is the line" + line);
+                        entities.put(line);
+                    }
+                }
 
-            testdata_to_bootstrap.put(placement);
+                JSONObject sanctionProposal = new JSONObject();
+                sanctionProposal.put("name", "sanctionProposal");
+                sanctionProposal.put("entities", entities);
 
-            //new
-            String sanctionProposal1 = "sanctionProposal1";
-            String sanctionProposal2 = "sanctionProposal2";
-            entities = new JSONArray();
-
-            entities.put(sanctionProposal1);
-            entities.put(sanctionProposal2);
-
-            JSONObject sanctionProposal = new JSONObject();
-            sanctionProposal.put("name", "sanctionProposal");
-            sanctionProposal.put("entities", entities);
-
-            testdata_to_bootstrap.put(sanctionProposal);
+                testdata_to_bootstrap.put(sanctionProposal);
+            }
 
             //new
             String sentTo1 = "sentTo1";
@@ -213,19 +274,34 @@ public class DropDownTestContentsConf {
 
             testdata_to_bootstrap.put(psychologist);
 
-            //new
-            String mainDiagnosis1 = "mainDiagnosis1";
-            String mainDiagnosis2 = "mainDiagnosis2";
+            System.out.println(System.getProperty("user.dir"));
+
             entities = new JSONArray();
 
-            entities.put(mainDiagnosis1);
-            entities.put(mainDiagnosis2);
 
-            JSONObject mainDiagnosis = new JSONObject();
-            mainDiagnosis.put("name", "mainDiagnosis");
-            mainDiagnosis.put("entities", entities);
+            try(BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")  + "/src/main/java/dk/magenta/webscripts/diagnoser.txt/"))) {
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
 
-            testdata_to_bootstrap.put(mainDiagnosis);
+                while (line != null) {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line = br.readLine();
+
+                    if (line != null) {
+                        entities.put(line);
+                    }
+                }
+
+                JSONObject mainDiagnosis = new JSONObject();
+                mainDiagnosis.put("name", "mainDiagnosis");
+                mainDiagnosis.put("entities", entities);
+
+                testdata_to_bootstrap.put(mainDiagnosis);
+            }
+
+
+
 
             //new
             String biDiagnoses1 = "biDiagnoses1";
@@ -245,4 +321,11 @@ public class DropDownTestContentsConf {
             e.printStackTrace();
         }
     }
+
+    public static void main(String [ ] args) {
+
+
+        DropDownTestContentsConf d = new DropDownTestContentsConf();
+    }
+
 }

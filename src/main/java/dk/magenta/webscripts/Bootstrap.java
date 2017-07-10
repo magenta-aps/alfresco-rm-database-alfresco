@@ -92,12 +92,8 @@ public class Bootstrap extends AbstractLifecycleBean {
                 JSONObject group = testdata.getJSONObject(j);
 
                 String groupName = group.getString("name");
-                System.out.println("groupName");
-                System.out.println(groupName);
 
                 JSONArray entites = group.getJSONArray("entities");
-                System.out.println("entities");
-                System.out.println(entites);
 
                 for (int k=0; k<=entites.length()-1;k++) {
 
@@ -105,12 +101,6 @@ public class Bootstrap extends AbstractLifecycleBean {
                     if (!authorityService.authorityExists("GROUP_" + entity)) {
 
                         String authName = authorityService.createAuthority(AuthorityType.GROUP, entity, entity, null);
-                        System.out.println("authname");
-                        System.out.println(authName);
-
-                        System.out.println("groupName");
-                        System.out.println(groupName);
-
                         authorityService.addAuthority("GROUP_" + groupName, authName);
                     }
                 }

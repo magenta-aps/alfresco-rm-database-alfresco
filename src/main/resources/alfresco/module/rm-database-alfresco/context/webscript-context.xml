@@ -33,6 +33,12 @@
 		<property name="authorityService" ref="AuthorityService"/>
 	</bean>
 
+	<bean id="webscript.preferences.get"
+		  class="dk.magenta.webscripts.Preferences"
+		  parent="webscript">
+		<property name="preferenceService" ref="PreferenceService"/>
+	</bean>
+
 
 
 

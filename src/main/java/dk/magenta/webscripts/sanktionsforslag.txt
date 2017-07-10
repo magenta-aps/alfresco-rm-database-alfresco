@@ -1,0 +1,37 @@
+Andet (incl. torturus.)
+Benådning anbefales
+Benådning anbefales ikke
+Dom til ambulant psykiatrisk behandling (C.1)
+Dom til ambulant psykiatrisk behandling, tilsyn af kriminalforsorgen, indlæggelse efter beslutning af kriminalforsorgen og overlægen (C.4)
+Dom til ambulant psykiatrisk behandling, indlæggelser efter overlægens beslutning (C.3)
+Dom til ambulant psykiatrisk behandling, tilsyn af kriminalforsorgen (C.2)
+Dom til anbringelse (mentalt retarderede) (III)
+Dom til anbringelse, psykiatrisk afdeling (A.1)
+Dom til anbringelse, psykiatrisk afdeling, indtil straffen kan fuldbyrdes
+Dom til anbringelse, Sikringsafdelingen (A.2)
+Dom til anbringelse, Sikringsafdelingen, indtil straffen kan fuldbyrdes
+Dom til anbringelse, særligt sikret institution (mentalt retarderede) (I +II)
+Dom til at undergive sig bestemmelser i lov om social service (tidligere bistandsloven)
+Dom til psykiatrisk behandling (B1)
+Dom til psykiatrisk behandling, tilsyn af kriminalforsorgen (B2)
+Dom til psykiatrisk behandling, tilsyn af kriminalforsorgen, indtil straffen kan fuldbyrdes
+Dom til tilsyn (mentalt retarderede) (V)
+Dom til tilsyn af kriminalforsorgen (som særforanstaltning)
+Dom til tilsyn med mulighed for anbringelse (mentalt retarderede) (IV)
+Dom til tilsyn med vilkår (mentalt retarderede) (V)
+Dom til ungdomssanktion (straffelovens § 74a)
+Forvaring
+Ingen særforanstaltning
+S-sag forelægges visitationsudvalget
+Gr-anbringelse i Sikringsanstalten 
+Gr-anbringelse i hospital for sindslidende i Danmark
+Gr-behandlingsdom i Danmark eller under tilsyn heraf
+Gr-behandlingsdom i Grønland, om fornødent Danmark
+Gr-behandlingsdom i Grønland
+Gr-anbringelse på institution for psykisk udviklingshæmmede
+Gr-forsorg for psykisk udviklingshæmmede
+Gr-tilsyn af Kriminalforsorgen med pålæg
+Gr-anbringelse i Anstalten ved Herstedvester efter § 102, stk. 3 (NYGr § 161 stk. 4)
+Gr-ingen særforanstaltning
+Gr-andet
+Frifundet

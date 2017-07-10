@@ -2,6 +2,8 @@ package dk.magenta.utils;
 
 import dk.magenta.model.DatabaseModel;
 import org.activiti.engine.impl.bpmn.data.Data;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.cmr.preference.PreferenceService;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -145,5 +147,36 @@ public class JSONUtils {
         }
 
         return result;
+    }
+
+    public static Map<String, Serializable> getPreferences(PreferenceService preferenceService, String userName, String filter) {
+        AuthenticationUtil.pushAuthentication();
+        try {
+            AuthenticationUtil.setRunAsUserSystem();
+            // ...code to be run as Admin...
+            return preferenceService.getPreferences(userName, filter);
+        }
+        finally {
+            AuthenticationUtil.popAuthentication();
+        }
+    }
+
+    public static JSONArray getJSONReturnArray(Map<String, Serializable> map) {
+        JSONObject return_json = new JSONObject();
+        JSONArray result = new JSONArray();
+        try {
+            for (Map.Entry<String, Serializable> pair : map.entrySet())
+                return_json.put(pair.getKey(), pair.getValue().toString());
+            result.add(return_json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static JSONArray getJSONError (Exception e) {
+        Map<String, Serializable> map = new HashMap<>();
+        map.put("error", e.getStackTrace()[0].toString());
+        return getJSONReturnArray(map);
     }
 }
