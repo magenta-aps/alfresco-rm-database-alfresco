@@ -30,7 +30,7 @@ import java.io.Writer;
 import java.util.*;
 
 
-public class Contents extends AbstractWebScript {
+public class GetChildNodes extends AbstractWebScript {
 
     private ContentsBean contentsBean;
     public void setContentsBean(ContentsBean contentsBean) {
