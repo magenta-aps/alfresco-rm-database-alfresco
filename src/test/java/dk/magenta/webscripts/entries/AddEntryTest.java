@@ -3,9 +3,6 @@ package dk.magenta.webscripts.entries;
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.rad.test.AbstractAlfrescoIT;
 import org.alfresco.rad.test.AlfrescoTestRunner;
-import org.alfresco.service.cmr.security.AuthorityService;
-import org.alfresco.service.cmr.site.SiteInfo;
-import org.alfresco.service.cmr.site.SiteService;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -25,26 +22,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @RunWith(value = AlfrescoTestRunner.class)
 public class AddEntryTest extends AbstractAlfrescoIT {
 
     private static Logger log = Logger.getLogger(AddEntryTest.class);
 
-    private SiteService siteService = getServiceRegistry().getSiteService();
-    private AuthorityService authorityService = getServiceRegistry().getAuthorityService();
 
-    private Map<String, SiteInfo> sites = new HashMap<>();
-    private CredentialsProvider provider = new BasicCredentialsProvider();
-
-    public AddEntryTest() {
-        super();
-        // Login credentials for Alfresco Repo
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("admin", "admin");
-        provider.setCredentials(AuthScope.ANY, credentials);
-    }
+    public AddEntryTest() { super(); }
 
     @Test
     public void testAddEntry() throws IOException, JSONException {
@@ -77,6 +62,11 @@ public class AddEntryTest extends AbstractAlfrescoIT {
         data.put("siteShortName", siteShortName);
         data.put("type", type);
         data.put("properties", properties);
+
+        // Login credentials for Alfresco Repo
+        CredentialsProvider provider = new BasicCredentialsProvider();
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("admin", "admin");
+        provider.setCredentials(AuthScope.ANY, credentials);
 
         // Execute Web Script call
         try (CloseableHttpClient httpclient = HttpClientBuilder.create()
