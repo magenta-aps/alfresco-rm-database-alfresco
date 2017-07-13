@@ -59,6 +59,11 @@
                     <type>d:text</type>
                 </property>
 
+                <property name="rm:fullName">
+                    <title>Fuldt navn</title>
+                    <type>d:text</type>
+                </property>
+
                 <property name="rm:address">
                     <title>Adresse</title>
                     <type>d:text</type>
