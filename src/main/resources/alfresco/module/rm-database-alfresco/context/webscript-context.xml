@@ -5,23 +5,23 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="webscript.entry.post" class="dk.magenta.webscripts.entries.AddEntry" parent="webscript">
+	<bean id="webscript.entries.entry.post" class="dk.magenta.webscripts.entries.AddEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
-	<bean id="webscript.entry.get" class="dk.magenta.webscripts.entries.GetEntries" parent="webscript">
+	<bean id="webscript.entries.entry.get" class="dk.magenta.webscripts.entries.GetEntries" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
-	<bean id="webscript.entry.put" class="dk.magenta.webscripts.entries.UpdateEntry" parent="webscript">
+	<bean id="webscript.entries.entry.put" class="dk.magenta.webscripts.entries.UpdateEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
-	<bean id="webscript.entry.delete" class="dk.magenta.webscripts.entries.DeleteEntry" parent="webscript">
+	<bean id="webscript.entries.entry.delete" class="dk.magenta.webscripts.entries.DeleteEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
-	<bean id="webscript.contents.contents.get" class="dk.magenta.webscripts.contents.Contents" parent="webscript">
+	<bean id="webscript.contents.contents.get" class="dk.magenta.webscripts.contents.GetChildNodes" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
