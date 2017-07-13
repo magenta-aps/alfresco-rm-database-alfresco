@@ -246,15 +246,18 @@ public class DropDownTestContentsConf {
                 StringBuilder sb = new StringBuilder();
                 String line = br.readLine();
 
+                System.out.println("shit ***");
                 while (line != null) {
                     sb.append(line);
                     sb.append(System.lineSeparator());
                     line = br.readLine();
+                    System.out.print(line + "|");
 
                     if (line != null) {
                         entities.put(line);
                     }
                 }
+                System.out.println("shit");
 
                 JSONObject mainDiagnosis = new JSONObject();
                 mainDiagnosis.put("name", "mainDiagnosis");
