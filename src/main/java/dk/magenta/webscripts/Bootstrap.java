@@ -86,8 +86,6 @@ public class Bootstrap extends AbstractLifecycleBean {
 
         JSONArray testdata = dropDownTestContentsConf.getTestdata_to_bootstrap();
 
-        System.out.println(testdata);
-
         try {
             for (int j=0;j<= testdata.length()-1;j++) {
                 JSONObject group = testdata.getJSONObject(j);

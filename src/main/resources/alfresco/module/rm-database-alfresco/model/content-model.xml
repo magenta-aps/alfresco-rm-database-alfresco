@@ -39,14 +39,14 @@
                     <type>d:text</type>
                 </property>
 
-                <property name="rm:isClosed">
+                <property name="rm:isClosed">x4
                     <title>Sag afsluttet</title>
                     <type>d:boolean</type>
                 </property>
 
                 <property name="rm:cprNumber">
                     <title>CPR</title>
-                    <type>d:long</type>
+                    <type>d:text</type>
                 </property>
 
                 <property name="rm:firstName">
@@ -56,6 +56,11 @@
 
                 <property name="rm:lastName">
                     <title>Efternavn</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:fullName">
+                    <title>Fuldt navn</title>
                     <type>d:text</type>
                 </property>
 
