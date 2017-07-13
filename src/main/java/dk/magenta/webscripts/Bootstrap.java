@@ -4,6 +4,7 @@ package dk.magenta.webscripts;
 
 import dk.magenta.conf.DropDownTestContentsConf;
 import dk.magenta.model.DatabaseModel;
+import org.activiti.engine.impl.bpmn.data.Data;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.security.AuthorityService;
@@ -53,9 +54,9 @@ public class Bootstrap extends AbstractLifecycleBean {
 
         // load sites
 
-        SiteInfo retspsyk = siteService.getSite("retspsyk");
+        SiteInfo psycDec = siteService.getSite(DatabaseModel.TYPE_PSYC_DEC_SITE);
 
-        if (retspsyk == null) {
+        if (psycDec == null) {
 
             SiteInfo site = siteService.createSite("site-dashboard", "retspsyk", "retspsyk", "container for retspsyk cases", SiteVisibility.PUBLIC);
             siteService.createContainer("retspsyk", DatabaseModel.DOC_LIBRARY, ContentModel.TYPE_FOLDER, null);

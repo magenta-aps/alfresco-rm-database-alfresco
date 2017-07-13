@@ -34,18 +34,15 @@ public class GetEntries extends AbstractWebScript {
 
         try {
             String type = params.get("type");
-            String entryKey = params.get("entryKey");
             String entryValue = params.get("entryValue");
 
-            String query = QueryUtils.getEntryQuery(type, entryKey, entryValue);
-            System.out.println("hvad er query");
-            System.out.println(query);
+            String query = QueryUtils.getEntryQuery(type, entryValue);
             Set<NodeRef> nodeRefs = entryBean.getEntries(query);
             Iterator<NodeRef> iterator = nodeRefs.iterator();
 
             if (!iterator.hasNext())
                 result.add(JSONUtils.getObject("error", "Entry with the type (" + type + ")" +
-                        " and the variable (" + entryKey + " = " + entryValue + ") does not exist."));
+                        " and the entry value (" + entryValue + ") does not exist."));
 
             while (iterator.hasNext()) {
                 NodeRef nodeRef = iterator.next();
@@ -61,4 +58,4 @@ public class GetEntries extends AbstractWebScript {
     }
 }
 
-// F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/entry?type=forensicPsychiatryDeclaration&entryKey=caseNumber&entryValue=33'
+// F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/entry?type=forensicPsychiatryDeclaration&entryValue=33'

@@ -3,6 +3,7 @@ package dk.magenta.webscripts.entries;
 import dk.magenta.beans.EntryBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
+import dk.magenta.utils.TypeUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.site.SiteService;
@@ -36,17 +37,12 @@ public class AddEntry extends AbstractWebScript {
         try {
             JSONObject json = new JSONObject(c.getContent());
             String siteShortName = JSONUtils.getString(json, "siteShortName");
-            String typeStr = JSONUtils.getString(json, "type");
-            System.out.println(json);
+            String type = JSONUtils.getString(json, "type");
             JSONObject jsonProperties = JSONUtils.getObject(json, "properties");
 
-            QName type = QName.createQName(DatabaseModel.RM_MODEL_URI, typeStr);
             Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
-
-            JSONObject caseNumber = entryBean.addEntry(siteShortName, type, properties);
-            System.out.println(caseNumber);
-            System.out.println(caseNumber.get("caseNumber"));
-            result = JSONUtils.getSuccess(caseNumber.getString("caseNumber"));
+            NodeRef nodeRef = entryBean.addEntry(siteShortName, type, properties);
+            result = entryBean.toJSON(nodeRef);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,4 +53,4 @@ public class AddEntry extends AbstractWebScript {
     }
 }
 
-// F.eks. curl -i -u admin:admin -X POST -H "Content-Type: application/json" -d '{ "siteShortName" : "retspsyk", "type" : "forensicPsychiatryDeclaration", "properties" : {"motherEthnicity":"Svensk","doctor1":"Doctor New Name","verdictDate":"2018-08-3T00:00:00.000Z","isClosed":"true","petitionDate":"2018-07-20T00:00:00.000Z","endedWithoutDeclaration":"true"}  }' http://localhost:8080/alfresco/service/entry
+// F.eks. curl -i -u admin:admin -X POST -H "Content-Type: application/json" -d '{ "siteShortName" : "retspsyk", "type" : "forensicPsychiatryDeclaration", "properties" : {"motherEthnicity":"Svensk","doctor1":"Doctor New Name","verdictDate":"2018-08-03T00:00:00.000Z","isClosed":"true","petitionDate":"2018-07-20T00:00:00.000Z","endedWithoutDeclaration":"true"}  }' http://localhost:8080/alfresco/service/entry

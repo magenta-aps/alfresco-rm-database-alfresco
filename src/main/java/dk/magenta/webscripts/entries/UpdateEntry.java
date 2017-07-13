@@ -3,6 +3,7 @@ package dk.magenta.webscripts.entries;
 import dk.magenta.beans.EntryBean;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONObject;
 import org.springframework.extensions.surf.util.Content;
@@ -32,21 +33,14 @@ public class UpdateEntry extends AbstractWebScript {
         JSONObject result;
 
         try {
-            String type = params.get("type");
-            String entryKey = params.get("entryKey");
-            String entryValue = params.get("entryValue");
             JSONObject json = new JSONObject(c.getContent());
             JSONObject jsonProperties = JSONUtils.getObject(json, "properties");
             Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
 
-            NodeRef nodeRef = entryBean.getEntry(type, entryKey, entryValue);
-            if(nodeRef == null)
-                result = JSONUtils.getObject("error", "Entry with the type (" + type + ")" +
-                        " and the variable (" + entryKey + " = " + entryValue + ") does not exist.");
-            else {
-                entryBean.updateEntry(nodeRef, properties);
-                result = JSONUtils.getSuccess();
-            }
+            String uuid = params.get("uuid");
+            NodeRef nodeRef = entryBean.getNodeRef(uuid);
+            entryBean.updateEntry(nodeRef, properties);
+            result = entryBean.toJSON(nodeRef);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,4 +51,4 @@ public class UpdateEntry extends AbstractWebScript {
     }
 }
 
-// F.eks curl -i -u admin:admin -X PUT -H "Content-Type: application/json" -d '{ "properties" : {"motherEthnicity":"Svensk","doctor1":"Doctor New Name","verdictDate":"2018-08-3T00:00:00.000Z","isClosed":"true","petitionDate":"2018-07-20T00:00:00.000Z","endedWithoutDeclaration":"true"} }' 'http://localhost:8080/alfresco/s/entry?type=forensicPsychiatryDeclaration&entryKey=caseNumber&entryValue=71'
+// F.eks curl -i -u admin:admin -X PUT -H "Content-Type: application/json" -d '{ "properties" : {"motherEthnicity":"Svensk","doctor1":"Doctor New Name","verdictDate":"2018-08-03T00:00:00.000Z","isClosed":"true","petitionDate":"2018-07-20T00:00:00.000Z","endedWithoutDeclaration":"true"} }' 'http://localhost:8080/alfresco/s/entry?uuid=445644-4545-4564-8848-1849155'

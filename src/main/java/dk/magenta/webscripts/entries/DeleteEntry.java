@@ -3,6 +3,7 @@ package dk.magenta.webscripts.entries;
 import dk.magenta.beans.EntryBean;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.json.JSONObject;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -28,18 +29,10 @@ public class DeleteEntry extends AbstractWebScript {
         JSONObject result;
 
         try {
-            String type = params.get("type");
-            String entryKey = params.get("entryKey");
-            String entryValue = params.get("entryValue");
-
-            NodeRef nodeRef = entryBean.getEntry(type, entryKey, entryValue);
-            if(nodeRef == null)
-                result = JSONUtils.getObject("error", "Entry with the type (" + type + ")" +
-                        " and the variable (" + entryKey + " = " + entryValue + ") does not exist.");
-            else {
-                entryBean.deleteEntry(nodeRef);
-                result = JSONUtils.getSuccess();
-            }
+            String uuid = params.get("uuid");
+            NodeRef nodeRef = entryBean.getNodeRef(uuid);
+            entryBean.deleteEntry(nodeRef);
+            result = JSONUtils.getSuccess();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,4 +43,4 @@ public class DeleteEntry extends AbstractWebScript {
     }
 }
 
-// F.eks. curl -i -u admin:admin -X DELETE 'http://localhost:8080/alfresco/s/entry?type=forensicPsychiatryDeclaration&entryKey=caseNumber&entryValue=33'
+// F.eks. curl -i -u admin:admin -X DELETE 'http://localhost:8080/alfresco/s/entry?uuid=445644-4545-4564-8848-1849155'

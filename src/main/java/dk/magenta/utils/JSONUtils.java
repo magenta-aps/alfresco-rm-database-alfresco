@@ -90,15 +90,7 @@ public class JSONUtils {
         return json;
     }
 
-    public static JSONObject getSuccess () {
-        return getObject("status", "success");
-    }
-
-    public static JSONObject getSuccess (String caseNumber) throws JSONException {
-        JSONObject result = getObject("status", "success");
-        result.put("caseNumber", caseNumber);
-        return result;
-    }
+    public static JSONObject getSuccess () { return getObject("status", "success"); }
 
     public static JSONObject getError (Exception e) {
         return getObject("error", e.getStackTrace()[0].toString());

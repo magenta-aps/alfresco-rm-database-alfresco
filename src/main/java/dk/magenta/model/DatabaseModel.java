@@ -14,11 +14,18 @@ public interface DatabaseModel {
     public static String RM_MODEL_URI = "http://www.rm.dk/model/database/1.0";
     public static String RM_MODEL_PREFIX = "rm";
 
-    public static QName PROP_CASE_NUMBER = QName.createQName(RM_MODEL_URI, "caseNumber");
     public static QName PROP_LINK = QName.createQName(CONTENT_MODEL_URI, "link");
 
-    public static String TYPE_FORENSIC_PSYC_DEC = "forensicPsychiatryDeclaration";
-    public static String TYPE_FORENSIC_PSYC_DEC_KEY = PROP_CASE_NUMBER.getLocalName();
+    public static String TYPE_PSYC_DEC = "forensicPsychiatryDeclaration";
+    public static String TYPE_PSYC_DEC_KEY = "caseNumber";
+    public static String TYPE_PSYC_DEC_SITE = "retspsyk";
+
+    // Type Strings
+    public static String NAME = "name";
+    public static String ENTRY_KEY = "entryKey";
+    public static String UUID = "node-uuid";
+
+
 
     /**
      * caselink properties
