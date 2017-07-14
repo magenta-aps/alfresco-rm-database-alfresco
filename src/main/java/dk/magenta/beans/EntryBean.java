@@ -61,7 +61,7 @@ public class EntryBean {
 
         //Get entry key for this type
         String entryKey = TypeUtils.getEntryKey(type);
-        QName entryKeyQName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, entryKey);
+        QName entryKeyQName = QName.createQName(DatabaseModel.RM_MODEL_URI, entryKey);
 
         //Remove value if set
         if (properties.containsKey(entryKeyQName))
