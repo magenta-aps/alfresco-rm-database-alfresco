@@ -39,7 +39,7 @@
                     <type>d:text</type>
                 </property>
 
-                <property name="rm:isClosed">x4
+                <property name="rm:isClosed">
                     <title>Sag afsluttet</title>
                     <type>d:boolean</type>
                 </property>
