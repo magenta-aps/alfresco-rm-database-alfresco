@@ -2,6 +2,7 @@ package dk.magenta.webscripts;
 
 
 
+import dk.magenta.conf.DefaultRoles;
 import dk.magenta.conf.DropDownTestContentsConf;
 import dk.magenta.model.DatabaseModel;
 import org.activiti.engine.impl.bpmn.data.Data;
@@ -19,8 +20,10 @@ import org.springframework.context.ApplicationEvent;
 
 import org.springframework.extensions.surf.util.AbstractLifecycleBean;
 import dk.magenta.conf.DropDownConf;
+import sun.text.resources.th.BreakIteratorInfo_th;
 
 import java.util.Iterator;
+import java.util.List;
 
 public class Bootstrap extends AbstractLifecycleBean {
 
@@ -109,6 +112,18 @@ public class Bootstrap extends AbstractLifecycleBean {
             e.printStackTrace();
         }
 
+        // create default groups for roles
+        List<String> roles_to_bootstrap = new DefaultRoles().getRolesForBootstrapping();
+
+        Iterator j = roles_to_bootstrap.iterator();
+
+        while (j.hasNext()) {
+
+            String role = (String)j.next();
+            if (!authorityService.authorityExists("GROUP_" + role)) {
+                authorityService.createAuthority(AuthorityType.GROUP, role, role, null);
+            }
+        }
     }
 
     @Override
