@@ -108,7 +108,7 @@ public class DropDownTestContentsConf {
 
 
 
-            st = new StringTokenizer(placement_input, ",");
+            st = new StringTokenizer(placement_input, "|");
 
             entities = new JSONArray();
             while (st.hasMoreElements()) {

@@ -31,6 +31,7 @@
 	<bean id="initialload" class="dk.magenta.webscripts.Bootstrap">
 		<property name="siteService" ref="SiteService"/>
 		<property name="authorityService" ref="AuthorityService"/>
+		<property name="personService" ref="PersonService"/>
 	</bean>
 
 	<bean id="webscript.preferences.get"

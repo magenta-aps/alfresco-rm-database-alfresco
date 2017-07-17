@@ -3,6 +3,7 @@ package dk.magenta.webscripts;
 
 
 import dk.magenta.conf.DefaultRoles;
+import dk.magenta.conf.DefaultUsers;
 import dk.magenta.conf.DropDownTestContentsConf;
 import dk.magenta.model.DatabaseModel;
 import org.activiti.engine.impl.bpmn.data.Data;
@@ -10,6 +11,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
+import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.cmr.site.SiteVisibility;
@@ -33,6 +35,12 @@ public class Bootstrap extends AbstractLifecycleBean {
 
     private SiteService siteService;
     private AuthorityService authorityService;
+
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
+
+    private PersonService personService;
 
 
     public void setAuthorityService(AuthorityService authorityService) {
@@ -114,7 +122,6 @@ public class Bootstrap extends AbstractLifecycleBean {
 
         // create default groups for roles
         List<String> roles_to_bootstrap = new DefaultRoles().getRolesForBootstrapping();
-
         Iterator j = roles_to_bootstrap.iterator();
 
         while (j.hasNext()) {
@@ -125,6 +132,19 @@ public class Bootstrap extends AbstractLifecycleBean {
                 System.out.println("bootstrapped role: " + auth);
             }
         }
+
+
+
+
+        // bootstrap default users
+
+        List<String> users_to_bootstrap = new DefaultUsers().getUsersForBootstrapping();
+        Iterator u = users_to_bootstrap.iterator();
+
+        while (u.hasNext()) {
+
+        }
+
 
 
     }
