@@ -15,6 +15,8 @@ public class QueryUtils {
 
     public static String getEntryQuery (String type, String entryValue) throws JSONException {
         String entryKey = TypeUtils.types.get(type).getString(DatabaseModel.ENTRY_KEY);
+        if(entryValue == null)
+            return getTypeQuery(type);
         return getTypeQuery(type) + " AND " + getParameterQuery(entryKey, entryValue);
     }
 }
