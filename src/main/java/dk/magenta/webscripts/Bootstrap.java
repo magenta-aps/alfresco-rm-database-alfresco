@@ -169,9 +169,7 @@ public class Bootstrap extends AbstractLifecycleBean {
 
                 personService.createPerson(ppOne);
 
-//                SiteInfo siteInfo = siteService.getSite("retspsyk");
-//                siteInfo.
-
+                authorityService.addAuthority("GROUP_" + "site_retspsyk_SiteCollaborator", name);
 
                 System.out.println("bootstrapped user: " + name);
             }
