@@ -9,12 +9,14 @@ import dk.magenta.model.DatabaseModel;
 import org.activiti.engine.impl.bpmn.data.Data;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.cmr.site.SiteVisibility;
+import org.alfresco.util.PropertyMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +37,12 @@ public class Bootstrap extends AbstractLifecycleBean {
 
     private SiteService siteService;
     private AuthorityService authorityService;
+
+    public void setAuthenticationService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+
+    private AuthenticationService authenticationService;
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
@@ -137,13 +145,32 @@ public class Bootstrap extends AbstractLifecycleBean {
 
 
         // bootstrap default users
-
-        List<String> users_to_bootstrap = new DefaultUsers().getUsersForBootstrapping();
-        Iterator u = users_to_bootstrap.iterator();
-
-        while (u.hasNext()) {
-
-        }
+//
+//        List<String> users_to_bootstrap = new DefaultUsers().getUsersForBootstrapping();
+//        Iterator u = users_to_bootstrap.iterator();
+//
+//        while (u.hasNext()) {
+//
+//            String name = (String)u.next();
+//
+//            if (this.authenticationService.authenticationExists(name) == false) {
+//
+//                this.authenticationService.authenticate(name, name.toCharArray());
+//
+//
+//                PropertyMap ppOne = new PropertyMap(4);
+//                ppOne.put(ContentModel.PROP_USERNAME, name);
+//                ppOne.put(ContentModel.PROP_FIRSTNAME, name);
+//                ppOne.put(ContentModel.PROP_LASTNAME, "Thomsen");
+//                ppOne.put(ContentModel.PROP_EMAIL, "email@email.com");
+//                ppOne.put(ContentModel.PROP_JOBTITLE, "jobTitle");
+//                ppOne.put(ContentModel.PROP_PASSWORD, name);
+//
+//                personService.createPerson(ppOne);
+//                System.out.println("bootstrapped user: " + name);
+//            }
+//
+//        }
 
 
 

@@ -32,6 +32,7 @@
 		<property name="siteService" ref="SiteService"/>
 		<property name="authorityService" ref="AuthorityService"/>
 		<property name="personService" ref="PersonService"/>
+		<property name="authenticationService" ref="AuthenticationService"/>
 	</bean>
 
 	<bean id="webscript.preferences.get"
