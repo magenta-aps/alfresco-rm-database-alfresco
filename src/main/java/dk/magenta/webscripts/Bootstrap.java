@@ -121,9 +121,12 @@ public class Bootstrap extends AbstractLifecycleBean {
 
             String role = (String)j.next();
             if (!authorityService.authorityExists("GROUP_" + role)) {
-                authorityService.createAuthority(AuthorityType.GROUP, role, role, null);
+                String auth = authorityService.createAuthority(AuthorityType.GROUP, role, role, null);
+                System.out.println("bootstrapped role: " + auth);
             }
         }
+
+
     }
 
     @Override
