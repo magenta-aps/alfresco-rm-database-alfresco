@@ -232,6 +232,8 @@
                     <title>locked for edit</title>
                     <type>d:boolean</type>
                     <multiple>false</multiple>
+                    <default>false</default>
+
                 </property>
 
                 <property name="rm:locked4editBy">
