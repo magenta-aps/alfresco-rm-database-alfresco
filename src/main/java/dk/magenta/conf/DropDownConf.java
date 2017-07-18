@@ -18,21 +18,14 @@ public class DropDownConf {
         groups_to_bootstrap = new ArrayList<Dropdown>();
 
         groups_to_bootstrap.add(new Dropdown("ethnicity", ""));
-        groups_to_bootstrap.add(new Dropdown("motherEthnicity", ""));
-        groups_to_bootstrap.add(new Dropdown("fatherEthnicity", ""));
         groups_to_bootstrap.add(new Dropdown("referingAgency", ""));
         groups_to_bootstrap.add(new Dropdown("mainCharge", ""));
         groups_to_bootstrap.add(new Dropdown("placement", ""));
         groups_to_bootstrap.add(new Dropdown("sanctionProposal", ""));
-        groups_to_bootstrap.add(new Dropdown("sentTo", ""));
         groups_to_bootstrap.add(new Dropdown("finalVerdict", ""));
-        groups_to_bootstrap.add(new Dropdown("doctor1", ""));
-        groups_to_bootstrap.add(new Dropdown("doctor2", ""));
-        groups_to_bootstrap.add(new Dropdown("psychologist", ""));
-        groups_to_bootstrap.add(new Dropdown("socialWorker", ""));
-        groups_to_bootstrap.add(new Dropdown("secretary", ""));
-        groups_to_bootstrap.add(new Dropdown("mainDiagnosis", ""));
-        groups_to_bootstrap.add(new Dropdown("biDiagnoses", ""));
+        groups_to_bootstrap.add(new Dropdown("diagnosis", ""));
+        groups_to_bootstrap.add(new Dropdown("status", ""));
+        groups_to_bootstrap.add(new Dropdown("noDeclarationReason", ""));
     }
 
     public List<String> getNames() {
