@@ -9,6 +9,7 @@ import dk.magenta.model.DatabaseModel;
 import org.activiti.engine.impl.bpmn.data.Data;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 import org.alfresco.service.cmr.security.*;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
@@ -113,15 +114,24 @@ public class Bootstrap extends AbstractLifecycleBean {
 
                 String groupName = group.getString("name");
 
+
+
                 JSONArray entites = group.getJSONArray("entities");
 
                 for (int k=0; k<=entites.length()-1;k++) {
 
                     String entity = entites.getString(k);
                     if (!authorityService.authorityExists("GROUP_" + entity)) {
-
                         String authName = authorityService.createAuthority(AuthorityType.GROUP, entity, entity, null);
                         authorityService.addAuthority("GROUP_" + groupName, authName);
+                    }
+                    else {
+                        try {
+                            authorityService.addAuthority("GROUP_" + groupName, "GROUP_" + entity);
+                        }
+                        catch (DuplicateChildNodeNameException e) {
+                           // do nothing, caught as we reuse subgroups in different parentgroups
+                        }
                     }
                 }
             }
