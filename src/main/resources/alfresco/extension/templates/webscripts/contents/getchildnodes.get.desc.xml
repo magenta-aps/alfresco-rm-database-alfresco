@@ -3,5 +3,4 @@
     <description>gets the contents of a case</description>
     <url>/contents</url>
     <authentication>user</authentication>
-    <format default="html"></format>
 </webscript>

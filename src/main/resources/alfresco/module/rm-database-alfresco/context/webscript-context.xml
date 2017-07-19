@@ -21,7 +21,7 @@
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
-	<bean id="webscript.contents.contents.get" class="dk.magenta.webscripts.contents.GetChildNodes" parent="webscript">
+	<bean id="webscript.contents.getchildnodes.get" class="dk.magenta.webscripts.contents.GetChildNodes" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
