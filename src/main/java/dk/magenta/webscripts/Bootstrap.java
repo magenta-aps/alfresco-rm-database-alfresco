@@ -4,27 +4,16 @@ package dk.magenta.webscripts;
 
 import dk.magenta.conf.DefaultRoles;
 import dk.magenta.conf.DefaultUsers;
-import dk.magenta.conf.DropDownTestContentsConf;
 import dk.magenta.model.DatabaseModel;
-import org.activiti.engine.impl.bpmn.data.Data;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 import org.alfresco.service.cmr.security.*;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.cmr.site.SiteVisibility;
 import org.alfresco.util.PropertyMap;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.context.ApplicationEvent;
-
 import org.springframework.extensions.surf.util.AbstractLifecycleBean;
-import dk.magenta.conf.DropDownConf;
-import sun.text.resources.th.BreakIteratorInfo_th;
-
-import java.util.Iterator;
 import java.util.List;
 
 public class Bootstrap extends AbstractLifecycleBean {
@@ -37,15 +26,9 @@ public class Bootstrap extends AbstractLifecycleBean {
     private AuthorityService authorityService;
     private MutableAuthenticationService authenticationService;
 
-
-
     public void setAuthenticationService(AuthenticationService mutableAuthenticationService) {
         this.authenticationService = (MutableAuthenticationService)mutableAuthenticationService;
     }
-
-
-
-
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
@@ -59,19 +42,9 @@ public class Bootstrap extends AbstractLifecycleBean {
     }
 
 
-
-    private DropDownConf dropDownConf = new DropDownConf();
-
-
-
-
     protected void onBootstrap(ApplicationEvent applicationEvent) {
 
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-
-
-        DropDownTestContentsConf dropDownTestContentsConf = new DropDownTestContentsConf();
-
 
 
         // load sites
@@ -90,30 +63,22 @@ public class Bootstrap extends AbstractLifecycleBean {
 
         // create default groups for roles
         List<String> roles_to_bootstrap = new DefaultRoles().getRolesForBootstrapping();
-        Iterator j = roles_to_bootstrap.iterator();
 
-        while (j.hasNext()) {
+        for (String role : roles_to_bootstrap) {
 
-            String role = (String)j.next();
             if (!authorityService.authorityExists("GROUP_" + role)) {
                 String auth = authorityService.createAuthority(AuthorityType.GROUP, role, role, null);
                 System.out.println("bootstrapped role: " + auth);
             }
         }
 
-
-
-
         // bootstrap default users
 
         List<String> users_to_bootstrap = new DefaultUsers().getUsersForBootstrapping();
-        Iterator u = users_to_bootstrap.iterator();
 
-        while (u.hasNext()) {
+        for (String name : users_to_bootstrap) {
 
-            String name = (String)u.next();
-
-            if (this.authenticationService.authenticationExists(name) == false) {
+            if (!this.authenticationService.authenticationExists(name)) {
 
                 this.authenticationService.createAuthentication(name, name.toCharArray());
 
@@ -131,7 +96,6 @@ public class Bootstrap extends AbstractLifecycleBean {
 
                 System.out.println("bootstrapped user: " + name);
             }
-
         }
     }
 
