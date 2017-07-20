@@ -11,6 +11,12 @@
         <property name="siteService" ref="SiteService"/>
     </bean>
 
+    <bean id="propertyValuesBean" class="dk.magenta.beans.PropertyValuesBean">
+        <property name="repository" ref="repositoryHelper"/>
+        <property name="fileFolderService" ref="FileFolderService"/>
+        <property name="contentService" ref="ContentService"/>
+    </bean>
+
     <bean id="contentsBean" class="dk.magenta.beans.ContentsBean">
         <property name="nodeService" ref="NodeService"/>
         <property name="personService" ref="PersonService"/>

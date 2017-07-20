@@ -88,58 +88,6 @@ public class Bootstrap extends AbstractLifecycleBean {
         }
 
 
-
-        // load dropdown groups
-
-        Iterator i = dropDownConf.groups_to_bootstrap.iterator();
-
-        while (i.hasNext()) {
-            DropDownConf.Dropdown dropdown = (DropDownConf.Dropdown)i.next();
-            String groupName = dropdown.getName();
-
-            if (!authorityService.authorityExists("GROUP_" + groupName)) {
-                authorityService.createAuthority(AuthorityType.GROUP, groupName, groupName, null);
-                System.out.println("Bootstrapped group: " + groupName);
-            }
-        }
-
-
-        // populate dropdown groups
-
-        JSONArray testdata = dropDownTestContentsConf.getTestdata_to_bootstrap();
-
-        try {
-            for (int j=0;j<= testdata.length()-1;j++) {
-                JSONObject group = testdata.getJSONObject(j);
-
-                String groupName = group.getString("name");
-
-
-
-                JSONArray entites = group.getJSONArray("entities");
-
-                for (int k=0; k<=entites.length()-1;k++) {
-
-                    String entity = entites.getString(k);
-                    if (!authorityService.authorityExists("GROUP_" + entity)) {
-                        String authName = authorityService.createAuthority(AuthorityType.GROUP, entity, entity, null);
-                        authorityService.addAuthority("GROUP_" + groupName, authName);
-                    }
-                    else {
-                        try {
-                            authorityService.addAuthority("GROUP_" + groupName, "GROUP_" + entity);
-                        }
-                        catch (DuplicateChildNodeNameException e) {
-                           // do nothing, caught as we reuse subgroups in different parentgroups
-                        }
-                    }
-                }
-            }
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         // create default groups for roles
         List<String> roles_to_bootstrap = new DefaultRoles().getRolesForBootstrapping();
         Iterator j = roles_to_bootstrap.iterator();

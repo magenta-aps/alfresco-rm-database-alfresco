@@ -1,0 +1,6 @@
+<webscript>
+    <shortname>Get Property Values</shortname>
+    <description>Get list of property values</description>
+    <url>/propertyValues</url>
+    <authentication>user</authentication>
+</webscript>

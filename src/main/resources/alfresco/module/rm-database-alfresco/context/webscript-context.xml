@@ -21,6 +21,10 @@
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
+	<bean id="webscript.propertyValues.propertyValues.get" class="dk.magenta.webscripts.propertyValues.GetPropertyValues" parent="webscript">
+		<property name="propertyValuesBean" ref="propertyValuesBean"/>
+	</bean>
+
 	<bean id="webscript.contents.getchildnodes.get" class="dk.magenta.webscripts.contents.GetChildNodes" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>

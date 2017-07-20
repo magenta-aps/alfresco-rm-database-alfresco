@@ -3,9 +3,7 @@ package dk.magenta.model;
 import org.alfresco.service.namespace.QName;
 import org.json.simple.JSONArray;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 public interface DatabaseModel {
@@ -35,5 +33,11 @@ public interface DatabaseModel {
 
     // Containers
     public static String DOC_LIBRARY = "documentLibrary";
+
+    //Folder paths
+
+    public static List<String> PROP_VALUES_PATH = new ArrayList<>(
+            Arrays.asList("Data Dictionary", "Database Extension", "Property Values")
+    );
 
 }

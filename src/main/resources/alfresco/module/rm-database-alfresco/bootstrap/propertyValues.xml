@@ -1,0 +1,177 @@
+<view:view xmlns:view="http://www.alfresco.org/view/repository/1.0"
+           xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0"
+           xmlns:emailserver="http://www.alfresco.org/model/emailserver/1.0">
+
+    <cm:folder view:childName="cm:Database Extension">
+        <app:uifacets />
+        <cm:name>Database Extension</cm:name>
+        <app:icon>space-icon-default</app:icon>
+        <cm:title>Database Extension</cm:title>
+        <cm:description></cm:description>
+        <cm:contains>
+                <cm:folder view:childName="cm:Property Values">
+                <app:uifacets />
+                <cm:name>Property Values</cm:name>
+                <app:icon>space-icon-default</app:icon>
+                <cm:title>Property Values</cm:title>
+                <cm:description></cm:description>
+                    <cm:contains>
+
+                        <cm:content view:childName="cm:ethnicity.txt">
+                            <view:aspects>
+                                <cm:titled />
+                                <cm:author />
+                                <app:inlineeditable />
+                            </view:aspects>
+                            <view:properties>
+                                <app:editInline>true</app:editInline>
+                                <cm:description>List of ethnicities.</cm:description>
+                                <cm:content>contentUrl=classpath:alfresco/module/rm-database-alfresco/bootstrap/propertyValues/ethnicity.txt|mimetype=text/plain|size=|encoding=UTF-8|locale=da_DK_</cm:content>
+                                <cm:title>ethnicity</cm:title>
+                                <cm:author>admin</cm:author>
+                                <cm:name>ethnicity.txt</cm:name>
+                            </view:properties>
+                            <view:associations></view:associations>
+                        </cm:content>
+
+                        <cm:content view:childName="cm:referingAgency.txt">
+                            <view:aspects>
+                                <cm:titled />
+                                <cm:author />
+                                <app:inlineeditable />
+                            </view:aspects>
+                            <view:properties>
+                                <app:editInline>true</app:editInline>
+                                <cm:description>List of refering agencies.</cm:description>
+                                <cm:content>contentUrl=classpath:alfresco/module/rm-database-alfresco/bootstrap/propertyValues/referingAgency.txt|mimetype=text/plain|size=|encoding=UTF-8|locale=da_DK_</cm:content>
+                                <cm:title>referingAgency</cm:title>
+                                <cm:author>admin</cm:author>
+                                <cm:name>referingAgency.txt</cm:name>
+                            </view:properties>
+                            <view:associations></view:associations>
+                        </cm:content>
+
+                        <cm:content view:childName="cm:mainCharge.txt">
+                            <view:aspects>
+                                <cm:titled />
+                                <cm:author />
+                                <app:inlineeditable />
+                            </view:aspects>
+                            <view:properties>
+                                <app:editInline>true</app:editInline>
+                                <cm:description>List of main charges.</cm:description>
+                                <cm:content>contentUrl=classpath:alfresco/module/rm-database-alfresco/bootstrap/propertyValues/mainCharge.txt|mimetype=text/plain|size=|encoding=UTF-8|locale=da_DK_</cm:content>
+                                <cm:title>mainCharge</cm:title>
+                                <cm:author>admin</cm:author>
+                                <cm:name>mainCharge.txt</cm:name>
+                            </view:properties>
+                            <view:associations></view:associations>
+                        </cm:content>
+
+                        <cm:content view:childName="cm:placement.txt">
+                            <view:aspects>
+                                <cm:titled />
+                                <cm:author />
+                                <app:inlineeditable />
+                            </view:aspects>
+                            <view:properties>
+                                <app:editInline>true</app:editInline>
+                                <cm:description>List of placements.</cm:description>
+                                <cm:content>contentUrl=classpath:alfresco/module/rm-database-alfresco/bootstrap/propertyValues/placement.txt|mimetype=text/plain|size=|encoding=UTF-8|locale=da_DK_</cm:content>
+                                <cm:title>placement</cm:title>
+                                <cm:author>admin</cm:author>
+                                <cm:name>placement.txt</cm:name>
+                            </view:properties>
+                            <view:associations></view:associations>
+                        </cm:content>
+
+                        <cm:content view:childName="cm:sanctionProposal.txt">
+                            <view:aspects>
+                                <cm:titled />
+                                <cm:author />
+                                <app:inlineeditable />
+                            </view:aspects>
+                            <view:properties>
+                                <app:editInline>true</app:editInline>
+                                <cm:description>List of sanction proposals.</cm:description>
+                                <cm:content>contentUrl=classpath:alfresco/module/rm-database-alfresco/bootstrap/propertyValues/sanctionProposal.txt|mimetype=text/plain|size=|encoding=UTF-8|locale=da_DK_</cm:content>
+                                <cm:title>sanctionProposal</cm:title>
+                                <cm:author>admin</cm:author>
+                                <cm:name>sanctionProposal.txt</cm:name>
+                            </view:properties>
+                            <view:associations></view:associations>
+                        </cm:content>
+
+                        <cm:content view:childName="cm:diagnosis.txt">
+                            <view:aspects>
+                                <cm:titled />
+                                <cm:author />
+                                <app:inlineeditable />
+                            </view:aspects>
+                            <view:properties>
+                                <app:editInline>true</app:editInline>
+                                <cm:description>List of main diagnoses.</cm:description>
+                                <cm:content>contentUrl=classpath:alfresco/module/rm-database-alfresco/bootstrap/propertyValues/diagnosis.txt|mimetype=text/plain|size=|encoding=UTF-8|locale=da_DK_</cm:content>
+                                <cm:title>diagnosis</cm:title>
+                                <cm:author>admin</cm:author>
+                                <cm:name>diagnosis.txt</cm:name>
+                            </view:properties>
+                            <view:associations></view:associations>
+                        </cm:content>
+
+                        <cm:content view:childName="cm:finalVerdict.txt">
+                            <view:aspects>
+                                <cm:titled />
+                                <cm:author />
+                                <app:inlineeditable />
+                            </view:aspects>
+                            <view:properties>
+                                <app:editInline>true</app:editInline>
+                                <cm:description>List of final verdicts.</cm:description>
+                                <cm:content>contentUrl=classpath:alfresco/module/rm-database-alfresco/bootstrap/propertyValues/finalVerdict.txt|mimetype=text/plain|size=|encoding=UTF-8|locale=da_DK_</cm:content>
+                                <cm:title>finalVerdict</cm:title>
+                                <cm:author>admin</cm:author>
+                                <cm:name>finalVerdict.txt</cm:name>
+                            </view:properties>
+                            <view:associations></view:associations>
+                        </cm:content>
+
+                        <cm:content view:childName="cm:status.txt">
+                            <view:aspects>
+                                <cm:titled />
+                                <cm:author />
+                                <app:inlineeditable />
+                            </view:aspects>
+                            <view:properties>
+                                <app:editInline>true</app:editInline>
+                                <cm:description>List of statuses.</cm:description>
+                                <cm:content>contentUrl=classpath:alfresco/module/rm-database-alfresco/bootstrap/propertyValues/status.txt|mimetype=text/plain|size=|encoding=UTF-8|locale=da_DK_</cm:content>
+                                <cm:title>status</cm:title>
+                                <cm:author>admin</cm:author>
+                                <cm:name>status.txt</cm:name>
+                            </view:properties>
+                            <view:associations></view:associations>
+                        </cm:content>
+
+                        <cm:content view:childName="cm:noDeclarationReason.txt">
+                            <view:aspects>
+                                <cm:titled />
+                                <cm:author />
+                                <app:inlineeditable />
+                            </view:aspects>
+                            <view:properties>
+                                <app:editInline>true</app:editInline>
+                                <cm:description>List of no declaration reasons.</cm:description>
+                                <cm:content>contentUrl=classpath:alfresco/module/rm-database-alfresco/bootstrap/propertyValues/noDeclarationReason.txt|mimetype=text/plain|size=|encoding=UTF-8|locale=da_DK_</cm:content>
+                                <cm:title>noDeclarationReason</cm:title>
+                                <cm:author>admin</cm:author>
+                                <cm:name>noDeclarationReason.txt</cm:name>
+                            </view:properties>
+                            <view:associations></view:associations>
+                        </cm:content>
+
+                    </cm:contains>
+                </cm:folder>
+        </cm:contains>
+    </cm:folder>
+</view:view>
