@@ -76,6 +76,9 @@ public class ContentsBean {
                     ContentData contentData = (ContentData) nodeService.getProperty(childNodeRef, ContentModel.PROP_CONTENT);
                     String mimeType = contentData.getMimetype();
                     json.put("mimeType", mimeType);
+                    String nodeRefStr = childNodeRef.toString().replace("://", "/");
+                    String thumbnail = "/alfresco/service/api/node/" + nodeRefStr + "/content/thumbnails/doclib?c=force";
+                    json.put("thumbnail", thumbnail);
                 }
 
                 AccessStatus accessStatus = permissionService.hasPermission(childNodeRef, PermissionService.DELETE);
