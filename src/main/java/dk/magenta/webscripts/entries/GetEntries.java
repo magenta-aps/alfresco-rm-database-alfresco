@@ -41,8 +41,8 @@ public class GetEntries extends AbstractWebScript {
             Iterator<NodeRef> iterator = nodeRefs.iterator();
 
             if (!iterator.hasNext())
-                result.add(JSONUtils.getObject("error", "Entry with the type (" + type + ")" +
-                        " and the entry value (" + entryValue + ") does not exist."));
+                throw new Exception("Entry with the type (" + type + ")" +
+                        " and the entry value (" + entryValue + ") does not exist.");
 
             while (iterator.hasNext()) {
                 NodeRef nodeRef = iterator.next();
