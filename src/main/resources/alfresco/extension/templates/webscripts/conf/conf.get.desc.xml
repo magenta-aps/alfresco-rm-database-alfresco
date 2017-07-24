@@ -1,7 +1,0 @@
-<webscript>
-    <shortname>get various configurations</shortname>
-    <description>get various configurations</description>
-    <url>/conf</url>
-    <authentication>user</authentication>
-    <format default="html"></format>
-</webscript>
