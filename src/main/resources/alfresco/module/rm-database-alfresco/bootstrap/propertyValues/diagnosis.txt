@@ -585,7 +585,6 @@ Skizofreni uden specifikation, komplet remission
 Skizofreni uden specifikation, andet forløb
 Skizofreni uden specifikation, forløb ubestemt
 Skizotypisk sindslidelse
-Skizotypisk sindslidelse
 Paranoide psykoser
 Paranoia, simpel
 Kroniske psykoser, andre
@@ -609,7 +608,6 @@ Psykoser, andre typer akutte og forbigående, reaktiv
 Psykose, akut og forbigående uden specifikation
 Psykose, akut og forbigående uden specifikation, non-resktv
 Psykose, akut og forbigående uden specifikation, reaktiv
-Psykose, induceret
 Psykose, induceret
 Psykoser, skizo-affektive
 Psykose, skizo-affektiv, manisk type
