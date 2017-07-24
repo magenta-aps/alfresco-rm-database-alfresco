@@ -1,7 +1,6 @@
 package dk.magenta.utils;
 
 import dk.magenta.model.DatabaseModel;
-import org.activiti.engine.impl.bpmn.data.Data;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.preference.PreferenceService;
 import org.alfresco.service.namespace.QName;
@@ -10,7 +9,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
 
 import java.io.Serializable;
 import java.io.Writer;
@@ -55,6 +54,14 @@ public class JSONUtils {
             return "";
         }
         return json.getString(parameter);
+    }
+
+    public static JSONArray getArray(JSONObject json, String parameter) throws JSONException {
+        if (!json.has(parameter) || json.getJSONArray(parameter).length() == 0)
+        {
+            return null;
+        }
+        return json.getJSONArray(parameter);
     }
 
     public static JSONObject getObject(JSONObject json, String parameter) throws JSONException {
@@ -117,28 +124,10 @@ public class JSONUtils {
 
     public static void write (Writer writer, JSONArray result) {
         try {
-            result.writeJSONString(writer);
+            result.write(writer);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static JSONArray getJSONArray(List<String> list) {
-        JSONArray result = new JSONArray();
-
-        Iterator i = list.iterator();
-
-        while (i.hasNext()) {
-            JSONObject o = new JSONObject();
-            try {
-                o.put("name", i.next());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            result.add(o);
-        }
-
-        return result;
     }
 
     public static Map<String, Serializable> getPreferences(PreferenceService preferenceService, String userName, String filter) {
@@ -159,7 +148,7 @@ public class JSONUtils {
         try {
             for (Map.Entry<String, Serializable> pair : map.entrySet())
                 return_json.put(pair.getKey(), pair.getValue().toString());
-            result.add(return_json);
+            result.put(return_json);
         } catch (Exception e) {
             e.printStackTrace();
         }

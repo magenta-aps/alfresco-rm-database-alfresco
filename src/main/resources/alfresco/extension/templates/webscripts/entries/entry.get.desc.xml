@@ -3,4 +3,5 @@
     <description>Get information about entries that match the query</description>
     <url>/entry</url>
     <authentication>user</authentication>
+    <format default="json"/>
 </webscript>

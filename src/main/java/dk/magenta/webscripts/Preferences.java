@@ -2,7 +2,7 @@ package dk.magenta.webscripts;
 
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.preference.PreferenceService;
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.extensions.webscripts.*;
@@ -39,7 +39,7 @@ public class Preferences extends AbstractWebScript {
             webScriptResponse.setStatus(400);
         }
 
-        result.writeJSONString(webScriptResponse.getWriter());
+        JSONUtils.write(webScriptResponse.getWriter(), result);
 
     }
 }

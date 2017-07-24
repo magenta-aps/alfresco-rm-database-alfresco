@@ -3,4 +3,5 @@
     <description>Add entry</description>
     <url>/entry</url>
     <authentication>user</authentication>
+    <format default="json"/>
 </webscript>

@@ -20,7 +20,7 @@ import dk.magenta.beans.ContentsBean;
 import dk.magenta.utils.JSONUtils;
 
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
@@ -53,7 +53,7 @@ public class GetChildNodes extends AbstractWebScript {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result.add(JSONUtils.getError(e));
+            result.put(JSONUtils.getError(e));
             webScriptResponse.setStatus(400);
         }
         JSONUtils.write(webScriptWriter, result);

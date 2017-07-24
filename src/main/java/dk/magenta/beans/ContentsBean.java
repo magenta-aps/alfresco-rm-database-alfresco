@@ -14,7 +14,7 @@ import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
 
 import java.util.*;
 
@@ -126,12 +126,12 @@ public class ContentsBean {
                     }
                 }
 
-                contentTypeMap.get(type).add(json);
+                contentTypeMap.get(type).put(json);
             }
         }
 
         for (String contentType : contentTypes)
-            result.add(contentTypeMap.get(contentType));
+            result.put(contentTypeMap.get(contentType));
 
         return result;
     }

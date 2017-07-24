@@ -4,9 +4,7 @@ import dk.magenta.beans.EntryBean;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.search.ResultSetRow;
-import org.json.JSONObject;
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
@@ -46,12 +44,12 @@ public class GetEntries extends AbstractWebScript {
 
             while (iterator.hasNext()) {
                 NodeRef nodeRef = iterator.next();
-                result.add(entryBean.toJSON(nodeRef));
+                result.put(entryBean.toJSON(nodeRef));
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            result.add(JSONUtils.getError(e));
+            result.put(JSONUtils.getError(e));
             webScriptResponse.setStatus(400);
         }
         JSONUtils.write(webScriptWriter, result);

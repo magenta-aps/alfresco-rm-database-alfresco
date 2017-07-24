@@ -2,18 +2,23 @@ package dk.magenta.webscripts;
 
 
 
+import dk.magenta.beans.PropertyValuesBean;
 import dk.magenta.conf.DefaultRoles;
 import dk.magenta.conf.DefaultUsers;
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.security.*;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.cmr.site.SiteVisibility;
 import org.alfresco.util.PropertyMap;
+import org.json.JSONException;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.extensions.surf.util.AbstractLifecycleBean;
+
+import java.io.IOException;
 import java.util.List;
 
 public class Bootstrap extends AbstractLifecycleBean {
@@ -25,6 +30,7 @@ public class Bootstrap extends AbstractLifecycleBean {
     private SiteService siteService;
     private AuthorityService authorityService;
     private MutableAuthenticationService authenticationService;
+    private PropertyValuesBean propertyValuesBean;
 
     public void setAuthenticationService(AuthenticationService mutableAuthenticationService) {
         this.authenticationService = (MutableAuthenticationService)mutableAuthenticationService;
@@ -39,6 +45,10 @@ public class Bootstrap extends AbstractLifecycleBean {
 
     public void setAuthorityService(AuthorityService authorityService) {
         this.authorityService = authorityService;
+    }
+
+    public void setPropertyValuesBean(PropertyValuesBean propertyValuesBean) {
+        this.propertyValuesBean = propertyValuesBean;
     }
 
 
@@ -97,6 +107,23 @@ public class Bootstrap extends AbstractLifecycleBean {
                 System.out.println("bootstrapped user: " + name);
             }
         }
+
+        // load properties folder
+
+        try {
+            propertyValuesBean.loadPropertiesFolder();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // Load property values
+
+        try {
+            propertyValuesBean.loadPropertyValues();
+        } catch (JSONException | FileNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
