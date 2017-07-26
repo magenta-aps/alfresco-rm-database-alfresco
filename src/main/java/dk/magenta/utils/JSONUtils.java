@@ -14,10 +14,8 @@ import org.json.JSONArray;
 import java.io.Serializable;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class JSONUtils {
@@ -77,9 +75,20 @@ public class JSONUtils {
         try {
             for (Map.Entry<QName, Serializable> pair : map.entrySet()) {
                 String key = pair.getKey().getLocalName();
-                Serializable value = pair.getValue();
-                if (value != null && !"".equals(value))
-                    result.put(key, pair.getValue().toString());
+                Object value = pair.getValue();
+                if (value != null && !"".equals(value)) {
+                    String valueStr = value.toString();
+                    if(valueStr.startsWith("[") && valueStr.endsWith("]")) {
+                        value = new JSONArray(valueStr);
+                    }
+                    else if (value.getClass() == Date.class) {
+                        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                        TimeZone timeZone = TimeZone.getTimeZone("UTC");
+                        date.setTimeZone(timeZone);
+                        value = date.format(value) + "Z";
+                    }
+                    result.put(key, value);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

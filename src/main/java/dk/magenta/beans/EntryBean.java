@@ -121,17 +121,6 @@ public class EntryBean {
 
     public JSONObject toJSON (NodeRef entryRef) throws JSONException {
         Map<QName, Serializable> properties = nodeService.getProperties(entryRef);
-        for (Map.Entry<QName, Serializable> property : properties.entrySet())
-        {
-            if(property.getValue().getClass() == Date.class) {
-                SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-                TimeZone timeZone = TimeZone.getTimeZone("UTC");
-                date.setTimeZone(timeZone);
-                String dateString = date.format(property.getValue()) + "Z";
-                property.setValue(dateString);
-            }
-        }
-
         return JSONUtils.getObject(properties);
     }
 

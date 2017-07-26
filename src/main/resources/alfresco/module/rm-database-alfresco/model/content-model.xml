@@ -220,10 +220,10 @@
                     <type>d:text</type>
                 </property>
 
+                // Takes JSON as text
                 <property name="rm:biDiagnoses">
                     <title>Bidiagnoser</title>
                     <type>d:text</type>
-                    <multiple>true</multiple>
                 </property>
 
                 <!-- generic -->
@@ -231,15 +231,11 @@
                 <property name="rm:locked4edit">
                     <title>locked for edit</title>
                     <type>d:boolean</type>
-                    <multiple>false</multiple>
-                    <default>false</default>
-
                 </property>
 
                 <property name="rm:locked4editBy">
                     <title>locked for edit by</title>
                     <type>d:text</type>
-                    <multiple>false</multiple>
                 </property>
 
 
