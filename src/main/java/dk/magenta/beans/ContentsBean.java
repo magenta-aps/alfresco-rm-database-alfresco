@@ -2,16 +2,17 @@ package dk.magenta.beans;
 
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
-import org.alfresco.service.cmr.repository.ContentData;
-import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.repo.download.ActionServiceHelper;
+import org.alfresco.repo.download.DownloadStorage;
+import org.alfresco.service.cmr.download.DownloadService;
+import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.service.transaction.TransactionService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -24,6 +25,8 @@ public class ContentsBean {
     private PermissionService permissionService;
     private PersonService personService;
     private SiteService siteService;
+
+    private DownloadService downloadService;
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
@@ -38,6 +41,9 @@ public class ContentsBean {
         this.siteService = siteService;
     }
 
+    public void setDownloadService(DownloadService downloadService) {
+        this.downloadService = downloadService;
+    }
 
     public JSONArray getChildNodes(NodeRef parentNodeRef) throws JSONException {
 
@@ -136,5 +142,16 @@ public class ContentsBean {
         return result;
     }
 
-}
 
+    public NodeRef downloadContent(NodeRef[] requestedNodes) {
+        NodeRef downloadNodeRef = downloadService.createDownload(requestedNodes, true);
+
+        //Set mime type to zip. Default is octet-stream
+        ContentData cd = (ContentData) nodeService.getProperty(downloadNodeRef, ContentModel.PROP_CONTENT);
+        ContentData newCd = ContentData.setMimetype(cd, "application/zip");
+        nodeService.setProperty(downloadNodeRef, ContentModel.PROP_CONTENT, newCd);
+
+        return downloadNodeRef;
+    }
+
+}

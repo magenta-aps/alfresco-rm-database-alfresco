@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Download content</shortname>
+    <description>Download content</description>
+    <url>/contents/download</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

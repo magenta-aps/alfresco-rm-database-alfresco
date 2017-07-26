@@ -33,12 +33,8 @@
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
-	<bean id="initialload" class="dk.magenta.webscripts.Bootstrap">
-		<property name="siteService" ref="SiteService"/>
-		<property name="authorityService" ref="AuthorityService"/>
-		<property name="personService" ref="PersonService"/>
-		<property name="authenticationService" ref="AuthenticationService"/>
-		<property name="propertyValuesBean" ref="propertyValuesBean"/>
+	<bean id="webscript.contents.download.post" class="dk.magenta.webscripts.contents.DownloadContent" parent="webscript">
+		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
 	<bean id="webscript.preferences.get"
@@ -46,9 +42,6 @@
 		  parent="webscript">
 		<property name="preferenceService" ref="PreferenceService"/>
 	</bean>
-
-
-
 
 </beans>
 <!--curl -i -u admin:admin -X POST -H "Content-Type: application/json" -d '{"shortName":"retspsyk", "title":"retspsyk", "visibility":"PUBLIC"}' localhost:8080/alfresco/service/api/sites-->

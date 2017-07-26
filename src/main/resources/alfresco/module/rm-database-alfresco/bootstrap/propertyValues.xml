@@ -2,14 +2,14 @@
            xmlns:cm="http://www.alfresco.org/model/content/1.0" xmlns:app="http://www.alfresco.org/model/application/1.0"
            xmlns:emailserver="http://www.alfresco.org/model/emailserver/1.0">
 
-    <cm:folder view:childName="cm:Database Extension">
+    <cm:folder view:childName="cm:database_extension">
         <app:uifacets />
         <cm:name>Database Extension</cm:name>
         <app:icon>space-icon-default</app:icon>
         <cm:title>Database Extension</cm:title>
         <cm:description></cm:description>
         <cm:contains>
-                <cm:folder view:childName="cm:Property Values">
+                <cm:folder view:childName="cm:property_values">
                 <app:uifacets />
                 <cm:name>Property Values</cm:name>
                 <app:icon>space-icon-default</app:icon>
