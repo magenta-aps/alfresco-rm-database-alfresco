@@ -39,7 +39,7 @@
                     <type>d:text</type>
                 </property>
 
-                <property name="rm:isClosed">
+                <property name="rm:closed">
                     <title>Sag afsluttet</title>
                     <type>d:boolean</type>
                 </property>
@@ -116,16 +116,6 @@
 
                 <!-- HISTORY -->
 
-                <property name="rm:verdictDate">
-                    <title>Kendelsesdato</title>
-                    <type>d:date</type>
-                </property>
-
-                <property name="rm:petitionDate">
-                    <title>Begæringsdato</title>
-                    <type>d:date</type>
-                </property>
-
                 <property name="rm:creationDate">
                     <title>Sagen oprettet</title>
                     <type>d:date</type>
@@ -141,17 +131,17 @@
                     <type>d:date</type>
                 </property>
 
-                <property name="rm:endedWithoutDeclaration">
+                <property name="rm:closedWithoutDeclaration">
                     <title>Afsluttet uden erklæring</title>
                     <type>d:boolean</type>
                 </property>
 
-                <property name="rm:declaration">
-                    <title>Erklæring</title>
+                <property name="rm:closedWithoutDeclarationReason">
+                    <title>Årsag</title>
                     <type>d:text</type>
                 </property>
 
-                <property name="rm:sentTo">
+                <property name="rm:closedWithoutDeclarationSentTo">
                     <title>Sendt til</title>
                     <type>d:text</type>
                 </property>
@@ -181,35 +171,15 @@
                     <type>d:text</type>
                 </property>
 
-                <property name="rm:consent">
-                    <title>samtykke</title>
-                    <type>d:text</type>
-                </property>
-
                 <!-- Declaration made by -->
 
-                <property name="rm:doctor1">
-                    <title>Læge 1</title>
-                    <type>d:text</type>
-                </property>
-
-                <property name="rm:doctor2">
-                    <title>Læge 2</title>
+                <property name="rm:doctor">
+                    <title>Læge</title>
                     <type>d:text</type>
                 </property>
 
                 <property name="rm:psychologist">
                     <title>Psykolog</title>
-                    <type>d:text</type>
-                </property>
-
-                <property name="rm:socialWorker">
-                    <title>Socialrådgiver</title>
-                    <type>d:text</type>
-                </property>
-
-                <property name="rm:secretary">
-                    <title>Sekretær</title>
                     <type>d:text</type>
                 </property>
 
@@ -237,8 +207,6 @@
                     <title>locked for edit by</title>
                     <type>d:text</type>
                 </property>
-
-
 
             </properties>
 
