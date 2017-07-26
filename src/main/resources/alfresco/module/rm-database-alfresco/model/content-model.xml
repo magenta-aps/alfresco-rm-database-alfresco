@@ -161,7 +161,7 @@
                     <type>d:text</type>
                 </property>
 
-                <property name="rm:verdict">
+                <property name="rm:finalVerdictNote">
                     <title>Dom</title>
                     <type>d:text</type>
                 </property>
