@@ -12,6 +12,7 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 
 public class GetDownloadStatus extends AbstractWebScript {
 
@@ -23,14 +24,13 @@ public class GetDownloadStatus extends AbstractWebScript {
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
 
+        Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
         webScriptResponse.setContentEncoding("UTF-8");
-        Content c = webScriptRequest.getContent();
         Writer webScriptWriter = webScriptResponse.getWriter();
         JSONObject result;
 
         try {
-            JSONObject json = new JSONObject(c.getContent());
-            String nodeRefStr = JSONUtils.getString(json, "nodeRef");
+            String nodeRefStr = params.get("nodeRef");
             NodeRef nodeRef = new NodeRef(nodeRefStr);
 
             result = JSONUtils.getObject("downloadStatus", contentsBean.getDownloadStatus(nodeRef));
