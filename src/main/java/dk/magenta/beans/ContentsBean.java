@@ -143,7 +143,7 @@ public class ContentsBean {
     }
 
 
-    public NodeRef downloadContent(NodeRef[] requestedNodes) throws InterruptedException {
+    public NodeRef downloadContent(NodeRef[] requestedNodes) {
         NodeRef downloadNodeRef = downloadService.createDownload(requestedNodes, false);
 
         //Set mime type to zip. Default is octet-stream
@@ -151,10 +151,11 @@ public class ContentsBean {
         ContentData newCd = ContentData.setMimetype(cd, "application/zip");
         nodeService.setProperty(downloadNodeRef, ContentModel.PROP_CONTENT, newCd);
 
-        //Wait 1 sec for download to finish
-        Thread.sleep(1000);
-
         return downloadNodeRef;
+    }
+
+    public String getDownloadStatus(NodeRef downloadNodeRef) {
+        return downloadService.getDownloadStatus(downloadNodeRef).getStatus().toString();
     }
 
 }

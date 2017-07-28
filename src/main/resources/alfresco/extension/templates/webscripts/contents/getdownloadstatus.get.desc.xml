@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get download status</shortname>
+    <description>gets the download status</description>
+    <url>/contents/download/status</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
