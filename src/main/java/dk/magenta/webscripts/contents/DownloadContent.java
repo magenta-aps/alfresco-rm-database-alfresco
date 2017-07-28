@@ -12,8 +12,6 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DownloadContent extends AbstractWebScript {
 
@@ -28,13 +26,12 @@ public class DownloadContent extends AbstractWebScript {
         webScriptResponse.setContentEncoding("UTF-8");
         Content c = webScriptRequest.getContent();
         Writer webScriptWriter = webScriptResponse.getWriter();
-        JSONObject result = new JSONObject();
+        JSONObject result;
 
         try {
             JSONObject json = new JSONObject(c.getContent());
             JSONArray jsonNodeRefs = JSONUtils.getArray(json, "nodeRefs");
             NodeRef[] nodeRefs = new NodeRef[jsonNodeRefs.length()];
-
             for (int i=0; i<jsonNodeRefs.length(); i++) {
                 String nodeRefStr = jsonNodeRefs.getString(i);
                 NodeRef nodeRef = new NodeRef(nodeRefStr);

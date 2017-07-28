@@ -2,20 +2,20 @@ package dk.magenta.beans;
 
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.download.ActionServiceHelper;
-import org.alfresco.repo.download.DownloadStorage;
 import org.alfresco.service.cmr.download.DownloadService;
-import org.alfresco.service.cmr.repository.*;
+import org.alfresco.service.cmr.repository.ChildAssociationRef;
+import org.alfresco.service.cmr.repository.ContentData;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.service.transaction.TransactionService;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
 
 import java.util.*;
 
@@ -143,13 +143,16 @@ public class ContentsBean {
     }
 
 
-    public NodeRef downloadContent(NodeRef[] requestedNodes) {
-        NodeRef downloadNodeRef = downloadService.createDownload(requestedNodes, true);
+    public NodeRef downloadContent(NodeRef[] requestedNodes) throws InterruptedException {
+        NodeRef downloadNodeRef = downloadService.createDownload(requestedNodes, false);
 
         //Set mime type to zip. Default is octet-stream
         ContentData cd = (ContentData) nodeService.getProperty(downloadNodeRef, ContentModel.PROP_CONTENT);
         ContentData newCd = ContentData.setMimetype(cd, "application/zip");
         nodeService.setProperty(downloadNodeRef, ContentModel.PROP_CONTENT, newCd);
+
+        //Wait 1 sec for download to finish
+        Thread.sleep(1000);
 
         return downloadNodeRef;
     }
