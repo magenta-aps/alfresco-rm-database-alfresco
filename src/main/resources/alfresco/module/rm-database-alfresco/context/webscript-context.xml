@@ -21,6 +21,10 @@
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
+	<bean id="webscript.entries.entry.unlock.put" class="dk.magenta.webscripts.entries.UnlockEntry" parent="webscript">
+		<property name="entryBean" ref="entryBean"/>
+	</bean>
+
 	<bean id="webscript.propertyValues.propertyValues.get" class="dk.magenta.webscripts.propertyValues.GetPropertyValues" parent="webscript">
 		<property name="propertyValuesBean" ref="propertyValuesBean"/>
 	</bean>
