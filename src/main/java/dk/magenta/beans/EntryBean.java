@@ -4,6 +4,7 @@ import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.TypeUtils;
 import org.alfresco.model.ContentModel;
+import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -17,7 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -26,6 +26,7 @@ public class EntryBean {
     private NodeService nodeService;
     private SearchService searchService;
     private SiteService siteService;
+    private LockService lockService;
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
@@ -35,6 +36,9 @@ public class EntryBean {
     }
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
+    }
+    public void setLockService(LockService lockService) {
+        this.lockService = lockService;
     }
 
     public Set<NodeRef> getEntries (String query) throws JSONException {
@@ -115,8 +119,12 @@ public class EntryBean {
             nodeService.setProperty(entryRef, property.getKey(), property.getValue());
     }
 
-    public void deleteEntry (NodeRef entryRef) throws JSONException {
+    public void deleteEntry (NodeRef entryRef) {
         nodeService.deleteNode(entryRef);
+    }
+
+    public void unlockEntry (NodeRef entryRef) {
+        lockService.unlock(entryRef);
     }
 
     public JSONObject toJSON (NodeRef entryRef) throws JSONException {

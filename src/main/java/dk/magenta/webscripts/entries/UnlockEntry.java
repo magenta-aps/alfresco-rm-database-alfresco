@@ -1,27 +1,22 @@
-package dk.magenta.webscripts.propertyValues;
+package dk.magenta.webscripts.entries;
 
 import dk.magenta.beans.EntryBean;
-import dk.magenta.beans.PropertyValuesBean;
 import dk.magenta.utils.JSONUtils;
-import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.json.JSONObject;
-import org.json.simple.JSONArray;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
-public class GetPropertyValues extends AbstractWebScript {
+public class UnlockEntry extends AbstractWebScript {
 
-    private PropertyValuesBean propertyValuesBean;
-    public void setPropertyValuesBean(PropertyValuesBean propertyValuesBean) {
-        this.propertyValuesBean = propertyValuesBean;
+    private EntryBean entryBean;
+    public void setEntryBean(EntryBean entryBean) {
+        this.entryBean = entryBean;
     }
 
     @Override
@@ -33,8 +28,10 @@ public class GetPropertyValues extends AbstractWebScript {
         JSONObject result;
 
         try {
-            String siteShortName = params.get("siteShortName");
-            result = propertyValuesBean.getPropertyValues(siteShortName);
+            String uuid = params.get("uuid");
+            NodeRef nodeRef = entryBean.getNodeRef(uuid);
+            entryBean.unlockEntry(nodeRef);
+            result = JSONUtils.getSuccess();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,4 +42,4 @@ public class GetPropertyValues extends AbstractWebScript {
     }
 }
 
-// F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/propertyValues?siteShortName=retspsyk'
+// F.eks. curl -i -u admin:admin -X PUT 'http://localhost:8080/alfresco/s/entry/unlock?uuid=445644-4545-4564-8848-1849155'

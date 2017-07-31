@@ -28,10 +28,11 @@ public class UpdatePropertyValues extends AbstractWebScript {
 
         try {
             JSONObject json = new JSONObject(c.getContent());
+            String siteShortName = JSONUtils.getString(json, "siteShortName");
             String property = JSONUtils.getString(json, "property");
             JSONArray values = JSONUtils.getArray(json, "values");
 
-            propertyValuesBean.updatePropertyValues(property, values);
+            propertyValuesBean.updatePropertyValues(siteShortName, property, values);
             result = JSONUtils.getSuccess();
 
         } catch (Exception e) {
