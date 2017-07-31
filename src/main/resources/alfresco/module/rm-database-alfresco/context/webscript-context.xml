@@ -45,6 +45,10 @@
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
+	<bean id="webscript.database.role.get" class="dk.magenta.webscripts.database.GetRole" parent="webscript">
+		<property name="databaseBean" ref="databaseBean"/>
+	</bean>
+
 	<bean id="webscript.preferences.get"
 		  class="dk.magenta.webscripts.Preferences"
 		  parent="webscript">

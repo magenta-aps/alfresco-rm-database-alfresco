@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get the current user's database role</shortname>
+    <description>Get the current user's database role</description>
+    <url>/database/{siteShortName}/role</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

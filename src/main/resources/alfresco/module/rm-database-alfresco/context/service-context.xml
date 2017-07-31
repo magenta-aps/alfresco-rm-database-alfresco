@@ -26,4 +26,12 @@
         <property name="downloadService" ref="DownloadService"/>
     </bean>
 
+    <bean id="databaseBean" class="dk.magenta.beans.DatabaseBean">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="permissionService" ref="PermissionService"/>
+        <property name="siteService" ref="SiteService"/>
+        <property name="contentService" ref="ContentService"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+    </bean>
+
 </beans>

@@ -8,6 +8,7 @@ import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
@@ -43,6 +44,7 @@ public class DatabaseBean {
     private SiteService siteService;
     private NodeService nodeService;
     private ContentService contentService;
+    private AuthenticationService authenticationService;
 
     public void setPermissionService(PermissionService permissionService) {
         this.permissionService = permissionService;
@@ -58,6 +60,10 @@ public class DatabaseBean {
 
     public void setContentService(ContentService contentService) {
         this.contentService = contentService;
+    }
+
+    public void setAuthenticationService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
     public NodeRef createDatabase (String displayName, String description) {
@@ -239,5 +245,11 @@ public class DatabaseBean {
         } catch (IOException | TransformerException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public String getRole(String siteShortName) {
+        String currentUser = authenticationService.getCurrentUserName();
+        return siteService.getMembersRole(siteShortName, currentUser);
     }
 }
