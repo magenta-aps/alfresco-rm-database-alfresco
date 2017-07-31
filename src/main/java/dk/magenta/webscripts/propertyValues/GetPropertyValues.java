@@ -26,12 +26,15 @@ public class GetPropertyValues extends AbstractWebScript {
 
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
+        Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
+
         webScriptResponse.setContentEncoding("UTF-8");
         Writer webScriptWriter = webScriptResponse.getWriter();
         JSONObject result;
 
         try {
-            result = propertyValuesBean.getPropertyValues();
+            String siteShortName = params.get("siteShortName");
+            result = propertyValuesBean.getPropertyValues(siteShortName);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,4 +45,4 @@ public class GetPropertyValues extends AbstractWebScript {
     }
 }
 
-// F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/propertyValues'
+// F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/propertyValues?siteShortName=retspsyk'

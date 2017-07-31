@@ -12,9 +12,9 @@
     </bean>
 
     <bean id="propertyValuesBean" class="dk.magenta.beans.PropertyValuesBean">
-        <property name="repository" ref="repositoryHelper"/>
         <property name="fileFolderService" ref="FileFolderService"/>
         <property name="contentService" ref="ContentService"/>
+        <property name="siteService" ref="SiteService"/>
     </bean>
 
     <bean id="contentsBean" class="dk.magenta.beans.ContentsBean">

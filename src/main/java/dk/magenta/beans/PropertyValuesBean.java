@@ -4,7 +4,6 @@ package dk.magenta.beans;
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
-import org.alfresco.repo.model.Repository;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
@@ -12,6 +11,7 @@ import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.site.SiteService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,17 +21,11 @@ import java.util.*;
 
 public class PropertyValuesBean {
 
-    private Repository repository;
     private FileFolderService fileFolderService;
     private ContentService contentService;
+    private SiteService siteService;
 
-    private JSONObject propertyValues;
-    private NodeRef rootFolderRef;
-
-
-    public void setRepository(Repository repository) {
-        this.repository = repository;
-    }
+    private Map<String, JSONObject> propertyValuesMap = new HashMap<>();
 
     public void setFileFolderService(FileFolderService fileFolderService) {
         this.fileFolderService = fileFolderService;
@@ -41,44 +35,48 @@ public class PropertyValuesBean {
         this.contentService = contentService;
     }
 
-    public JSONObject getPropertyValues () {
-        return propertyValues;
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
     }
 
-    public void loadPropertiesFolder() throws FileNotFoundException {
-        NodeRef companyHome = repository.getCompanyHome();
-        List<String> pathElements = DatabaseModel.PROP_VALUES_PATH;
-
-        rootFolderRef = fileFolderService.resolveNamePath(companyHome, pathElements).getNodeRef();
+    public JSONObject getPropertyValues (String siteShortName) {
+        return propertyValuesMap.get(siteShortName);
     }
 
-    public void loadPropertyValues () throws JSONException, FileNotFoundException, IOException {
+    public void loadPropertyValues (String siteShortName) throws JSONException, FileNotFoundException, IOException {
 
-        List<FileInfo> fileInfos = fileFolderService.listFiles(rootFolderRef);
+        NodeRef rootFolderRef = siteService.getContainer(siteShortName, DatabaseModel.PROP_VALUES);
+        if(rootFolderRef != null) {
+            List<FileInfo> fileInfos = fileFolderService.listFiles(rootFolderRef);
 
-        JSONObject result = new JSONObject();
+            JSONObject result = new JSONObject();
 
-        for (FileInfo fileInfo : fileInfos) {
-            JSONArray values = new JSONArray();
-            NodeRef nodeRef = fileInfo.getNodeRef();
-            ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
-            InputStream s = contentReader.getContentInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(s));
+            for (FileInfo fileInfo : fileInfos) {
+                JSONArray values = new JSONArray();
+                NodeRef nodeRef = fileInfo.getNodeRef();
+                ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
+                InputStream s = contentReader.getContentInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(s));
 
-            String line;
-            while ((line = br.readLine()) != null)
-                values.put(line);
+                String line;
+                while ((line = br.readLine()) != null)
+                    values.put(line);
 
-            s.close();
-            br.close();
+                s.close();
+                br.close();
 
-            String propertyName = fileInfo.getName().replace(".txt", "");
-            result.put(propertyName, values);
+                String propertyName = fileInfo.getName().replace(".txt", "");
+                result.put(propertyName, values);
+            }
+            propertyValuesMap.put(siteShortName, result);
         }
-        propertyValues = result;
     }
 
-    public void updatePropertyValues (String property, JSONArray values) throws JSONException, FileNotFoundException {
+    public void updatePropertyValues (String siteShortName, String property, JSONArray values) throws JSONException, FileNotFoundException {
+
+        NodeRef rootFolderRef = siteService.getContainer(siteShortName, DatabaseModel.PROP_VALUES);
+
+        JSONObject propertyValues = propertyValuesMap.get(siteShortName);
         propertyValues.put(property, values);
 
         List<String> path = new ArrayList<>(Collections.singletonList(property + ".txt"));
