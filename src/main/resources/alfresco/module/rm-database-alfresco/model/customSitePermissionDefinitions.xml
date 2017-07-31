@@ -24,11 +24,11 @@
             <includePermissionGroup permissionGroup="ChangePermissions" type="sys:base" />
         </permissionGroup>
 
-        <permissionGroup name="SiteEntryManager" allowFullControl="false" expose="true">
+        <permissionGroup name="SiteEntryLockManager" allowFullControl="false" expose="true">
             <includePermissionGroup permissionGroup="Collaborator" type="cm:cmobject" />
         </permissionGroup>
 
-        <permissionGroup name="SiteListManager" allowFullControl="false" expose="true">
+        <permissionGroup name="SitePropertyValueManager" allowFullControl="false" expose="true">
             <includePermissionGroup permissionGroup="Collaborator" type="cm:cmobject" />
         </permissionGroup>
 
