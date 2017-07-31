@@ -2,6 +2,7 @@ package dk.magenta.webscripts.database;
 
 import dk.magenta.beans.DatabaseBean;
 import dk.magenta.utils.JSONUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -24,15 +25,15 @@ public class GetRole extends AbstractWebScript {
         Map<String, String> templateArgs = req.getServiceMatch().getTemplateVars();
         res.setContentEncoding("UTF-8");
         Writer webScriptWriter = res.getWriter();
-        JSONObject result;
+        JSONArray result = new JSONArray();
 
         try {
             String siteShortName = templateArgs.get("siteShortName");
-            result = JSONUtils.getObject("role", databaseBean.getRole(siteShortName));
+            result = JSONUtils.getArray(databaseBean.getRole(siteShortName));
 
         } catch (Exception e) {
             e.printStackTrace();
-            result = JSONUtils.getError(e);
+            result.put(JSONUtils.getError(e));
             res.setStatus(400);
         }
         JSONUtils.write(webScriptWriter, result);

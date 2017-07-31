@@ -106,6 +106,10 @@ public class JSONUtils {
         return json;
     }
 
+    public static JSONArray getArray(List<String> values) throws JSONException {
+        return new JSONArray(values);
+    }
+
     public static JSONObject getSuccess () { return getObject("status", "success"); }
 
     public static JSONObject getError (Exception e) {
