@@ -8,7 +8,7 @@ import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.security.AuthenticationService;
+import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
@@ -30,8 +30,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.alfresco.model.ContentModel.ASSOC_CONTAINS;
 import static org.alfresco.model.ContentModel.PROP_NAME;
@@ -44,7 +43,7 @@ public class DatabaseBean {
     private SiteService siteService;
     private NodeService nodeService;
     private ContentService contentService;
-    private AuthenticationService authenticationService;
+    private AuthorityService authorityService;
 
     public void setPermissionService(PermissionService permissionService) {
         this.permissionService = permissionService;
@@ -62,8 +61,8 @@ public class DatabaseBean {
         this.contentService = contentService;
     }
 
-    public void setAuthenticationService(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
+    public void setAuthorityService(AuthorityService authorityService) {
+        this.authorityService = authorityService;
     }
 
     public NodeRef createDatabase (String displayName, String description) {
@@ -248,8 +247,17 @@ public class DatabaseBean {
     }
 
 
-    public String getRole(String siteShortName) {
-        String currentUser = authenticationService.getCurrentUserName();
-        return siteService.getMembersRole(siteShortName, currentUser);
+    public List<String> getRole(String siteShortName) {
+        Set<String> userAuthorities = authorityService.getAuthorities();
+        List<String> roles = new ArrayList<>();
+        String authPrefix = "GROUP_site_" + siteShortName + "_";
+
+        for(String authority : userAuthorities) {
+            if(authority.startsWith(authPrefix)) {
+                String siteRole = authority.replace(authPrefix, "");
+                roles.add(siteRole);
+            }
+        }
+        return roles;
     }
 }

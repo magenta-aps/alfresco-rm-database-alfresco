@@ -31,7 +31,7 @@
         <property name="permissionService" ref="PermissionService"/>
         <property name="siteService" ref="SiteService"/>
         <property name="contentService" ref="ContentService"/>
-        <property name="authenticationService" ref="AuthenticationService"/>
+        <property name="authorityService" ref="AuthorityService"/>
     </bean>
 
 </beans>
