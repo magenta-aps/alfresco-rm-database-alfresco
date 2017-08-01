@@ -20,15 +20,16 @@ public class UnlockEntry extends AbstractWebScript {
     }
 
     @Override
-    public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
-        Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
+    public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
 
-        webScriptResponse.setContentEncoding("UTF-8");
-        Writer webScriptWriter = webScriptResponse.getWriter();
+        Map<String, String> templateArgs = req.getServiceMatch().getTemplateVars();
+
+        res.setContentEncoding("UTF-8");
+        Writer webScriptWriter = res.getWriter();
         JSONObject result;
 
         try {
-            String uuid = params.get("uuid");
+            String uuid = templateArgs.get("uuid");
             NodeRef nodeRef = entryBean.getNodeRef(uuid);
             entryBean.unlockEntry(nodeRef);
             result = JSONUtils.getSuccess();
@@ -36,7 +37,7 @@ public class UnlockEntry extends AbstractWebScript {
         } catch (Exception e) {
             e.printStackTrace();
             result = JSONUtils.getError(e);
-            webScriptResponse.setStatus(400);
+            res.setStatus(400);
         }
         JSONUtils.write(webScriptWriter, result);
     }
