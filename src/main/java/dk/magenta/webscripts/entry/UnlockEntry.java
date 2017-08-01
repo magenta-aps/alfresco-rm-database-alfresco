@@ -29,7 +29,7 @@ public class UnlockEntry extends AbstractWebScript {
 
         try {
             String uuid = params.get("uuid");
-            NodeRef nodeRef = entryBean.getEntry(uuid);
+            NodeRef nodeRef = entryBean.getNodeRef(uuid);
             entryBean.unlockEntry(nodeRef);
             result = JSONUtils.getSuccess();
 
