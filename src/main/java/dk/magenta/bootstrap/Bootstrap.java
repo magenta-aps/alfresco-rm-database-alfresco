@@ -20,10 +20,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Bootstrap extends AbstractLifecycleBean {
 
@@ -117,11 +114,6 @@ public class Bootstrap extends AbstractLifecycleBean {
 
 
 
-
-
-
-
-
         JSONObject result;
         result = propertyValuesBean.getPropertyValues(DatabaseModel.TYPE_PSYC_SITENAME);
         System.out.println("crappowitch");
@@ -141,7 +133,7 @@ public class Bootstrap extends AbstractLifecycleBean {
                 org.json.JSONArray noDeclarationReason = result.getJSONArray("noDeclarationReason");
 
 
-                jsonProperties.put("cprNumber", ethnicity.get(r.nextInt(5)));
+                jsonProperties.put("cprNumber", "200174" + (1000 + i));
                 jsonProperties.put("firstName", fornavne.get(r.nextInt(17)));
                 jsonProperties.put("lastName", efternavne.get(r.nextInt(8)));
                 jsonProperties.put("fullName", jsonProperties.get("firstName") + " " + jsonProperties.get("lastName"));
@@ -155,6 +147,7 @@ public class Bootstrap extends AbstractLifecycleBean {
                 jsonProperties.put("mainCharge", mainCharge.get(r.nextInt(65)));
                 jsonProperties.put("placement", placement.get(r.nextInt(13)));
                 jsonProperties.put("sanctionProposal", sanctionProposal.get(r.nextInt(15)));
+                jsonProperties.put("creationDate", "2011-05-20T00:00:00.000Z");
                 jsonProperties.put("observationDate", "2011-02-20T00:00:00.000Z");
                 jsonProperties.put("declarationDate", "2011-07-20T00:00:00.000Z");
                 jsonProperties.put("forensicDoctorCouncil", "");
