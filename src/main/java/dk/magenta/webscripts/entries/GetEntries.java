@@ -56,4 +56,4 @@ public class GetEntries extends AbstractWebScript {
     }
 }
 
-// F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/entry?type=forensicPsychiatryDeclaration&entryValue=33'
+// F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/entry?type=forensicPsychiatryDeclaration&entryValue=658'

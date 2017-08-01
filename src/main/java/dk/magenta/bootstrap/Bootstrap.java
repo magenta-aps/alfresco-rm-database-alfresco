@@ -20,6 +20,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 import java.util.Random;
@@ -74,7 +75,48 @@ public class Bootstrap extends AbstractLifecycleBean {
 
 
         Random r = new Random();
-//
+
+
+
+        ArrayList fornavne = new ArrayList();
+        fornavne.add("hulda");
+        fornavne.add("wini");
+        fornavne.add("grehte");
+        fornavne.add("husissellda");
+        fornavne.add("ulla-pia");
+        fornavne.add("dolly");
+        fornavne.add("ingrid");
+        fornavne.add("Lykke");
+        fornavne.add("majbrit");
+
+        fornavne.add("Gunnar");
+        fornavne.add("Kurt");
+        fornavne.add("Finn");
+        fornavne.add("Dennis");
+        fornavne.add("Dan");
+        fornavne.add("Tage");
+        fornavne.add("Ronny");
+        fornavne.add("Tonny");
+        fornavne.add("Brian");
+
+        ArrayList efternavne = new ArrayList();
+        efternavne.add("Eskildsen");
+        efternavne.add("Fischer");
+        efternavne.add("Eskildsen");
+        efternavne.add("Frost");
+        efternavne.add("Hansen");
+        efternavne.add("Hedegård");
+        efternavne.add("Eskildsen");
+        efternavne.add("Hermansen");
+        efternavne.add("Hermansen");
+        efternavne.add("Hermansen");
+        efternavne.add("Hermansen");
+        efternavne.add("Holm");
+
+
+
+
+
 
 
 
@@ -83,15 +125,13 @@ public class Bootstrap extends AbstractLifecycleBean {
         JSONObject result;
         result = propertyValuesBean.getPropertyValues(DatabaseModel.TYPE_PSYC_DEC_SITE);
         System.out.println("crappowitch");
-//
-//
+
         for (int i = 1; i <= 1000; i++) {
-//
+
             try {
 
                 org.json.JSONArray ethnicity = result.getJSONArray("ethnicity");
                 org.json.JSONArray referingAgency = result.getJSONArray("referingAgency");
-
                 org.json.JSONArray mainCharge = result.getJSONArray("mainCharge");
                 org.json.JSONArray placement = result.getJSONArray("placement");
                 org.json.JSONArray sanctionProposal = result.getJSONArray("sanctionProposal");
@@ -102,29 +142,28 @@ public class Bootstrap extends AbstractLifecycleBean {
 
 
                 jsonProperties.put("cprNumber", ethnicity.get(r.nextInt(5)));
-                jsonProperties.put("firstName", ethnicity.get(2));
-                jsonProperties.put("lastName", ethnicity.get(2));
-                jsonProperties.put("fullName", ethnicity.get(2));
-                jsonProperties.put("address", ethnicity.get(2));
-                jsonProperties.put("postbox", "8000");
-                jsonProperties.put("city", ethnicity.get(2));
+                jsonProperties.put("firstName", fornavne.get(r.nextInt(17)));
+                jsonProperties.put("lastName", efternavne.get(r.nextInt(8)));
+                jsonProperties.put("fullName", jsonProperties.get("firstName") + " " + jsonProperties.get("lastName"));
+                jsonProperties.put("address", "Singularisvej 12");
+                jsonProperties.put("postbox", "2700");
+                jsonProperties.put("city", "Assens");
                 jsonProperties.put("etnicity", ethnicity.get(r.nextInt(5)));
                 jsonProperties.put("motherEthnicity", ethnicity.get(r.nextInt(5)));
                 jsonProperties.put("fatherEthnicity", ethnicity.get(r.nextInt(5)));
-                jsonProperties.put("referingAgency", referingAgency.get(5));
-                jsonProperties.put("mainCharge", mainCharge.get(100));
-                jsonProperties.put("placement", placement.get(2));
-                jsonProperties.put("sanctionProposal", ethnicity.get(2));
+                jsonProperties.put("referingAgency", referingAgency.get(r.nextInt(5)));
+                jsonProperties.put("mainCharge", mainCharge.get(r.nextInt(65)));
+                jsonProperties.put("placement", placement.get(r.nextInt(13)));
+                jsonProperties.put("sanctionProposal", sanctionProposal.get(r.nextInt(15)));
                 jsonProperties.put("observationDate", "2011-02-20T00:00:00.000Z");
                 jsonProperties.put("declarationDate", "2011-07-20T00:00:00.000Z");
-                jsonProperties.put("closedWithoutDeclarationSentTo", ethnicity.get(2));
-                jsonProperties.put("forensicDoctorCouncil", ethnicity.get(2));
-                jsonProperties.put("forensicDoctorCouncilText", ethnicity.get(2));
-                jsonProperties.put("finalVerdict", ethnicity.get(2));
-                jsonProperties.put("doctor", ethnicity.get(2));
-                jsonProperties.put("psychologist", ethnicity.get(2));
-                jsonProperties.put("mainDiagnosis", ethnicity.get(2));
-                jsonProperties.put("biDiagnoses", ethnicity.get(2));
+                jsonProperties.put("forensicDoctorCouncil", "");
+                jsonProperties.put("forensicDoctorCouncilText", "");
+                jsonProperties.put("finalVerdict", finalVerdict.get(r.nextInt(15)));
+                jsonProperties.put("doctor", "Dr. No");
+                jsonProperties.put("psychologist", "Dr. Yes");
+                jsonProperties.put("mainDiagnosis", diagnosis.get(r.nextInt(1000)));
+                jsonProperties.put("biDiagnoses", "[\"" + diagnosis.get(r.nextInt(1000)) + "\"]");
                 System.out.println(jsonProperties);
 
                 Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
