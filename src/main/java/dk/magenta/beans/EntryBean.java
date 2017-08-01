@@ -116,8 +116,18 @@ public class EntryBean {
         nodeService.deleteNode(entryRef);
     }
 
+    //TODO: Make this generic. Atm this only work with forensicDeclarations
     public void unlockEntry (NodeRef entryRef) {
         lockService.unlock(entryRef);
+        String uri = DatabaseModel.CONTENT_MODEL_URI;
+        QName closed = QName.createQName(uri, "closed");
+        QName closedWithoutDeclaration = QName.createQName(uri, "closedWithoutDeclaration");
+        QName closedWithoutDeclarationReason = QName.createQName(uri, "closedWithoutDeclarationReason");
+        QName closedWithoutDeclarationSentTo = QName.createQName(uri, "closedWithoutDeclarationSentTo");
+        nodeService.setProperty(entryRef, closed, false);
+        nodeService.setProperty(entryRef, closedWithoutDeclaration, null);
+        nodeService.setProperty(entryRef, closedWithoutDeclarationReason, null);
+        nodeService.setProperty(entryRef, closedWithoutDeclarationSentTo, null);
     }
 
     public JSONObject toJSON (NodeRef entryRef) throws JSONException {
