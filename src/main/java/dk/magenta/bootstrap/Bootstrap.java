@@ -58,7 +58,7 @@ public class Bootstrap extends AbstractLifecycleBean {
             e.printStackTrace();
         }
 
-        this.createDeclaration();
+        // this.createDeclarations();
 
     }
 
@@ -67,7 +67,7 @@ public class Bootstrap extends AbstractLifecycleBean {
         // do nothing
     }
 
-    private  void createDeclaration() {
+    private  void createDeclarations() {
 
 
 //
