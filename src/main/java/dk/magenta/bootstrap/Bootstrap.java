@@ -116,7 +116,6 @@ public class Bootstrap extends AbstractLifecycleBean {
 
         JSONObject result;
         result = propertyValuesBean.getPropertyValues(DatabaseModel.TYPE_PSYC_SITENAME);
-        System.out.println("crappowitch");
 
         for (int i = 1; i <= 100; i++) {
 
