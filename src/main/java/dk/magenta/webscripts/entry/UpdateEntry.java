@@ -38,7 +38,7 @@ public class UpdateEntry extends AbstractWebScript {
             Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
 
             String uuid = templateArgs.get("uuid");
-            NodeRef nodeRef = entryBean.getEntry(uuid);
+            NodeRef nodeRef = entryBean.getNodeRef(uuid);
             entryBean.updateEntry(nodeRef, properties);
             result = entryBean.toJSON(nodeRef);
 
