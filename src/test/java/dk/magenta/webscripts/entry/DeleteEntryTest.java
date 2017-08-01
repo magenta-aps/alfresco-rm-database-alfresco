@@ -1,4 +1,4 @@
-package dk.magenta.webscripts.entries;
+package dk.magenta.webscripts.entry;
 
 import dk.magenta.TestUtils;
 import dk.magenta.model.DatabaseModel;

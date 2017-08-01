@@ -1,9 +1,8 @@
-package dk.magenta.webscripts.entries;
+package dk.magenta.webscripts.entry;
 
 import dk.magenta.beans.EntryBean;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONObject;
 import org.springframework.extensions.surf.util.Content;
@@ -24,12 +23,13 @@ public class UpdateEntry extends AbstractWebScript {
     }
 
     @Override
-    public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
-        Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
+    public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
 
-        webScriptResponse.setContentEncoding("UTF-8");
-        Content c = webScriptRequest.getContent();
-        Writer webScriptWriter = webScriptResponse.getWriter();
+        Map<String, String> templateArgs = req.getServiceMatch().getTemplateVars();
+
+        res.setContentEncoding("UTF-8");
+        Content c = req.getContent();
+        Writer webScriptWriter = res.getWriter();
         JSONObject result;
 
         try {
@@ -37,18 +37,18 @@ public class UpdateEntry extends AbstractWebScript {
             JSONObject jsonProperties = JSONUtils.getObject(json, "properties");
             Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
 
-            String uuid = params.get("uuid");
-            NodeRef nodeRef = entryBean.getNodeRef(uuid);
+            String uuid = templateArgs.get("uuid");
+            NodeRef nodeRef = entryBean.getEntry(uuid);
             entryBean.updateEntry(nodeRef, properties);
             result = entryBean.toJSON(nodeRef);
 
         } catch (Exception e) {
             e.printStackTrace();
             result = JSONUtils.getError(e);
-            webScriptResponse.setStatus(400);
+            res.setStatus(400);
         }
         JSONUtils.write(webScriptWriter, result);
     }
 }
 
-// F.eks curl -i -u admin:admin -X PUT -H "Content-Type: application/json" -d '{ "properties" : {"motherEthnicity":"Svensk","doctor1":"Doctor New Name","verdictDate":"2018-08-03T00:00:00.000Z","isClosed":"true","petitionDate":"2018-07-20T00:00:00.000Z","endedWithoutDeclaration":"true"} }' 'http://localhost:8080/alfresco/s/entry?uuid=445644-4545-4564-8848-1849155'
+// F.eks curl -i -u admin:admin -X PUT -H "Content-Type: application/json" -d '{ "properties" : {"motherEthnicity":"Svensk","doctor1":"Doctor New Name","verdictDate":"2018-08-03T00:00:00.000Z","isClosed":"true","petitionDate":"2018-07-20T00:00:00.000Z","endedWithoutDeclaration":"true"} }' 'http://localhost:8080/alfresco/s/entry/445644-4545-4564-8848-1849155'

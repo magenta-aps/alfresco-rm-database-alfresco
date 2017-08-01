@@ -1,7 +1,7 @@
 <webscript>
     <shortname>Get Entries</shortname>
     <description>Get information about entries that match the query</description>
-    <url>/entry</url>
+    <url>/database/{siteShortName}/entry/{entryValue}</url>
     <authentication>user</authentication>
     <format default="json"/>
 </webscript>

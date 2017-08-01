@@ -4,10 +4,7 @@ import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.site.SiteServiceException;
-import org.alfresco.service.cmr.repository.ContentService;
-import org.alfresco.service.cmr.repository.ContentWriter;
-import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.site.SiteInfo;
@@ -70,6 +67,11 @@ public class DatabaseBean {
         String shortName = displayName.replaceAll(" ", "-");
         NodeRef nodeRef = createSite(shortName, displayName, description);
 
+        // Set rm:database as type for site
+        QName typeQName = QName.createQName(DatabaseModel.RM_MODEL_URI, DatabaseModel.DATABASE);
+        nodeService.setType(nodeRef, typeQName);
+
+        //Setup Property Values
         NodeRef propertyValues = siteService.getContainer(shortName, DatabaseModel.PROP_VALUES);
         String propertyValueManager = "GROUP_site_" + shortName + "_SitePropertyValueManager";
         String siteManager = "GROUP_site_" + shortName + "_SiteManager";
@@ -77,9 +79,12 @@ public class DatabaseBean {
         permissionService.setPermission(propertyValues, propertyValueManager, PermissionService.EDITOR, true);
         permissionService.setPermission(propertyValues, siteManager, PermissionService.EDITOR, true);
 
+        //Setup Document Library
         NodeRef documentLibrary = siteService.getContainer(shortName, SiteService.DOCUMENT_LIBRARY);
         String entryLockManager = "GROUP_site_" + shortName + "_SiteEntryLockManager";
         permissionService.setPermission(documentLibrary, entryLockManager, PermissionService.UNLOCK, true);
+        Map<QName,Serializable> props = new HashMap<>();
+        nodeService.addAspect(documentLibrary, ContentModel.ASPECT_COUNTABLE, props);
 
         return nodeRef;
     }
@@ -259,5 +264,16 @@ public class DatabaseBean {
             }
         }
         return roles;
+    }
+
+    public String getType(String siteShortName) {
+        SiteInfo site = siteService.getSite(siteShortName);
+        NodeRef nodeRef = site.getNodeRef();
+        Serializable databaseType = nodeService.getProperty(nodeRef, DatabaseModel.PROP_DATABASE_TYPE);
+
+        if(databaseType == null)
+            throw new IllegalArgumentException("The site '" + siteShortName + "' is not a database.");
+
+        return databaseType.toString();
     }
 }

@@ -1,6 +1,5 @@
-package dk.magenta.webscripts.entries;
+package dk.magenta.webscripts.entry;
 
-import com.hazelcast.core.MapEntry;
 import dk.magenta.TestUtils;
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.rad.test.AbstractAlfrescoIT;
