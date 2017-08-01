@@ -30,7 +30,7 @@ public class DeleteEntry extends AbstractWebScript {
 
         try {
             String uuid = templateArgs.get("uuid");
-            NodeRef nodeRef = entryBean.getEntry(uuid);
+            NodeRef nodeRef = entryBean.getNodeRef(uuid);
             entryBean.deleteEntry(nodeRef);
             result = JSONUtils.getSuccess();
 

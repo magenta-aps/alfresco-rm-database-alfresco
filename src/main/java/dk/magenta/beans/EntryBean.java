@@ -125,6 +125,12 @@ public class EntryBean {
         return JSONUtils.getObject(properties);
     }
 
+    public NodeRef getNodeRef(String uuid)
+    {
+        String nodeRefStr = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE + "/" + uuid;
+        return new NodeRef(nodeRefStr);
+    }
+
     public NodeRef getEntry(String query)
     {
         ResultSet resultSet = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, "lucene", query);
