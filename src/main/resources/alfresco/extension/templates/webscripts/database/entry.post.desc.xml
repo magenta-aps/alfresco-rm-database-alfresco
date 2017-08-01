@@ -1,7 +1,7 @@
 <webscript>
     <shortname>Add Entry</shortname>
     <description>Add entry</description>
-    <url>/entry</url>
+    <url>/database/{siteShortName}/entry</url>
     <authentication>user</authentication>
     <format default="json"/>
 </webscript>

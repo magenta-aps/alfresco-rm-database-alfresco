@@ -79,15 +79,15 @@ public class Bootstrap extends AbstractLifecycleBean {
 
 
         ArrayList fornavne = new ArrayList();
-        fornavne.add("hulda");
-        fornavne.add("wini");
-        fornavne.add("grehte");
-        fornavne.add("husissellda");
-        fornavne.add("ulla-pia");
-        fornavne.add("dolly");
-        fornavne.add("ingrid");
+        fornavne.add("Hulda");
+        fornavne.add("Wini");
+        fornavne.add("Grehte");
+        fornavne.add("Husissellda");
+        fornavne.add("Ulla-pia");
+        fornavne.add("Dolly");
+        fornavne.add("Ingrid");
         fornavne.add("Lykke");
-        fornavne.add("majbrit");
+        fornavne.add("Majbrit");
 
         fornavne.add("Gunnar");
         fornavne.add("Kurt");
@@ -123,10 +123,10 @@ public class Bootstrap extends AbstractLifecycleBean {
 
 
         JSONObject result;
-        result = propertyValuesBean.getPropertyValues(DatabaseModel.TYPE_PSYC_DEC_SITE);
+        result = propertyValuesBean.getPropertyValues(DatabaseModel.TYPE_PSYC_SITENAME);
         System.out.println("crappowitch");
 
-        for (int i = 1; i <= 1000; i++) {
+        for (int i = 1; i <= 100; i++) {
 
             try {
 
@@ -167,7 +167,7 @@ public class Bootstrap extends AbstractLifecycleBean {
                 System.out.println(jsonProperties);
 
                 Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
-                NodeRef nodeRef = entryBean.addEntry(DatabaseModel.TYPE_PSYC_DEC_SITE, DatabaseModel.TYPE_PSYC_DEC, properties);
+                NodeRef nodeRef = entryBean.addEntry(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.TYPE_PSYC_DEC, properties);
 
 
             } catch (JSONException e) {

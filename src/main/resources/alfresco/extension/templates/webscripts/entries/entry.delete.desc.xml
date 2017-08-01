@@ -1,7 +1,7 @@
 <webscript>
     <shortname>Delete Entry</shortname>
     <description>Delete entry</description>
-    <url>/entry</url>
+    <url>/entry/{uuid}</url>
     <authentication>user</authentication>
     <format default="json"/>
 </webscript>

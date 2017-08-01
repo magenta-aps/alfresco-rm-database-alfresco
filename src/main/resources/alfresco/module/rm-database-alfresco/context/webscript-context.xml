@@ -5,23 +5,32 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="webscript.entries.entry.post" class="dk.magenta.webscripts.entries.AddEntry" parent="webscript">
+	<bean id="webscript.database.entries.get" class="dk.magenta.webscripts.database.GetEntries" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
-	<bean id="webscript.entries.entry.get" class="dk.magenta.webscripts.entries.GetEntries" parent="webscript">
+	<bean id="webscript.database.role.get" class="dk.magenta.webscripts.database.GetRole" parent="webscript">
+		<property name="databaseBean" ref="databaseBean"/>
+	</bean>
+
+	<bean id="webscript.database.entry.post" class="dk.magenta.webscripts.database.AddEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
-	<bean id="webscript.entries.entry.put" class="dk.magenta.webscripts.entries.UpdateEntry" parent="webscript">
+	<bean id="webscript.entries.entry.get" class="dk.magenta.webscripts.entry.GetEntry" parent="webscript">
+		<property name="entryBean" ref="entryBean"/>
+		<property name="databaseBean" ref="databaseBean"/>
+	</bean>
+
+	<bean id="webscript.entries.entry.put" class="dk.magenta.webscripts.entry.UpdateEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
-	<bean id="webscript.entries.entry.delete" class="dk.magenta.webscripts.entries.DeleteEntry" parent="webscript">
+	<bean id="webscript.entries.entry.delete" class="dk.magenta.webscripts.entry.DeleteEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
-	<bean id="webscript.entries.entry.unlock.put" class="dk.magenta.webscripts.entries.UnlockEntry" parent="webscript">
+	<bean id="webscript.entries.entry.unlock.put" class="dk.magenta.webscripts.entry.UnlockEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
@@ -45,10 +54,6 @@
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
-	<bean id="webscript.database.role.get" class="dk.magenta.webscripts.database.GetRole" parent="webscript">
-		<property name="databaseBean" ref="databaseBean"/>
-	</bean>
-
 	<bean id="webscript.preferences.get"
 		  class="dk.magenta.webscripts.Preferences"
 		  parent="webscript">
@@ -56,4 +61,3 @@
 	</bean>
 
 </beans>
-<!--curl -i -u admin:admin -X POST -H "Content-Type: application/json" -d '{"shortName":"retspsyk", "title":"retspsyk", "visibility":"PUBLIC"}' localhost:8080/alfresco/service/api/sites-->

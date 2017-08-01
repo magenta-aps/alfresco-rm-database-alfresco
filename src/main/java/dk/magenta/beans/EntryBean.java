@@ -24,34 +24,27 @@ import java.util.*;
 public class EntryBean {
 
     private NodeService nodeService;
-    private SearchService searchService;
     private SiteService siteService;
+    private SearchService searchService;
     private LockService lockService;
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
     }
-    public void setSearchService(SearchService searchService) {
-        this.searchService = searchService;
-    }
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
+    }
+    public void setSearchService(SearchService searchService) {
+        this.searchService = searchService;
     }
     public void setLockService(LockService lockService) {
         this.lockService = lockService;
     }
 
-    public Set<NodeRef> getEntries (String query) throws JSONException {
+    public Set<NodeRef> getEntries (String siteShortName) throws JSONException {
 
-        ResultSet resultSet = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, "lucene", query);
-        Iterator<ResultSetRow> iterator = resultSet.iterator();
-
-        Set<NodeRef> nodeRefs = new HashSet<>();
-        while (iterator.hasNext()) {
-            ResultSetRow result = iterator.next();
-            nodeRefs.add(result.getNodeRef());
-        }
-        return nodeRefs;
+        NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
+        return getEntries(docLibRef, 3);
     }
 
     public NodeRef addEntry (String siteShortName, String type, Map<QName, Serializable> properties) throws JSONException {
@@ -132,10 +125,34 @@ public class EntryBean {
         return JSONUtils.getObject(properties);
     }
 
-    public NodeRef getNodeRef(String uuid)
+    public NodeRef getEntry(String query)
     {
-        String nodeRefStr = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE + "/" + uuid;
-        return new NodeRef(nodeRefStr);
+        ResultSet resultSet = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, "lucene", query);
+        Iterator<ResultSetRow> iterator = resultSet.iterator();
+
+        if(iterator.hasNext()) {
+            ResultSetRow result = iterator.next();
+            return result.getNodeRef();
+        }
+        else return null;
+    }
+
+    private Set<NodeRef> getEntries(NodeRef parentNodeRef, int levels) {
+        List<ChildAssociationRef> childrenRefs = nodeService.getChildAssocs(parentNodeRef);
+        Set<NodeRef> result = new HashSet<>();
+
+        for (ChildAssociationRef childRef : childrenRefs) {
+            NodeRef nodeRef = childRef.getChildRef();
+            if(levels == 0)
+                result.add(nodeRef);
+            else {
+                levels--;
+                Set<NodeRef> entries = getEntries(nodeRef, levels);
+                if (entries != null)
+                    result.addAll(entries);
+            }
+        }
+        return result;
     }
 }
 

@@ -7,8 +7,8 @@
 
     <bean id="entryBean" class="dk.magenta.beans.EntryBean">
         <property name="nodeService" ref="NodeService"/>
-        <property name="searchService" ref="SearchService"/>
         <property name="siteService" ref="SiteService"/>
+        <property name="searchService" ref="SearchService"/>
         <property name="lockService" ref="LockService"/>
     </bean>
 

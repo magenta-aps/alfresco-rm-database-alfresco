@@ -11,6 +11,8 @@
         <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
         <!-- Import Alfresco Content Domain Model Definitions -->
         <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+        <!-- Import Alfresco Site Domain Model Definitions -->
+        <import uri="http://www.alfresco.org/model/site/1.0" prefix="st"/>
     </imports>
 
     <!-- Custom namespace for Region Midt -->
@@ -23,6 +25,28 @@
     <!-- Types -->
 
     <types>
+
+        <type name="rm:database">
+            <title>Region Midt Database</title>
+            <parent>st:site</parent>
+            <properties>
+                <property name="rm:databaseType">
+                    <title>Database Type</title>
+                    <type>d:text</type>
+                    <constraints>
+                        <constraint name='rm:databaseTyper' type='LIST'>
+                            <parameter name='allowedValues'>
+                                <list>
+                                    <value>forensicPsychiatryDeclaration</value>
+                                </list>
+                            </parameter>
+                            <parameter name='caseSensitive'><value>true</value></parameter>
+                        </constraint>
+                    </constraints>
+                </property>
+            </properties>
+        </type>
+
         <type name="rm:forensicPsychiatryDeclaration">
             <title>Retspsykiatrisk erklæring</title>
             <parent>cm:folder</parent>
@@ -209,21 +233,6 @@
                 </property>
 
             </properties>
-
-            <mandatory-aspects>
-                <aspect>cm:countable</aspect>
-            </mandatory-aspects>
-
-        </type>
-
-        <type name="rm:database">
-            <title>Database</title>
-            <parent>cm:folder</parent>
-
-            <mandatory-aspects>
-                <aspect>cm:countable</aspect>
-            </mandatory-aspects>
-
         </type>
     </types>
 

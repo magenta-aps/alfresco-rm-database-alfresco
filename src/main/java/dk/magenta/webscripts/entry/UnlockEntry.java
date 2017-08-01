@@ -1,9 +1,8 @@
-package dk.magenta.webscripts.entries;
+package dk.magenta.webscripts.entry;
 
 import dk.magenta.beans.EntryBean;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.StoreRef;
 import org.json.JSONObject;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-public class DeleteEntry extends AbstractWebScript {
+public class UnlockEntry extends AbstractWebScript {
 
     private EntryBean entryBean;
     public void setEntryBean(EntryBean entryBean) {
@@ -30,8 +29,8 @@ public class DeleteEntry extends AbstractWebScript {
 
         try {
             String uuid = params.get("uuid");
-            NodeRef nodeRef = entryBean.getNodeRef(uuid);
-            entryBean.deleteEntry(nodeRef);
+            NodeRef nodeRef = entryBean.getEntry(uuid);
+            entryBean.unlockEntry(nodeRef);
             result = JSONUtils.getSuccess();
 
         } catch (Exception e) {
@@ -43,4 +42,4 @@ public class DeleteEntry extends AbstractWebScript {
     }
 }
 
-// F.eks. curl -i -u admin:admin -X DELETE 'http://localhost:8080/alfresco/s/entry?uuid=445644-4545-4564-8848-1849155'
+// F.eks. curl -i -u admin:admin -X PUT 'http://localhost:8080/alfresco/s/entry/445644-4545-4564-8848-1849155/unlock'

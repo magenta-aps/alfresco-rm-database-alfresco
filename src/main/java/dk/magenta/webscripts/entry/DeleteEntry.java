@@ -1,4 +1,4 @@
-package dk.magenta.webscripts.entries;
+package dk.magenta.webscripts.entry;
 
 import dk.magenta.beans.EntryBean;
 import dk.magenta.utils.JSONUtils;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-public class UnlockEntry extends AbstractWebScript {
+public class DeleteEntry extends AbstractWebScript {
 
     private EntryBean entryBean;
     public void setEntryBean(EntryBean entryBean) {
@@ -20,26 +20,27 @@ public class UnlockEntry extends AbstractWebScript {
     }
 
     @Override
-    public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
-        Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
+    public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
 
-        webScriptResponse.setContentEncoding("UTF-8");
-        Writer webScriptWriter = webScriptResponse.getWriter();
+        Map<String, String> templateArgs = req.getServiceMatch().getTemplateVars();
+
+        res.setContentEncoding("UTF-8");
+        Writer webScriptWriter = res.getWriter();
         JSONObject result;
 
         try {
-            String uuid = params.get("uuid");
-            NodeRef nodeRef = entryBean.getNodeRef(uuid);
-            entryBean.unlockEntry(nodeRef);
+            String uuid = templateArgs.get("uuid");
+            NodeRef nodeRef = entryBean.getEntry(uuid);
+            entryBean.deleteEntry(nodeRef);
             result = JSONUtils.getSuccess();
 
         } catch (Exception e) {
             e.printStackTrace();
             result = JSONUtils.getError(e);
-            webScriptResponse.setStatus(400);
+            res.setStatus(400);
         }
         JSONUtils.write(webScriptWriter, result);
     }
 }
 
-// F.eks. curl -i -u admin:admin -X PUT 'http://localhost:8080/alfresco/s/entry/unlock?uuid=445644-4545-4564-8848-1849155'
+// F.eks. curl -i -u admin:admin -X DELETE 'http://localhost:8080/alfresco/s/entry/445644-4545-4564-8848-1849155'
