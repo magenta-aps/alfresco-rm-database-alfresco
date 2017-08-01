@@ -119,7 +119,7 @@ public class EntryBean {
     //TODO: Make this generic. Atm this only work with forensicDeclarations
     public void unlockEntry (NodeRef entryRef) {
         lockService.unlock(entryRef);
-        String uri = DatabaseModel.CONTENT_MODEL_URI;
+        String uri = DatabaseModel.RM_MODEL_URI;
         QName closed = QName.createQName(uri, "closed");
         QName closedWithoutDeclaration = QName.createQName(uri, "closedWithoutDeclaration");
         QName closedWithoutDeclarationReason = QName.createQName(uri, "closedWithoutDeclarationReason");
