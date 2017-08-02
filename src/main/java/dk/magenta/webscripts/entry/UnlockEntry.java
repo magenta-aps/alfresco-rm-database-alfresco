@@ -32,7 +32,7 @@ public class UnlockEntry extends AbstractWebScript {
             String uuid = templateArgs.get("uuid");
             NodeRef nodeRef = entryBean.getNodeRef(uuid);
             entryBean.unlockEntry(nodeRef);
-            result = JSONUtils.getSuccess();
+            result = entryBean.toJSON(nodeRef);
 
         } catch (Exception e) {
             e.printStackTrace();
