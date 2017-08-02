@@ -4,7 +4,9 @@ import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.TypeUtils;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.lock.LockService;
+import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -110,10 +112,21 @@ public class EntryBean {
     public void updateEntry (NodeRef entryRef, Map<QName, Serializable> properties) throws JSONException {
         for (Map.Entry<QName, Serializable> property : properties.entrySet())
             nodeService.setProperty(entryRef, property.getKey(), property.getValue());
+
+        String uri = DatabaseModel.RM_MODEL_URI;
+        QName closed = QName.createQName(uri, "closed");
+        if(nodeService.getProperty(entryRef, closed).equals(true)) {
+            AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+            lockEntry(entryRef);
+        }
     }
 
     public void deleteEntry (NodeRef entryRef) {
         nodeService.deleteNode(entryRef);
+    }
+
+    private void lockEntry (NodeRef entryRef) {
+        lockService.lock(entryRef, LockType.READ_ONLY_LOCK);
     }
 
     //TODO: Make this generic. Atm this only work with forensicDeclarations
