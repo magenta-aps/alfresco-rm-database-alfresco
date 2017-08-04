@@ -21,8 +21,34 @@ import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Bootstrap extends AbstractLifecycleBean {
+
+    public class RandomDateOfBirth {
+
+       public Date getRandomDate() {
+
+            GregorianCalendar gc = new GregorianCalendar();
+
+            int year = randBetween(2015, 2017);
+
+            gc.set(gc.YEAR, year);
+
+            int dayOfYear = randBetween(1, gc.getActualMaximum(gc.DAY_OF_YEAR));
+
+            gc.set(gc.DAY_OF_YEAR, dayOfYear);
+
+            System.out.println(gc.get(gc.YEAR) + "-" + (gc.get(gc.MONTH) + 1) + "-" + gc.get(gc.DAY_OF_MONTH));
+
+           return new Date(gc.getTimeInMillis());
+
+        }
+
+        private int randBetween(int start, int end) {
+            return start + (int)Math.round(Math.random() * (end - start));
+        }
+    }
 
     private PropertyValuesBean propertyValuesBean;
 
@@ -55,7 +81,7 @@ public class Bootstrap extends AbstractLifecycleBean {
             e.printStackTrace();
         }
 
-//         this.createDeclarations();
+         this.createDeclarations();
 //
     }
 
@@ -64,7 +90,7 @@ public class Bootstrap extends AbstractLifecycleBean {
         // do nothing
     }
 
-    private  void createDeclarations() {
+    //private  void createDeclarations() {
 
 
 //
@@ -117,7 +143,8 @@ public class Bootstrap extends AbstractLifecycleBean {
         JSONObject result;
         result = propertyValuesBean.getPropertyValues(DatabaseModel.TYPE_PSYC_SITENAME);
 
-        for (int i = 1; i <= 100; i++) {
+
+        for (int i = 1; i <= 1000; i++) {
 
             try {
 
@@ -146,9 +173,9 @@ public class Bootstrap extends AbstractLifecycleBean {
                 jsonProperties.put("mainCharge", mainCharge.get(r.nextInt(65)));
                 jsonProperties.put("placement", placement.get(r.nextInt(13)));
                 jsonProperties.put("sanctionProposal", sanctionProposal.get(r.nextInt(15)));
-                jsonProperties.put("creationDate", "2011-05-20T00:00:00.000Z");
-                jsonProperties.put("observationDate", "2011-02-20T00:00:00.000Z");
-                jsonProperties.put("declarationDate", "2011-07-20T00:00:00.000Z");
+                jsonProperties.put("creationDate", "2017-05-0" + (r.nextInt(4)+1) + "T00:00:00.000Z");
+                jsonProperties.put("observationDate", "2017-08-0" + (r.nextInt(4)+1) + "T00:00:00.000Z");
+                jsonProperties.put("declarationDate", "2017-09-0"  + (r.nextInt(4)+1) + "T00:00:00.000Z");
                 jsonProperties.put("forensicDoctorCouncil", "");
                 jsonProperties.put("forensicDoctorCouncilText", "");
                 jsonProperties.put("finalVerdict", finalVerdict.get(r.nextInt(15)));
