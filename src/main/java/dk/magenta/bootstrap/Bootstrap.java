@@ -4,51 +4,25 @@ import dk.magenta.beans.EntryBean;
 import dk.magenta.beans.PropertyValuesBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
-import org.activiti.engine.impl.util.json.JSONArray;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.namespace.QName;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
+import org.alfresco.service.namespace.QName;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.extensions.surf.util.AbstractLifecycleBean;
-import org.springframework.orm.jpa.vendor.Database;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class Bootstrap extends AbstractLifecycleBean {
-
-    public class RandomDateOfBirth {
-
-       public Date getRandomDate() {
-
-            GregorianCalendar gc = new GregorianCalendar();
-
-            int year = randBetween(2015, 2017);
-
-            gc.set(gc.YEAR, year);
-
-            int dayOfYear = randBetween(1, gc.getActualMaximum(gc.DAY_OF_YEAR));
-
-            gc.set(gc.DAY_OF_YEAR, dayOfYear);
-
-            System.out.println(gc.get(gc.YEAR) + "-" + (gc.get(gc.MONTH) + 1) + "-" + gc.get(gc.DAY_OF_MONTH));
-
-           return new Date(gc.getTimeInMillis());
-
-        }
-
-        private int randBetween(int start, int end) {
-            return start + (int)Math.round(Math.random() * (end - start));
-        }
-    }
 
     private PropertyValuesBean propertyValuesBean;
 
@@ -89,14 +63,11 @@ public class Bootstrap extends AbstractLifecycleBean {
         // do nothing
     }
 
-    private void createDeclarations() {
+    private void createDeclarations(int number) {
 
         JSONObject jsonProperties = new JSONObject();
 
-
         Random r = new Random();
-
-
 
         ArrayList fornavne = new ArrayList();
         fornavne.add("Hulda");
@@ -133,15 +104,11 @@ public class Bootstrap extends AbstractLifecycleBean {
         efternavne.add("Hermansen");
         efternavne.add("Holm");
 
-
-
-
-
         JSONObject result;
         result = propertyValuesBean.getPropertyValues(DatabaseModel.TYPE_PSYC_SITENAME);
 
 
-        for (int i = 1; i <= 1000; i++) {
+        for (int i = 1; i <= number; i++) {
 
             try {
 
