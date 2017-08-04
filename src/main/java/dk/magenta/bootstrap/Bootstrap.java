@@ -81,8 +81,7 @@ public class Bootstrap extends AbstractLifecycleBean {
             e.printStackTrace();
         }
 
-         this.createDeclarations();
-//
+         //this.createDeclarations();
     }
 
     @Override
@@ -90,10 +89,8 @@ public class Bootstrap extends AbstractLifecycleBean {
         // do nothing
     }
 
-    //private  void createDeclarations() {
+    private void createDeclarations() {
 
-
-//
         JSONObject jsonProperties = new JSONObject();
 
 
