@@ -82,10 +82,10 @@ public class JSONUtils {
                         value = new JSONArray(valueStr);
                     }
                     else if (value.getClass() == Date.class) {
-                        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                         TimeZone timeZone = TimeZone.getTimeZone("UTC");
                         date.setTimeZone(timeZone);
-                        value = date.format(value) + "Z";
+                        value = date.format(value);
                     }
                     result.put(key, value);
                 }
