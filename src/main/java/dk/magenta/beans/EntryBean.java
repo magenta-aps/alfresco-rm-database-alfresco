@@ -20,6 +20,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -43,12 +45,6 @@ public class EntryBean {
         this.lockService = lockService;
     }
 
-    public Set<NodeRef> getEntries (String siteShortName) throws JSONException {
-
-        NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
-        return getEntries(docLibRef, 3);
-    }
-
     public NodeRef addEntry (String siteShortName, String type, Map<QName, Serializable> properties) throws JSONException {
 
         //Get counter for this site document library
@@ -66,17 +62,20 @@ public class EntryBean {
         if (properties.containsKey(entryKeyQName))
             properties.remove(entryKeyQName);
 
-        //Set unique value
+        //Set unique value and name
         properties.put(entryKeyQName, counter);
+        properties.put(ContentModel.PROP_NAME, counter);
 
         //Create name for node (This is not displayed anywhere)
         QName nameQName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, counter.toString());
 
-        //Get current date folder to place the entry in
-        LocalDate date = LocalDate.now();
-        String year = ((Integer)date.getYear()).toString();
-        String month = ((Integer)date.getMonthValue()).toString();
-        String day = ((Integer)date.getDayOfMonth()).toString();
+        //Get creation date folder to place the entry in
+        String dateTimeStr = (String)properties.get(DatabaseModel.PROP_CREATION_DATE);
+        String[] dateTime = dateTimeStr.split("T");
+        String[] date = dateTime[0].split("-");
+        String year = date[0];
+        String month = date[1];
+        String day = date[2];
 
         NodeRef yearRef = getOrCreateChildByName(docLibRef, year);
         NodeRef monthRef = getOrCreateChildByName(yearRef, month);
@@ -166,16 +165,22 @@ public class EntryBean {
         else return null;
     }
 
+    public Set<NodeRef> getEntries (String siteShortName) throws JSONException {
+
+        NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
+        return getEntries(docLibRef, 4);
+    }
+
     private Set<NodeRef> getEntries(NodeRef parentNodeRef, int levels) {
         List<ChildAssociationRef> childrenRefs = nodeService.getChildAssocs(parentNodeRef);
         Set<NodeRef> result = new HashSet<>();
 
+        levels--;
         for (ChildAssociationRef childRef : childrenRefs) {
             NodeRef nodeRef = childRef.getChildRef();
             if(levels == 0)
                 result.add(nodeRef);
             else {
-                levels--;
                 Set<NodeRef> entries = getEntries(nodeRef, levels);
                 if (entries != null)
                     result.addAll(entries);
