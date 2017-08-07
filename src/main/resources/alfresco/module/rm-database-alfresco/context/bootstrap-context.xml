@@ -64,6 +64,7 @@
         <property name="propertyValuesBean" ref="propertyValuesBean"/>
         <property name="entryBean" ref="entryBean"/>
         <property name="siteService" ref="SiteService"/>
+        <property name="permissionService" ref="PermissionService"/>
     </bean>
 
     <bean id="bootstrapResourceBundles" class="org.alfresco.i18n.ResourceBundleBootstrapComponent">

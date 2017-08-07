@@ -7,6 +7,7 @@ import dk.magenta.utils.JSONUtils;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
@@ -17,10 +18,8 @@ import org.springframework.extensions.surf.util.AbstractLifecycleBean;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.time.LocalDate;
+import java.util.*;
 
 public class Bootstrap extends AbstractLifecycleBean {
 
@@ -41,10 +40,28 @@ public class Bootstrap extends AbstractLifecycleBean {
         this.siteService = siteService;
     }
 
+    private PermissionService permissionService;
+
+    public void setPermissionService(PermissionService permissionService) {
+        this.permissionService = permissionService;
+    }
+
     protected void onBootstrap(ApplicationEvent applicationEvent) {
 
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+/*
+        NodeRef retspsyk = siteService.getSite("retspsyk").getNodeRef();
 
+        String baseAuth = "GROUP_site_retspsyk_";
+
+        String roleManager = "SiteRoleManager";
+        String entryLockManager = "SiteEntryLockManager";
+        String propertyValueManager = "SitePropertyValueManager";
+
+        permissionService.setPermission(retspsyk, baseAuth + roleManager, roleManager, true);
+        permissionService.setPermission(retspsyk, baseAuth + entryLockManager, entryLockManager, true);
+        permissionService.setPermission(retspsyk, baseAuth + propertyValueManager, propertyValueManager, true);
+*/
         // Load property values
 
         try {
@@ -55,7 +72,7 @@ public class Bootstrap extends AbstractLifecycleBean {
             e.printStackTrace();
         }
 
-         //this.createDeclarations();
+         //this.createDeclarations(1000);
     }
 
     @Override
@@ -69,40 +86,45 @@ public class Bootstrap extends AbstractLifecycleBean {
 
         Random r = new Random();
 
-        ArrayList fornavne = new ArrayList();
-        fornavne.add("Hulda");
-        fornavne.add("Wini");
-        fornavne.add("Grehte");
-        fornavne.add("Husissellda");
-        fornavne.add("Ulla-pia");
-        fornavne.add("Dolly");
-        fornavne.add("Ingrid");
-        fornavne.add("Lykke");
-        fornavne.add("Majbrit");
+        List<String> femaleNames = new ArrayList<>();
+        femaleNames.add("Mathilde");
+        femaleNames.add("Clara");
+        femaleNames.add("Mona");
+        femaleNames.add("Kirstine");
+        femaleNames.add("Ulla");
+        femaleNames.add("Emma");
+        femaleNames.add("Ingrid");
+        femaleNames.add("Lykke");
+        femaleNames.add("Majbrit");
 
-        fornavne.add("Gunnar");
-        fornavne.add("Kurt");
-        fornavne.add("Finn");
-        fornavne.add("Dennis");
-        fornavne.add("Dan");
-        fornavne.add("Tage");
-        fornavne.add("Ronny");
-        fornavne.add("Tonny");
-        fornavne.add("Brian");
+        List<String> maleNames = new ArrayList<>();
+        maleNames.add("Jens");
+        maleNames.add("Kurt");
+        maleNames.add("Mathias");
+        maleNames.add("Dennis");
+        maleNames.add("Dan");
+        maleNames.add("Mogens");
+        maleNames.add("Hans");
+        maleNames.add("Niels");
+        maleNames.add("Jan");
 
-        ArrayList efternavne = new ArrayList();
-        efternavne.add("Eskildsen");
-        efternavne.add("Fischer");
-        efternavne.add("Eskildsen");
-        efternavne.add("Frost");
-        efternavne.add("Hansen");
-        efternavne.add("Hedegård");
-        efternavne.add("Eskildsen");
-        efternavne.add("Hermansen");
-        efternavne.add("Hermansen");
-        efternavne.add("Hermansen");
-        efternavne.add("Hermansen");
-        efternavne.add("Holm");
+        Map<Boolean, List<String>> firstNames = new HashMap<>();
+        firstNames.put(true, maleNames);
+        firstNames.put(false, femaleNames);
+
+        List<String> lastname = new ArrayList<>();
+        lastname.add("Eskildsen");
+        lastname.add("Fischer");
+        lastname.add("Vestergaard");
+        lastname.add("Frost");
+        lastname.add("Hansen");
+        lastname.add("Hedegård");
+        lastname.add("Eskildsen");
+        lastname.add("Hermansen");
+        lastname.add("Nielsen");
+        lastname.add("Madsen");
+        lastname.add("Østergaard");
+        lastname.add("Holm");
 
         JSONObject result;
         result = propertyValuesBean.getPropertyValues(DatabaseModel.TYPE_PSYC_SITENAME);
@@ -123,9 +145,10 @@ public class Bootstrap extends AbstractLifecycleBean {
                 org.json.JSONArray noDeclarationReason = result.getJSONArray("noDeclarationReason");
 
 
-                jsonProperties.put("cprNumber", "200174" + (1000 + i));
-                jsonProperties.put("firstName", fornavne.get(r.nextInt(17)));
-                jsonProperties.put("lastName", efternavne.get(r.nextInt(8)));
+                boolean isMale = r.nextBoolean();
+                jsonProperties.put("cprNumber", getRandomCPRString(isMale));
+                jsonProperties.put("firstName", firstNames.get(isMale).get(r.nextInt(8)));
+                jsonProperties.put("lastName", lastname.get(r.nextInt(11)));
                 jsonProperties.put("fullName", jsonProperties.get("firstName") + " " + jsonProperties.get("lastName"));
                 jsonProperties.put("address", "Singularisvej 12");
                 jsonProperties.put("postbox", "2700");
@@ -137,9 +160,10 @@ public class Bootstrap extends AbstractLifecycleBean {
                 jsonProperties.put("mainCharge", mainCharge.get(r.nextInt(65)));
                 jsonProperties.put("placement", placement.get(r.nextInt(13)));
                 jsonProperties.put("sanctionProposal", sanctionProposal.get(r.nextInt(15)));
-                jsonProperties.put("creationDate", "2017-05-0" + (r.nextInt(4)+1) + "T00:00:00.000Z");
-                jsonProperties.put("observationDate", "2017-08-0" + (r.nextInt(4)+1) + "T00:00:00.000Z");
-                jsonProperties.put("declarationDate", "2017-09-0"  + (r.nextInt(4)+1) + "T00:00:00.000Z");
+                String[] randomDateStrings = getRandomDateStrings(3);
+                jsonProperties.put("creationDate", randomDateStrings[0] + "T00:00:00.000Z");
+                jsonProperties.put("observationDate", randomDateStrings[1] + "T00:00:00.000Z");
+                jsonProperties.put("declarationDate", randomDateStrings[2] + "T00:00:00.000Z");
                 jsonProperties.put("forensicDoctorCouncil", "");
                 jsonProperties.put("forensicDoctorCouncilText", "");
                 jsonProperties.put("finalVerdict", finalVerdict.get(r.nextInt(15)));
@@ -159,6 +183,48 @@ public class Bootstrap extends AbstractLifecycleBean {
         }
 
 
+    }
+
+    private String getRandomCPRString(boolean isMale) {
+        Random r = new Random();
+        String year = toTwoDigit(r.nextInt(50) + 40);
+        String month = toTwoDigit(r.nextInt(11) + 1);
+        String day = toTwoDigit(r.nextInt(27) + 1);
+        String lastFour1 = toTwoDigit(r.nextInt(98) + 1);
+        Integer lastFour2Temp = r.nextInt(97) + 1;
+
+        if(isMale)
+            lastFour2Temp += lastFour2Temp % 2 == 0 ? 1 : 0;
+        else
+            lastFour2Temp += lastFour2Temp % 2;
+
+        String lastFour2 = toTwoDigit(lastFour2Temp);
+
+        return day + month + year + lastFour1 + lastFour2;
+    }
+
+    private String[] getRandomDateStrings(int count) {
+        String[] randomDates = new String[count];
+        randomDates[0] = getRandomDateString(2005);
+        for(int i=1; i<count; i++) {
+            String[] split = randomDates[i - 1].split("-");
+            randomDates[i] = getRandomDateString(Integer.parseInt(split[0]) + 1);
+        }
+        return randomDates;
+    }
+
+    private String getRandomDateString(Integer minimumYear) {
+        Random r = new Random();
+        String year = toTwoDigit(r.nextInt(3) + minimumYear);
+        String month = toTwoDigit(r.nextInt(11) + 1);
+        String day = toTwoDigit(r.nextInt(27) + 1);
+        return year + "-" + month + "-" + day;
+    }
+
+    private String toTwoDigit(Integer i) {
+        if(i < 10)
+            return "0" + i;
+        return i.toString();
     }
 
 

@@ -13,6 +13,7 @@ public interface DatabaseModel {
     public static String DATABASE = "database";
 
     public static QName PROP_DATABASE_TYPE = QName.createQName(RM_MODEL_URI, "databaseType");
+    public static QName PROP_CREATION_DATE = QName.createQName(RM_MODEL_URI, "creationDate");
 
     public static String TYPE_PSYC_DEC = "forensicPsychiatryDeclaration";
     public static String TYPE_PSYC_DEC_KEY = "caseNumber";
