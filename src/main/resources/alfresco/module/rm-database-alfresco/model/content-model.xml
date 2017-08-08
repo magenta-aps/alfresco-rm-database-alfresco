@@ -233,9 +233,6 @@
                 </property>
 
             </properties>
-            <mandatory-aspects>
-                <aspect>cm:lockable</aspect>
-            </mandatory-aspects>
         </type>
     </types>
 

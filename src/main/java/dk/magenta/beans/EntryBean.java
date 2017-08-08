@@ -20,9 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 
 public class EntryBean {
@@ -121,11 +118,13 @@ public class EntryBean {
         }
     }
 
-    public void deleteEntry (NodeRef entryRef) {
-        nodeService.deleteNode(entryRef);
-    }
+    public void deleteEntry (NodeRef entryRef) { nodeService.deleteNode(entryRef); }
 
     private void lockEntry (NodeRef entryRef) {
+        if (!nodeService.hasAspect(entryRef, ContentModel.ASPECT_LOCKABLE)) {
+            Map<QName, Serializable> prop = new HashMap<>();
+            nodeService.addAspect(entryRef, ContentModel.ASPECT_LOCKABLE, prop);
+        }
         lockService.lock(entryRef, LockType.READ_ONLY_LOCK);
     }
 
