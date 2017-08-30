@@ -4,6 +4,8 @@ import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.TypeUtils;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.audit.AuditComponent;
+import org.alfresco.repo.audit.AuditComponentImpl;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockType;
@@ -28,6 +30,7 @@ public class EntryBean {
     private SiteService siteService;
     private SearchService searchService;
     private LockService lockService;
+    private AuditComponent auditComponent;
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
@@ -40,6 +43,9 @@ public class EntryBean {
     }
     public void setLockService(LockService lockService) {
         this.lockService = lockService;
+    }
+    public void setAuditComponent(AuditComponent auditComponent) {
+        this.auditComponent = auditComponent;
     }
 
     public NodeRef addEntry (String siteShortName, String type, Map<QName, Serializable> properties) throws JSONException {
@@ -160,6 +166,7 @@ public class EntryBean {
 
         if(iterator.hasNext()) {
             ResultSetRow result = iterator.next();
+            logEntryReadToAudit();
             return result.getNodeRef();
         }
         else return null;
@@ -187,6 +194,17 @@ public class EntryBean {
             }
         }
         return result;
+    }
+
+    private void logEntryReadToAudit() {
+        String root = "/alfresco-access";
+        Map<String, Serializable> map = new HashMap<>();
+        map.put("/transaction/action", "READ");
+        map.put("/transaction/sub-actions", "readContent");
+        map.put("/transaction/type", "rm:forensicPsychiatryDeclaration");
+        map.put("/transaction/user", "alexander");
+        map.put("/transaction/path", "/app:company_home/st:sites/cm:retspsyk/cm:documentLibrary");
+        auditComponent.recordAuditValues(root, map);
     }
 }
 

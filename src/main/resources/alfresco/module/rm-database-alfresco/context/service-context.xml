@@ -10,6 +10,7 @@
         <property name="siteService" ref="SiteService"/>
         <property name="searchService" ref="SearchService"/>
         <property name="lockService" ref="LockService"/>
+        <property name="auditComponent" ref="auditComponent"/>
     </bean>
 
     <bean id="propertyValuesBean" class="dk.magenta.beans.PropertyValuesBean">
