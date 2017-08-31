@@ -281,9 +281,9 @@ public class DatabaseBean {
             try {
                 AuthenticationUtil.setRunAsUserSystem();
                 if(addGroups != null)
-                    updateSiteRole(authorities, siteShortName, username, addGroups, true);
+                    updateSiteRole(siteShortName, username, addGroups, true);
                 if(removeGroups != null)
-                    updateSiteRole(authorities, siteShortName, username, removeGroups, false);
+                    updateSiteRole(siteShortName, username, removeGroups, false);
             }
             finally {
                 AuthenticationUtil.clearCurrentSecurityContext();
@@ -293,8 +293,10 @@ public class DatabaseBean {
         return JSONUtils.getError(new AccessDeniedException("You are not Role Manager for the site: " + siteShortName));
     }
 
-    private void updateSiteRole(Set<String> authorities, String siteShortName, String username, JSONArray groups,
+    private void updateSiteRole(String siteShortName, String username, JSONArray groups,
                                 boolean add) throws JSONException {
+        Set<String> authorities = authorityService.getAuthoritiesForUser(username);
+
         for (int i = 0; i < groups.length(); i++) {
             String group = groups.getString(i);
             String groupSite = group.split("_")[2];
