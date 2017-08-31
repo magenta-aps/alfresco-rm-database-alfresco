@@ -21,7 +21,6 @@
 
         <permissionGroup name="SiteRoleManager" allowFullControl="false" expose="true">
             <includePermissionGroup permissionGroup="Collaborator" type="cm:cmobject" />
-            <includePermissionGroup permissionGroup="ChangePermissions" type="sys:base" />
         </permissionGroup>
 
         <permissionGroup name="SiteEntryLockManager" allowFullControl="false" expose="true">

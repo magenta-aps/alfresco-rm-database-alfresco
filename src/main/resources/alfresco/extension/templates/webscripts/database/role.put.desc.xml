@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Adds the specified roles to the specified user</shortname>
+    <description>Adds the specified roles to the specified user</description>
+    <url>/database/{siteShortName}/user/{username}</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

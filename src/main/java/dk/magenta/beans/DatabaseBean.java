@@ -1,8 +1,11 @@
 package dk.magenta.beans;
 
 import dk.magenta.model.DatabaseModel;
+import dk.magenta.utils.JSONUtils;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.site.SiteServiceException;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.security.AuthorityService;
@@ -12,6 +15,9 @@ import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.cmr.site.SiteVisibility;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -264,6 +270,44 @@ public class DatabaseBean {
             }
         }
         return roles;
+    }
+
+    public JSONObject updateUserRoles(String siteShortName, String username, JSONArray addGroups, JSONArray removeGroups)
+            throws JSONException {
+
+        Set<String> authorities = authorityService.getAuthorities();
+
+        if(authorities.contains("GROUP_site_" + siteShortName + "_SiteRoleManager")) {
+            try {
+                AuthenticationUtil.setRunAsUserSystem();
+                if(addGroups != null)
+                    updateSiteRole(authorities, siteShortName, username, addGroups, true);
+                if(removeGroups != null)
+                    updateSiteRole(authorities, siteShortName, username, removeGroups, false);
+            }
+            finally {
+                AuthenticationUtil.clearCurrentSecurityContext();
+            }
+            return JSONUtils.getSuccess();
+        }
+        return JSONUtils.getError(new AccessDeniedException("You are not Role Manager for the site: " + siteShortName));
+    }
+
+    private void updateSiteRole(Set<String> authorities, String siteShortName, String username, JSONArray groups,
+                                boolean add) throws JSONException {
+        for (int i = 0; i < groups.length(); i++) {
+            String group = groups.getString(i);
+            String groupSite = group.split("_")[2];
+            if (siteShortName.equals(groupSite))
+                if(authorities.contains(group)) {
+                    if (!add)
+                        authorityService.removeAuthority(group, username);
+                }
+                else {
+                    if (add)
+                        authorityService.addAuthority(group, username);
+                }
+        }
     }
 
     public String getType(String siteShortName) {

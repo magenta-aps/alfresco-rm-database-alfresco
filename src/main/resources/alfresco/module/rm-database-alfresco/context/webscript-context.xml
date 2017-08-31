@@ -13,6 +13,10 @@
 		<property name="databaseBean" ref="databaseBean"/>
 	</bean>
 
+	<bean id="webscript.database.role.put" class="dk.magenta.webscripts.database.UpdateUserRoles" parent="webscript">
+		<property name="databaseBean" ref="databaseBean"/>
+	</bean>
+
 	<bean id="webscript.database.entry.post" class="dk.magenta.webscripts.database.AddEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
