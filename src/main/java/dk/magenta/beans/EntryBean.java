@@ -101,13 +101,15 @@ public class EntryBean {
 
         // add the contents of the template library
 
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+
         NodeRef nodeRef_templateFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
         List<ChildAssociationRef> children = nodeService.getChildAssocs(nodeRef_templateFolder);
 
         Iterator i = children.iterator();
 
-        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+
 
         while (i.hasNext()) {
 
