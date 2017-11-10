@@ -1,5 +1,6 @@
 package dk.magenta.bootstrap;
 
+import dk.magenta.beans.DatabaseBean;
 import dk.magenta.beans.EntryBean;
 import dk.magenta.beans.PropertyValuesBean;
 import dk.magenta.model.DatabaseModel;
@@ -34,6 +35,9 @@ public class Bootstrap extends AbstractLifecycleBean {
         this.entryBean = entryBean;
     }
 
+
+
+
     private SiteService siteService;
 
     public void setSiteService(SiteService siteService) {
@@ -49,6 +53,10 @@ public class Bootstrap extends AbstractLifecycleBean {
     protected void onBootstrap(ApplicationEvent applicationEvent) {
 
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+
+
+
+
 /*
         NodeRef retspsyk = siteService.getSite("retspsyk").getNodeRef();
 

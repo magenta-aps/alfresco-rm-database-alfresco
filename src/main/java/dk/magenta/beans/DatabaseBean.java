@@ -85,6 +85,12 @@ public class DatabaseBean {
         permissionService.setPermission(propertyValues, propertyValueManager, PermissionService.EDITOR, true);
         permissionService.setPermission(propertyValues, siteManager, PermissionService.EDITOR, true);
 
+        //Setup templateFolder
+        NodeRef templateLibrary = siteService.getContainer(shortName, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+        String templateFolderManager = "GROUP_site_" + shortName + "_TemplateFolderValueManager";
+        permissionService.setInheritParentPermissions(templateLibrary, false);
+        permissionService.setPermission(templateLibrary, templateFolderManager, DatabaseModel.Permission_SiteTemplateManager, true);
+
         //Setup Document Library
         NodeRef documentLibrary = siteService.getContainer(shortName, SiteService.DOCUMENT_LIBRARY);
         String entryLockManager = "GROUP_site_" + shortName + "_SiteEntryLockManager";
@@ -108,8 +114,9 @@ public class DatabaseBean {
                         SiteVisibility.PRIVATE);
                 NodeRef n = site.getNodeRef();
 
-                // Create containers for document library and property values
+                // Create containers for document library, template library and property values
                 createContainer(shortName, SiteService.DOCUMENT_LIBRARY);
+                createContainer(shortName, DatabaseModel.PROP_TEMPLATE_LIBRARY);
                 createContainer(shortName, DatabaseModel.PROP_VALUES);
 
                 // Create site dashboard
