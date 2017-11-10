@@ -107,6 +107,8 @@ public class EntryBean {
 
         Iterator i = children.iterator();
 
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+
         while (i.hasNext()) {
 
             ChildAssociationRef child = (ChildAssociationRef)i.next();
