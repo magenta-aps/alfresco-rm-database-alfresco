@@ -284,7 +284,7 @@ public class DatabaseBean {
 
         Set<String> authorities = authorityService.getAuthorities();
 
-        if(authorities.contains("GROUP_site_" + siteShortName + "_SiteRoleManager")) {
+        if(authorities.contains("GROUP_site_" + siteShortName + "_SiteRoleManager") || authorities.contains("GROUP_ALFRESCO_ADMINISTRATORS") ) {
             try {
                 AuthenticationUtil.setRunAsUserSystem();
                 if(addGroups != null)
