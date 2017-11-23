@@ -32,6 +32,10 @@
             <includePermissionGroup permissionGroup="Collaborator" type="cm:cmobject" />
         </permissionGroup>
 
+        <permissionGroup name="TemplateFolderValueManager" allowFullControl="false" expose="true">
+            <includePermissionGroup permissionGroup="Collaborator" type="cm:cmobject" />
+        </permissionGroup>
+
         <permissionGroup name="SiteCollaborator" allowFullControl="false" expose="true">
             <includePermissionGroup permissionGroup="Collaborator" type="cm:cmobject" />
         </permissionGroup>

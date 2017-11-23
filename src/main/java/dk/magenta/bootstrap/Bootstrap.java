@@ -56,7 +56,7 @@ public class Bootstrap extends AbstractLifecycleBean {
 
 //        //Setup templateFolder
 //        NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_TEMPLATE_LIBRARY);
-//        System.out.println("template noderef" + templateLibrary);
+////        System.out.println("template noderef" + templateLibrary);
 //        String templateFolderManager = "GROUP_site_" + "retspsyk" + "_TemplateFolderValueManager";
 //        permissionService.setInheritParentPermissions(templateLibrary, false);
 //        permissionService.setPermission(templateLibrary, templateFolderManager, DatabaseModel.Permission_SiteTemplateManager, true);
