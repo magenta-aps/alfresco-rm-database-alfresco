@@ -49,6 +49,10 @@
             <includePermissionGroup permissionGroup="ReadPermissions" type="sys:base" />
         </permissionGroup>
 
+        <permissionGroup name="ReadOnlyUser" allowFullControl="false" expose="true">
+            <includePermissionGroup permissionGroup="ReadPermissions" type="sys:base" />
+        </permissionGroup>
+
         <permissionGroup name="SiteTemplateManager" allowFullControl="false" expose="true">
             <includePermissionGroup permissionGroup="Collaborator" type="cm:cmobject" />
         </permissionGroup>

@@ -3,6 +3,7 @@ package dk.magenta.beans;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.TypeUtils;
+import org.activiti.engine.impl.util.json.JSONArray;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.lock.LockService;
@@ -15,6 +16,7 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
+import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
@@ -198,6 +200,37 @@ public class EntryBean {
         }
         else return null;
     }
+
+
+
+    public ArrayList getEntries (String query, int skip, int maxItems) {
+
+        SearchParameters sp = new SearchParameters();
+        sp.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+        sp.setLanguage("lucene");
+        sp.setQuery(query);
+        sp.setMaxItems(maxItems);
+        sp.setSkipCount(skip);
+        ResultSet resultSet = searchService.query(sp);
+
+
+        Iterator iterator = resultSet.iterator();
+        ArrayList nodeRefs = new ArrayList();
+
+        while (iterator.hasNext()) {
+            nodeRefs.add(iterator.next());
+        }
+
+        System.out.println(resultSet.getNodeRefs());
+
+
+
+
+        return nodeRefs;
+    }
+
+
+
 
     public Set<NodeRef> getEntries (String siteShortName) throws JSONException {
 

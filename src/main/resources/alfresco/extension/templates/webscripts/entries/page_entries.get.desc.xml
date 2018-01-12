@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get Entries</shortname>
+    <description>Get information about entries that match the query</description>
+    <url>/database/{siteShortName}/page_entries/{entryValue}</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
