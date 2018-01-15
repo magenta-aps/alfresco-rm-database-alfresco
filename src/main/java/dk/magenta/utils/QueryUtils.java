@@ -2,6 +2,11 @@ package dk.magenta.utils;
 
 import dk.magenta.model.DatabaseModel;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONArray;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class QueryUtils {
 
@@ -23,6 +28,25 @@ public class QueryUtils {
 
         if(entryValue != null)
             query += " AND " + getParameterQuery(entryKey, entryValue);
+
+        return query;
+    }
+
+    public static String getKeyValueQuery (String siteShortName, String type, JSONArray keyValues) throws JSONException {
+
+        String query = getSiteQuery(siteShortName) + " AND " + getTypeQuery(type);
+
+
+        for (int i = 0 ; i < keyValues.length(); i++) {
+            JSONObject obj = keyValues.getJSONObject(i);
+            String key = obj.getString("key");
+            String value = obj.getString("value");
+            System.out.println(key + ":" + value);
+            query += " AND " + getParameterQuery(key, value);
+        }
+
+//        if(entryValue != null)
+//            query += " AND " + getParameterQuery(entryKey, entryValue);
 
         return query;
     }

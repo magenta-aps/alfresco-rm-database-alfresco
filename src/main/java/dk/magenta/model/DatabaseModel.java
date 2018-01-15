@@ -26,6 +26,7 @@ public interface DatabaseModel {
 
     // Containers
     public static String PROP_VALUES = "propertyValues";
+    public static String PROP_TEMPLATE_LIBRARY = "documentTemplates";
 
 
     /**
@@ -35,5 +36,9 @@ public interface DatabaseModel {
     public static QName PROP_LINK = QName.createQName(CONTENT_MODEL_URI, "link");
     public static QName PROP_LINK_TARGET = QName.createQName(CONTENT_MODEL_URI, "targetproject");
     public static QName PROP_LINK_TARGET_NODEREF = QName.createQName(CONTENT_MODEL_URI, "targetproject_noderef");
+
+    // custom permissions
+
+    public static String Permission_SiteTemplateManager = "SiteTemplateManager";
 
 }

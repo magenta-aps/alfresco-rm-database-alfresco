@@ -2,6 +2,7 @@ package dk.magenta.beans;
 
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.model.Repository;
 import org.alfresco.service.cmr.download.DownloadService;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.ContentData;
@@ -25,8 +26,8 @@ public class ContentsBean {
     private PermissionService permissionService;
     private PersonService personService;
     private SiteService siteService;
-
     private DownloadService downloadService;
+    private Repository repository;
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
@@ -43,6 +44,10 @@ public class ContentsBean {
 
     public void setDownloadService(DownloadService downloadService) {
         this.downloadService = downloadService;
+    }
+    public void setRepository(Repository repository)
+    {
+        this.repository = repository;
     }
 
     public JSONArray getChildNodes(NodeRef parentNodeRef) throws JSONException {
@@ -156,6 +161,15 @@ public class ContentsBean {
 
     public String getDownloadStatus(NodeRef downloadNodeRef) {
         return downloadService.getDownloadStatus(downloadNodeRef).getStatus().toString();
+    }
+
+    /**
+     * Gets the Company Home.
+     * (method = getCompanyHome)
+     * @return the nodeRef for Company Home.
+     */
+    public NodeRef getCompanyHome() throws JSONException {
+        return repository.getCompanyHome();
     }
 
 }

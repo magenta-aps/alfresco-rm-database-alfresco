@@ -21,7 +21,6 @@
 
         <permissionGroup name="SiteRoleManager" allowFullControl="false" expose="true">
             <includePermissionGroup permissionGroup="Collaborator" type="cm:cmobject" />
-            <includePermissionGroup permissionGroup="ChangePermissions" type="sys:base" />
         </permissionGroup>
 
         <permissionGroup name="SiteEntryLockManager" allowFullControl="false" expose="true">
@@ -30,6 +29,10 @@
         </permissionGroup>
 
         <permissionGroup name="SitePropertyValueManager" allowFullControl="false" expose="true">
+            <includePermissionGroup permissionGroup="Collaborator" type="cm:cmobject" />
+        </permissionGroup>
+
+        <permissionGroup name="TemplateFolderValueManager" allowFullControl="false" expose="true">
             <includePermissionGroup permissionGroup="Collaborator" type="cm:cmobject" />
         </permissionGroup>
 
@@ -44,6 +47,14 @@
         <permissionGroup name="SiteConsumer" allowFullControl="false" expose="true">
             <includePermissionGroup permissionGroup="Consumer" type="cm:cmobject" />
             <includePermissionGroup permissionGroup="ReadPermissions" type="sys:base" />
+        </permissionGroup>
+
+        <permissionGroup name="ReadOnlyUser" allowFullControl="false" expose="true">
+            <includePermissionGroup permissionGroup="ReadPermissions" type="sys:base" />
+        </permissionGroup>
+
+        <permissionGroup name="SiteTemplateManager" allowFullControl="false" expose="true">
+            <includePermissionGroup permissionGroup="Collaborator" type="cm:cmobject" />
         </permissionGroup>
 
     </permissionSet>

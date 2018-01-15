@@ -13,11 +13,20 @@
 		<property name="databaseBean" ref="databaseBean"/>
 	</bean>
 
+	<bean id="webscript.database.role.put" class="dk.magenta.webscripts.database.UpdateUserRoles" parent="webscript">
+		<property name="databaseBean" ref="databaseBean"/>
+	</bean>
+
 	<bean id="webscript.database.entry.post" class="dk.magenta.webscripts.database.AddEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
 	<bean id="webscript.entries.entry.get" class="dk.magenta.webscripts.entry.GetEntry" parent="webscript">
+		<property name="entryBean" ref="entryBean"/>
+		<property name="databaseBean" ref="databaseBean"/>
+	</bean>
+
+	<bean id="webscript.entries.page_entries.get" class="dk.magenta.webscripts.entry.GetPaginetedEntries" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 		<property name="databaseBean" ref="databaseBean"/>
 	</bean>
@@ -51,6 +60,10 @@
 	</bean>
 
 	<bean id="webscript.contents.getdownloadstatus.get" class="dk.magenta.webscripts.contents.GetDownloadStatus" parent="webscript">
+		<property name="contentsBean" ref="contentsBean"/>
+	</bean>
+
+	<bean id="webscript.contents.companyhome.get" class="dk.magenta.webscripts.contents.GetCompanyHome" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 

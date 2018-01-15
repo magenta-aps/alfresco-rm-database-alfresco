@@ -3,18 +3,22 @@ package dk.magenta.beans;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.TypeUtils;
+import org.activiti.engine.impl.util.json.JSONArray;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.audit.AuditComponent;
 import org.alfresco.repo.audit.AuditComponentImpl;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockType;
+import org.alfresco.service.cmr.model.FileFolderService;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
+import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
@@ -31,6 +35,16 @@ public class EntryBean {
     private SearchService searchService;
     private LockService lockService;
     private AuditComponent auditComponent;
+
+    public FileFolderService getFileFolderService() {
+        return fileFolderService;
+    }
+
+    public void setFileFolderService(FileFolderService fileFolderService) {
+        this.fileFolderService = fileFolderService;
+    }
+
+    private FileFolderService fileFolderService;
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
@@ -92,6 +106,28 @@ public class EntryBean {
 
         //Increment the site document library counter when the entry has been created successfully
         nodeService.setProperty(docLibRef, ContentModel.PROP_COUNTER, counter);
+
+        // add the contents of the template library
+
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+
+        NodeRef nodeRef_templateFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+
+        List<ChildAssociationRef> children = nodeService.getChildAssocs(nodeRef_templateFolder);
+
+        Iterator i = children.iterator();
+
+
+
+        while (i.hasNext()) {
+
+            ChildAssociationRef child = (ChildAssociationRef)i.next();
+            try {
+                fileFolderService.copy(child.getChildRef(), nodeRef, (String)nodeService.getProperty(child.getChildRef(), ContentModel.PROP_NAME));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
 
         return nodeRef;
     }
@@ -171,6 +207,37 @@ public class EntryBean {
         }
         else return null;
     }
+
+
+
+    public ArrayList getEntries (String query, int skip, int maxItems) {
+
+        SearchParameters sp = new SearchParameters();
+        sp.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+        sp.setLanguage("lucene");
+        sp.setQuery(query);
+        sp.setMaxItems(maxItems);
+        sp.setSkipCount(skip);
+        ResultSet resultSet = searchService.query(sp);
+
+
+        Iterator iterator = resultSet.iterator();
+        ArrayList nodeRefs = new ArrayList();
+
+        while (iterator.hasNext()) {
+            nodeRefs.add(iterator.next());
+        }
+
+        System.out.println(resultSet.getNodeRefs());
+
+
+
+
+        return nodeRefs;
+    }
+
+
+
 
     public Set<NodeRef> getEntries (String siteShortName) throws JSONException {
 

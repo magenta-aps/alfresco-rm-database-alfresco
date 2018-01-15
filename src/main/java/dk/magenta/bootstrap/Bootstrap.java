@@ -1,5 +1,6 @@
 package dk.magenta.bootstrap;
 
+import dk.magenta.beans.DatabaseBean;
 import dk.magenta.beans.EntryBean;
 import dk.magenta.beans.PropertyValuesBean;
 import dk.magenta.model.DatabaseModel;
@@ -34,6 +35,9 @@ public class Bootstrap extends AbstractLifecycleBean {
         this.entryBean = entryBean;
     }
 
+
+
+
     private SiteService siteService;
 
     public void setSiteService(SiteService siteService) {
@@ -49,6 +53,15 @@ public class Bootstrap extends AbstractLifecycleBean {
     protected void onBootstrap(ApplicationEvent applicationEvent) {
 
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+
+//        //Setup templateFolder
+//        NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_TEMPLATE_LIBRARY);
+////        System.out.println("template noderef" + templateLibrary);
+//        String templateFolderManager = "GROUP_site_" + "retspsyk" + "_TemplateFolderValueManager";
+//        permissionService.setInheritParentPermissions(templateLibrary, false);
+//        permissionService.setPermission(templateLibrary, templateFolderManager, DatabaseModel.Permission_SiteTemplateManager, true);
+
+
 /*
         NodeRef retspsyk = siteService.getSite("retspsyk").getNodeRef();
 
