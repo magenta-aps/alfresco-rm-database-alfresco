@@ -1,5 +1,6 @@
 package dk.magenta.beans;
 
+import com.sun.syndication.feed.rss.Content;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.TypeUtils;
@@ -203,7 +204,7 @@ public class EntryBean {
 
 
 
-    public ArrayList getEntries (String query, int skip, int maxItems) {
+    public List<NodeRef> getEntries(String query, int skip, int maxItems) {
 
         SearchParameters sp = new SearchParameters();
         sp.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
@@ -215,25 +216,14 @@ public class EntryBean {
 
 
         Iterator iterator = resultSet.iterator();
-        ArrayList nodeRefs = new ArrayList();
-
-        while (iterator.hasNext()) {
-            nodeRefs.add(iterator.next());
-        }
+        ArrayList result = new ArrayList();
 
         System.out.println(resultSet.getNodeRefs());
 
-
-
-
-        return nodeRefs;
+        return resultSet.getNodeRefs();
     }
 
-
-
-
     public Set<NodeRef> getEntries (String siteShortName) throws JSONException {
-
         NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
         return getEntries(docLibRef, 4);
     }
@@ -249,6 +239,35 @@ public class EntryBean {
                 result.add(nodeRef);
             else {
                 Set<NodeRef> entries = getEntries(nodeRef, levels);
+                if (entries != null)
+                    result.addAll(entries);
+            }
+        }
+        return result;
+    }
+
+    public ArrayList getNotClosedEntries (String siteShortName) throws JSONException {
+
+        NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
+        return this.getNotClosedEntries(docLibRef, 4);
+    }
+
+    private ArrayList getNotClosedEntries(NodeRef parentNodeRef, int levels) {
+        List<ChildAssociationRef> childrenRefs = nodeService.getChildAssocs(parentNodeRef);
+        ArrayList result = new ArrayList();
+
+        levels--;
+        for (ChildAssociationRef childRef : childrenRefs) {
+            NodeRef nodeRef = childRef.getChildRef();
+            if (levels == 0) {
+                Serializable closed =  nodeService.getProperty(nodeRef, DatabaseModel.PROP_CLOSED);
+
+                if (closed == null) {
+                    result.add(nodeRef);
+                }
+            }
+            else {
+                ArrayList entries = getNotClosedEntries(nodeRef, levels);
                 if (entries != null)
                     result.addAll(entries);
             }
