@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Audit
+xmlns="http://www.alfresco.org/repo/audit/model/3.2"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.alfresco.org/repo/audit/model/3.2 alfresco-audit-3.2.xsd"
+>
+
+<DataExtractors>
+    <DataExtractor name="simpleValue" registeredName="auditModel.extractor.simpleValue"/>
+    <DataExtractor name="nodeName" registeredName="auditModel.extractor.nodeName"/>
+    <DataExtractor name="nodeType" registeredName="auditModel.extractor.nodeType"/>
+</DataExtractors>
+
+<PathMappings>
+    <PathMap source="/alfresco-api" target="/rm-database-access"/>
+</PathMappings>
+
+<Application name="RMDatabaseAccess" key="rm-database-access">
+    <AuditPath key="pre">
+        <AuditPath key="NodeService">
+            <AuditPath key="deleteNode">
+                <AuditPath key="args">
+                    <AuditPath key="nodeRef">
+                        <RecordValue key="uuid" dataExtractor="simpleValue"
+                                     dataSource="/rm-database-access/pre/NodeService/deleteNode/args/nodeRef"/>
+                        <RecordValue key="case" dataExtractor="nodeName"
+                                     dataSource="/rm-database-access/pre/NodeService/deleteNode/args/nodeRef"/>
+                    </AuditPath>
+                </AuditPath>
+            </AuditPath>
+        </AuditPath>
+    </AuditPath>
+
+    <AuditPath key="post">
+        <AuditPath key="NodeService">
+            <AuditPath key="getProperty">
+                <AuditPath key="no-error">
+                    <RecordValue key="uuid" dataExtractor="simpleValue"
+                                 dataSource="/rm-database-access/post/NodeService/getProperty/args/nodeRef"/>
+                    <RecordValue key="case" dataExtractor="nodeName"
+                                 dataSource="/rm-database-access/post/NodeService/getProperty/args/nodeRef"/>
+                    <RecordValue key="property" dataExtractor="simpleValue"
+                                 dataSource="/rm-database-access/post/NodeService/getProperty/args/qname"/>
+                    <RecordValue key="value" dataExtractor="simpleValue"
+                                 dataSource="/rm-database-access/post/NodeService/getProperty/args/value"/>
+                </AuditPath>
+            </AuditPath>
+
+            <AuditPath key="getProperties">
+                <AuditPath key="no-error">
+                    <RecordValue key="uuid" dataExtractor="simpleValue"
+                                 dataSource="/rm-database-access/post/NodeService/getProperties/args/nodeRef"/>
+                    <RecordValue key="case" dataExtractor="nodeName"
+                                 dataSource="/rm-database-access/post/NodeService/getProperties/args/nodeRef"/>
+                </AuditPath>
+            </AuditPath>
+
+            <AuditPath key="setProperty">
+                <AuditPath key="no-error">
+                    <RecordValue key="uuid" dataExtractor="simpleValue"
+                                 dataSource="/rm-database-access/post/NodeService/setProperty/args/nodeRef"/>
+                    <RecordValue key="case" dataExtractor="nodeName"
+                                 dataSource="/rm-database-access/post/NodeService/setProperty/args/nodeRef"/>
+                    <RecordValue key="property" dataExtractor="simpleValue"
+                                 dataSource="/rm-database-access/post/NodeService/setProperty/args/qname"/>
+                    <RecordValue key="value" dataExtractor="simpleValue"
+                                 dataSource="/rm-database-access/post/NodeService/setProperty/args/value"/>
+                </AuditPath>
+            </AuditPath>
+
+            <AuditPath key="setProperties">
+                <AuditPath key="no-error">
+                    <RecordValue key="uuid" dataExtractor="simpleValue"
+                                 dataSource="/rm-database-access/post/NodeService/setProperties/args/nodeRef"/>
+                    <RecordValue key="case" dataExtractor="nodeName"
+                                 dataSource="/rm-database-access/post/NodeService/setProperties/args/nodeRef"/>
+                    <RecordValue key="properties" dataExtractor="simpleValue"
+                                 dataSource="/rm-database-access/post/NodeService/setProperties/args/properties"/>
+                </AuditPath>
+            </AuditPath>
+
+            <AuditPath key="deleteNode">
+                <AuditPath key="error">
+                    <RecordValue key="message" dataExtractor="simpleValue"
+                                 dataSource="/rm-database-access/post/NodeService/deleteNode/error"/>
+                    <RecordValue key="case" dataExtractor="nodeName"
+                                 dataSource="/rm-database-access/post/NodeService/deleteNode/args/nodeRef"/>
+                </AuditPath>
+                <AuditPath key="no-error">
+                    <RecordValue key="uuid" dataExtractor="simpleValue"
+                                 dataSource="/rm-database-access/post/NodeService/deleteNode/args/nodeRef"/>
+                </AuditPath>
+            </AuditPath>
+        </AuditPath>
+    </AuditPath>
+</Application>
+</Audit>
