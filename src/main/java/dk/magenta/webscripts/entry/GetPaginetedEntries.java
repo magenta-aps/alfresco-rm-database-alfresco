@@ -77,4 +77,4 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
 // F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/database/retspsyk/entry/445644-4545-4564-8848-1849155'
 
-//http://localhost:8080/alfresco/service/database/retspsyk/page_entries?skip=0&maxItems=10&keyValue=[{%22key%22%20:%20%22cprNumber%22,%20%22value%22%20:%20%220111575415%22}]
+//http://localhost:8080/alfresco/service/database/retspsyk/page_entries?skip=0&maxItems=10&keyValue=[{"key":"cprNumber","value" : "220111571234", "include" : "true"}]
