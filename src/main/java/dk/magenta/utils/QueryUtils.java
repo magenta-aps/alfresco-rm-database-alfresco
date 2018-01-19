@@ -18,8 +18,16 @@ public class QueryUtils {
         return  "TYPE:\"" + DatabaseModel.RM_MODEL_PREFIX +":" + type + "\"";
     }
 
-    public static String getParameterQuery (String paramKey, String paramValue) {
-        return "@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + paramValue + "\"";
+    public static String getParameterQuery (String paramKey, String paramValue, boolean not) {
+
+        if (not) {
+            return "!@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + paramValue + "\"";
+        }
+        else {
+            return "@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + paramValue + "\"";
+        }
+
+
     }
 
     public static String getEntryQuery (String siteShortName, String type, String entryValue) throws JSONException {
@@ -27,7 +35,7 @@ public class QueryUtils {
         String query = getSiteQuery(siteShortName) + " AND " + getTypeQuery(type);
 
         if(entryValue != null)
-            query += " AND " + getParameterQuery(entryKey, entryValue);
+            query += " AND " + getParameterQuery(entryKey, entryValue, false);
 
         return query;
     }
@@ -41,8 +49,15 @@ public class QueryUtils {
             JSONObject obj = keyValues.getJSONObject(i);
             String key = obj.getString("key");
             String value = obj.getString("value");
+            String include = obj.getString("include");
+
+            if (include.equals("false")) {
+                query += " AND " + getParameterQuery(key, value, true);
+            }
+            else {
+                query += " AND " + getParameterQuery(key, value, false);
+            }
             System.out.println(key + ":" + value);
-            query += " AND " + getParameterQuery(key, value);
         }
 
 //        if(entryValue != null)
@@ -51,3 +66,5 @@ public class QueryUtils {
         return query;
     }
 }
+
+//http://localhost:8080/alfresco/service/database/retspsyk/page_entries?skip=0&maxItems=10&keyValue=[{%22key%22%20:%20%22cprNummer%22,%20%22value%22%20:%20%221%22}]

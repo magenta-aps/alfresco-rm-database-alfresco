@@ -36,6 +36,11 @@
 		<property name="databaseBean" ref="databaseBean"/>
 	</bean>
 
+	<bean id="webscript.entries.autocompleteentries.get" class="dk.magenta.webscripts.entry.GetAUTOcompleteEntries" parent="webscript">
+		<property name="entryBean" ref="entryBean"/>
+		<property name="databaseBean" ref="databaseBean"/>
+	</bean>
+
 	<bean id="webscript.entries.entry.put" class="dk.magenta.webscripts.entry.UpdateEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>

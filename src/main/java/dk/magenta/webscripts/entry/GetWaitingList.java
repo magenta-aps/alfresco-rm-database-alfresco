@@ -5,6 +5,8 @@ import dk.magenta.beans.EntryBean;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -51,14 +53,27 @@ public class GetWaitingList extends AbstractWebScript {
 
 
             org.json.JSONArray entries = new org.json.JSONArray();
+            org.json.JSONArray entriesIncludingWaitingTime = new org.json.JSONArray();
 
-            ArrayList nodeRefs = entryBean.getNotClosedEntries(siteShortName);
 
+            String type = databaseBean.getType(siteShortName);
 
-            int k = skip;
-            while ( k <= ((skip + maxItems) - 1) && (k <= nodeRefs.size()-1) ) {
+            String keyValue = "[{\"key\" : \"closed\", \"value\" : \"true\", \"include\" : \"false\"}]";
 
-                NodeRef entry = (NodeRef)nodeRefs.get(k);
+            String query = QueryUtils.getKeyValueQuery(siteShortName, type, new org.json.JSONArray(keyValue));
+
+            List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
+
+            Iterator<NodeRef> iterator = nodeRefs.iterator();
+
+            while (iterator.hasNext()) {
+                NodeRef nodeRef = iterator.next();
+                entries.put(entryBean.toJSON(nodeRef));
+            }
+
+            // calculate the waiting time
+            for (int i = 0; i < nodeRefs.size(); i++) {
+                NodeRef entry = (NodeRef)nodeRefs.get(i);
 
                 JSONObject e = entryBean.toJSON(entry);
                 String creationDate = (String)e.get("creationDate");
@@ -68,17 +83,12 @@ public class GetWaitingList extends AbstractWebScript {
                 LocalDateTime timePoint = LocalDateTime.now();
                 LocalDate now = timePoint.toLocalDate();
 
-                e.put("waiting", d.until(now, ChronoUnit.DAYS));
+                e.put("waitingTime", d.until(now, ChronoUnit.DAYS));
 
-                entries.put(e);
-                k++;
-
-
-
-
+                entriesIncludingWaitingTime.put(e);
             }
 
-            result.put("entries", entries);
+            result.put("entries", entriesIncludingWaitingTime);
 
             if ((skip-maxItems) < 0) {
                 result.put("back", 0);
@@ -89,7 +99,7 @@ public class GetWaitingList extends AbstractWebScript {
 
 
             result.put("next", skip + maxItems);
-            result.put("total", nodeRefs.size());
+            result.put("total", entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true).size());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,5 +110,6 @@ public class GetWaitingList extends AbstractWebScript {
         JSONUtils.write(webScriptWriter, result);
     }
 }
+
 
 // F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/database/retspsyk/entry/445644-4545-4564-8848-1849155'

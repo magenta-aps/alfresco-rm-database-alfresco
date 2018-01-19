@@ -204,7 +204,7 @@ public class EntryBean {
 
 
 
-    public List<NodeRef> getEntries(String query, int skip, int maxItems) {
+    public List<NodeRef> getEntries(String query, int skip, int maxItems, String sort, boolean desc) {
 
         SearchParameters sp = new SearchParameters();
         sp.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
@@ -212,13 +212,12 @@ public class EntryBean {
         sp.setQuery(query);
         sp.setMaxItems(maxItems);
         sp.setSkipCount(skip);
+        sp.addSort(sort, desc);
         ResultSet resultSet = searchService.query(sp);
 
 
-        Iterator iterator = resultSet.iterator();
-        ArrayList result = new ArrayList();
-
-        System.out.println(resultSet.getNodeRefs());
+        System.out.println("the query.... ****");
+        System.out.println(sp.getQuery());
 
         return resultSet.getNodeRefs();
     }
@@ -248,6 +247,9 @@ public class EntryBean {
 
     public ArrayList getNotClosedEntries (String siteShortName) throws JSONException {
 
+
+
+
         NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
         return this.getNotClosedEntries(docLibRef, 4);
     }
@@ -262,8 +264,18 @@ public class EntryBean {
             if (levels == 0) {
                 Serializable closed =  nodeService.getProperty(nodeRef, DatabaseModel.PROP_CLOSED);
 
+
+                // when a case is created, the property closed is missing
                 if (closed == null) {
                     result.add(nodeRef);
+                }
+                else {
+
+                    boolean isclosed = (Boolean)closed;
+
+                    if (isclosed == false) {
+                        result.add(nodeRef);
+                    }
                 }
             }
             else {

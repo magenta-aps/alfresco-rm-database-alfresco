@@ -5,8 +5,6 @@ import dk.magenta.beans.EntryBean;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.activiti.engine.impl.util.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -14,9 +12,11 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-public class GetPaginetedEntries extends AbstractWebScript {
+public class GetAUTOcompleteEntries extends AbstractWebScript {
 
     private EntryBean entryBean;
     private DatabaseBean databaseBean;
@@ -42,7 +42,17 @@ public class GetPaginetedEntries extends AbstractWebScript {
             String siteShortName = templateArgs.get("siteShortName");
             int skip = Integer.valueOf(req.getParameter("skip"));
             int maxItems = Integer.valueOf(req.getParameter("maxItems"));
-            String keyValue = req.getParameter("keyValue");
+            String input = req.getParameter("input");
+
+            String keyValue = "";
+
+            if (input.matches(".*\\d+.*")) {
+                keyValue = "[{\"key\" :\"cprNumber\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
+            }
+            else {
+                keyValue = "[{\"key\" :\"firstName\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
+            }
+            System.out.println("the json:" + keyValue);
 
 
             org.json.JSONArray entries = new org.json.JSONArray();
@@ -63,7 +73,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
             result.put("entries", entries);
             result.put("back", skip);
             result.put("next", skip + maxItems);
-            result.put("total", entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true).size());
+            result.put("total",  entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true).size());
 
         } catch (Exception e) {
             e.printStackTrace();
