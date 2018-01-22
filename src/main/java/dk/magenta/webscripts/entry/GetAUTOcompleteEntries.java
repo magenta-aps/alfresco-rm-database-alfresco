@@ -72,7 +72,8 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
                 JSONObject tmp = entryBean.toJSON(nodeRef);
                 JSONObject e = new JSONObject();
 
-                e.put("cpr", tmp.get("cprNumber"));
+                e.put("cprNumber", tmp.get("cprNumber"));
+                e.put("caseNumber", tmp.get("caseNumber"));
                 e.put("firstName", tmp.get("firstName"));
                 e.put("lastName", tmp.get("lastName"));
 

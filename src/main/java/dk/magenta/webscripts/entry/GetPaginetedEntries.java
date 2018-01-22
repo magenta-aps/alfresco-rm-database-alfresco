@@ -57,7 +57,22 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             while (i.hasNext()) {
                 NodeRef nodeRef = i.next();
-                entries.put(entryBean.toJSON(nodeRef));
+
+                JSONObject tmp = entryBean.toJSON(nodeRef);
+
+                JSONObject e = new JSONObject();
+
+                e.put("caseNumber", tmp.get("caseNumber"));
+                e.put("cpr", tmp.get("cprNumber"));
+                e.put("fullName", tmp.get("fullName"));
+                e.put("creationDate", tmp.get("creationDate"));
+                e.put("doctor", tmp.get("doctor"));
+                e.put("closed", tmp.get("doctor"));
+                e.put("declarationDate", tmp.get("declarationDate"));
+                e.put("psychologist", tmp.get("psychologist"));
+
+
+                entries.put(e);
             }
 
             result.put("entries", entries);

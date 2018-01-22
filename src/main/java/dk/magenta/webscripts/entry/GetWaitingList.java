@@ -52,7 +52,6 @@ public class GetWaitingList extends AbstractWebScript {
             String siteShortName = templateArgs.get("siteShortName");
 
 
-            org.json.JSONArray entries = new org.json.JSONArray();
             org.json.JSONArray entriesIncludingWaitingTime = new org.json.JSONArray();
 
 
@@ -64,26 +63,33 @@ public class GetWaitingList extends AbstractWebScript {
 
             List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
 
-            Iterator<NodeRef> iterator = nodeRefs.iterator();
 
-            while (iterator.hasNext()) {
-                NodeRef nodeRef = iterator.next();
-                entries.put(entryBean.toJSON(nodeRef));
-            }
-
-            // calculate the waiting time
             for (int i = 0; i < nodeRefs.size(); i++) {
                 NodeRef entry = (NodeRef)nodeRefs.get(i);
 
-                JSONObject e = entryBean.toJSON(entry);
-                String creationDate = (String)e.get("creationDate");
 
-                LocalDate d = LocalDate.parse(creationDate.substring(0,10));
+                JSONObject tmp = entryBean.toJSON(entry);
+                JSONObject e = new JSONObject();
+
+                String creationDate = (String)tmp.get("creationDate");
+
+                LocalDate d = LocalDate.parse(creationDate.substring(0, 10));
 
                 LocalDateTime timePoint = LocalDateTime.now();
                 LocalDate now = timePoint.toLocalDate();
-
                 e.put("waitingTime", d.until(now, ChronoUnit.DAYS));
+
+
+                e.put("caseNumber", tmp.get("caseNumber"));
+                e.put("cpr", tmp.get("cprNumber"));
+                e.put("fullName", tmp.get("fullName"));
+                e.put("creationDate", tmp.get("creationDate"));
+                e.put("doctor", tmp.get("doctor"));
+                e.put("closed", tmp.get("doctor"));
+                e.put("declarationDate", tmp.get("declarationDate"));
+                e.put("psychologist", tmp.get("psychologist"));
+
+
 
                 entriesIncludingWaitingTime.put(e);
             }
