@@ -43,6 +43,7 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
             int skip = Integer.valueOf(req.getParameter("skip"));
             int maxItems = Integer.valueOf(req.getParameter("maxItems"));
             String input = req.getParameter("input");
+            System.out.println("hvad er input" + input);
 
             String keyValue = "";
 
@@ -50,7 +51,7 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
                 keyValue = "[{\"key\" :\"cprNumber\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
             }
             else {
-                keyValue = "[{\"key\" :\"firstName\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
+                keyValue = "[{\"key\" :\"fullName\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
             }
             System.out.println("the json:" + keyValue);
 
@@ -62,6 +63,8 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
             String query = QueryUtils.getKeyValueQuery(siteShortName, type, new org.json.JSONArray(keyValue));
 
             List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
+
+            System.out.println(nodeRefs);
 
             Iterator<NodeRef> i = nodeRefs.iterator();
 

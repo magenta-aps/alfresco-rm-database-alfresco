@@ -65,7 +65,7 @@ public class GetWaitingList extends AbstractWebScript {
 
 
             for (int i = 0; i < nodeRefs.size(); i++) {
-                NodeRef entry = (NodeRef)nodeRefs.get(i);
+                NodeRef entry = nodeRefs.get(i);
 
 
                 JSONObject tmp = entryBean.toJSON(entry);
@@ -81,7 +81,7 @@ public class GetWaitingList extends AbstractWebScript {
 
 
                 e.put("caseNumber", tmp.get("caseNumber"));
-                e.put("cpr", tmp.get("cprNumber"));
+                e.put("cprNumber", tmp.get("cprNumber"));
                 e.put("fullName", tmp.get("fullName"));
                 e.put("creationDate", tmp.get("creationDate"));
                 e.put("doctor", tmp.get("doctor"));
