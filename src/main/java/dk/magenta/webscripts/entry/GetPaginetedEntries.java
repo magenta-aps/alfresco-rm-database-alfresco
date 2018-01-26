@@ -5,9 +5,11 @@ import dk.magenta.beans.EntryBean;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.activiti.engine.impl.util.json.JSONArray;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.extensions.surf.util.Content;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
@@ -35,6 +37,8 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
         Map<String, String> templateArgs = req.getServiceMatch().getTemplateVars();
         res.setContentEncoding("UTF-8");
+        Content c = req.getContent();
+
         Writer webScriptWriter = res.getWriter();
         JSONObject result = new JSONObject();
 
@@ -42,14 +46,148 @@ public class GetPaginetedEntries extends AbstractWebScript {
             String siteShortName = templateArgs.get("siteShortName");
             int skip = Integer.valueOf(req.getParameter("skip"));
             int maxItems = Integer.valueOf(req.getParameter("maxItems"));
+
+
+
             String keyValue = req.getParameter("keyValue");
 
 
+            // setup query
+
+            JSONObject input = new JSONObject(c.getContent());
+            JSONArray queryArray = new JSONArray();
+
+            if (input.has("waitingTime")) {
+                JSONObject o = new JSONObject();
+                o.put("key", QueryUtils.mapWaitingType(input.getJSONObject("waitingTime").getString("modifier")));
+                o.put("value", QueryUtils.waitingQuery(input.getJSONObject("waitingTime").getInt("days"), input.getJSONObject("waitingTime").getString("operator")));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("mainCharge")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "mainCharge");
+                o.put("value", input.get("mainCharge"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("sanctionProposal")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "sanctionProposal");
+                o.put("value", input.get("sanctionProposal"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("placement")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "placement");
+                o.put("value", input.get("placement"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("mainDiagnosis")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "mainDiagnosis");
+                o.put("value", input.get("mainDiagnosis"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("status")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "status");
+                o.put("value", input.get("status"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("givenDeclaration")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "givenDeclaration");
+                o.put("value", input.get("givenDeclaration"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("doctor")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "doctor");
+                o.put("value", input.get("doctor"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("noDeclaration")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "noDeclaration");
+                o.put("value", input.get("noDeclaration"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("closedWithoutDeclarationReason")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "closedWithoutDeclarationReason");
+                o.put("value", input.get("closedWithoutDeclarationReason"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("psychEval")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "psychEval");
+
+
+                if (input.get("psychEval").equals("true"))
+                    o.put("value", "-@rm\\:psychologist:NULL");
+                else {
+                    o.put("value", "@rm\\:psychologist:NULL");
+                }
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("psychologist")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "psychologist");
+                o.put("value", input.get("psychologist"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("socialEval")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "socialEval");
+
+                if (input.get("socialEval").equals("true"))
+                    o.put("value", "-@rm\\:socialworker:NULL");
+                else {
+                    o.put("value", "@rm\\:socialworker:NULL");
+                }
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("socialworker")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "socialworker");
+                o.put("value", input.get("socialworker"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
             org.json.JSONArray entries = new org.json.JSONArray();
 
-
             String type = databaseBean.getType(siteShortName);
-            String query = QueryUtils.getKeyValueQuery(siteShortName, type, new org.json.JSONArray(keyValue));
+            String query = QueryUtils.getKeyValueQuery(siteShortName, type, queryArray);
+            System.out.println("the query");
+            System.out.println(query);
+
+
 
             List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
 
@@ -66,11 +204,22 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 e.put("cpr", tmp.get("cprNumber"));
                 e.put("fullName", tmp.get("fullName"));
                 e.put("creationDate", tmp.get("creationDate"));
-                e.put("doctor", tmp.get("doctor"));
-                e.put("closed", tmp.get("doctor"));
-                e.put("declarationDate", tmp.get("declarationDate"));
-                e.put("psychologist", tmp.get("psychologist"));
 
+                if (tmp.has("doctor")) {
+                    e.put("doctor", tmp.get("doctor"));
+                }
+
+                if (tmp.has("closed")) {
+                    e.put("closed", tmp.get("closed"));
+                }
+
+                if (tmp.has("declarationDate")) {
+                    e.put("declarationDate", tmp.get("declarationDate"));
+                }
+
+                if (tmp.has("psychologist")) {
+                    e.put("psychologist", tmp.get("psychologist"));
+                }
 
                 entries.put(e);
             }
@@ -84,9 +233,9 @@ public class GetPaginetedEntries extends AbstractWebScript {
             e.printStackTrace();
             result = JSONUtils.getError(e);
             res.setStatus(400);
-        }
+                }
 
-        JSONUtils.write(webScriptWriter, result);
+                    JSONUtils.write(webScriptWriter, result);
     }
 }
 

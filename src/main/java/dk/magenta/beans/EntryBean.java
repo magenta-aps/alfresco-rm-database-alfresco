@@ -6,6 +6,7 @@ import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.TypeUtils;
 import org.activiti.engine.impl.util.json.JSONArray;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.search.impl.solr.facet.FacetQueryProvider;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockType;
@@ -208,8 +209,12 @@ public class EntryBean {
 
         SearchParameters sp = new SearchParameters();
         sp.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+
+
+
         sp.setLanguage("lucene");
         sp.setQuery(query);
+
         sp.setMaxItems(maxItems);
         sp.setSkipCount(skip);
         sp.addSort(sort, desc);

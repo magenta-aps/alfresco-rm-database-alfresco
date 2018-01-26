@@ -13,7 +13,15 @@ public interface DatabaseModel {
     public static String DATABASE = "database";
 
     public static QName PROP_DATABASE_TYPE = QName.createQName(RM_MODEL_URI, "databaseType");
+
     public static QName PROP_CREATION_DATE = QName.createQName(RM_MODEL_URI, "creationDate");
+    public static QName PROP_OBSERVATION_DATE = QName.createQName(RM_MODEL_URI, "observationDate");
+    public static QName PROP_DECLARATION_DATE = QName.createQName(RM_MODEL_URI, "declarationDate");
+
+    public static QName PROP_WAITING_PASSIVE = QName.createQName(RM_MODEL_URI, "waiting_passive");
+    public static QName PROP_WAITING_ACTIVE = QName.createQName(RM_MODEL_URI, "waiting_active");
+    public static QName PROP_WAITING_TOTAL = QName.createQName(RM_MODEL_URI, "waiting_total");
+
     public static QName PROP_CLOSED = QName.createQName(RM_MODEL_URI, "closed");
 
     public static String TYPE_PSYC_DEC = "forensicPsychiatryDeclaration";

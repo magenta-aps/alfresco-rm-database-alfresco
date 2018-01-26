@@ -220,6 +220,27 @@
                     <type>d:text</type>
                 </property>
 
+
+                <!-- wainting time-->
+
+                <property name="rm:waiting_passive">
+                    <title>Postnr.</title>
+                    <type>d:int</type>
+                </property>
+
+                <property name="rm:waiting_active">
+                    <title>Postnr.</title>
+                    <type>d:int</type>
+                </property>
+
+                <property name="rm:waiting_total">
+                    <title>Postnr.</title>
+                    <type>d:int</type>
+                </property>
+
+
+
+
                 <!-- generic -->
 
                 <property name="rm:locked4edit">
