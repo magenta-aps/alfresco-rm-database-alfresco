@@ -90,7 +90,6 @@ public class GetWaitingList extends AbstractWebScript {
                 e.put("psychologist", tmp.get("psychologist"));
 
 
-
                 entriesIncludingWaitingTime.put(e);
             }
 
@@ -119,3 +118,4 @@ public class GetWaitingList extends AbstractWebScript {
 
 
 // F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/database/retspsyk/entry/445644-4545-4564-8848-1849155'
+

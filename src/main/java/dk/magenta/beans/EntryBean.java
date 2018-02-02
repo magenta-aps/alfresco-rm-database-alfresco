@@ -26,6 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class EntryBean {
@@ -202,6 +205,49 @@ public class EntryBean {
         }
         else return null;
     }
+
+    public JSONObject calculatePassive(NodeRef entryKey) {
+        Date timePoint = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
+        LocalDate creationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        timePoint = (Date)nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
+        LocalDate observationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        long waitingTime = creationDate.until(observationDate, ChronoUnit.DAYS);
+
+        nodeService.setProperty(entryKey, DatabaseModel.PROP_WAITING_PASSIVE, waitingTime);
+
+        return JSONUtils.getSuccess();
+    }
+
+    public JSONObject calculateActive(NodeRef entryKey) {
+
+        Date timePoint = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_DECLARATION_DATE);
+        LocalDate declaration = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        timePoint = (Date)nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
+        LocalDate observationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        long waitingTime = observationDate.until(declaration, ChronoUnit.DAYS);
+
+        nodeService.setProperty(entryKey, DatabaseModel.PROP_WAITING_ACTIVE, waitingTime);
+        return JSONUtils.getSuccess();
+    }
+
+    public JSONObject calculateTotal(NodeRef entryKey) {
+        Date timePoint = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
+        LocalDate creationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        timePoint = (Date)nodeService.getProperty(entryKey, DatabaseModel.PROP_DECLARATION_DATE);
+        LocalDate declarationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        long waitingTime = creationDate.until(declarationDate,ChronoUnit.DAYS );
+
+        nodeService.setProperty(entryKey, DatabaseModel.PROP_WAITING_TOTAL, waitingTime);
+        return JSONUtils.getSuccess();
+    }
+
+
 
 
 

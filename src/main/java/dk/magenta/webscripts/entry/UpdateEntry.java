@@ -40,6 +40,38 @@ public class UpdateEntry extends AbstractWebScript {
             String uuid = templateArgs.get("uuid");
             NodeRef nodeRef = entryBean.getNodeRef(uuid);
             entryBean.updateEntry(nodeRef, properties);
+
+
+            // TODO make a proper setup for handling business rules - if the system needs to be used at different cusotmers
+
+
+            System.out.println("tak for lor22t");
+
+            System.out.println(jsonProperties.toString());
+
+            if ( jsonProperties.has("observationDate") && jsonProperties.has("declarationDate") ) {
+                System.out.println("all three");
+
+                entryBean.calculateActive(nodeRef);
+                entryBean.calculatePassive(nodeRef);
+                entryBean.calculateTotal(nodeRef);
+
+
+            } else if (jsonProperties.has("observationDate") && !jsonProperties.has("declarationDate")) {
+                System.out.println("only dat one");
+                entryBean.calculatePassive(nodeRef);
+            }
+
+
+
+
+//            if (jsonProperties.get(Conten) ==) {
+//
+//            }
+//            else if (){
+//
+//            }
+
             result = entryBean.toJSON(nodeRef);
 
         } catch (Exception e) {
