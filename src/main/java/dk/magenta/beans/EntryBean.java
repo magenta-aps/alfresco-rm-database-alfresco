@@ -207,7 +207,6 @@ public class EntryBean {
     }
 
     public JSONObject calculatePassive(NodeRef entryKey) {
-        System.out.println("inside passive");
 
 
         Date creation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
@@ -225,10 +224,7 @@ public class EntryBean {
         boolean locked = lockService.isLockedAndReadOnly(entryKey);
 
         if (locked) {
-            System.out.println("hey");
             lockService.unlock(entryKey);
-            System.out.println("entryKey was unlocked");
-            System.out.println(entryKey);
         }
 
 
@@ -244,10 +240,7 @@ public class EntryBean {
         nodeService.setProperty(entryKey, DatabaseModel.PROP_WAITING_PASSIVE, waitingTime);
 
         if (locked) {
-            System.out.println("hey");
             lockService.lock(entryKey, LockType.READ_ONLY_LOCK);
-            System.out.println("entryKey was locked");
-            System.out.println(entryKey);
         }
 
         return JSONUtils.getSuccess();
@@ -271,10 +264,7 @@ public class EntryBean {
         boolean locked = lockService.isLockedAndReadOnly(entryKey);
 
         if (locked) {
-            System.out.println("hey");
             lockService.unlock(entryKey);
-            System.out.println("entryKey was unlocked");
-            System.out.println(entryKey);
         }
 
 
@@ -291,10 +281,7 @@ public class EntryBean {
 
 
         if (locked) {
-            System.out.println("hey");
             lockService.lock(entryKey, LockType.READ_ONLY_LOCK);
-            System.out.println("entryKey was locked");
-            System.out.println(entryKey);
         }
 
         return JSONUtils.getSuccess();
@@ -306,10 +293,6 @@ public class EntryBean {
         Date creation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
         Date declaration = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_DECLARATION_DATE);
 
-        System.out.println("inside total");
-        System.out.println("what is creation" + creation);
-        System.out.println("whats is declaration" + declaration);
-
 
         if (creation == null || declaration == null) {
             return JSONUtils.getError(new Exception("missing observation or creation date"));
@@ -319,10 +302,7 @@ public class EntryBean {
         boolean locked = lockService.isLockedAndReadOnly(entryKey);
 
         if (locked) {
-            System.out.println("hey");
             lockService.unlock(entryKey);
-            System.out.println("entryKey was unlocked");
-            System.out.println(entryKey);
         }
 
 
@@ -338,10 +318,7 @@ public class EntryBean {
 
 
         if (locked) {
-            System.out.println("hey");
             lockService.lock(entryKey, LockType.READ_ONLY_LOCK);
-            System.out.println("entryKey was locked");
-            System.out.println(entryKey);
         }
 
 
