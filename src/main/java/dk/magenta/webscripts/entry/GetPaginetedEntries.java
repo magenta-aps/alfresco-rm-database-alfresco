@@ -59,8 +59,8 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             if (input.has("waitingTime")) {
                 JSONObject o = new JSONObject();
-                o.put("key", QueryUtils.mapWaitingType(input.getJSONObject("waitingTime").getString("modifier")));
-                o.put("value", QueryUtils.waitingQuery(input.getJSONObject("waitingTime").getInt("days"), input.getJSONObject("waitingTime").getString("operator")));
+                o.put("key", QueryUtils.mapWaitingType(input.getJSONObject("waitingTime").getString("time")));
+                o.put("value", QueryUtils.waitingQuery(input.getJSONObject("waitingTime").getInt("days"), input.getJSONObject("waitingTime").getString("modifier")));
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -68,7 +68,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("mainCharge")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "mainCharge");
-                o.put("value", input.get("mainCharge"));
+                o.put("value", "\"" + input.get("mainCharge") + "\"");
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -76,7 +76,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("sanctionProposal")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "sanctionProposal");
-                o.put("value", input.get("sanctionProposal"));
+                o.put("value", "\"" + input.get("sanctionProposal") + "\"");
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -84,7 +84,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("placement")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "placement");
-                o.put("value", input.get("placement"));
+                o.put("value", "\"" + input.get("placement") + "\"");
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -92,7 +92,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("mainDiagnosis")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "mainDiagnosis");
-                o.put("value", input.get("mainDiagnosis"));
+                o.put("value", "\"" + input.get("mainDiagnosis") + "\"");
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -242,3 +242,4 @@ public class GetPaginetedEntries extends AbstractWebScript {
 // F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/database/retspsyk/entry/445644-4545-4564-8848-1849155'
 
 //http://localhost:8080/alfresco/service/database/retspsyk/page_entries?skip=0&maxItems=10&keyValue=[{"key":"cprNumber","value" : "220111571234", "include" : "true"}]
+

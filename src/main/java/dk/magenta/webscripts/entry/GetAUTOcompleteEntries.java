@@ -75,7 +75,10 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
                 JSONObject tmp = entryBean.toJSON(nodeRef);
                 JSONObject e = new JSONObject();
 
-                e.put("cprNumber", tmp.get("cprNumber"));
+                if (tmp.has("cprNumber")) {
+                    e.put("cprNumber", tmp.get("cprNumber"));
+                }
+
                 e.put("caseNumber", tmp.get("caseNumber"));
                 e.put("firstName", tmp.get("firstName"));
                 e.put("lastName", tmp.get("lastName"));
@@ -86,7 +89,7 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
             result.put("entries", entries);
             result.put("back", skip);
             result.put("next", skip + maxItems);
-            result.put("total",  entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true).size());
+            result.put("total", entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true).size());
 
         } catch (Exception e) {
             e.printStackTrace();

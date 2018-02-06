@@ -207,34 +207,125 @@ public class EntryBean {
     }
 
     public JSONObject calculatePassive(NodeRef entryKey) {
+        System.out.println("inside passive");
+
+
+        Date creation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
+        Date observation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
+
+        System.out.println(creation);
+        System.out.println(observation);
+
+
+        if (creation == null || observation == null) {
+            return JSONUtils.getError(new Exception("missing observation or creation date"));
+        }
+
+
+        boolean locked = lockService.isLockedAndReadOnly(entryKey);
+
+        if (locked) {
+            System.out.println("hey");
+            lockService.unlock(entryKey);
+            System.out.println("entryKey was unlocked");
+            System.out.println(entryKey);
+        }
+
+
+
         Date timePoint = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
         LocalDate creationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         timePoint = (Date)nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
         LocalDate observationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        long waitingTime = creationDate.until(observationDate, ChronoUnit.DAYS);
+        long waitingTime = creationDate.until(observationDate,ChronoUnit.DAYS );
 
         nodeService.setProperty(entryKey, DatabaseModel.PROP_WAITING_PASSIVE, waitingTime);
+
+        if (locked) {
+            System.out.println("hey");
+            lockService.lock(entryKey, LockType.READ_ONLY_LOCK);
+            System.out.println("entryKey was locked");
+            System.out.println(entryKey);
+        }
 
         return JSONUtils.getSuccess();
     }
 
     public JSONObject calculateActive(NodeRef entryKey) {
 
+        Date declaration = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_DECLARATION_DATE);
+        Date observation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
+
+        System.out.println(declaration);
+        System.out.println(observation);
+
+
+        if (declaration == null || observation == null) {
+            return JSONUtils.getError(new Exception("missing declaration or observation date"));
+        }
+
+
+
+        boolean locked = lockService.isLockedAndReadOnly(entryKey);
+
+        if (locked) {
+            System.out.println("hey");
+            lockService.unlock(entryKey);
+            System.out.println("entryKey was unlocked");
+            System.out.println(entryKey);
+        }
+
+
+
         Date timePoint = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_DECLARATION_DATE);
-        LocalDate declaration = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate declarationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         timePoint = (Date)nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
         LocalDate observationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        long waitingTime = observationDate.until(declaration, ChronoUnit.DAYS);
+        long waitingTime = observationDate.until(declarationDate,ChronoUnit.DAYS );
 
         nodeService.setProperty(entryKey, DatabaseModel.PROP_WAITING_ACTIVE, waitingTime);
+
+
+        if (locked) {
+            System.out.println("hey");
+            lockService.lock(entryKey, LockType.READ_ONLY_LOCK);
+            System.out.println("entryKey was locked");
+            System.out.println(entryKey);
+        }
+
         return JSONUtils.getSuccess();
     }
 
     public JSONObject calculateTotal(NodeRef entryKey) {
+
+
+        Date creation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
+        Date declaration = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_DECLARATION_DATE);
+
+        System.out.println("inside total");
+        System.out.println("what is creation" + creation);
+        System.out.println("whats is declaration" + declaration);
+
+
+        if (creation == null || declaration == null) {
+            return JSONUtils.getError(new Exception("missing observation or creation date"));
+        }
+
+
+        boolean locked = lockService.isLockedAndReadOnly(entryKey);
+
+        if (locked) {
+            System.out.println("hey");
+            lockService.unlock(entryKey);
+            System.out.println("entryKey was unlocked");
+            System.out.println(entryKey);
+        }
+
+
         Date timePoint = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
         LocalDate creationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
@@ -244,6 +335,16 @@ public class EntryBean {
         long waitingTime = creationDate.until(declarationDate,ChronoUnit.DAYS );
 
         nodeService.setProperty(entryKey, DatabaseModel.PROP_WAITING_TOTAL, waitingTime);
+
+
+        if (locked) {
+            System.out.println("hey");
+            lockService.lock(entryKey, LockType.READ_ONLY_LOCK);
+            System.out.println("entryKey was locked");
+            System.out.println(entryKey);
+        }
+
+
         return JSONUtils.getSuccess();
     }
 

@@ -81,13 +81,28 @@ public class GetWaitingList extends AbstractWebScript {
 
 
                 e.put("caseNumber", tmp.get("caseNumber"));
-                e.put("cprNumber", tmp.get("cprNumber"));
                 e.put("fullName", tmp.get("fullName"));
                 e.put("creationDate", tmp.get("creationDate"));
-                e.put("doctor", tmp.get("doctor"));
-                e.put("closed", tmp.get("doctor"));
-                e.put("declarationDate", tmp.get("declarationDate"));
-                e.put("psychologist", tmp.get("psychologist"));
+
+                if (tmp.has("cprNumber")) {
+                    e.put("cprNumber", tmp.get("cprNumber"));
+                }
+
+
+
+                if (tmp.has("closed")) {
+                    e.put("closed", tmp.get("closed"));
+                }
+                else {
+                    e.put("closed", "false");
+                }
+
+
+                if (tmp.has("declarationDate")) {
+                    e.put("declarationDate", tmp.get("declarationDate"));
+                }
+
+
 
 
                 entriesIncludingWaitingTime.put(e);

@@ -7,6 +7,8 @@ import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
 import net.sf.cglib.core.Local;
 import org.alfresco.model.ContentModel;
+import org.alfresco.service.cmr.lock.LockService;
+import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.json.JSONException;
@@ -39,6 +41,12 @@ public class WaitingTime extends AbstractWebScript {
 
     private NodeService nodeService;
 
+    public void setLockService(LockService lockService) {
+        this.lockService = lockService;
+    }
+
+    private LockService lockService;
+
     public void setEntryBean(EntryBean entryBean) {
         this.entryBean = entryBean;
     }
@@ -65,23 +73,23 @@ public class WaitingTime extends AbstractWebScript {
 
             NodeRef nodeRef = entryBean.getEntry(query);
 
-            this.calculatePassive(nodeRef);
-            this.calculateActive(nodeRef);
-            this.calculateTotal(nodeRef);
-
+            System.out.println("method");
+            System.out.println(method);
+            System.out.println("entryvalue");
+            System.out.println(entryValue);
 
             if (method != null) {
                 switch (method) {
                     case "calculatePassive":
-                        result =  this.calculatePassive(nodeRef);
+                        result =  entryBean.calculatePassive(nodeRef);
                         break;
 
                     case "calculateActive":
-                        result = this.calculateActive(nodeRef);
+                        result = entryBean.calculateActive(nodeRef);
                         break;
 
                     case "calculateTotal":
-                        result = this.calculateTotal(nodeRef);
+                        result = entryBean.calculateTotal(nodeRef);
                         break;
 
                     case "calculateALLDeclarations":
@@ -99,48 +107,6 @@ public class WaitingTime extends AbstractWebScript {
         JSONUtils.write(webScriptWriter, result);
     }
 
-
-    private JSONObject calculatePassive(NodeRef entryKey) {
-        Date timePoint = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
-        LocalDate creationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        timePoint = (Date)nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
-        LocalDate observationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        long waitingTime = creationDate.until(observationDate,ChronoUnit.DAYS );
-
-        nodeService.setProperty(entryKey, DatabaseModel.PROP_WAITING_PASSIVE, waitingTime);
-
-        return JSONUtils.getSuccess();
-    }
-
-    private JSONObject calculateActive(NodeRef entryKey) {
-
-        Date timePoint = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_DECLARATION_DATE);
-        LocalDate declaration = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        timePoint = (Date)nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
-        LocalDate observationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        long waitingTime = observationDate.until(declaration,ChronoUnit.DAYS );
-
-        nodeService.setProperty(entryKey, DatabaseModel.PROP_WAITING_ACTIVE, waitingTime);
-        return JSONUtils.getSuccess();
-    }
-
-    private JSONObject calculateTotal(NodeRef entryKey) {
-        Date timePoint = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
-        LocalDate creationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        timePoint = (Date)nodeService.getProperty(entryKey, DatabaseModel.PROP_DECLARATION_DATE);
-        LocalDate declarationDate = timePoint.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        long waitingTime = creationDate.until(declarationDate,ChronoUnit.DAYS );
-
-        nodeService.setProperty(entryKey, DatabaseModel.PROP_WAITING_TOTAL, waitingTime);
-        return JSONUtils.getSuccess();
-    }
-
     private JSONObject calculateAllDeclarations(String siteShortName) {
 
         Set<NodeRef> nodeRefs = null;
@@ -156,21 +122,11 @@ public class WaitingTime extends AbstractWebScript {
         while (iterator.hasNext()) {
             NodeRef nodeRef = iterator.next();
 
-            Date creation = (Date) nodeService.getProperty(nodeRef, DatabaseModel.PROP_CREATION_DATE);
-            Date declaration = (Date) nodeService.getProperty(nodeRef, DatabaseModel.PROP_DECLARATION_DATE);
-            Date observation = (Date) nodeService.getProperty(nodeRef, DatabaseModel.PROP_OBSERVATION_DATE);
+            entryBean.calculatePassive(nodeRef);
 
-            if (creation != null && observation != null) {
-                this.calculatePassive(nodeRef);
-            }
+            entryBean.calculateActive(nodeRef);
 
-            if (declaration != null && observation != null) {
-                this.calculateActive(nodeRef);
-            }
-
-            if (creation != null && declaration != null) {
-                this.calculateTotal(nodeRef);
-            }
+            entryBean.calculateTotal(nodeRef);
         }
 
         return JSONUtils.getSuccess();

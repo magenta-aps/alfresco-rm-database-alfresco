@@ -30,6 +30,7 @@
 		<property name="entryBean" ref="entryBean"/>
 		<property name="databaseBean" ref="databaseBean"/>
 		<property name="nodeService" ref="NodeService"/>
+		<property name="lockService" ref="LockService"/>
 	</bean>
 
 	<bean id="webscript.entries.page_entries.post" class="dk.magenta.webscripts.entry.GetPaginetedEntries" parent="webscript">
