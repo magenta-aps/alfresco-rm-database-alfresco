@@ -375,10 +375,6 @@ public class EntryBean {
     }
 
     public ArrayList getNotClosedEntries (String siteShortName) throws JSONException {
-
-
-
-
         NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
         return this.getNotClosedEntries(docLibRef, 4);
     }
