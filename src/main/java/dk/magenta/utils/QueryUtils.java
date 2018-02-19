@@ -69,7 +69,7 @@ public class QueryUtils {
             return "[" + days + " TO MAX]";
         }
         else if (operator.equals("under")) {
-            return "[MIN TO" + days + " ]";
+            return "[MIN TO " + days + " ]";
         }
         else {
             return String.valueOf(days);

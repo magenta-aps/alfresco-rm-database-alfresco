@@ -35,6 +35,7 @@ public class GetEntries extends AbstractWebScript {
 
             Set<NodeRef> nodeRefs = entryBean.getEntries(siteShortName);
             Iterator<NodeRef> iterator = nodeRefs.iterator();
+            System.out.println("det totale antal erklæringer:" + nodeRefs.size());
 
             while (iterator.hasNext()) {
                 NodeRef nodeRef = iterator.next();
