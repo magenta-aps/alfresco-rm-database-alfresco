@@ -45,4 +45,7 @@ public class GetPropertyValues extends AbstractWebScript {
     }
 }
 
+
+
+
 // F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/propertyValues?siteShortName=retspsyk'

@@ -11,6 +11,7 @@
         <property name="searchService" ref="SearchService"/>
         <property name="lockService" ref="LockService"/>
         <property name="fileFolderService" ref="FileFolderService"/>
+        <property name="auditComponent" ref="auditComponent"/>
     </bean>
 
     <bean id="propertyValuesBean" class="dk.magenta.beans.PropertyValuesBean">
@@ -25,7 +26,6 @@
         <property name="permissionService" ref="PermissionService"/>
         <property name="siteService" ref="SiteService"/>
         <property name="downloadService" ref="DownloadService"/>
-        <property name="repository" ref="repositoryHelper"/>
     </bean>
 
     <bean id="databaseBean" class="dk.magenta.beans.DatabaseBean">

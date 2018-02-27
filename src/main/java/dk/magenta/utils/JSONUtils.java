@@ -1,6 +1,7 @@
 package dk.magenta.utils;
 
 import dk.magenta.model.DatabaseModel;
+import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.preference.PreferenceService;
 import org.alfresco.service.namespace.QName;
@@ -122,7 +123,10 @@ public class JSONUtils {
         Iterator keys = json.keys();
         while (keys.hasNext()) {
             String key = (String) keys.next();
-            QName qName = QName.createQName(DatabaseModel.RM_MODEL_URI, key);
+            String modelUri = DatabaseModel.RM_MODEL_URI;
+            if(key.equals("name"))
+                modelUri = DatabaseModel.CONTENT_MODEL_URI;
+            QName qName = QName.createQName(modelUri, key);
             map.put(qName, json.getString(key));
         }
         return map;

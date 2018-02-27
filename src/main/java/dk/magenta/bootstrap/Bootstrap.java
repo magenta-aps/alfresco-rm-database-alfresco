@@ -77,6 +77,8 @@ public class Bootstrap extends AbstractLifecycleBean {
 */
         // Load property values
 
+        System.out.println("starting bootstrap");
+
         try {
             List<SiteInfo> siteInfos = siteService.findSites("", 0);
             for(SiteInfo s: siteInfos)

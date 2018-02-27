@@ -4,9 +4,12 @@ import com.sun.syndication.feed.rss.Content;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.TypeUtils;
+import net.sf.acegisecurity.Authentication;
 import org.activiti.engine.impl.util.json.JSONArray;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.impl.solr.facet.FacetQueryProvider;
+import org.alfresco.repo.audit.AuditComponent;
+import org.alfresco.repo.audit.AuditComponentImpl;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockType;
@@ -20,6 +23,7 @@ import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONException;
@@ -37,6 +41,8 @@ public class EntryBean {
     private SiteService siteService;
     private SearchService searchService;
     private LockService lockService;
+    private AuditComponent auditComponent;
+    private AuthenticationService authenticationService;
 
     public FileFolderService getFileFolderService() {
         return fileFolderService;
@@ -59,6 +65,9 @@ public class EntryBean {
     }
     public void setLockService(LockService lockService) {
         this.lockService = lockService;
+    }
+    public void setAuditComponent(AuditComponent auditComponent) {
+        this.auditComponent = auditComponent;
     }
 
     public NodeRef addEntry (String siteShortName, String type, Map<QName, Serializable> properties) throws JSONException {
@@ -201,6 +210,7 @@ public class EntryBean {
 
         if(iterator.hasNext()) {
             ResultSetRow result = iterator.next();
+            logEntryReadToAudit();
             return result.getNodeRef();
         }
         else return null;
@@ -387,29 +397,37 @@ public class EntryBean {
         for (ChildAssociationRef childRef : childrenRefs) {
             NodeRef nodeRef = childRef.getChildRef();
             if (levels == 0) {
-                Serializable closed =  nodeService.getProperty(nodeRef, DatabaseModel.PROP_CLOSED);
+                Serializable closed = nodeService.getProperty(nodeRef, DatabaseModel.PROP_CLOSED);
 
 
                 // when a case is created, the property closed is missing
                 if (closed == null) {
                     result.add(nodeRef);
-                }
-                else {
+                } else {
 
-                    boolean isclosed = (Boolean)closed;
+                    boolean isclosed = (Boolean) closed;
 
                     if (isclosed == false) {
                         result.add(nodeRef);
                     }
                 }
-            }
-            else {
+            } else {
                 ArrayList entries = getNotClosedEntries(nodeRef, levels);
                 if (entries != null)
                     result.addAll(entries);
             }
         }
         return result;
+    }
+    private void logEntryReadToAudit() {
+        String root = "/alfresco-access";
+        Map<String, Serializable> map = new HashMap<>();
+        map.put("/transaction/action", "READ");
+        map.put("/transaction/sub-actions", "readContent");
+        map.put("/transaction/type", "rm:forensicPsychiatryDeclaration");
+        map.put("/transaction/user", "alexander");
+        map.put("/transaction/path", "/app:company_home/st:sites/cm:retspsyk/cm:documentLibrary");
+        auditComponent.recordAuditValues(root, map);
     }
 }
 

@@ -52,6 +52,7 @@ public class PropertyValuesBean {
             JSONObject result = new JSONObject();
 
             for (FileInfo fileInfo : fileInfos) {
+                System.out.println("fileinfo" + fileInfo.getName());
                 JSONArray values = new JSONArray();
                 NodeRef nodeRef = fileInfo.getNodeRef();
                 ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
