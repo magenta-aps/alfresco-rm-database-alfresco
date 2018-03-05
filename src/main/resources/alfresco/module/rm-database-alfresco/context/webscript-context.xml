@@ -68,6 +68,12 @@
 		<property name="propertyValuesBean" ref="propertyValuesBean"/>
 	</bean>
 
+	<bean id="webscript.user.createUser.get" class="dk.magenta.webscripts.user.CreateUser" parent="webscript">
+		<property name="personService" ref="PersonService"/>
+		<property name="authenticationService" ref="authenticationService"/>
+	</bean>
+
+
 	<bean id="webscript.contents.getchildnodes.get" class="dk.magenta.webscripts.contents.GetChildNodes" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>

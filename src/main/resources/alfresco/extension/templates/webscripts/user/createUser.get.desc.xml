@@ -1,0 +1,9 @@
+<webscript>
+    <shortname>create deactivated user</shortname>
+    <description>create deactivated user</description>
+    <url>/createUser</url>
+    <!--<authentication>guest</authentication>-->
+    <authentication>user</authentication>
+
+    <format default="json"/>
+</webscript>
