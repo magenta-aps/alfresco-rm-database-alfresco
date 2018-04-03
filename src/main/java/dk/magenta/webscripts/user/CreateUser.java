@@ -102,3 +102,5 @@ public class CreateUser extends AbstractWebScript {
 
 
 // F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/propertyValues?siteShortName=retspsyk'
+
+//curl -i -u admin:admin -X  -F 'img_avatar=@/home/petehouston/hello.txt' http://localhost/upload'
