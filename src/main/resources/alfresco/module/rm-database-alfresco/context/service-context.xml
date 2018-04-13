@@ -26,6 +26,7 @@
         <property name="permissionService" ref="PermissionService"/>
         <property name="siteService" ref="SiteService"/>
         <property name="downloadService" ref="DownloadService"/>
+        <property name="repository" ref="repositoryHelper"/>
     </bean>
 
     <bean id="databaseBean" class="dk.magenta.beans.DatabaseBean">
