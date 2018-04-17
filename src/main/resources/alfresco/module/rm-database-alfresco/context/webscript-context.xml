@@ -73,6 +73,10 @@
 		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 
+	<bean id="webscript.user.deactiveUser.get" class="dk.magenta.webscripts.user.DeactivatedUsers" parent="webscript">
+		<property name="siteService" ref="SiteService"/>
+	</bean>
+
 
 	<bean id="webscript.contents.getchildnodes.get" class="dk.magenta.webscripts.contents.GetChildNodes" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
