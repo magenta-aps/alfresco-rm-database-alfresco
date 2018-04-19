@@ -1,0 +1,9 @@
+<webscript>
+    <shortname>list deactivated users</shortname>
+    <description>list deactivated users</description>
+    <url>/listDeactivatedUsers</url>
+    <!--<authentication>guest</authentication>-->
+    <authentication>user</authentication>
+
+    <format default="json"/>
+</webscript>

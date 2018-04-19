@@ -77,6 +77,12 @@
 		<property name="siteService" ref="SiteService"/>
 	</bean>
 
+	<bean id="webscript.user.listDeactivatedUsers.get" class="dk.magenta.webscripts.user.ListOfDeactivatedUsers" parent="webscript">
+		<property name="personService" ref="PersonService"/>
+		<property name="nodeService" ref="NodeService"/>
+		<property name="siteService" ref="SiteService"/>
+	</bean>
+
 
 	<bean id="webscript.contents.getchildnodes.get" class="dk.magenta.webscripts.contents.GetChildNodes" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
