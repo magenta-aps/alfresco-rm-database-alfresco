@@ -76,25 +76,19 @@ public class ListOfDeactivatedUsers extends AbstractWebScript {
 
             boolean member =  siteService.isMember("retspsyk", (String)nodeService.getProperty(n, ContentModel.PROP_USERNAME));
 
-            if (!member) {
-
-                JSONObject o = new JSONObject();
-                try {
-                    o.put("nodeRef", n);
-                    o.put("userName", name);
-                    o.put("firstName", (String)nodeService.getProperty(n, ContentModel.PROP_FIRSTNAME));
-                    o.put("lastName", (String)nodeService.getProperty(n, ContentModel.PROP_LASTNAME));
-                    array.put(o);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
+            JSONObject o = new JSONObject();
+            try {
+                o.put("nodeRef", n);
+                o.put("userName", name);
+                o.put("firstName", (String)nodeService.getProperty(n, ContentModel.PROP_FIRSTNAME));
+                o.put("lastName", (String)nodeService.getProperty(n, ContentModel.PROP_LASTNAME));
+                o.put("active", member);
+                array.put(o);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
-
         JSONUtils.write(webScriptWriter, array);
-
     }
 }
 
