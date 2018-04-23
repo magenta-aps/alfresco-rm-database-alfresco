@@ -77,10 +77,11 @@
 		<property name="siteService" ref="SiteService"/>
 	</bean>
 
-	<bean id="webscript.user.listDeactivatedUsers.get" class="dk.magenta.webscripts.user.ListOfDeactivatedUsers" parent="webscript">
+	<bean id="webscript.user.userPermissions.get" class="dk.magenta.webscripts.user.UserPermissions" parent="webscript">
 		<property name="personService" ref="PersonService"/>
 		<property name="nodeService" ref="NodeService"/>
 		<property name="siteService" ref="SiteService"/>
+		<property name="authorityService" ref="AuthorityService"/>
 	</bean>
 
 
