@@ -50,27 +50,14 @@ public class UpdateEntry extends AbstractWebScript {
             System.out.println(jsonProperties.toString());
 
             if ( jsonProperties.has("observationDate") && jsonProperties.has("declarationDate") ) {
-                System.out.println("all three");
-
                 entryBean.calculateActive(nodeRef);
                 entryBean.calculatePassive(nodeRef);
                 entryBean.calculateTotal(nodeRef);
 
 
             } else if (jsonProperties.has("observationDate") && !jsonProperties.has("declarationDate")) {
-                System.out.println("only dat one");
                 entryBean.calculatePassive(nodeRef);
             }
-
-
-
-
-//            if (jsonProperties.get(Conten) ==) {
-//
-//            }
-//            else if (){
-//
-//            }
 
             result = entryBean.toJSON(nodeRef);
 
