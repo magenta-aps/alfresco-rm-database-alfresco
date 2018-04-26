@@ -75,6 +75,8 @@
 
 	<bean id="webscript.user.deactivateUser.get" class="dk.magenta.webscripts.user.DeactivatedUsers" parent="webscript">
 		<property name="siteService" ref="SiteService"/>
+		<property name="authorityService" ref="AuthorityService"/>
+		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 
 	<bean id="webscript.user.userPermissions.get" class="dk.magenta.webscripts.user.UserPermissions" parent="webscript">

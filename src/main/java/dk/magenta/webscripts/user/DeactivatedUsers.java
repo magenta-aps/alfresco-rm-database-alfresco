@@ -5,10 +5,12 @@ import dk.magenta.utils.JSONUtils;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.MutableAuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -18,7 +20,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class DeactivatedUsers extends AbstractWebScript {
 
@@ -30,6 +34,30 @@ public class DeactivatedUsers extends AbstractWebScript {
 
     public void setAuthenticationService(MutableAuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
+    }
+
+
+    public void setAuthorityService(AuthorityService authorityService) {
+        this.authorityService = authorityService;
+    }
+
+    private AuthorityService authorityService;
+
+    private boolean isMember() {
+
+        String currentUser = authenticationService.getCurrentUserName();
+
+        Set<String> auths = authorityService.getAuthoritiesForUser(currentUser);
+        Iterator<String> authIt = auths.iterator();
+        while (authIt.hasNext()){
+            String group = authIt.next();
+            System.out.println(group);
+            if (group.equals("GROUP_site_retspsyk_SiteRoleManager")) {
+                System.out.println("i am the manager:" + currentUser);
+                return true;
+            }
+        }
+        return false;
     }
 
     MutableAuthenticationService authenticationService;
@@ -45,18 +73,26 @@ public class DeactivatedUsers extends AbstractWebScript {
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
 
-        webScriptResponse.setContentEncoding("UTF-8");
-        Writer webScriptWriter = webScriptResponse.getWriter();
-        JSONObject result;
+        AuthenticationUtil.setRunAsUserSystem();
 
-        Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
 
-        String userName = params.get("userName");
+        if (isMember()) {
 
-        siteService.removeMembership("retspsyk", userName);
+            webScriptResponse.setContentEncoding("UTF-8");
+            Writer webScriptWriter = webScriptResponse.getWriter();
+            JSONObject result;
 
-        result = JSONUtils.getSuccess();
-        JSONUtils.write(webScriptWriter, result);
+            Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
+
+            String userName = params.get("userName");
+
+            siteService.removeMembership("retspsyk", userName);
+
+            AuthenticationUtil.clearCurrentSecurityContext();
+
+            result = JSONUtils.getSuccess();
+            JSONUtils.write(webScriptWriter, result);
+        }
 
     }
 }
