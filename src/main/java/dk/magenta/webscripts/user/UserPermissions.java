@@ -5,6 +5,7 @@ import dk.magenta.beans.PropertyValuesBean;
 import dk.magenta.utils.JSONUtils;
 
 import org.alfresco.query.PagingResults;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -98,7 +99,7 @@ public class UserPermissions extends AbstractWebScript {
         Iterator i = allPeople.iterator();
         JSONArray array = new JSONArray();
 
-
+        AuthenticationUtil.setRunAsUserSystem();
         while (i.hasNext()) {
 
             NodeRef n = ((ChildAssociationRef)i.next()).getChildRef();
@@ -134,6 +135,7 @@ public class UserPermissions extends AbstractWebScript {
                 e.printStackTrace();
             }
         }
+        AuthenticationUtil.clearCurrentSecurityContext();
         JSONUtils.write(webScriptWriter, array);
     }
 }
