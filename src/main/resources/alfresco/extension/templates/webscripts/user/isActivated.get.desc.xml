@@ -1,0 +1,9 @@
+<webscript>
+    <shortname>check if user activated</shortname>
+    <description>check if user activated</description>
+    <url>/isActivated</url>
+    <!--<authentication>guest</authentication>-->
+    <authentication>user</authentication>
+
+    <format default="json"/>
+</webscript>
