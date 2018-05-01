@@ -2,29 +2,23 @@ package dk.magenta.webscripts.user;
 
 import dk.magenta.beans.PropertyValuesBean;
 import dk.magenta.utils.JSONUtils;
-import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.MutableAuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
-import org.alfresco.service.namespace.QName;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public class DeactivatedUsers extends AbstractWebScript {
+public class ActivateUser extends AbstractWebScript {
 
     private PropertyValuesBean propertyValuesBean;
 
@@ -86,7 +80,7 @@ public class DeactivatedUsers extends AbstractWebScript {
 
             String userName = params.get("userName");
 
-            siteService.removeMembership("retspsyk", userName);
+            siteService.setMembership("retspsyk", userName,"SiteCollaborator");
 
             AuthenticationUtil.clearCurrentSecurityContext();
 
