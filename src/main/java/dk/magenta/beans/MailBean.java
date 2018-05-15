@@ -18,6 +18,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.*;
 
@@ -73,45 +81,35 @@ public class MailBean {
                 ContentModel.TYPE_CONTENT, documentLibaryProps);
 
 
-        // set the dest mimetype
-        ContentData contentDataPDF = (ContentData) nodeService.getProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT);
-        contentDataPDF.setMimetype(contentDataPDF, MimetypeMap.MIMETYPE_PDF);
-
-        nodeService.setProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT,contentDataPDF);
-
-        contentDataPDF = (ContentData) nodeService.getProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT);
 
 
 
-
-        String originalMimeTypePDF = contentDataPDF.getMimetype();
-        System.out.println("hvad er pdf the mimetype:" + originalMimeTypePDF);
-
-
-        // hide the pdf from the users
-//        Map<QName, Serializable> aspectProps = new HashMap<>();
-//        nodeService.addAspect(pdf.getChildRef(), ContentModel.ASPECT_HIDDEN, aspectProps);
-
-        // Write to the new PDF
-//        String outputString = output.toString();
-//        ContentWriter writer = contentService.getWriter(child.getChildRef(), ContentModel.PROP_CONTENT, true);
-//        writer.setMimetype(MimetypeMap.MIMETYPE_TEXT_PLAIN);
-//        writer.setEncoding("UTF-8");
-//        writer.putContent(outputString);
+//        // set the dest mimetype
+//        ContentData contentDataPDF = (ContentData) nodeService.getProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT);
+//        contentDataPDF.setMimetype(contentDataPDF, MimetypeMap.MIMETYPE_PDF);
 //
-//        writer = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
-//        writer.setMimetype(MimetypeMap.MIMETYPE_PDF);
-//        writer.putContent(outputString);
+//        nodeService.setProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT,contentDataPDF);
+//
+//        contentDataPDF = (ContentData) nodeService.getProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT);
+//
+//
+//
+//
+//        String originalMimeTypePDF = contentDataPDF.getMimetype();
+//        System.out.println("hvad er pdf the mimetype:" + originalMimeTypePDF);
+//
+//
 
         ContentData contentData = (ContentData) nodeService.getProperty(source, ContentModel.PROP_CONTENT);
         String originalMimeType = contentData.getMimetype();
 
 
 
-
+//
 
         ContentReader pptReader = contentService.getReader(source, ContentModel.PROP_CONTENT);
         ContentWriter pdfWriter = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
+        pdfWriter.setMimetype(MimetypeMap.MIMETYPE_PDF);
         ContentTransformer pptToPdfTransformer = contentService.getTransformer(originalMimeType, MimetypeMap.MIMETYPE_PDF);
 
 
