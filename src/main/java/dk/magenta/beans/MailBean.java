@@ -63,7 +63,7 @@ public class MailBean {
 
         // Create new PDF
         Map<QName, Serializable> documentLibaryProps = new HashMap<>();
-        documentLibaryProps.put(ContentModel.PROP_NAME, source_name);
+        documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
 
         NodeRef parent = nodeService.getPrimaryParent(source).getParentRef();
 
