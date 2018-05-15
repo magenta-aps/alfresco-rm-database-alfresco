@@ -46,7 +46,7 @@ public class MailBean {
 
     public NodeRef[] getNodeRefsToMail(NodeRef[] noderefs) {
 
-        NodeRef[] result = new NodeRef[noderefs.length-1];
+        NodeRef[] result = new NodeRef[noderefs.length];
 
         for (int i =0; i<= noderefs.length-1; i++) {
 
