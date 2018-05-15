@@ -77,6 +77,8 @@ public class MailBean {
         ContentData contentDataPDF = (ContentData) nodeService.getProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT);
         contentDataPDF.setMimetype(contentDataPDF, MimetypeMap.MIMETYPE_PDF);
 
+        nodeService.setProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT,contentDataPDF);
+
         contentDataPDF = (ContentData) nodeService.getProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT);
 
 
