@@ -77,7 +77,13 @@ public class MailBean {
         ContentData contentDataPDF = (ContentData) nodeService.getProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT);
         contentDataPDF.setMimetype(contentDataPDF, MimetypeMap.MIMETYPE_PDF);
 
+        contentDataPDF = (ContentData) nodeService.getProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT);
 
+
+
+
+        String originalMimeTypePDF = contentDataPDF.getMimetype();
+        System.out.println("hvad er pdf the mimetype:" + originalMimeTypePDF);
 
 
         // hide the pdf from the users
