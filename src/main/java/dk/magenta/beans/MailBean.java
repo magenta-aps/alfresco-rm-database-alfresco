@@ -72,6 +72,14 @@ public class MailBean {
                 QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
                 ContentModel.TYPE_CONTENT, documentLibaryProps);
 
+
+        // set the dest mimetype
+        ContentData contentDataPDF = (ContentData) nodeService.getProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT);
+        contentDataPDF.setMimetype(contentDataPDF, MimetypeMap.MIMETYPE_PDF);
+
+
+
+
         // hide the pdf from the users
 //        Map<QName, Serializable> aspectProps = new HashMap<>();
 //        nodeService.addAspect(pdf.getChildRef(), ContentModel.ASPECT_HIDDEN, aspectProps);
@@ -92,11 +100,19 @@ public class MailBean {
 
 
 
+
+
         ContentReader pptReader = contentService.getReader(source, ContentModel.PROP_CONTENT);
         ContentWriter pdfWriter = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
         ContentTransformer pptToPdfTransformer = contentService.getTransformer(originalMimeType, MimetypeMap.MIMETYPE_PDF);
 
+
+        TransformationOptions options = new TransformationOptions();
+
+
         System.out.println("originalMimeType" + originalMimeType);
+
+
 
 
         pptToPdfTransformer.transform(pptReader, pdfWriter);
