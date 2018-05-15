@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Mail content</shortname>
+    <description>Mail content</description>
+    <url>/contents/mailcontent</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

@@ -107,6 +107,10 @@
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
+	<bean id="webscript.contents.mailcontent.get" class="dk.magenta.webscripts.contents.MailContent" parent="webscript">
+		<property name="mailBean" ref="mailBean"/>
+	</bean>
+
 	<bean id="webscript.contents.getdownloadstatus.get" class="dk.magenta.webscripts.contents.GetDownloadStatus" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
