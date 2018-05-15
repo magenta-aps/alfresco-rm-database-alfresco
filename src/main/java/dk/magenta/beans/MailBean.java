@@ -32,11 +32,6 @@ import java.util.*;
 public class MailBean {
 
     private NodeService nodeService;
-    private PermissionService permissionService;
-    private PersonService personService;
-    private SiteService siteService;
-    private DownloadService downloadService;
-    private Repository repository;
 
     public void setContentService(ContentService contentService) {
         this.contentService = contentService;
@@ -48,31 +43,27 @@ public class MailBean {
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
     }
-    public void setPermissionService(PermissionService permissionService) {
-        this.permissionService = permissionService;
-    }
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
-    }
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
+
+    public NodeRef[] getNodeRefsToMail(NodeRef[] noderefs) {
+
+        NodeRef[] result = new NodeRef[noderefs.length];
+
+        for (int i =0; i<= noderefs.length; i++) {
+
+            NodeRef doc = noderefs[i];
+            result[i] = transform(doc);
+
+        }
+        return result;
     }
 
-    public void setDownloadService(DownloadService downloadService) {
-        this.downloadService = downloadService;
-    }
-    public void setRepository(Repository repository)
-    {
-        this.repository = repository;
-    }
+    private NodeRef transform(NodeRef source) {
 
-    public void transform(NodeRef source) {
-
-        System.out.println("hvad er the source" + source);
+        String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);
 
         // Create new PDF
         Map<QName, Serializable> documentLibaryProps = new HashMap<>();
-        documentLibaryProps.put(ContentModel.PROP_NAME, "Medlemsoversigt.pdf");
+        documentLibaryProps.put(ContentModel.PROP_NAME, source_name);
 
         NodeRef parent = nodeService.getPrimaryParent(source).getParentRef();
 
@@ -81,47 +72,20 @@ public class MailBean {
                 ContentModel.TYPE_CONTENT, documentLibaryProps);
 
 
-
-
-
-//        // set the dest mimetype
-//        ContentData contentDataPDF = (ContentData) nodeService.getProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT);
-//        contentDataPDF.setMimetype(contentDataPDF, MimetypeMap.MIMETYPE_PDF);
-//
-//        nodeService.setProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT,contentDataPDF);
-//
-//        contentDataPDF = (ContentData) nodeService.getProperty(pdf.getChildRef(), ContentModel.PROP_CONTENT);
-//
-//
-//
-//
-//        String originalMimeTypePDF = contentDataPDF.getMimetype();
-//        System.out.println("hvad er pdf the mimetype:" + originalMimeTypePDF);
-//
-//
-
         ContentData contentData = (ContentData) nodeService.getProperty(source, ContentModel.PROP_CONTENT);
         String originalMimeType = contentData.getMimetype();
 
-
-
-//
-
         ContentReader pptReader = contentService.getReader(source, ContentModel.PROP_CONTENT);
         ContentWriter pdfWriter = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
+
         pdfWriter.setMimetype(MimetypeMap.MIMETYPE_PDF);
+
         ContentTransformer pptToPdfTransformer = contentService.getTransformer(originalMimeType, MimetypeMap.MIMETYPE_PDF);
 
 
-        TransformationOptions options = new TransformationOptions();
-
-
-        System.out.println("originalMimeType" + originalMimeType);
-
-
-
-
         pptToPdfTransformer.transform(pptReader, pdfWriter);
+
+        return pdf.getChildRef();
 
     }
 

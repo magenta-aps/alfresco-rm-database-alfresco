@@ -39,11 +39,6 @@
 
     <bean id="mailBean" class="dk.magenta.beans.MailBean">
         <property name="nodeService" ref="NodeService"/>
-        <property name="personService" ref="PersonService"/>
-        <property name="permissionService" ref="PermissionService"/>
-        <property name="siteService" ref="SiteService"/>
-        <property name="downloadService" ref="DownloadService"/>
-        <property name="repository" ref="repositoryHelper"/>
         <property name="contentService" ref="contentService"/>
     </bean>
 
