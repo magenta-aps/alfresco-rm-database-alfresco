@@ -157,7 +157,7 @@ public class MailBean {
 
                 }));
 
-                attachment.setFileName(nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString());
+                attachment.setFileName(nodeService.getProperty(transformed, ContentModel.PROP_NAME).toString());
 
                 // Create Multipart E-Mail.
 
