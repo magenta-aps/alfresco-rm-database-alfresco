@@ -49,7 +49,10 @@ public class MailContent extends AbstractWebScript {
                 nodeRefs[i] = nodeRef;
             }
 
-            mailBean.getNodeRefsToMail(nodeRefs);
+            // mailBean.getNodeRefsToMail(nodeRefs);
+
+            mailBean.sendEmail(nodeRefs);
+
 //            result = JSONUtils.getObject("downloadNodeRef", downloadNodeRef.toString());
             result = JSONUtils.getSuccess();
             JSONUtils.write(webScriptWriter, result);
@@ -59,6 +62,7 @@ public class MailContent extends AbstractWebScript {
             e.printStackTrace();
             result = JSONUtils.getError(e);
             webScriptResponse.setStatus(400);
+            JSONUtils.write(webScriptWriter, result);
         }
 
 
