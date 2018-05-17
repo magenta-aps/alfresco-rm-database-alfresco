@@ -97,7 +97,7 @@ public class MailBean {
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("fhp@magenta-aps.dk", "Aust09zx*");
+                        return new PasswordAuthentication("xxx", "xxx");
                     }
                 });
 
@@ -166,7 +166,7 @@ public class MailBean {
 
             msg.setContent(multipart);
 
-            Transport.send(msg, "fhp@magenta-aps.dk", "Aust09zx*");
+            Transport.send(msg, "xxx", "xxx*");
         } catch (MessagingException e) {
             e.printStackTrace();
         }
