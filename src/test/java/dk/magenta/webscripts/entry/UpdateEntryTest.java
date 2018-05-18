@@ -4,6 +4,7 @@ import dk.magenta.TestUtils;
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.rad.test.AbstractAlfrescoIT;
 import org.alfresco.rad.test.AlfrescoTestRunner;
+import org.alfresco.service.namespace.QName;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -48,8 +49,8 @@ public class UpdateEntryTest extends AbstractAlfrescoIT {
         String uuid = jsonObject.getString(DatabaseModel.UUID);
 
         JSONObject properties = new JSONObject();
-        for (Map.Entry<String, String> propEntry : TestUtils.updatedProps().entrySet()) {
-            String key = propEntry.getKey();
+        for (Map.Entry<QName, String> propEntry : TestUtils.updatedProps().entrySet()) {
+            String key = propEntry.getKey().getLocalName();
             String value = propEntry.getValue();
             properties.put(key, value);
         }
@@ -61,7 +62,7 @@ public class UpdateEntryTest extends AbstractAlfrescoIT {
         try (CloseableHttpClient httpclient = HttpClientBuilder.create()
                 .setDefaultCredentialsProvider(provider)
                 .build()) {
-            HttpPut http = new HttpPut("http://localhost:8080/alfresco/service/entry?uuid=" + uuid);
+            HttpPut http = new HttpPut("http://localhost:8080/alfresco/service/entry/" + uuid);
 
             StringEntity se = new StringEntity( data.toString());
             se.setContentType(new BasicHeader("Content-type", "application/json"));
@@ -71,8 +72,8 @@ public class UpdateEntryTest extends AbstractAlfrescoIT {
             String s = EntityUtils.toString(httpResponse.getEntity());
             JSONObject returnJSON = new JSONObject(s);
 
-            for (Map.Entry<String, String> propEntry : TestUtils.updatedProps().entrySet()) {
-                String key = propEntry.getKey();
+            for (Map.Entry<QName, String> propEntry : TestUtils.updatedProps().entrySet()) {
+                String key = propEntry.getKey().getLocalName();
                 String value = propEntry.getValue();
                 Assert.assertTrue("Assert " + key + " is present.", returnJSON.has(key));
                 Assert.assertTrue("Assert " + key + " equals success", value.equals(returnJSON.getString(key)));

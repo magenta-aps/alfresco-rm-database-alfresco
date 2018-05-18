@@ -1,10 +1,11 @@
-package dk.magenta.webscripts.entry;
+package dk.magenta.webscripts.database;
 
 import dk.magenta.TestUtils;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.TypeUtils;
 import org.alfresco.rad.test.AbstractAlfrescoIT;
 import org.alfresco.rad.test.AlfrescoTestRunner;
+import org.alfresco.service.namespace.QName;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
@@ -41,8 +42,8 @@ public class AddEntryTest extends AbstractAlfrescoIT {
         String type = DatabaseModel.TYPE_PSYC_DEC;
         Assert.assertTrue("Assert entryKey is present.", returnJSON.has(TypeUtils.getEntryKey(type)));
         Assert.assertTrue("Assert uuid is present.", returnJSON.has(DatabaseModel.UUID));
-        for (Map.Entry<String, String> propEntry : TestUtils.originalProps().entrySet()) {
-            String key = propEntry.getKey();
+        for (Map.Entry<QName, String> propEntry : TestUtils.originalProps().entrySet()) {
+            String key = propEntry.getKey().getLocalName();
             String value = propEntry.getValue();
             Assert.assertTrue("Assert " + key + " is present.", returnJSON.has(key));
             Assert.assertTrue("Assert " + key + " equals success", value.equals(returnJSON.getString(key)));

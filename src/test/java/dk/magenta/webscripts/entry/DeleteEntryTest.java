@@ -48,7 +48,7 @@ public class DeleteEntryTest extends AbstractAlfrescoIT {
         try (CloseableHttpClient httpclient = HttpClientBuilder.create()
                 .setDefaultCredentialsProvider(provider)
                 .build()) {
-            HttpDelete http = new HttpDelete("http://localhost:8080/alfresco/service/entry?uuid=" + uuid);
+            HttpDelete http = new HttpDelete("http://localhost:8080/alfresco/service/entry/" + uuid);
 
             HttpResponse httpResponse = httpclient.execute(http);
             String s = EntityUtils.toString(httpResponse.getEntity());
