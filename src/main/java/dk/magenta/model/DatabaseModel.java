@@ -24,6 +24,11 @@ public interface DatabaseModel {
 
     public static QName PROP_CLOSED = QName.createQName(RM_MODEL_URI, "closed");
 
+
+    public static QName PROP_ENTRIES = QName.createQName(RM_MODEL_URI, "maillog_entries");
+
+
+
     public static String TYPE_PSYC_DEC = "forensicPsychiatryDeclaration";
     public static String TYPE_PSYC_DEC_KEY = "caseNumber";
     public static String TYPE_PSYC_SITENAME = "retspsyk";
@@ -49,5 +54,11 @@ public interface DatabaseModel {
     // custom permissions
 
     public static String Permission_SiteTemplateManager = "SiteTemplateManager";
+
+
+
+    QName ASPECT_SENDMAILLOGS = QName.createQName(RM_MODEL_URI, "sendMaillogs");
+
+
 
 }

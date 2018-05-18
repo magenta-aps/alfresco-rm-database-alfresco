@@ -40,6 +40,8 @@
     <bean id="mailBean" class="dk.magenta.beans.MailBean">
         <property name="nodeService" ref="NodeService"/>
         <property name="contentService" ref="contentService"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+        <property name="personService" ref="PersonService"/>
     </bean>
 
 </beans>

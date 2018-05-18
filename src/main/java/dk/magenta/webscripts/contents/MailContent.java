@@ -36,11 +36,18 @@ public class MailContent extends AbstractWebScript {
         Writer webScriptWriter = webScriptResponse.getWriter();
         JSONObject result;
 
+        Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
+
+        String authority = params.get("authority");
+
 
 
         JSONObject json = null;
         try {
+
+            System.out.println("the json" + c.getContent());
             json = new JSONObject(c.getContent());
+
             JSONArray jsonNodeRefs = JSONUtils.getArray(json, "nodeRefs");
             NodeRef[] nodeRefs = new NodeRef[jsonNodeRefs.length()];
             for (int i=0; i<jsonNodeRefs.length(); i++) {
@@ -51,9 +58,8 @@ public class MailContent extends AbstractWebScript {
 
             // mailBean.getNodeRefsToMail(nodeRefs);
 
-            mailBean.sendEmail(nodeRefs);
+            mailBean.sendEmail(nodeRefs, authority);
 
-//            result = JSONUtils.getObject("downloadNodeRef", downloadNodeRef.toString());
             result = JSONUtils.getSuccess();
             JSONUtils.write(webScriptWriter, result);
 

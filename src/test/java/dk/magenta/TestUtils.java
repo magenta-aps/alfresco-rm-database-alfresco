@@ -80,7 +80,9 @@ public class TestUtils {
             http.setEntity(se);
 
             HttpResponse httpResponse = httpclient.execute(http);
+
             String s = EntityUtils.toString(httpResponse.getEntity());
+
             return new JSONObject(s);
         }
     }
