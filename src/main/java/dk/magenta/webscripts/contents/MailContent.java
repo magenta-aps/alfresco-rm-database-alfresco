@@ -38,9 +38,6 @@ public class MailContent extends AbstractWebScript {
 
         Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
 
-        String authority = params.get("authority");
-
-
 
         JSONObject json = null;
         try {
@@ -56,9 +53,21 @@ public class MailContent extends AbstractWebScript {
                 nodeRefs[i] = nodeRef;
             }
 
-            // mailBean.getNodeRefsToMail(nodeRefs);
+            String subject = (String)json.get("subject");
+            System.out.println("the subject: " + subject);
 
-            mailBean.sendEmail(nodeRefs, authority);
+            String body = (String)json.get("body");
+            System.out.println("the body: " + body);
+
+            String from = (String)json.get("from");
+            System.out.println("from: " + from);
+
+            String authority = (String)json.get("authority");
+            System.out.println("authority: " + authority);
+
+
+
+            mailBean.sendEmail(nodeRefs, authority, from, body, subject);
 
             result = JSONUtils.getSuccess();
             JSONUtils.write(webScriptWriter, result);
@@ -70,24 +79,5 @@ public class MailContent extends AbstractWebScript {
             webScriptResponse.setStatus(400);
             JSONUtils.write(webScriptWriter, result);
         }
-
-
-//
-//        Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
-//
-//        String nodeId = params.get("node");
-//        NodeRef nodeRef = new NodeRef("workspace://SpacesStore/" + nodeId);
-//
-//        try {
-//            mailBean.getNodeRefsToMail(nodeRef);
-////            result = JSONUtils.getObject("downloadNodeRef", downloadNodeRef.toString());
-//            result = JSONUtils.getSuccess();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            result = JSONUtils.getError(e);
-//            webScriptResponse.setStatus(400);
-//        }
-//        JSONUtils.write(webScriptWriter, result);
     }
 }
