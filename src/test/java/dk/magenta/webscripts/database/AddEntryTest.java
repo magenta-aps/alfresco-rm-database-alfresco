@@ -37,6 +37,7 @@ public class AddEntryTest extends AbstractAlfrescoIT {
     @Test
     public void testAddEntry() throws IOException, JSONException {
         log.debug("AddEntryTest.testAddEntry");
+        System.out.println("hej");
 
         JSONObject returnJSON = TestUtils.addEntry(provider);
         String type = DatabaseModel.TYPE_PSYC_DEC;
