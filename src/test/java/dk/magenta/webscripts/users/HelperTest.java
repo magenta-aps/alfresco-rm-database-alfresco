@@ -91,13 +91,16 @@ public class HelperTest extends AbstractAlfrescoIT {
         this.setupRequiredRolesForAdminAndRegularUser();
     }
 
-
     public void deleteGenericUser() throws IOException, JSONException {
+        this.deleteUser(Const.GENERIC_USERNAME);
+    }
+
+    public void deleteUser(String username) throws IOException, JSONException {
 
         try (CloseableHttpClient httpclient = HttpClientBuilder.create()
                 .setDefaultCredentialsProvider(provider_admin)
                 .build()) {
-            HttpDelete http = new HttpDelete(Const.HOST + "/alfresco/s/api/people/" + Const.GENERIC_USERNAME);
+            HttpDelete http = new HttpDelete(Const.HOST + "/alfresco/s/api/people/" + username);
 
             HttpResponse httpResponse = httpclient.execute(http);
             System.out.println("the response:");
@@ -200,43 +203,12 @@ public class HelperTest extends AbstractAlfrescoIT {
 
 
     public void createAndActivateGenericUser() throws IOException, JSONException {
-//        log.debug("Helper.createGenericUser");
-//
-//        JSONObject o = new JSONObject();
-//        o.put("userName", Const.GENERIC_USERNAME);
-//        o.put("firstName", "Generic");
-//        o.put("lastName", "Son");
-//        o.put("email", "generic@magenta.dk");
-//        o.put("password", Const.GENERIC_PASSWORD);
-//        o.put("enabled", true);
-//
-//        // Execute Web Script call
-//        try (CloseableHttpClient httpclient = HttpClientBuilder.create()
-//                .setDefaultCredentialsProvider(provider_admin)
-//                .build()) {
-//            HttpPost http = new HttpPost(Const.HOST + "/alfresco/s/api/people");
-//
-//            StringEntity se = new StringEntity( o.toString());
-//            se.setContentType(new BasicHeader("Content-type", "application/json"));
-//            http.setEntity(se);
-//
-//            HttpResponse httpResponse = httpclient.execute(http);
-//            String s = EntityUtils.toString(httpResponse.getEntity());
-//            System.out.println("svar fra createGenericUser" + s);
-//
-//            JSONObject returnJSON = new JSONObject(s);
-//
-//            Assert.assertTrue("Assert userName returned", returnJSON.has("userName"));
-//            Assert.assertTrue("Assert username equals Const.GENERIC_USERNAME", returnJSON.get("userName").equals(Const.GENERIC_USERNAME));
-//        }
-
         this.createUser(Const.GENERIC_USERNAME, Const.GENERIC_PASSWORD);
         this.activateUser(Const.GENERIC_USERNAME);
     }
 
     public void activateUser(String username) throws IOException, JSONException {
         log.debug("Helper.createGenericUser");
-
 
         // Execute Web Script call
         try (CloseableHttpClient httpclient = HttpClientBuilder.create()
@@ -254,36 +226,14 @@ public class HelperTest extends AbstractAlfrescoIT {
         }
     }
 
-    public void activateRegularUser() throws IOException, JSONException {
-        log.debug("Helper.acticateRegularUser");
 
-
-        // Execute Web Script call
-        try (CloseableHttpClient httpclient = HttpClientBuilder.create()
-                .setDefaultCredentialsProvider(provider_admin)
-                .build()) {
-            HttpGet http = new HttpGet(Const.HOST + "/alfresco/s/activateUser?userName=" + Const.REGULAR_USER_USERNAME);
-
-            HttpResponse httpResponse = httpclient.execute(http);
-            String s = EntityUtils.toString(httpResponse.getEntity());
-            JSONObject returnJSON = new JSONObject(s);
-
-            Assert.assertTrue("Assert status is present.", returnJSON.has("status"));
-            Assert.assertTrue("Assert status equals success", "success".equals(returnJSON.getString("status")));
-        }
-    }
 
 
     @Test
     public static void main(String[] args) throws IOException, JSONException {
         HelperTest h = HelperTest.getInstance();
-//        h.createUser(Const.GENERIC_USERNAME, Const.GENERIC_PASSWORD);
+
         h.createAndActivateGenericUser();
-//        h.deleteGenericUser();
-//        h.createRegularUser();
-
-        h.setupRequiredRolesForAdminAndRegularUser();
-
     }
 }
 

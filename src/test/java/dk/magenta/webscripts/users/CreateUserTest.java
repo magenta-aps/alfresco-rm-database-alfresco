@@ -28,23 +28,17 @@ import org.junit.runner.RunWith;
 public class CreateUserTest extends AbstractAlfrescoIT {
 
     private static Logger log = Logger.getLogger(CreateUserTest.class);
-    private CredentialsProvider provider = new BasicCredentialsProvider();
 
 
     private HelperTest helper = HelperTest.getInstance();
 
     public CreateUserTest() {
         super();
-
-        // Login credentials for Alfresco Repo
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(Const.ADMIN_USERNAME, Const.ADMIN_PASSWORD);
-        provider.setCredentials(AuthScope.ANY, credentials);
     }
 
     @Before
     public void setUp() throws Exception {
-//        helper.createGenericUser();
-        helper.activateUser(Const.GENERIC_USERNAME);
+        helper.createAndActivateGenericUser();
     }
 
     @After
@@ -55,7 +49,7 @@ public class CreateUserTest extends AbstractAlfrescoIT {
     @Test
     public void isGenericUserActivated() throws Exception {
 
-        try (CloseableHttpClient httpclient = HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build()) {
+        try (CloseableHttpClient httpclient = HttpClientBuilder.create().setDefaultCredentialsProvider(helper.getProviderForAdmin()).build()) {
 
                 HttpGet http = new HttpGet(Const.HOST + "/alfresco/s/isActivated?userName=" + Const.GENERIC_USERNAME);
 
