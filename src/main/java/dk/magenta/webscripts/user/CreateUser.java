@@ -55,9 +55,6 @@ public class CreateUser extends AbstractWebScript {
 
             Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
 
-
-
-
             String userName = params.get("userName");
             String password = params.get("password");
             String firstName = params.get("firstName");
