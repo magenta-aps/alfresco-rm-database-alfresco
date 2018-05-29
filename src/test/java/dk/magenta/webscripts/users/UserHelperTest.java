@@ -35,13 +35,15 @@ import java.io.IOException;
 
 
 @RunWith(value = AlfrescoTestRunner.class)
-public class HelperTest extends AbstractAlfrescoIT {
+public class UserHelperTest extends AbstractAlfrescoIT {
 
-    private static Logger log = Logger.getLogger(HelperTest.class);
+    private static Logger log = Logger.getLogger(UserHelperTest.class);
 
     private CredentialsProvider provider_regularUser = new BasicCredentialsProvider();
 
     private CredentialsProvider provider_admin = new BasicCredentialsProvider();
+
+    private CredentialsProvider provider_bsk = new BasicCredentialsProvider();
 
 
     public CredentialsProvider getProviderForRegularUser() {
@@ -52,11 +54,15 @@ public class HelperTest extends AbstractAlfrescoIT {
         return provider_admin;
     }
 
-    private static HelperTest instance;
+    public CredentialsProvider getProviderForBSK() {
+        return provider_bsk;
+    }
+
+    private static UserHelperTest instance;
 
     static {
         try {
-            instance = new HelperTest();
+            instance = new UserHelperTest();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -64,11 +70,11 @@ public class HelperTest extends AbstractAlfrescoIT {
         }
     }
 
-    public static HelperTest getInstance() {
+    public static UserHelperTest getInstance() {
         return instance;
     }
 
-    private HelperTest() throws IOException, JSONException {
+    private UserHelperTest() throws IOException, JSONException {
         super();
 
 
@@ -80,8 +86,16 @@ public class HelperTest extends AbstractAlfrescoIT {
         UsernamePasswordCredentials credentials_admin = new UsernamePasswordCredentials(Const.ADMIN_USERNAME, Const.ADMIN_PASSWORD);
         provider_admin.setCredentials(AuthScope.ANY, credentials_admin);
 
+        // Login credentials for Alfresco Repo as BSKuser
+        UsernamePasswordCredentials credentials_bsk = new UsernamePasswordCredentials(Const.BSK_USERNAME, Const.BSK_PASSWORD);
+        provider_bsk.setCredentials(AuthScope.ANY, credentials_bsk);
 
-        // setup required users
+
+        // setup required users, but delete them first as they might not have been cleaned up
+
+        this.deleteUser(Const.REGULAR_USER_USERNAME);
+        this.deleteUser(Const.BSK_USERNAME);
+
         this.createUser(Const.REGULAR_USER_USERNAME, Const.REGULAR_USER_PASSWORD);
         this.createUser(Const.BSK_USERNAME, Const.BSK_PASSWORD);
 
@@ -103,16 +117,12 @@ public class HelperTest extends AbstractAlfrescoIT {
             HttpDelete http = new HttpDelete(Const.HOST + "/alfresco/s/api/people/" + username);
 
             HttpResponse httpResponse = httpclient.execute(http);
-            System.out.println("the response:");
-            System.out.println(httpResponse.getStatusLine());
             String s = EntityUtils.toString(httpResponse.getEntity());
             JSONObject returnJSON = new JSONObject(s);
-            System.out.println("returnJSON");
-            System.out.println(returnJSON);
         }
     }
 
-    private void createUser(String username, String password) throws IOException, JSONException {
+    public void createUser(String username, String password) throws IOException, JSONException {
 
         JSONObject o = new JSONObject();
         o.put("userName", username);
@@ -151,44 +161,23 @@ public class HelperTest extends AbstractAlfrescoIT {
         }
     }
 
-    private void setupRequiredRolesForAdminAndRegularUser() throws IOException, JSONException {
 
-
+    public void setRoleForUser(CredentialsProvider runAs, String role, String userName) throws IOException, JSONException {
 
         JSONObject o = new JSONObject();
         JSONArray addGroups = new JSONArray();
-        addGroups.put("GROUP_site_retspsyk_SiteRoleManager");
+        addGroups.put(role);
         JSONArray removeGroups = new JSONArray();
         o.put("addGroups" , addGroups);
         o.put("removeGroups" , removeGroups);
 
-        String input = "{\"type\":\"forensicPsychiatryDeclaration\",\"properties\":" + o.toString() + "}";
-
-
         // Execute Web Script call
         try (CloseableHttpClient httpclient = HttpClientBuilder.create()
-                .setDefaultCredentialsProvider(provider_admin)
+                .setDefaultCredentialsProvider(runAs)
                 .build()) {
-            HttpPut http = new HttpPut(Const.HOST + "/alfresco/s/database/retspsyk/user/" + Const.ADMIN_USERNAME);
+            HttpPut http = new HttpPut(Const.HOST + "/alfresco/s/database/retspsyk/user/" + userName);
 
-            StringEntity se = new StringEntity( input.toString());
-            se.setContentType(new BasicHeader("Content-type", "application/json"));
-            http.setEntity(se);
-
-            HttpResponse httpResponse = httpclient.execute(http);
-            String s = EntityUtils.toString(httpResponse.getEntity());
-            JSONObject returnJSON = new JSONObject(s);
-
-            Assert.assertEquals("success", returnJSON.getString("status"));
-        }
-
-        // Execute Web Script call
-        try (CloseableHttpClient httpclient = HttpClientBuilder.create()
-                .setDefaultCredentialsProvider(provider_admin)
-                .build()) {
-            HttpPut http = new HttpPut(Const.HOST + "/alfresco/s/database/retspsyk/user/" + Const.REGULAR_USER_USERNAME);
-
-            StringEntity se = new StringEntity( input.toString());
+            StringEntity se = new StringEntity( o.toString());
             se.setContentType(new BasicHeader("Content-type", "application/json"));
             http.setEntity(se);
 
@@ -199,6 +188,13 @@ public class HelperTest extends AbstractAlfrescoIT {
 
             Assert.assertEquals("success", returnJSON.getString("status"));
         }
+
+    }
+
+
+    public void setupRequiredRolesForAdminAndRegularUser() throws IOException, JSONException {
+        this.setRoleForUser(provider_admin, "GROUP_site_retspsyk_SiteRoleManager", Const.ADMIN_USERNAME);
+        this.setRoleForUser(provider_admin, "GROUP_site_retspsyk_SiteRoleManager", Const.REGULAR_USER_USERNAME);
     }
 
 
@@ -210,30 +206,35 @@ public class HelperTest extends AbstractAlfrescoIT {
     public void activateUser(String username) throws IOException, JSONException {
         log.debug("Helper.createGenericUser");
 
-        // Execute Web Script call
+        // activate the user
         try (CloseableHttpClient httpclient = HttpClientBuilder.create()
                 .setDefaultCredentialsProvider(provider_admin)
                 .build()) {
             HttpGet http = new HttpGet(Const.HOST + "/alfresco/s/activateUser?userName=" + username);
 
             HttpResponse httpResponse = httpclient.execute(http);
+        }
+
+        // validate that the user has been activated
+        try (CloseableHttpClient httpclient = HttpClientBuilder.create().setDefaultCredentialsProvider(provider_regularUser).build()) {
+
+            HttpGet http = new HttpGet(Const.HOST + "/alfresco/s/isActivated?userName=" + username);
+
+            HttpResponse httpResponse = httpclient.execute(http);
             String s = EntityUtils.toString(httpResponse.getEntity());
+
             JSONObject returnJSON = new JSONObject(s);
 
-
-            Assert.assertTrue("Assert status is present.", returnJSON.has("status"));
-            Assert.assertTrue("Assert status equals success", "success".equals(returnJSON.getString("status")));
+            Assert.assertTrue("Attribute member is present.", returnJSON.has("member"));
+            Assert.assertTrue("Member  equals true", "true".equals(returnJSON.getString("member")));
         }
     }
 
 
 
-
     @Test
     public static void main(String[] args) throws IOException, JSONException {
-        HelperTest h = HelperTest.getInstance();
-
-        h.createAndActivateGenericUser();
+        UserHelperTest h = UserHelperTest.getInstance();
     }
 }
 

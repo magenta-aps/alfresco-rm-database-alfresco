@@ -70,6 +70,7 @@ public interface DatabaseModel {
     String NAME = "name";
     String ENTRY_KEY = "entryKey";
     String UUID = "node-uuid";
+    String CASENUMBER = "caseNumber";
 
     // Containers
     String PROP_VALUES = "propertyValues";

@@ -45,9 +45,7 @@ public class ActivateUser extends AbstractWebScript {
         Iterator<String> authIt = auths.iterator();
         while (authIt.hasNext()){
             String group = authIt.next();
-            System.out.println(group);
             if (group.equals("GROUP_site_retspsyk_SiteRoleManager")) {
-                System.out.println("i am the manager:" + currentUser);
                 return true;
             }
         }
@@ -69,8 +67,7 @@ public class ActivateUser extends AbstractWebScript {
 
         AuthenticationUtil.setRunAsUserSystem();
 
-
-        if (isMember()) {
+        if (isMember() || authenticationService.getCurrentUserName().equals("admin")) {
 
             webScriptResponse.setContentEncoding("UTF-8");
             Writer webScriptWriter = webScriptResponse.getWriter();

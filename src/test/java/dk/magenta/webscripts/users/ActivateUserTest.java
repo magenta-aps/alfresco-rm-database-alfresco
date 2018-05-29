@@ -25,7 +25,7 @@ public class ActivateUserTest extends AbstractAlfrescoIT {
 
     private static Logger log = Logger.getLogger(ActivateUserTest.class);
 
-    private HelperTest helper = HelperTest.getInstance();
+    private UserHelperTest helper = UserHelperTest.getInstance();
 
     public ActivateUserTest() {
         super();
