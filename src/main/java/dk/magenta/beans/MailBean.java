@@ -111,7 +111,7 @@ public class MailBean {
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("xxx", "xxx");
+                        return new PasswordAuthentication("magentatestdokument2018@gmail.com", "alexandersnegl");
                     }
                 });
 
