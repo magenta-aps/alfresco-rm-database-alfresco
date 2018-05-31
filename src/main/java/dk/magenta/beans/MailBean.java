@@ -79,12 +79,11 @@ public class MailBean {
         return result;
     }
 
-    public void sendEmail(NodeRef[] attachmentNodeRefs) {
+    public void sendEmail(NodeRef[] attachmentNodeRefs, String body, String subject, String authority) {
         // Defines the E-Mail information.
-        String from = "fhp@magenta-aps.dk";
-        String to = "fhp@magenta-aps.dk";
-        String subject = "Important Message";
-        String bodyText = "This is a important message with attachment.";
+        String from = "retspsykiatrisk.ambulatorium@ps.rm.dk ";
+        String to = authority;
+
 
         // Creates a Session with the following properties.
         Properties props = new Properties();
@@ -117,7 +116,7 @@ public class MailBean {
 
             // Set the email msg text.
             MimeBodyPart messagePart = new MimeBodyPart();
-            messagePart.setText(bodyText);
+            messagePart.setText(body);
 
             // Set the email attachment file
 

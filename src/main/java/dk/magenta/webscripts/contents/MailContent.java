@@ -51,7 +51,13 @@ public class MailContent extends AbstractWebScript {
 
             // mailBean.getNodeRefsToMail(nodeRefs);
 
-            mailBean.sendEmail(nodeRefs);
+           String body = json.getString("body");
+           String subject = json.getString("subject");
+           String authority = json.getString("authority");
+
+
+
+                    mailBean.sendEmail(nodeRefs, body, subject, authority);
 
 //            result = JSONUtils.getObject("downloadNodeRef", downloadNodeRef.toString());
             result = JSONUtils.getSuccess();
