@@ -66,6 +66,9 @@ public interface DatabaseModel {
     String TYPE_PSYC_DEC_KEY = PROP_CASE_NUMBER.getLocalName();
     String TYPE_PSYC_SITENAME = "retspsyk";
 
+    /* Aspects */
+    QName ASPECT_BUA = QName.createQName(RM_MODEL_URI, "bua");
+
     // Prop Strings
     String NAME = "name";
     String ENTRY_KEY = "entryKey";

@@ -258,5 +258,11 @@
     </types>
 
     <!-- Aspects -->
+    <aspects>
+        <aspect name="rm:bua">
+            <title>Attributes to mark a declartion as bua</title>
+        </aspect>
+    </aspects>
+
 
 </model>

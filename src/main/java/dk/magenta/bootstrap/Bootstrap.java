@@ -189,7 +189,7 @@ public class Bootstrap extends AbstractLifecycleBean {
                 System.out.println(jsonProperties);
 
                 Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
-                NodeRef nodeRef = entryBean.addEntry(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.TYPE_PSYC_DEC, properties);
+                NodeRef nodeRef = entryBean.addEntry(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.TYPE_PSYC_DEC, properties, false);
 
 
             } catch (JSONException e) {

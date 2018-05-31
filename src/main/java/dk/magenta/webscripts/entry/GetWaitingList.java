@@ -2,6 +2,7 @@ package dk.magenta.webscripts.entry;
 
 import dk.magenta.beans.DatabaseBean;
 import dk.magenta.beans.EntryBean;
+import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -19,6 +20,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import org.alfresco.service.cmr.repository.NodeService;
+
 
 
 
@@ -26,6 +29,16 @@ public class GetWaitingList extends AbstractWebScript {
 
     private EntryBean entryBean;
     private DatabaseBean databaseBean;
+
+    public NodeService getNodeService() {
+        return nodeService;
+    }
+
+    public void setNodeService(NodeService nodeService) {
+        this.nodeService = nodeService;
+    }
+
+    private NodeService nodeService;
 
     public void setEntryBean(EntryBean entryBean) {
         this.entryBean = entryBean;
@@ -43,6 +56,10 @@ public class GetWaitingList extends AbstractWebScript {
 
         int skip = Integer.valueOf(req.getParameter("skip"));
         int maxItems = Integer.valueOf(req.getParameter("maxItems"));
+        System.out.println("hej");
+
+
+
 
         res.setContentEncoding("UTF-8");
         Writer webScriptWriter = res.getWriter();
@@ -103,7 +120,12 @@ public class GetWaitingList extends AbstractWebScript {
                 }
 
 
-
+                if (nodeService.hasAspect(entry, DatabaseModel.ASPECT_BUA)) {
+                    e.put("bua","true");
+                }
+                else {
+                    e.put("bua","false");
+                }
 
                 entriesIncludingWaitingTime.put(e);
             }

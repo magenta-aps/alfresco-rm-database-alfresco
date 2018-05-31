@@ -40,7 +40,7 @@ public class getEntryTest extends AbstractAlfrescoIT {
         super();
     }
 
-    @After
+
     public void tearDown() throws Exception {
         log.debug("DeleteEntryTest.testDeleteEntry");
 
@@ -66,11 +66,12 @@ public class getEntryTest extends AbstractAlfrescoIT {
     public void testGetEntry() throws IOException, JSONException, InterruptedException {
         log.debug("DeleteEntryTest.testDeleteEntry");
 
-        jsonObject = TestUtils.addEntry(helper.getProviderForRegularUser());
+        jsonObject = TestUtils.addEntry(helper.getProviderForRegularUser(), "true");
         String caseNumber = jsonObject.getString(DatabaseModel.CASENUMBER);
 
         System.out.println("sleep");
         TimeUnit.MINUTES.sleep(1); // make sure the solr indexed the new declaration
+        System.out.println(Const.HOST + "/alfresco/s/database/retspsyk/entry/" + caseNumber);
         System.out.println("wake up");
 
         // Execute Web Script call

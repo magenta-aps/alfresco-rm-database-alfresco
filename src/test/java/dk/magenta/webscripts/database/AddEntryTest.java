@@ -39,7 +39,7 @@ public class AddEntryTest extends AbstractAlfrescoIT {
     public void testAddEntry() throws IOException, JSONException, InterruptedException {
         log.debug("AddEntryTest.testAddEntry");
 
-        JSONObject returnJSON = TestUtils.addEntry(provider);
+        JSONObject returnJSON = TestUtils.addEntry(provider, "true");
 
         String type = DatabaseModel.TYPE_PSYC_DEC;
         Assert.assertTrue("Assert entryKey is present.", returnJSON.has(TypeUtils.getEntryKey(type)));

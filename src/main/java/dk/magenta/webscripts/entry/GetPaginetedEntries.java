@@ -6,6 +6,7 @@ import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
 
+import org.alfresco.service.cmr.repository.NodeService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +23,16 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
     private EntryBean entryBean;
     private DatabaseBean databaseBean;
+
+    public NodeService getNodeService() {
+        return nodeService;
+    }
+
+    public void setNodeService(NodeService nodeService) {
+        this.nodeService = nodeService;
+    }
+
+    private NodeService nodeService;
 
     public void setEntryBean(EntryBean entryBean) {
         this.entryBean = entryBean;
@@ -195,6 +206,14 @@ public class GetPaginetedEntries extends AbstractWebScript {
             System.out.println("the query");
             System.out.println(query);
 
+
+            if (input.has("bua")) {
+                boolean bua = input.getBoolean("bua");
+
+                if (bua) {
+                    query = query + " AND +ASPECT:\"rm:bua\"";
+                }
+            }
 
 
             List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
