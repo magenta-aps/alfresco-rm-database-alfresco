@@ -59,15 +59,10 @@ public class MailContent extends AbstractWebScript {
             String body = (String)json.get("body");
             System.out.println("the body: " + body);
 
-            String from = (String)json.get("from");
-            System.out.println("from: " + from);
-
             String authority = (String)json.get("authority");
             System.out.println("authority: " + authority);
 
-
-
-            mailBean.sendEmail(nodeRefs, authority, from, body, subject);
+            mailBean.sendEmail(nodeRefs, authority, body, subject);
 
             result = JSONUtils.getSuccess();
             JSONUtils.write(webScriptWriter, result);

@@ -94,7 +94,7 @@ public class MailBean {
         return result;
     }
 
-    public void sendEmail(NodeRef[] attachmentNodeRefs, String authority, String from, String body, String subject) {
+    public void sendEmail(NodeRef[] attachmentNodeRefs, String authority, String body, String subject) {
 
 
         logEvent(attachmentNodeRefs, authority);
@@ -118,7 +118,7 @@ public class MailBean {
 
 
         try {
-            InternetAddress fromAddress = new InternetAddress(from);
+            InternetAddress fromAddress = new InternetAddress("retspsykiatrisk.ambulatorium@ps.rm.dk" );
             InternetAddress toAddress = new InternetAddress(to);
 
             MimeMessage msg = new MimeMessage(session);
@@ -172,7 +172,7 @@ public class MailBean {
 
             msg.setContent(multipart);
 
-            Transport.send(msg, "xxx", "xxx*");
+            Transport.send(msg, "magentatestdokument2018@gmail.com", "alexandersnegl");
         } catch (MessagingException e) {
             e.printStackTrace();
         }
