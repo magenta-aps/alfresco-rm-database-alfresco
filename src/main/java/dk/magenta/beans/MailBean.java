@@ -118,7 +118,7 @@ public class MailBean {
 
 
         try {
-            InternetAddress fromAddress = new InternetAddress("retspsykiatrisk.ambulatorium@ps.rm.dk" );
+            InternetAddress fromAddress = new InternetAddress("magentatestdokument2018@gmail.com" );
             InternetAddress toAddress = new InternetAddress(to);
 
             MimeMessage msg = new MimeMessage(session);
