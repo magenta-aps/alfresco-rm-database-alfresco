@@ -43,6 +43,10 @@ public class LockTest extends AbstractAlfrescoIT {
     @Test
     public void testLockEntry() throws IOException, JSONException, InterruptedException {
 
+        JSONObject returnJSON = TestUtils.addEntry(helper.getProviderForRegularUser(), TestUtils.newCasePropsNotClosed());
+        System.out.println("sweet output");
+        System.out.println(returnJSON);
+
     }
 
     @Test

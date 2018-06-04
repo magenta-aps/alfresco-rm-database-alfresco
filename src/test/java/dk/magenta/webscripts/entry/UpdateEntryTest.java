@@ -45,7 +45,7 @@ public class UpdateEntryTest extends AbstractAlfrescoIT {
     public void testUpdateEntry() throws IOException, JSONException {
         log.debug("UpdateEntryTest.testUpdateEntry");
 
-        JSONObject jsonObject = TestUtils.addEntry(provider);
+        JSONObject jsonObject = TestUtils.addEntry(provider, TestUtils.originalProps());
         String uuid = jsonObject.getString(DatabaseModel.UUID);
 
         JSONObject properties = new JSONObject();

@@ -66,7 +66,7 @@ public class getEntryTest extends AbstractAlfrescoIT {
     public void testGetEntry() throws IOException, JSONException, InterruptedException {
         log.debug("DeleteEntryTest.testDeleteEntry");
 
-        jsonObject = TestUtils.addEntry(helper.getProviderForRegularUser());
+        jsonObject = TestUtils.addEntry(helper.getProviderForRegularUser(), TestUtils.originalProps());
         String caseNumber = jsonObject.getString(DatabaseModel.CASENUMBER);
 
         System.out.println("sleep");

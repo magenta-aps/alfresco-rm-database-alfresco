@@ -21,6 +21,19 @@ import java.util.Map;
 
 public class TestUtils {
 
+    public static Map<QName, String> newCasePropsNotClosed() {
+        return new HashMap<QName, String>() {
+            {
+                put(DatabaseModel.PROP_MOTHER_ETHINICITY, "Svensk");
+                put(DatabaseModel.PROP_DOCTOR, "Doctor New Name");
+                put(DatabaseModel.PROP_DECLARATION_DATE, "2018-08-03T00:00:00.000Z");
+                put(DatabaseModel.PROP_CLOSED, "false");
+                put(DatabaseModel.PROP_OBSERVATION_DATE, "2018-07-20T00:00:00.000Z");
+                put(DatabaseModel.PROP_CREATION_DATE, "2018-02-08T00:00:00.000Z");
+            }
+        };
+    }
+
     public static Map<QName, String> originalProps() {
         return new HashMap<QName, String>() {
             {
@@ -48,11 +61,11 @@ public class TestUtils {
         };
     }
 
-    public static JSONObject addEntry(CredentialsProvider provider) throws JSONException, IOException {
+    public static JSONObject addEntry(CredentialsProvider provider, Map<QName, String> declarationProperties) throws JSONException, IOException {
         String type = DatabaseModel.TYPE_PSYC_DEC;
 
         JSONObject properties = new JSONObject();
-        for (Map.Entry<QName, String> propEntry : originalProps().entrySet()) {
+        for (Map.Entry<QName, String> propEntry : declarationProperties.entrySet()) {
             String key = propEntry.getKey().getLocalName();
             String value = propEntry.getValue();
             properties.put(key, value);
@@ -77,5 +90,4 @@ public class TestUtils {
             return new JSONObject(s);
         }
     }
-
 }

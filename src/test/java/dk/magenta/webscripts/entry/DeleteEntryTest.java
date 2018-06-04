@@ -41,7 +41,7 @@ public class DeleteEntryTest extends AbstractAlfrescoIT {
     public void testDeleteEntry() throws IOException, JSONException {
         log.debug("DeleteEntryTest.testDeleteEntry");
 
-        JSONObject jsonObject = TestUtils.addEntry(provider);
+        JSONObject jsonObject = TestUtils.addEntry(provider, TestUtils.originalProps());
         String uuid = jsonObject.getString(DatabaseModel.UUID);
 
         // Execute Web Script call
