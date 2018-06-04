@@ -234,7 +234,10 @@ public class GetPaginetedEntries extends AbstractWebScript {
                     e.put("cprNumber", tmp.get("cprNumber"));
                 }
 
-                e.put("fullName", tmp.get("fullName"));
+                if (e.has("fullName")) {
+                    e.put("fullName", tmp.get("fullName"));
+                }
+
                 e.put("creationDate", tmp.get("creationDate"));
 
                 if (tmp.has("doctor")) {
