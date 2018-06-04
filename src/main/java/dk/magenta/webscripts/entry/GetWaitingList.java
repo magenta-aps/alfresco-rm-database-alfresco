@@ -105,8 +105,6 @@ public class GetWaitingList extends AbstractWebScript {
                     e.put("cprNumber", tmp.get("cprNumber"));
                 }
 
-
-
                 if (tmp.has("closed")) {
                     e.put("closed", tmp.get("closed"));
                 }

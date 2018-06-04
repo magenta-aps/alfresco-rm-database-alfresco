@@ -41,6 +41,14 @@ public class AddEntryTest extends AbstractAlfrescoIT {
 
         JSONObject returnJSON = TestUtils.addEntry(provider, "true");
 
+        System.out.println(returnJSON);
+        System.out.println(returnJSON);
+        System.out.println(returnJSON);
+        System.out.println(returnJSON);
+        System.out.println(returnJSON);
+
+
+
         String type = DatabaseModel.TYPE_PSYC_DEC;
         Assert.assertTrue("Assert entryKey is present.", returnJSON.has(TypeUtils.getEntryKey(type)));
         Assert.assertTrue("Assert uuid is present.", returnJSON.has(DatabaseModel.UUID));

@@ -52,6 +52,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
         Writer webScriptWriter = res.getWriter();
         JSONObject result = new JSONObject();
+        System.out.println("hejjjjjj");
 
         try {
             String siteShortName = templateArgs.get("siteShortName");
