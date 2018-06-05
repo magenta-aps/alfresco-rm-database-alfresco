@@ -113,21 +113,9 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("status")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "status");
-
-                String theValue = input.getString("status");
-
-                if (theValue.equals("OPEN")) {
-                    o.put("value", true);
+                o.put("value", input.get("status"));
                     o.put("include", true);
                     queryArray.put(o);
-
-                }
-                else {
-                    o.put("value", false);
-                    o.put("include", true);
-                    queryArray.put(o);
-                }
-
             }
 
             if (input.has("givenDeclaration")) {
@@ -157,9 +145,21 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("closed")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "closed");
-                o.put("value", input.get("closed"));
-                o.put("include", true);
-                queryArray.put(o);
+
+
+                String theValue = input.getString("closed");
+
+                if (theValue.equals("OPEN")) {
+                    o.put("value", true);
+                    o.put("include", true);
+                    queryArray.put(o);
+
+                }
+                else {
+                    o.put("value", false);
+                    o.put("include", true);
+                    queryArray.put(o);
+                }
             }
 
             if (input.has("closedWithoutDeclarationReason")) {

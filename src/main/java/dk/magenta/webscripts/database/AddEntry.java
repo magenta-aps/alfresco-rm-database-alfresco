@@ -38,9 +38,7 @@ public class AddEntry extends AbstractWebScript {
             String siteShortName = templateArgs.get("siteShortName");
             String type = JSONUtils.getString(json, "type");
             JSONObject jsonProperties = JSONUtils.getObject(json, "properties");
-            //boolean bua = json.getBoolean("bua");
-            boolean bua = true;
-
+            boolean bua = json.getBoolean("bua");
 
             Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
             NodeRef nodeRef = entryBean.addEntry(siteShortName, type, properties, bua);
