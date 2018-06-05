@@ -186,6 +186,7 @@ public class Bootstrap extends AbstractLifecycleBean {
                 jsonProperties.put("psychologist", "Dr. Yes");
                 jsonProperties.put("mainDiagnosis", diagnosis.get(r.nextInt(1000)));
                 jsonProperties.put("biDiagnoses", "[\"" + diagnosis.get(r.nextInt(1000)) + "\"]");
+                jsonProperties.put("biDiagnoses", "[\"" + diagnosis.get(r.nextInt(1000)) + "\"]");
                 System.out.println(jsonProperties);
 
                 Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);

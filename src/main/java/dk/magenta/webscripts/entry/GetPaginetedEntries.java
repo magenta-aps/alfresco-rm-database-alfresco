@@ -151,12 +151,12 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
                 if (theValue.equals("OPEN")) {
                     o.put("value", true);
-                    o.put("include", true);
+                    o.put("include", false);
                     queryArray.put(o);
 
                 }
                 else {
-                    o.put("value", false);
+                    o.put("value", true);
                     o.put("include", true);
                     queryArray.put(o);
                 }
@@ -250,7 +250,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
                 e.put("creationDate", tmp.get("creationDate"));
 
-                if (tmp.has("doctor") && !tmp.get("doctor").equals("NULL")) {
+                if (tmp.has("doctor") && !tmp.get("doctor").equals("null")) {
                     e.put("doctor", tmp.get("doctor"));
                 }
 
@@ -262,7 +262,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
                     e.put("declarationDate", tmp.get("declarationDate"));
                 }
 
-                if (tmp.has("psychologist") && !tmp.get("psychologist").equals("NULL") ) {
+                if (tmp.has("psychologist") && !tmp.get("psychologist").equals("null") ) {
                     e.put("psychologist", tmp.get("psychologist"));
                 }
 
