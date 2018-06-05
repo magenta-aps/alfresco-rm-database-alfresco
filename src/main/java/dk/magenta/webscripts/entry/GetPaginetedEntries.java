@@ -230,11 +230,11 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
                 e.put("caseNumber", tmp.get("caseNumber"));
 
-                if (e.has("cprNumber")) {
+                if (tmp.has("cprNumber")) {
                     e.put("cprNumber", tmp.get("cprNumber"));
                 }
 
-                if (e.has("fullName")) {
+                if (tmp.has("fullName")) {
                     e.put("fullName", tmp.get("fullName"));
                 }
 
