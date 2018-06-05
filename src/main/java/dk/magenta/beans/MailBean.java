@@ -19,6 +19,7 @@ import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+import org.apache.solr.common.util.Hash;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -99,6 +100,11 @@ public class MailBean {
 
         logEvent(attachmentNodeRefs, authority);
 
+        ArrayList<NodeRef> pds_to_be_deleted  = new ArrayList<NodeRef>();
+
+
+
+
         String to = authority;
 
         Properties props = new Properties();
@@ -142,6 +148,8 @@ public class MailBean {
 
                  NodeRef transformed = this.transform(attachmentNodeRef);
 
+                pds_to_be_deleted.add(transformed);
+
                 final MimeBodyPart attachment = new MimeBodyPart();
                 attachment.setDataHandler(new DataHandler(new DataSource() {
 
@@ -173,6 +181,17 @@ public class MailBean {
             msg.setContent(multipart);
 
             Transport.send(msg, "magentatestdokument2018@gmail.com", "alexandersnegl");
+
+            // cleanup the genereted pdfs
+
+            for (int i = 0; i <= pds_to_be_deleted.size()-1; i++) {
+
+                NodeRef n = pds_to_be_deleted.get(i);
+                nodeService.deleteNode(n);
+
+            }
+
+
         } catch (MessagingException e) {
             e.printStackTrace();
         }
