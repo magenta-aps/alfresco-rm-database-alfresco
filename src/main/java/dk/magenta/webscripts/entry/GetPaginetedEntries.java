@@ -2,6 +2,7 @@ package dk.magenta.webscripts.entry;
 
 import dk.magenta.beans.DatabaseBean;
 import dk.magenta.beans.EntryBean;
+import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -210,7 +211,6 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             if (input.has("bua")) {
                 boolean bua = input.getBoolean("bua");
-
                 if (bua) {
                     query = query + " AND +ASPECT:\"rm:bua\"";
                 }
@@ -254,6 +254,13 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
                 if (tmp.has("psychologist")) {
                     e.put("psychologist", tmp.get("psychologist"));
+                }
+
+                if (nodeService.hasAspect(nodeRef, DatabaseModel.ASPECT_BUA)) {
+                    e.put("bua","true");
+                }
+                else {
+                    e.put("bua","false");
                 }
 
                 entries.put(e);
