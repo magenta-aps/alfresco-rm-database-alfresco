@@ -218,10 +218,10 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             if (input.has("bua")) {
                 String bua = input.getString("bua");
-                if (bua.equals("bua")) {
+                if (bua.equals("BUA")) {
                     query = query + " AND +ASPECT:\"rm:bua\"";
                 }
-                else {
+                else if (bua.equals("PS")) {
                     query = query + " AND -ASPECT:\"rm:bua\"";
                 }
             }
