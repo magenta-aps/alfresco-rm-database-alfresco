@@ -214,6 +214,9 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 if (bua) {
                     query = query + " AND +ASPECT:\"rm:bua\"";
                 }
+                else {
+                    query = query + " AND -ASPECT:\"rm:bua\"";
+                }
             }
 
 
@@ -257,10 +260,10 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 }
 
                 if (nodeService.hasAspect(nodeRef, DatabaseModel.ASPECT_BUA)) {
-                    e.put("bua","true");
+                    e.put("bua",true);
                 }
                 else {
-                    e.put("bua","false");
+                    e.put("bua",false);
                 }
 
                 entries.put(e);

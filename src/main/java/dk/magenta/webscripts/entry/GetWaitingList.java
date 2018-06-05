@@ -119,10 +119,10 @@ public class GetWaitingList extends AbstractWebScript {
 
 
                 if (nodeService.hasAspect(entry, DatabaseModel.ASPECT_BUA)) {
-                    e.put("bua","true");
+                    e.put("bua",true);
                 }
                 else {
-                    e.put("bua","false");
+                    e.put("bua",false);
                 }
 
                 entriesIncludingWaitingTime.put(e);
