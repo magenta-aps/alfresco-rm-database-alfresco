@@ -185,11 +185,11 @@ public class MailBean {
             // cleanup the genereted pdfs
 
             for (int i = 0; i <= pds_to_be_deleted.size()-1; i++) {
-
                 NodeRef n = pds_to_be_deleted.get(i);
                 nodeService.deleteNode(n);
-
             }
+
+
 
 
         } catch (MessagingException e) {
