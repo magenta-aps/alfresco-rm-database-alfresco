@@ -62,9 +62,11 @@ public interface DatabaseModel {
     QName PROP_LOCKED_FOR_EDIT_BY = QName.createQName(RM_MODEL_URI, "locked4editBy");
 
 
-    String TYPE_PSYC_DEC = "forensicPsychiatryDeclaration";
-    String TYPE_PSYC_DEC_KEY = PROP_CASE_NUMBER.getLocalName();
-    String TYPE_PSYC_SITENAME = "retspsyk";
+    public static QName PROP_ENTRIES = QName.createQName(RM_MODEL_URI, "maillog_entries");
+
+    public static String TYPE_PSYC_DEC = "forensicPsychiatryDeclaration";
+    public static String TYPE_PSYC_DEC_KEY = "caseNumber";
+    public static String TYPE_PSYC_SITENAME = "retspsyk";
 
     // Prop Strings
     String NAME = "name";
@@ -87,5 +89,11 @@ public interface DatabaseModel {
     // custom permissions
 
     String Permission_SiteTemplateManager = "SiteTemplateManager";
+
+
+
+    QName ASPECT_SENDMAILLOGS = QName.createQName(RM_MODEL_URI, "sendMaillogs");
+
+
 
 }

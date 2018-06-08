@@ -13,14 +13,18 @@ import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AccessStatus;
+import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+import org.apache.solr.common.util.Hash;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.activation.DataSource;
 
@@ -56,6 +60,18 @@ public class MailBean {
 
     private NodeService nodeService;
 
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
+
+    private PersonService personService;
+
+    public void setAuthenticationService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+
+    private AuthenticationService authenticationService;
+
     public void setContentService(ContentService contentService) {
         this.contentService = contentService;
     }
@@ -79,53 +95,54 @@ public class MailBean {
         return result;
     }
 
-    public void sendEmail(NodeRef[] attachmentNodeRefs) {
-        // Defines the E-Mail information.
-        String from = "fhp@magenta-aps.dk";
-        String to = "fhp@magenta-aps.dk";
-        String subject = "Important Message";
-        String bodyText = "This is a important message with attachment.";
+    public void sendEmail(NodeRef[] attachmentNodeRefs, String authority, String body, String subject) {
 
-        // Creates a Session with the following properties.
+
+        logEvent(attachmentNodeRefs, authority);
+
+        ArrayList<NodeRef> pds_to_be_deleted  = new ArrayList<NodeRef>();
+
+
+
+
+        String to = authority;
+
         Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.host", "mail1.rm.dk");
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.port", "587");
 
 
-        Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("xxx", "xxx");
-                    }
-                });
+//        Session session = Session.getInstance(props,
+//                new javax.mail.Authenticator() {
+//                    protected PasswordAuthentication getPasswordAuthentication() {
+//                        return new PasswordAuthentication("magentatestdokument2018@gmail.com", "alexandersnegl");
+//                    }
+//                });
+
+        Session session = Session.getInstance(props);
 
 
-        //Session session = Session.getDefaultInstance(props);
 
         try {
-            InternetAddress fromAddress = new InternetAddress(from);
+            InternetAddress fromAddress = new InternetAddress("retspsykiatrisk.ambulatorium@ps.rm.dk");
             InternetAddress toAddress = new InternetAddress(to);
 
-            // Create an Internet mail msg.
             MimeMessage msg = new MimeMessage(session);
             msg.setFrom(fromAddress);
             msg.setRecipient(Message.RecipientType.TO, toAddress);
             msg.setSubject(subject);
             msg.setSentDate(new Date());
 
-            // Set the email msg text.
             MimeBodyPart messagePart = new MimeBodyPart();
-            messagePart.setText(bodyText);
+            messagePart.setText(body);
 
-            // Set the email attachment file
 
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messagePart);
 
 
-            // the loop
 
             for (int i=0; i <= attachmentNodeRefs.length-1;i++) {
 
@@ -133,6 +150,7 @@ public class MailBean {
 
                  NodeRef transformed = this.transform(attachmentNodeRef);
 
+                pds_to_be_deleted.add(transformed);
 
                 final MimeBodyPart attachment = new MimeBodyPart();
                 attachment.setDataHandler(new DataHandler(new DataSource() {
@@ -159,14 +177,24 @@ public class MailBean {
 
                 attachment.setFileName(nodeService.getProperty(transformed, ContentModel.PROP_NAME).toString());
 
-                // Create Multipart E-Mail.
-
                 multipart.addBodyPart(attachment);
             }
 
             msg.setContent(multipart);
 
-            Transport.send(msg, "xxx", "xxx*");
+//            Transport.send(msg, "magentatestdokument2018@gmail.com", "alexandersnegl");
+            Transport.send(msg);
+
+            // cleanup the genereted pdfs
+
+            for (int i = 0; i <= pds_to_be_deleted.size()-1; i++) {
+                NodeRef n = pds_to_be_deleted.get(i);
+                nodeService.deleteNode(n);
+            }
+
+
+
+
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -200,14 +228,57 @@ public class MailBean {
         pptToPdfTransformer.transform(pptReader, pdfWriter);
 
         return pdf.getChildRef();
-
     }
 
+    private void logEvent(NodeRef[] attachmentNodeRefs, String authority) {
+
+        String username = authenticationService.getCurrentUserName();
+
+        NodeRef user = personService.getPerson(username);
+
+        if (!nodeService.hasAspect(user, DatabaseModel.ASPECT_SENDMAILLOGS)) {
+            nodeService.addAspect(user, DatabaseModel.ASPECT_SENDMAILLOGS,null);
+
+            org.json.simple.JSONObject tmp = new org.json.simple.JSONObject();
+            org.json.simple.JSONArray tmpArray =  new org.json.simple.JSONArray();
+            tmp.put("entries", tmpArray);
+
+            nodeService.setProperty(user, DatabaseModel.PROP_ENTRIES, tmp.toString());
+        }
+
+        String content = (String) nodeService.getProperty(user, DatabaseModel.PROP_ENTRIES);
 
 
+        org.json.simple.JSONObject j = null;
+        JSONParser parser = new JSONParser();
+        try {
+            j = (org.json.simple.JSONObject) parser.parse(content);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        org.json.simple.JSONArray jsonArray = (org.json.simple.JSONArray)(j.get("entries"));
+
+        if (jsonArray == null) {
+            jsonArray = new org.json.simple.JSONArray();
+        }
+
+        org.json.simple.JSONObject entry = new org.json.simple.JSONObject();
+        entry.put("time", System.currentTimeMillis());
+        entry.put("authority",authority);
 
 
+        org.json.simple.JSONArray nodeRefs = new org.json.simple.JSONArray();
+        for (int i=0; i <= attachmentNodeRefs.length-1;i++) {
+            nodeRefs.add("\"" + attachmentNodeRefs[i] + "\"");
+        }
 
+        entry.put("nodeRefs",nodeRefs);
 
+        jsonArray.add(entry);
+        j.put("entries", jsonArray);
 
+        nodeService.setProperty(user, DatabaseModel.PROP_ENTRIES, j.toString());
+
+    }
 }

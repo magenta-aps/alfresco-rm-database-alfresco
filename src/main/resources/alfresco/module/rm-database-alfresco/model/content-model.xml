@@ -255,8 +255,20 @@
 
             </properties>
         </type>
+
     </types>
 
     <!-- Aspects -->
 
+    <aspects>
+        <aspect name="rm:sendMaillogs">
+            <title>Attributes related to a template</title>
+            <properties>
+                <property name="rm:maillog_entries">
+                    <title>logs</title>
+                    <type>d:text</type>
+                </property>
+            </properties>
+        </aspect>
+    </aspects>
 </model>

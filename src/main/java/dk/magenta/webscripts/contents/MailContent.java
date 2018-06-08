@@ -36,11 +36,15 @@ public class MailContent extends AbstractWebScript {
         Writer webScriptWriter = webScriptResponse.getWriter();
         JSONObject result;
 
+        Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
 
 
         JSONObject json = null;
         try {
+
+            System.out.println("the json" + c.getContent());
             json = new JSONObject(c.getContent());
+
             JSONArray jsonNodeRefs = JSONUtils.getArray(json, "nodeRefs");
             NodeRef[] nodeRefs = new NodeRef[jsonNodeRefs.length()];
             for (int i=0; i<jsonNodeRefs.length(); i++) {
@@ -49,11 +53,17 @@ public class MailContent extends AbstractWebScript {
                 nodeRefs[i] = nodeRef;
             }
 
-            // mailBean.getNodeRefsToMail(nodeRefs);
+            String subject = (String)json.get("subject");
+            System.out.println("the subject: " + subject);
 
-            mailBean.sendEmail(nodeRefs);
+            String body = (String)json.get("body");
+            System.out.println("the body: " + body);
 
-//            result = JSONUtils.getObject("downloadNodeRef", downloadNodeRef.toString());
+            String authority = (String)json.get("authority");
+            System.out.println("authority: " + authority);
+
+            mailBean.sendEmail(nodeRefs, authority, body, subject);
+
             result = JSONUtils.getSuccess();
             JSONUtils.write(webScriptWriter, result);
 
@@ -64,24 +74,5 @@ public class MailContent extends AbstractWebScript {
             webScriptResponse.setStatus(400);
             JSONUtils.write(webScriptWriter, result);
         }
-
-
-//
-//        Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
-//
-//        String nodeId = params.get("node");
-//        NodeRef nodeRef = new NodeRef("workspace://SpacesStore/" + nodeId);
-//
-//        try {
-//            mailBean.getNodeRefsToMail(nodeRef);
-////            result = JSONUtils.getObject("downloadNodeRef", downloadNodeRef.toString());
-//            result = JSONUtils.getSuccess();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            result = JSONUtils.getError(e);
-//            webScriptResponse.setStatus(400);
-//        }
-//        JSONUtils.write(webScriptWriter, result);
     }
 }
