@@ -59,6 +59,7 @@ public class MailContent extends AbstractWebScript {
             String body = (String)json.get("body");
             System.out.println("the body: " + body);
 
+
             String authority = (String)json.get("authority");
             System.out.println("authority: " + authority);
 

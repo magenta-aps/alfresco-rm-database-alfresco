@@ -68,10 +68,14 @@ public interface DatabaseModel {
     public static String TYPE_PSYC_DEC_KEY = "caseNumber";
     public static String TYPE_PSYC_SITENAME = "retspsyk";
 
+    /* Aspects */
+    QName ASPECT_BUA = QName.createQName(RM_MODEL_URI, "bua");
+
     // Prop Strings
     String NAME = "name";
     String ENTRY_KEY = "entryKey";
     String UUID = "node-uuid";
+    String CASENUMBER = "caseNumber";
 
     // Containers
     String PROP_VALUES = "propertyValues";

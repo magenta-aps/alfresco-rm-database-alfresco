@@ -48,7 +48,7 @@ public class TestUtils {
         };
     }
 
-    public static JSONObject addEntry(CredentialsProvider provider) throws JSONException, IOException {
+    public static JSONObject addEntry(CredentialsProvider provider, String bua) throws JSONException, IOException {
         String type = DatabaseModel.TYPE_PSYC_DEC;
 
         JSONObject properties = new JSONObject();
@@ -61,6 +61,7 @@ public class TestUtils {
         JSONObject data = new JSONObject();
         data.put("type", type);
         data.put("properties", properties);
+        data.put("bua", bua);
 
         // Execute Web Script call
         try (CloseableHttpClient httpclient = HttpClientBuilder.create()

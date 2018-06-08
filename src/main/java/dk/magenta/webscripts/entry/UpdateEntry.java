@@ -44,11 +44,6 @@ public class UpdateEntry extends AbstractWebScript {
 
             // TODO make a proper setup for handling business rules - if the system needs to be used at different cusotmers
 
-
-            System.out.println("tak for lor22t");
-
-            System.out.println(jsonProperties.toString());
-
             if ( jsonProperties.has("observationDate") && jsonProperties.has("declarationDate") ) {
                 entryBean.calculateActive(nodeRef);
                 entryBean.calculatePassive(nodeRef);

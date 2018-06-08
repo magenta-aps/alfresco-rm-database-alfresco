@@ -95,6 +95,7 @@ public class MailBean {
         return result;
     }
 
+
     public void sendEmail(NodeRef[] attachmentNodeRefs, String authority, String body, String subject) {
 
 
@@ -102,10 +103,9 @@ public class MailBean {
 
         ArrayList<NodeRef> pds_to_be_deleted  = new ArrayList<NodeRef>();
 
-
-
-
         String to = authority;
+
+        String from = "retspsykiatrisk.ambulatorium@ps.rm.dk ";
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "mail1.rm.dk");

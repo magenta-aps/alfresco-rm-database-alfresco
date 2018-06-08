@@ -70,7 +70,7 @@ public class EntryBean {
         this.auditComponent = auditComponent;
     }
 
-    public NodeRef addEntry (String siteShortName, String type, Map<QName, Serializable> properties) throws JSONException {
+    public NodeRef addEntry (String siteShortName, String type, Map<QName, Serializable> properties, boolean bua) throws JSONException {
 
         //Get counter for this site document library
         NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
@@ -136,6 +136,15 @@ public class EntryBean {
                 e.printStackTrace();
             }
         }
+
+        // add the ASPECT_BUA if the declaration is of that type
+
+        if (bua) {
+            nodeService.addAspect(nodeRef, DatabaseModel.ASPECT_BUA,null);
+        }
+
+
+
 
         return nodeRef;
     }
@@ -334,9 +343,6 @@ public class EntryBean {
 
         return JSONUtils.getSuccess();
     }
-
-
-
 
 
     public List<NodeRef> getEntries(String query, int skip, int maxItems, String sort, boolean desc) {

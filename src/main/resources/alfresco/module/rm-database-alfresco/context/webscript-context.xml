@@ -36,11 +36,13 @@
 	<bean id="webscript.entries.page_entries.post" class="dk.magenta.webscripts.entry.GetPaginetedEntries" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 		<property name="databaseBean" ref="databaseBean"/>
+		<property name="nodeService" ref="NodeService"/>
 	</bean>
 
 	<bean id="webscript.entries.waitinglist.get" class="dk.magenta.webscripts.entry.GetWaitingList" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 		<property name="databaseBean" ref="databaseBean"/>
+		<property name="nodeService" ref="NodeService"/>
 	</bean>
 
 	<bean id="webscript.entries.autocompleteentries.get" class="dk.magenta.webscripts.entry.GetAUTOcompleteEntries" parent="webscript">

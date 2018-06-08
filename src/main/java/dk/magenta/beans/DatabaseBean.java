@@ -282,7 +282,13 @@ public class DatabaseBean {
     public JSONObject updateUserRoles(String siteShortName, String username, JSONArray addGroups, JSONArray removeGroups)
             throws JSONException {
 
+        System.out.println("hvad er addGroups" + addGroups);
+
         Set<String> authorities = authorityService.getAuthorities();
+
+        System.out.println("svar fra authorites: nedenunder");
+        System.out.println(authorities.contains("GROUP_site_" + siteShortName + "_SiteRoleManager") || authorities.contains("GROUP_ALFRESCO_ADMINISTRATORS"));
+        System.out.println("svar fra authorites: ovenover");
 
         if(authorities.contains("GROUP_site_" + siteShortName + "_SiteRoleManager") || authorities.contains("GROUP_ALFRESCO_ADMINISTRATORS") ) {
             try {
@@ -303,6 +309,8 @@ public class DatabaseBean {
     private void updateSiteRole(String siteShortName, String username, JSONArray groups,
                                 boolean add) throws JSONException {
         Set<String> authorities = authorityService.getAuthoritiesForUser(username);
+
+        System.out.println("site roles for :" + username);
 
         for (int i = 0; i < groups.length(); i++) {
             String group = groups.getString(i);

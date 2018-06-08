@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(value = AlfrescoTestRunner.class)
 public class AddEntryTest extends AbstractAlfrescoIT {
@@ -35,10 +36,11 @@ public class AddEntryTest extends AbstractAlfrescoIT {
     }
 
     @Test
-    public void testAddEntry() throws IOException, JSONException {
+    public void testAddEntry() throws IOException, JSONException, InterruptedException {
         log.debug("AddEntryTest.testAddEntry");
 
-        JSONObject returnJSON = TestUtils.addEntry(provider);
+        JSONObject returnJSON = TestUtils.addEntry(provider, "true");
+
         String type = DatabaseModel.TYPE_PSYC_DEC;
         Assert.assertTrue("Assert entryKey is present.", returnJSON.has(TypeUtils.getEntryKey(type)));
         Assert.assertTrue("Assert uuid is present.", returnJSON.has(DatabaseModel.UUID));
