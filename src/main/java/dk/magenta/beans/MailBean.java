@@ -108,23 +108,25 @@ public class MailBean {
         String to = authority;
 
         Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.host", "mail1.rm.dk");
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.port", "587");
 
 
-        Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("magentatestdokument2018@gmail.com", "alexandersnegl");
-                    }
-                });
+//        Session session = Session.getInstance(props,
+//                new javax.mail.Authenticator() {
+//                    protected PasswordAuthentication getPasswordAuthentication() {
+//                        return new PasswordAuthentication("magentatestdokument2018@gmail.com", "alexandersnegl");
+//                    }
+//                });
+
+        Session session = Session.getInstance(props);
 
 
 
         try {
-            InternetAddress fromAddress = new InternetAddress("magentatestdokument2018@gmail.com" );
+            InternetAddress fromAddress = new InternetAddress("retspsykiatrisk.ambulatorium@ps.rm.dk");
             InternetAddress toAddress = new InternetAddress(to);
 
             MimeMessage msg = new MimeMessage(session);
@@ -180,7 +182,8 @@ public class MailBean {
 
             msg.setContent(multipart);
 
-            Transport.send(msg, "magentatestdokument2018@gmail.com", "alexandersnegl");
+//            Transport.send(msg, "magentatestdokument2018@gmail.com", "alexandersnegl");
+            Transport.send(msg);
 
             // cleanup the genereted pdfs
 
@@ -225,7 +228,6 @@ public class MailBean {
         pptToPdfTransformer.transform(pptReader, pdfWriter);
 
         return pdf.getChildRef();
-
     }
 
     private void logEvent(NodeRef[] attachmentNodeRefs, String authority) {
@@ -271,7 +273,6 @@ public class MailBean {
             nodeRefs.add("\"" + attachmentNodeRefs[i] + "\"");
         }
 
-
         entry.put("nodeRefs",nodeRefs);
 
         jsonArray.add(entry);
@@ -280,12 +281,4 @@ public class MailBean {
         nodeService.setProperty(user, DatabaseModel.PROP_ENTRIES, j.toString());
 
     }
-
-
-
-
-
-
-
-
 }
