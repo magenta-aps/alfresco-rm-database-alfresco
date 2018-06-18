@@ -105,15 +105,14 @@ public class MailBean {
 
         String to = authority;
 
-        String from = "retspsykiatrisk.ambulatorium@ps.rm.dk ";
-
         Properties props = new Properties();
         props.put("mail.smtp.host", "mail1.rm.dk");
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.port", "25");
 
 
+        // for use in testing
 //        Session session = Session.getInstance(props,
 //                new javax.mail.Authenticator() {
 //                    protected PasswordAuthentication getPasswordAuthentication() {
@@ -126,7 +125,7 @@ public class MailBean {
 
 
         try {
-            InternetAddress fromAddress = new InternetAddress("retspsykiatrisk.ambulatorium@ps.rm.dk");
+            InternetAddress fromAddress = new InternetAddress("ps.o.faelles.post@rm.dk");
             InternetAddress toAddress = new InternetAddress(to);
 
             MimeMessage msg = new MimeMessage(session);
