@@ -6,6 +6,7 @@ import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
 import org.json.JSONObject;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -19,6 +20,16 @@ public class GetEntry extends AbstractWebScript {
 
     private EntryBean entryBean;
     private DatabaseBean databaseBean;
+
+    public NodeService getNodeService() {
+        return nodeService;
+    }
+
+    public void setNodeService(NodeService nodeService) {
+        this.nodeService = nodeService;
+    }
+
+    private NodeService nodeService;
 
     public void setEntryBean(EntryBean entryBean) {
         this.entryBean = entryBean;
@@ -44,6 +55,13 @@ public class GetEntry extends AbstractWebScript {
 
             NodeRef nodeRef = entryBean.getEntry(query);
             result = entryBean.toJSON(nodeRef);
+
+            if (nodeService.hasAspect(nodeRef, DatabaseModel.ASPECT_BUA)) {
+                result.put("bua", true);
+            }
+            else {
+                result.put("bua", false);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

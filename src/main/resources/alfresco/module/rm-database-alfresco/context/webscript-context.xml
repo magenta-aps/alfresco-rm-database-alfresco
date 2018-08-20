@@ -24,6 +24,7 @@
 	<bean id="webscript.entries.entry.get" class="dk.magenta.webscripts.entry.GetEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 		<property name="databaseBean" ref="databaseBean"/>
+		<property name="nodeService" ref="NodeService"/>
 	</bean>
 
 	<bean id="webscript.entries.waitingtime.get" class="dk.magenta.webscripts.entry.WaitingTime" parent="webscript">
