@@ -142,7 +142,7 @@ public class DocumentTemplateBean {
 
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
-        writer.setMimetype(" application/vnd.oasis.opendocument.text");
+        writer.setMimetype("application/vnd.oasis.opendocument.text");
 
         File f = new File("tmp");
 
@@ -174,7 +174,7 @@ public class DocumentTemplateBean {
 
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
-        writer.setMimetype(" application/vnd.oasis.opendocument.text");
+        writer.setMimetype("application/vnd.oasis.opendocument.text");
 
         File f = new File("tmp");
 
