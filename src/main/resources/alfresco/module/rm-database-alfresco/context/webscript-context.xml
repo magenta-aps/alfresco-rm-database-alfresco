@@ -114,6 +114,11 @@
 		<property name="mailBean" ref="mailBean"/>
 	</bean>
 
+	<bean id="webscript.contents.mergedoctemplate.post" class="dk.magenta.webscripts.contents.MergeDocTemplate" parent="webscript">
+		<property name="documentTemplateBean" ref="documentTemplateBean"/>
+
+	</bean>
+
 	<bean id="webscript.contents.getdownloadstatus.get" class="dk.magenta.webscripts.contents.GetDownloadStatus" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>

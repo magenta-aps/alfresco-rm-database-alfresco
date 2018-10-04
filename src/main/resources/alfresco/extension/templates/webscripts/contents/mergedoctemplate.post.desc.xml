@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Mail content</shortname>
+    <description>merge declaration into document template</description>
+    <url>/contents/mergedoctemplate</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

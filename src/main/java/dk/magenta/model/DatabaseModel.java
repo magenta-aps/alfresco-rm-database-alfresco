@@ -3,6 +3,7 @@ package dk.magenta.model;
 import org.alfresco.service.namespace.QName;
 import org.json.simple.JSONArray;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -80,6 +81,10 @@ public interface DatabaseModel {
     // Containers
     String PROP_VALUES = "propertyValues";
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
+
+    // template docs
+    String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke";
+    String PROP_TEMPLATE_DOC_KENDELSE = "kendelse";
 
 
     /**
