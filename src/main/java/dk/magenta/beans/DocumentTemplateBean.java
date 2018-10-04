@@ -127,7 +127,7 @@ public class DocumentTemplateBean {
         TextDocument templateDocument = TextDocument.loadDocument(contentReader.getContentInputStream());
 
         VariableField candidateVar = templateDocument.getVariableFieldByName("cpr");
-        candidateVar.updateField("231287-3871", null);
+        candidateVar.updateField(info.cpr, null);
 
 //        VariableField ptr = templateDocument.getVariableFieldByName("ptnr");
 //
