@@ -80,7 +80,7 @@ public class DocumentTemplateBean {
 
             NodeRef template_doc = children.get(0).getChildRef();
 
-            this.generateOfferLetterDocumentKendelse(template_doc, declaration);
+            this.generateOfferLetterDocumentKendelse(template_doc, declaration, retten, dato);
         }
 
         else if (type.equals(DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE)) {
@@ -107,18 +107,32 @@ public class DocumentTemplateBean {
 
         DeclarationInfo info = new DeclarationInfo();
         info.cpr = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_CPR);
+        info.cpr = info.cpr.substring(0,6) + "-" + info.cpr.substring(6,10);
+
+        info.fornavn = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_FIRST_NAME);
+        info.efternavn = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_LAST_NAME);
+
+        info.adresse = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_ADDRESS);
+        info.postnr = String.valueOf(((Integer)nodeService.getProperty(declaration, DatabaseModel.PROP_POSTCODE)));
+        info.by = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_CITY);
+
+        info.ambldato = ((Date)nodeService.getProperty(declaration, DatabaseModel.PROP_CREATION_DATE)).toString();
+
+
         return info;
     }
 
-    public void generateOfferLetterDocumentKendelse(NodeRef templateDoc, NodeRef declaration) throws Exception {
+    public void generateOfferLetterDocumentKendelse(NodeRef templateDoc, NodeRef declaration, String retten, String dato) throws Exception {
 
         DeclarationInfo info = this.getProperties(declaration);
         System.out.println("hvad er cpr:  " + info.cpr);
-        System.out.println("hvad er cpr:  " + info.cpr);
-        System.out.println("hvad er cpr:  " + info.cpr);
-        System.out.println("hvad er cpr:  " + info.cpr);
-        System.out.println("hvad er cpr:  " + info.cpr);
-        System.out.println("hvad er cpr:  " + info.cpr);
+        System.out.println("hvad er fornavn:  " + info.fornavn);
+        System.out.println("hvad er efternavn:  " + info.efternavn);
+        System.out.println("hvad er post:  " + info.postnr);
+        System.out.println("hvad er by:  " + info.by);
+        System.out.println("politikreds:  " + retten);
+        System.out.println("kendelsesdato:  " + dato);
+        System.out.println("amlb:  " + info.ambldato);
 
         NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
@@ -129,11 +143,20 @@ public class DocumentTemplateBean {
         VariableField candidateVar = templateDocument.getVariableFieldByName("cpr");
         candidateVar.updateField(info.cpr, null);
 
-//        VariableField ptr = templateDocument.getVariableFieldByName("ptnr");
-//
-//        System.out.println("hvad er template" + ptr);
-//
-//        ptr.updateField("237498478239", null);
+        VariableField navn = templateDocument.getVariableFieldByName("Navn");
+        navn.updateField(info.fornavn + " " + info.efternavn, null);
+
+        VariableField retteni = templateDocument.getVariableFieldByName("retteni");
+        retteni.updateField(retten, null);
+
+        VariableField kendelsesdato = templateDocument.getVariableFieldByName("kendelsesdato");
+        kendelsesdato.updateField(dato, null);
+
+        VariableField kunnavn = templateDocument.getVariableFieldByName("kunnavn");
+        kunnavn.updateField(info.fornavn + " " + info.efternavn, null);
+
+        VariableField ambldato = templateDocument.getVariableFieldByName("amblstart");
+        ambldato.updateField(info.ambldato, null);
 
 
         // make the new document below the case
@@ -161,6 +184,8 @@ public class DocumentTemplateBean {
         VariableField candidateVar = templateDocument.getVariableFieldByName("cpr");
         candidateVar.updateField("231287-3871", null);
 
+
+
 //        VariableField ptr = templateDocument.getVariableFieldByName("ptnr");
 //
 //        System.out.println("hvad er template" + ptr);
@@ -180,13 +205,15 @@ public class DocumentTemplateBean {
 
         templateDocument.save(f);
         writer.putContent(f);
-
-
-
-
     }
 
     private class DeclarationInfo {
         public String cpr;
+        public String fornavn;
+        public String efternavn;
+        public String adresse;
+        public String postnr;
+        public String by;
+        public String ambldato;
     }
 }

@@ -23,6 +23,7 @@ public interface DatabaseModel {
     QName PROP_LAST_NAME = QName.createQName(RM_MODEL_URI, "lastName");
     QName PROP_FULL_NAME = QName.createQName(RM_MODEL_URI, "fullName");
     QName PROP_ADDRESS = QName.createQName(RM_MODEL_URI, "address");
+    QName PROP_POSTCODE = QName.createQName(RM_MODEL_URI, "postbox");
     QName PROP_CITY = QName.createQName(RM_MODEL_URI, "city");
     QName PROP_ETHNICITY = QName.createQName(RM_MODEL_URI, "ethnicity");
     QName PROP_MOTHER_ETHINICITY = QName.createQName(RM_MODEL_URI, "motherEthnicity");
