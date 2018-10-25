@@ -117,6 +117,7 @@ public class DocumentTemplateBean {
         info.by = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_CITY);
 
         info.ambldato = ((Date)nodeService.getProperty(declaration, DatabaseModel.PROP_CREATION_DATE)).toString();
+        info.laege = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
 
 
         return info;
@@ -133,6 +134,7 @@ public class DocumentTemplateBean {
         System.out.println("politikreds:  " + retten);
         System.out.println("kendelsesdato:  " + dato);
         System.out.println("amlb:  " + info.ambldato);
+        System.out.println("laege:  " + info.laege);
 
         NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
@@ -155,8 +157,11 @@ public class DocumentTemplateBean {
         VariableField kunnavn = templateDocument.getVariableFieldByName("kunnavn");
         kunnavn.updateField(info.fornavn + " " + info.efternavn, null);
 
-        VariableField ambldato = templateDocument.getVariableFieldByName("amblstart");
+        VariableField ambldato = templateDocument.getVariableFieldByName("modtagetdato");
         ambldato.updateField(info.ambldato, null);
+
+        VariableField laege = templateDocument.getVariableFieldByName("laege");
+        laege.updateField(info.laege, null);
 
 
         // make the new document below the case
@@ -215,5 +220,6 @@ public class DocumentTemplateBean {
         public String postnr;
         public String by;
         public String ambldato;
+        public String laege;
     }
 }

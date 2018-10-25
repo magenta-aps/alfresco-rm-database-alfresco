@@ -14,6 +14,8 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 
 public class MergeDocTemplate extends AbstractWebScript {
@@ -45,6 +47,9 @@ public class MergeDocTemplate extends AbstractWebScript {
 
         String nodeRef = params.get("nodeRef");
         System.out.println(nodeRef);
+
+            java.time.LocalDateTime d = LocalDateTime.parse((String) json.get("dato"));
+            System.out.println(d);
 
         documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
             result = JSONUtils.getSuccess();
