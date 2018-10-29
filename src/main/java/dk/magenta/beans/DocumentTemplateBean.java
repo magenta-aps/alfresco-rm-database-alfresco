@@ -64,10 +64,13 @@ public class DocumentTemplateBean {
         this.nodeService = nodeService;
     }
 
+    public NodeRef populateDocument(NodeRef declaration, String type, String retten, String dato) {
 
 
 
-    public void populateDocument(NodeRef declaration, String type, String retten, String dato) {
+        NodeRef documentNodeRef = null;
+
+
         try {
 
 
@@ -80,7 +83,7 @@ public class DocumentTemplateBean {
 
             NodeRef template_doc = children.get(0).getChildRef();
 
-            this.generateOfferLetterDocumentKendelse(template_doc, declaration, retten, dato);
+            documentNodeRef = this.generateOfferLetterDocumentKendelse(template_doc, declaration, retten, dato);
         }
 
         else if (type.equals(DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE)) {
@@ -92,7 +95,7 @@ public class DocumentTemplateBean {
 
             NodeRef template_doc = children.get(0).getChildRef();
 
-            this.generateOfferLetterDocumentSamtykke(template_doc, declaration);
+            documentNodeRef = this.generateOfferLetterDocumentSamtykke(template_doc, declaration);
         }
 
 
@@ -101,6 +104,8 @@ public class DocumentTemplateBean {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return documentNodeRef;
     }
 
     private DeclarationInfo getProperties(NodeRef declaration) {
@@ -116,14 +121,36 @@ public class DocumentTemplateBean {
         info.postnr = String.valueOf(((Integer)nodeService.getProperty(declaration, DatabaseModel.PROP_POSTCODE)));
         info.by = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_CITY);
 
-        info.ambldato = ((Date)nodeService.getProperty(declaration, DatabaseModel.PROP_CREATION_DATE)).toString();
+        Date creationDate = ((Date)nodeService.getProperty(declaration, DatabaseModel.PROP_OBSERVATION_DATE));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(creationDate);
+        int year = cal.get(Calendar.YEAR);
+        int day = cal.get(Calendar.DATE);
+        int month = (cal.get(Calendar.MONTH)+1);
+        info.ambldato  = day + "-" + month + "-" + year;
+
         info.laege = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
+
+        int sagsnummer = (int)nodeService.getProperty(declaration, DatabaseModel.PROP_CASE_NUMBER);
+
+        info.sagsnr = String.valueOf(sagsnummer);
+
+        info.politikreds = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_REFERING_AGENCY);
+
+        Date receivedDate = (Date)nodeService.getProperty(declaration, DatabaseModel.PROP_CREATION_DATE);
+        cal = Calendar.getInstance();
+        cal.setTime(receivedDate);
+        year = cal.get(Calendar.YEAR);
+        day = cal.get(Calendar.DATE);
+        month = (cal.get(Calendar.MONTH)+1);
+        info.oprettetdato  = day + "-" + month + "-" + year;
+
 
 
         return info;
     }
 
-    public void generateOfferLetterDocumentKendelse(NodeRef templateDoc, NodeRef declaration, String retten, String dato) throws Exception {
+    public NodeRef generateOfferLetterDocumentKendelse(NodeRef templateDoc, NodeRef declaration, String retten, String dato) throws Exception {
 
         DeclarationInfo info = this.getProperties(declaration);
         System.out.println("hvad er cpr:  " + info.cpr);
@@ -154,14 +181,27 @@ public class DocumentTemplateBean {
         VariableField kendelsesdato = templateDocument.getVariableFieldByName("kendelsesdato");
         kendelsesdato.updateField(dato, null);
 
+
+        VariableField politikreds = templateDocument.getVariableFieldByName("politikreds");
+        politikreds.updateField(info.politikreds, null);
+
         VariableField kunnavn = templateDocument.getVariableFieldByName("kunnavn");
         kunnavn.updateField(info.fornavn + " " + info.efternavn, null);
 
-        VariableField ambldato = templateDocument.getVariableFieldByName("modtagetdato");
+        VariableField ambldato = templateDocument.getVariableFieldByName("amblstart");
         ambldato.updateField(info.ambldato, null);
 
         VariableField laege = templateDocument.getVariableFieldByName("laege");
         laege.updateField(info.laege, null);
+
+        VariableField patientnr = templateDocument.getVariableFieldByName("patientnr");
+        patientnr.updateField(info.cpr, null);
+
+        VariableField journalnr = templateDocument.getVariableFieldByName("journalnr");
+        journalnr.updateField(info.sagsnr, null);
+
+        VariableField modtagetdato = templateDocument.getVariableFieldByName("modtagetdato");
+        modtagetdato.updateField(info.oprettetdato, null);
 
 
         // make the new document below the case
@@ -176,9 +216,21 @@ public class DocumentTemplateBean {
 
         templateDocument.save(f);
         writer.putContent(f);
+
+
+        return newFile.getNodeRef();
     }
 
-    public void generateOfferLetterDocumentSamtykke(NodeRef templateDoc, NodeRef declaration) throws Exception {
+    public NodeRef generateOfferLetterDocumentSamtykke(NodeRef templateDoc, NodeRef declaration) throws Exception {
+
+        DeclarationInfo info = this.getProperties(declaration);
+        System.out.println("hvad er cpr:  " + info.cpr);
+        System.out.println("hvad er fornavn:  " + info.fornavn);
+        System.out.println("hvad er efternavn:  " + info.efternavn);
+        System.out.println("hvad er post:  " + info.postnr);
+        System.out.println("hvad er by:  " + info.by);
+        System.out.println("amlb:  " + info.ambldato);
+        System.out.println("laege:  " + info.laege);
 
         NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
@@ -187,15 +239,32 @@ public class DocumentTemplateBean {
         TextDocument templateDocument = TextDocument.loadDocument(contentReader.getContentInputStream());
 
         VariableField candidateVar = templateDocument.getVariableFieldByName("cpr");
-        candidateVar.updateField("231287-3871", null);
+        candidateVar.updateField(info.cpr, null);
+
+        VariableField navn = templateDocument.getVariableFieldByName("Navn");
+        navn.updateField(info.fornavn + " " + info.efternavn, null);
 
 
+        VariableField politikreds = templateDocument.getVariableFieldByName("politikreds");
+        politikreds.updateField(info.politikreds, null);
 
-//        VariableField ptr = templateDocument.getVariableFieldByName("ptnr");
-//
-//        System.out.println("hvad er template" + ptr);
-//
-//        ptr.updateField("237498478239", null);
+        VariableField kunnavn = templateDocument.getVariableFieldByName("kunnavn");
+        kunnavn.updateField(info.fornavn + " " + info.efternavn, null);
+
+        VariableField ambldato = templateDocument.getVariableFieldByName("amblstart");
+        ambldato.updateField(info.ambldato, null);
+
+        VariableField laege = templateDocument.getVariableFieldByName("laege");
+        laege.updateField(info.laege, null);
+
+        VariableField patientnr = templateDocument.getVariableFieldByName("patientnr");
+        patientnr.updateField(info.cpr, null);
+
+        VariableField journalnr = templateDocument.getVariableFieldByName("journalnr");
+        journalnr.updateField(info.sagsnr, null);
+
+        VariableField modtagetdato = templateDocument.getVariableFieldByName("modtagetdato");
+        modtagetdato.updateField(info.oprettetdato, null);
 
 
         // make the new document below the case
@@ -210,6 +279,8 @@ public class DocumentTemplateBean {
 
         templateDocument.save(f);
         writer.putContent(f);
+
+        return newFile.getNodeRef();
     }
 
     private class DeclarationInfo {
@@ -221,5 +292,8 @@ public class DocumentTemplateBean {
         public String by;
         public String ambldato;
         public String laege;
+        public String sagsnr;
+        public String politikreds;
+        public String oprettetdato;
     }
 }

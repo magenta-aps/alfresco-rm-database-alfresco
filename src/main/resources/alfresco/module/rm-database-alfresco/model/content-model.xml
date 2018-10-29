@@ -239,6 +239,23 @@
                 </property>
 
 
+                <!-- declaration erklaringsdokument-->
+
+                <property name="rm:declarationtype">
+                    <title>Henvisningstype</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:rulingCourt">
+                    <title>Retten</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:rulingDate">
+                    <title>kendelsesdato</title>
+                    <type>d:date</type>
+                </property>
+
 
 
                 <!-- generic -->
@@ -252,6 +269,8 @@
                     <title>locked for edit by</title>
                     <type>d:text</type>
                 </property>
+
+
 
             </properties>
         </type>

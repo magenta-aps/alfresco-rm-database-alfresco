@@ -48,11 +48,11 @@ public class MergeDocTemplate extends AbstractWebScript {
         String nodeRef = params.get("nodeRef");
         System.out.println(nodeRef);
 
-            java.time.LocalDateTime d = LocalDateTime.parse((String) json.get("dato"));
-            System.out.println(d);
+            System.out.println("hvad er dato:" + json.get("dato"));
 
-        documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
-            result = JSONUtils.getSuccess();
+
+        NodeRef newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
+            result = JSONUtils.getObject("documentNodeRef", newDocument.toString());
             JSONUtils.write(webScriptWriter, result);
 
         } catch (JSONException e) {

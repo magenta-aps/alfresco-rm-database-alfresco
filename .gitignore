@@ -10,3 +10,4 @@ target/
 *.log
 alfresco*.log*
 solr.log*
+tmp
