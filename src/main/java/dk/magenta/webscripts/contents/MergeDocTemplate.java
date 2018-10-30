@@ -51,9 +51,20 @@ public class MergeDocTemplate extends AbstractWebScript {
             System.out.println("hvad er dato:" + json.get("dato"));
 
 
-        NodeRef newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
+        if (!(json.get("type")).equals("") && (!json.get("retten").equals("")) && (!json.get("type").equals(""))) {
+
+            NodeRef newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
             result = JSONUtils.getObject("documentNodeRef", newDocument.toString());
             JSONUtils.write(webScriptWriter, result);
+
+
+        }
+        else {
+            result = JSONUtils.getError(new Exception("wrong parameters supplied"));
+            JSONUtils.write(webScriptWriter, result);
+        }
+
+
 
         } catch (JSONException e) {
             e.printStackTrace();
