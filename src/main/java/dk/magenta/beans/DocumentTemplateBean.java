@@ -64,11 +64,11 @@ public class DocumentTemplateBean {
         this.nodeService = nodeService;
     }
 
-    public NodeRef populateDocument(NodeRef declaration, String type, String retten, String dato) {
+    public String populateDocument(NodeRef declaration, String type, String retten, String dato) {
 
 
 
-        NodeRef documentNodeRef = null;
+        String documentNodeRef = null;
 
 
         try {
@@ -150,7 +150,7 @@ public class DocumentTemplateBean {
         return info;
     }
 
-    public NodeRef generateOfferLetterDocumentKendelse(NodeRef templateDoc, NodeRef declaration, String retten, String dato) throws Exception {
+    public String generateOfferLetterDocumentKendelse(NodeRef templateDoc, NodeRef declaration, String retten, String dato) throws Exception {
 
         DeclarationInfo info = this.getProperties(declaration);
         System.out.println("hvad er cpr:  " + info.cpr);
@@ -218,10 +218,10 @@ public class DocumentTemplateBean {
         writer.putContent(f);
 
 
-        return newFile.getNodeRef();
+        return newFile.getNodeRef().getId();
     }
 
-    public NodeRef generateOfferLetterDocumentSamtykke(NodeRef templateDoc, NodeRef declaration) throws Exception {
+    public String generateOfferLetterDocumentSamtykke(NodeRef templateDoc, NodeRef declaration) throws Exception {
 
         DeclarationInfo info = this.getProperties(declaration);
         System.out.println("hvad er cpr:  " + info.cpr);
@@ -280,7 +280,7 @@ public class DocumentTemplateBean {
         templateDocument.save(f);
         writer.putContent(f);
 
-        return newFile.getNodeRef();
+        return newFile.getNodeRef().getId();
     }
 
     private class DeclarationInfo {

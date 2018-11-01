@@ -54,7 +54,7 @@ public class MergeDocTemplate extends AbstractWebScript {
             if (json.get("type").equals(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE)) {
 
                 if (json.has("dato") && json.has("retten")) {
-                    NodeRef newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
+                    String newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
                     result = JSONUtils.getObject("documentNodeRef", newDocument.toString());
                     JSONUtils.write(webScriptWriter, result);
                 }
@@ -64,21 +64,15 @@ public class MergeDocTemplate extends AbstractWebScript {
                 }
             }
             else {
-                NodeRef newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , "", "" );
+                String newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , "", "" );
                 result = JSONUtils.getObject("documentNodeRef", newDocument.toString());
                 JSONUtils.write(webScriptWriter, result);
             }
-
-
-
-
-
-
         }
-
-
-
-
+        else {
+            result = JSONUtils.getError(new Exception("wrong parameters supplied"));
+            JSONUtils.write(webScriptWriter, result);
+        }
 
 
         } catch (JSONException e) {
