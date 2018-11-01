@@ -55,7 +55,7 @@ public class MergeDocTemplate extends AbstractWebScript {
 
                 if (json.has("dato") && json.has("retten")) {
                     String newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
-                    result = JSONUtils.getObject("documentNodeRef", newDocument.toString());
+                    result = JSONUtils.getObject("id", newDocument.toString());
                     JSONUtils.write(webScriptWriter, result);
                 }
                 else {
@@ -65,7 +65,7 @@ public class MergeDocTemplate extends AbstractWebScript {
             }
             else {
                 String newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , "", "" );
-                result = JSONUtils.getObject("documentNodeRef", newDocument.toString());
+                result = JSONUtils.getObject("id", newDocument.toString());
                 JSONUtils.write(webScriptWriter, result);
             }
         }
