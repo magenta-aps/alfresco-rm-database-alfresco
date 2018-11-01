@@ -2,6 +2,7 @@ package dk.magenta.webscripts.contents;
 
 import dk.magenta.beans.DocumentTemplateBean;
 import dk.magenta.beans.MailBean;
+import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.json.JSONArray;
@@ -48,21 +49,35 @@ public class MergeDocTemplate extends AbstractWebScript {
         String nodeRef = params.get("nodeRef");
         System.out.println(nodeRef);
 
-            System.out.println("hvad er dato:" + json.get("dato"));
+        if (json.has("type")) {
+
+            if (json.get("type").equals(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE)) {
+
+                if (json.has("dato") && json.has("retten")) {
+                    NodeRef newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
+                    result = JSONUtils.getObject("documentNodeRef", newDocument.toString());
+                    JSONUtils.write(webScriptWriter, result);
+                }
+                else {
+                    result = JSONUtils.getError(new Exception("wrong parameters supplied"));
+                    JSONUtils.write(webScriptWriter, result);
+                }
+            }
+            else {
+                NodeRef newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , "", "" );
+                result = JSONUtils.getObject("documentNodeRef", newDocument.toString());
+                JSONUtils.write(webScriptWriter, result);
+            }
 
 
-        if (!(json.get("type")).equals("") && (!json.get("retten").equals("")) && (!json.get("type").equals(""))) {
 
-            NodeRef newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
-            result = JSONUtils.getObject("documentNodeRef", newDocument.toString());
-            JSONUtils.write(webScriptWriter, result);
+
 
 
         }
-        else {
-            result = JSONUtils.getError(new Exception("wrong parameters supplied"));
-            JSONUtils.write(webScriptWriter, result);
-        }
+
+
+
 
 
 
