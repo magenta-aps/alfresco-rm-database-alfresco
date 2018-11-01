@@ -26,7 +26,8 @@ public class MergeDocTemplate extends AbstractWebScript {
     }
 
     private DocumentTemplateBean documentTemplateBean;
-
+    private JSONObject result;
+    Writer webScriptWriter;
 
 
     @Override
@@ -41,8 +42,8 @@ public class MergeDocTemplate extends AbstractWebScript {
 
 
         webScriptResponse.setContentEncoding("UTF-8");
-        Writer webScriptWriter = webScriptResponse.getWriter();
-        JSONObject result;
+        webScriptWriter = webScriptResponse.getWriter();
+
 
         Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
 
@@ -75,9 +76,19 @@ public class MergeDocTemplate extends AbstractWebScript {
         }
 
 
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
+        catch (org.alfresco.service.cmr.model.FileExistsException e) {
+            System.out.println(e.toString());
+            result = JSONUtils.getError("document already exists");
+            JSONUtils.write(webScriptWriter, result);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            result = JSONUtils.getError(new Exception(e.toString()));
+            JSONUtils.write(webScriptWriter, result);
+
+        }
+
     }
 
 }

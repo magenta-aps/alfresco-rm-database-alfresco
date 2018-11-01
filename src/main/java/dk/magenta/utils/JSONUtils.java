@@ -117,6 +117,10 @@ public class JSONUtils {
         return getObject("error", e.getStackTrace()[0].toString());
     }
 
+    public static JSONObject getError (String e) {
+        return getObject("error",e);
+    }
+
     public static Map<QName, Serializable> getMap(JSONObject json) throws JSONException {
 
         Map<QName, Serializable> map = new HashMap<>();

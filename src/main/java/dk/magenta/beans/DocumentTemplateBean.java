@@ -64,14 +64,14 @@ public class DocumentTemplateBean {
         this.nodeService = nodeService;
     }
 
-    public String populateDocument(NodeRef declaration, String type, String retten, String dato) {
+    public String populateDocument(NodeRef declaration, String type, String retten, String dato) throws Exception{
 
 
 
         String documentNodeRef = null;
 
 
-        try {
+
 
 
         if (type.equals(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE)) {
@@ -101,9 +101,10 @@ public class DocumentTemplateBean {
 
 
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+
+
+
 
         return documentNodeRef;
     }
