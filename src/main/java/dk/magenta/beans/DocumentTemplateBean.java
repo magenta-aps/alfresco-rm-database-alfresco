@@ -126,13 +126,17 @@ public class DocumentTemplateBean {
         int year = cal.get(Calendar.YEAR);
         int day = cal.get(Calendar.DATE);
         int month = (cal.get(Calendar.MONTH)+1);
-        info.ambldato  = day + "-" + month + "-" + year;
+        info.ambldato  = day + "." + month + "." + year;
 
         info.laege = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
 
         int sagsnummer = (int)nodeService.getProperty(declaration, DatabaseModel.PROP_CASE_NUMBER);
-
         info.sagsnr = String.valueOf(sagsnummer);
+
+        String journalnummer = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_JOURNALNUMMER);
+        info.journalnummer = journalnummer;
+
+
 
         info.politikreds = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_REFERING_AGENCY);
 
@@ -142,7 +146,7 @@ public class DocumentTemplateBean {
         year = cal.get(Calendar.YEAR);
         day = cal.get(Calendar.DATE);
         month = (cal.get(Calendar.MONTH)+1);
-        info.oprettetdato  = day + "-" + month + "-" + year;
+        info.oprettetdato  = day + "." + month + "." + year;
 
 
 
@@ -161,6 +165,7 @@ public class DocumentTemplateBean {
         System.out.println("kendelsesdato:  " + dato);
         System.out.println("amlb:  " + info.ambldato);
         System.out.println("laege:  " + info.laege);
+        System.out.println("journalnummer:  " + info.journalnummer);
 
         NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
@@ -187,17 +192,11 @@ public class DocumentTemplateBean {
         VariableField kunnavn = templateDocument.getVariableFieldByName("kunnavn");
         kunnavn.updateField(info.fornavn + " " + info.efternavn, null);
 
-        VariableField ambldato = templateDocument.getVariableFieldByName("amblstart");
-        ambldato.updateField(info.ambldato, null);
-
-        VariableField laege = templateDocument.getVariableFieldByName("laege");
-        laege.updateField(info.laege, null);
-
         VariableField patientnr = templateDocument.getVariableFieldByName("patientnr");
-        patientnr.updateField(info.cpr, null);
+        patientnr.updateField(info.sagsnr, null);
 
         VariableField journalnr = templateDocument.getVariableFieldByName("journalnr");
-        journalnr.updateField(info.sagsnr, null);
+        journalnr.updateField(info.journalnummer, null);
 
         VariableField modtagetdato = templateDocument.getVariableFieldByName("modtagetdato");
         modtagetdato.updateField(info.oprettetdato, null);
@@ -250,12 +249,6 @@ public class DocumentTemplateBean {
         VariableField kunnavn = templateDocument.getVariableFieldByName("kunnavn");
         kunnavn.updateField(info.fornavn + " " + info.efternavn, null);
 
-        VariableField ambldato = templateDocument.getVariableFieldByName("amblstart");
-        ambldato.updateField(info.ambldato, null);
-
-        VariableField laege = templateDocument.getVariableFieldByName("laege");
-        laege.updateField(info.laege, null);
-
         VariableField patientnr = templateDocument.getVariableFieldByName("patientnr");
         patientnr.updateField(info.cpr, null);
 
@@ -294,5 +287,6 @@ public class DocumentTemplateBean {
         public String sagsnr;
         public String politikreds;
         public String oprettetdato;
+        public String journalnummer;
     }
 }

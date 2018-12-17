@@ -138,6 +138,11 @@
                     <type>d:text</type>
                 </property>
 
+                <property name="rm:journalNumber">
+                    <title>Journalnummer</title>
+                    <type>d:text</type>
+                </property>
+
                 <!-- HISTORY -->
 
                 <property name="rm:creationDate">
