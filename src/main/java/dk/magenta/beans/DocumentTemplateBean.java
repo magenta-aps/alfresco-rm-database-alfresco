@@ -64,14 +64,12 @@ public class DocumentTemplateBean {
         this.nodeService = nodeService;
     }
 
+
+
     public String populateDocument(NodeRef declaration, String type, String retten, String dato) throws Exception{
 
 
-
         String documentNodeRef = null;
-
-
-
 
 
         if (type.equals(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE)) {

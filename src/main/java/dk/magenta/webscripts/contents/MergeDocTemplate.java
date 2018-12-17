@@ -4,6 +4,7 @@ import dk.magenta.beans.DocumentTemplateBean;
 import dk.magenta.beans.MailBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,6 +53,9 @@ public class MergeDocTemplate extends AbstractWebScript {
 
         if (json.has("type")) {
 
+            AuthenticationUtil.setRunAsUserSystem();
+
+
             if (json.get("type").equals(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE)) {
 
                 if (json.has("dato") && json.has("retten")) {
@@ -63,12 +67,20 @@ public class MergeDocTemplate extends AbstractWebScript {
                     result = JSONUtils.getError(new Exception("wrong parameters supplied"));
                     JSONUtils.write(webScriptWriter, result);
                 }
+
+
             }
             else {
                 String newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , "", "" );
                 result = JSONUtils.getObject("id", newDocument.toString());
                 JSONUtils.write(webScriptWriter, result);
             }
+
+            AuthenticationUtil.clearCurrentSecurityContext();
+
+
+
+
         }
         else {
             result = JSONUtils.getError(new Exception("wrong parameters supplied"));
