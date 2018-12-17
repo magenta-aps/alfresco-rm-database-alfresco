@@ -120,13 +120,10 @@ public class DocumentTemplateBean {
         info.postnr = String.valueOf(((Integer)nodeService.getProperty(declaration, DatabaseModel.PROP_POSTCODE)));
         info.by = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_CITY);
 
-        Date creationDate = ((Date)nodeService.getProperty(declaration, DatabaseModel.PROP_OBSERVATION_DATE));
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(creationDate);
-        int year = cal.get(Calendar.YEAR);
-        int day = cal.get(Calendar.DATE);
-        int month = (cal.get(Calendar.MONTH)+1);
-        info.ambldato  = day + "." + month + "." + year;
+
+
+
+
 
         info.laege = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
 
@@ -141,7 +138,10 @@ public class DocumentTemplateBean {
         info.politikreds = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_REFERING_AGENCY);
 
         Date receivedDate = (Date)nodeService.getProperty(declaration, DatabaseModel.PROP_CREATION_DATE);
-        cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
+        int year;
+        int day;
+        int month;
         cal.setTime(receivedDate);
         year = cal.get(Calendar.YEAR);
         day = cal.get(Calendar.DATE);
