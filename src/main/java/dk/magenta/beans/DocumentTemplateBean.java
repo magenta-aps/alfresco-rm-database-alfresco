@@ -96,14 +96,6 @@ public class DocumentTemplateBean {
             documentNodeRef = this.generateOfferLetterDocumentSamtykke(template_doc, declaration);
         }
 
-
-
-
-
-
-
-
-
         return documentNodeRef;
     }
 
@@ -250,10 +242,10 @@ public class DocumentTemplateBean {
         kunnavn.updateField(info.fornavn + " " + info.efternavn, null);
 
         VariableField patientnr = templateDocument.getVariableFieldByName("patientnr");
-        patientnr.updateField(info.cpr, null);
+        patientnr.updateField(info.sagsnr, null);
 
         VariableField journalnr = templateDocument.getVariableFieldByName("journalnr");
-        journalnr.updateField(info.sagsnr, null);
+        journalnr.updateField(info.journalnummer, null);
 
         VariableField modtagetdato = templateDocument.getVariableFieldByName("modtagetdato");
         modtagetdato.updateField(info.oprettetdato, null);
