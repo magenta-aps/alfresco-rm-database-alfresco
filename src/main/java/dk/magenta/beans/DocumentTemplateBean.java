@@ -158,6 +158,7 @@ public class DocumentTemplateBean {
         System.out.println("amlb:  " + info.ambldato);
         System.out.println("laege:  " + info.laege);
         System.out.println("journalnummer:  " + info.journalnummer);
+        System.out.println("sagsnr:  " + info.sagsnr);
 
         NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
@@ -221,6 +222,8 @@ public class DocumentTemplateBean {
         System.out.println("hvad er by:  " + info.by);
         System.out.println("amlb:  " + info.ambldato);
         System.out.println("laege:  " + info.laege);
+        System.out.println("journalnummer:  " + info.journalnummer);
+        System.out.println("sagsnr:  " + info.sagsnr);
 
         NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
