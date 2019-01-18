@@ -197,7 +197,7 @@ public class DocumentTemplateBean {
 
         // make the new document below the case
 
-        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "erklæring.odt", ContentModel.TYPE_CONTENT);
+        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "erklaering.odt", ContentModel.TYPE_CONTENT);
 
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
@@ -256,7 +256,7 @@ public class DocumentTemplateBean {
 
         // make the new document below the case
 
-        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "erklæring.odt", ContentModel.TYPE_CONTENT);
+        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "erklaering.odt", ContentModel.TYPE_CONTENT);
 
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
