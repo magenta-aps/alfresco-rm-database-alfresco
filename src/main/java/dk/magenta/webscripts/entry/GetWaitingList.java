@@ -98,7 +98,15 @@ public class GetWaitingList extends AbstractWebScript {
 
 
                 e.put("caseNumber", tmp.get("caseNumber"));
-                e.put("fullName", tmp.get("fullName"));
+
+                if (tmp.has("fullName")) {
+                    e.put("fullName", tmp.get("fullName"));
+                }
+                else {
+                    e.put("fullName", "");
+                }
+
+
                 e.put("creationDate", tmp.get("creationDate"));
 
                 if (tmp.has("cprNumber")) {
