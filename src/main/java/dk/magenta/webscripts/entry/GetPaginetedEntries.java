@@ -18,6 +18,8 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class GetPaginetedEntries extends AbstractWebScript {
@@ -69,6 +71,42 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             JSONObject input = new JSONObject(c.getContent());
             JSONArray queryArray = new JSONArray();
+
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+
+            LocalDate f_date = null;
+
+            if (input.has("fromDate")) {
+                JSONObject o = new JSONObject();
+                f_date = LocalDate.parse(input.getString("fromDate"), inputFormatter);
+                String f_formattedDate = outputFormatter.format(f_date);
+                System.out.println("hvad er f" + f_formattedDate    );
+
+                o.put("key", "creationDate");
+
+                if (input.has("toDate")) {
+
+                    LocalDate t_date = LocalDate.parse(input.getString("toDate"), inputFormatter);
+                    String t_formattedDate = outputFormatter.format(t_date);
+                    o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, t_formattedDate));
+                }
+                else {
+                    o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, "MAX"));
+                }
+                o.put("include", true);
+                queryArray.put(o);
+            }
+            else if (input.has("toDate")) {
+                JSONObject o = new JSONObject();
+                LocalDate t_date = LocalDate.parse(input.getString("to Date"), inputFormatter);
+                String t_formattedDate = outputFormatter.format(t_date);
+                o.put("key", "declarationDate");
+                o.put("value", QueryUtils.dateRangeQuery("MIN",t_formattedDate));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
 
             if (input.has("waitingTime")) {
                 JSONObject o = new JSONObject();
