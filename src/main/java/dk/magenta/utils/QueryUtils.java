@@ -32,10 +32,10 @@ public class QueryUtils {
         System.out.println(paramValue);
 
         if (not) {
-            return "!@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":" + paramValue + "";
+            return "!@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + paramValue + "\"";
         }
         else {
-            return "@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":" + paramValue + "";
+            return "@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + paramValue + "\"";
         }
     }
 
