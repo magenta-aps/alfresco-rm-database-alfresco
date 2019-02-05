@@ -33,11 +33,11 @@ public class GetEntries extends AbstractWebScript {
         try {
 
             // refactored to be done in the entry package
-//            String siteShortName = templateArgs.get("siteShortName");
-//
-//            Set<NodeRef> nodeRefs = entryBean.getEntries(siteShortName);
-//            Iterator<NodeRef> iterator = nodeRefs.iterator();
-//            System.out.println("det totale antal erklæringer:" + nodeRefs.size());
+            String siteShortName = templateArgs.get("siteShortName");
+
+            Set<NodeRef> nodeRefs = entryBean.getEntries(siteShortName);
+            Iterator<NodeRef> iterator = nodeRefs.iterator();
+            System.out.println("det totale antal erklæringer:" + nodeRefs.size());
 //
 //            while (iterator.hasNext()) {
 //                NodeRef nodeRef = iterator.next();

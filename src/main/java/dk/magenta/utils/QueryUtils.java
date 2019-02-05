@@ -5,6 +5,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import java.util.Date;
+
 public class QueryUtils {
 
     public static String getSiteQuery (String siteShortName) {
@@ -61,6 +63,10 @@ public class QueryUtils {
         else  {
             return "waiting_total";
         }
+    }
+
+    public static String dateRangeQuery(String from, String to) {
+        return "[" + "\"" + from + "\"" + " TO "+ "\"" + to + "\"" + "]";
     }
 
     public static String waitingQuery(int days, String operator) {

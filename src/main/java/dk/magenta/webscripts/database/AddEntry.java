@@ -43,6 +43,7 @@ public class AddEntry extends AbstractWebScript {
             Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
             NodeRef nodeRef = entryBean.addEntry(siteShortName, type, properties, bua);
             result = entryBean.toJSON(nodeRef);
+            result.put("bua", bua);
 
         } catch (Exception e) {
             e.printStackTrace();

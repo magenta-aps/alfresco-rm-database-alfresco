@@ -64,14 +64,12 @@ public class DocumentTemplateBean {
         this.nodeService = nodeService;
     }
 
+
+
     public String populateDocument(NodeRef declaration, String type, String retten, String dato) throws Exception{
 
 
-
         String documentNodeRef = null;
-
-
-
 
 
         if (type.equals(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE)) {
@@ -98,14 +96,6 @@ public class DocumentTemplateBean {
             documentNodeRef = this.generateOfferLetterDocumentSamtykke(template_doc, declaration);
         }
 
-
-
-
-
-
-
-
-
         return documentNodeRef;
     }
 
@@ -122,29 +112,33 @@ public class DocumentTemplateBean {
         info.postnr = String.valueOf(((Integer)nodeService.getProperty(declaration, DatabaseModel.PROP_POSTCODE)));
         info.by = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_CITY);
 
-        Date creationDate = ((Date)nodeService.getProperty(declaration, DatabaseModel.PROP_OBSERVATION_DATE));
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(creationDate);
-        int year = cal.get(Calendar.YEAR);
-        int day = cal.get(Calendar.DATE);
-        int month = (cal.get(Calendar.MONTH)+1);
-        info.ambldato  = day + "-" + month + "-" + year;
+
+
+
+
 
         info.laege = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
 
         int sagsnummer = (int)nodeService.getProperty(declaration, DatabaseModel.PROP_CASE_NUMBER);
-
         info.sagsnr = String.valueOf(sagsnummer);
+
+        String journalnummer = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_JOURNALNUMMER);
+        info.journalnummer = journalnummer;
+
+
 
         info.politikreds = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_REFERING_AGENCY);
 
         Date receivedDate = (Date)nodeService.getProperty(declaration, DatabaseModel.PROP_CREATION_DATE);
-        cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
+        int year;
+        int day;
+        int month;
         cal.setTime(receivedDate);
         year = cal.get(Calendar.YEAR);
         day = cal.get(Calendar.DATE);
         month = (cal.get(Calendar.MONTH)+1);
-        info.oprettetdato  = day + "-" + month + "-" + year;
+        info.oprettetdato  = day + "." + month + "." + year;
 
 
 
@@ -163,6 +157,8 @@ public class DocumentTemplateBean {
         System.out.println("kendelsesdato:  " + dato);
         System.out.println("amlb:  " + info.ambldato);
         System.out.println("laege:  " + info.laege);
+        System.out.println("journalnummer:  " + info.journalnummer);
+        System.out.println("sagsnr:  " + info.sagsnr);
 
         NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
@@ -189,17 +185,11 @@ public class DocumentTemplateBean {
         VariableField kunnavn = templateDocument.getVariableFieldByName("kunnavn");
         kunnavn.updateField(info.fornavn + " " + info.efternavn, null);
 
-        VariableField ambldato = templateDocument.getVariableFieldByName("amblstart");
-        ambldato.updateField(info.ambldato, null);
-
-        VariableField laege = templateDocument.getVariableFieldByName("laege");
-        laege.updateField(info.laege, null);
-
         VariableField patientnr = templateDocument.getVariableFieldByName("patientnr");
-        patientnr.updateField(info.cpr, null);
+        patientnr.updateField(info.sagsnr, null);
 
         VariableField journalnr = templateDocument.getVariableFieldByName("journalnr");
-        journalnr.updateField(info.sagsnr, null);
+        journalnr.updateField(info.journalnummer, null);
 
         VariableField modtagetdato = templateDocument.getVariableFieldByName("modtagetdato");
         modtagetdato.updateField(info.oprettetdato, null);
@@ -207,7 +197,7 @@ public class DocumentTemplateBean {
 
         // make the new document below the case
 
-        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "erklæring.odt", ContentModel.TYPE_CONTENT);
+        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "erklaering.odt", ContentModel.TYPE_CONTENT);
 
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
@@ -232,6 +222,8 @@ public class DocumentTemplateBean {
         System.out.println("hvad er by:  " + info.by);
         System.out.println("amlb:  " + info.ambldato);
         System.out.println("laege:  " + info.laege);
+        System.out.println("journalnummer:  " + info.journalnummer);
+        System.out.println("sagsnr:  " + info.sagsnr);
 
         NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
@@ -252,17 +244,11 @@ public class DocumentTemplateBean {
         VariableField kunnavn = templateDocument.getVariableFieldByName("kunnavn");
         kunnavn.updateField(info.fornavn + " " + info.efternavn, null);
 
-        VariableField ambldato = templateDocument.getVariableFieldByName("amblstart");
-        ambldato.updateField(info.ambldato, null);
-
-        VariableField laege = templateDocument.getVariableFieldByName("laege");
-        laege.updateField(info.laege, null);
-
         VariableField patientnr = templateDocument.getVariableFieldByName("patientnr");
-        patientnr.updateField(info.cpr, null);
+        patientnr.updateField(info.sagsnr, null);
 
         VariableField journalnr = templateDocument.getVariableFieldByName("journalnr");
-        journalnr.updateField(info.sagsnr, null);
+        journalnr.updateField(info.journalnummer, null);
 
         VariableField modtagetdato = templateDocument.getVariableFieldByName("modtagetdato");
         modtagetdato.updateField(info.oprettetdato, null);
@@ -270,7 +256,7 @@ public class DocumentTemplateBean {
 
         // make the new document below the case
 
-        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "erklæring.odt", ContentModel.TYPE_CONTENT);
+        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "erklaering.odt", ContentModel.TYPE_CONTENT);
 
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
@@ -296,5 +282,6 @@ public class DocumentTemplateBean {
         public String sagsnr;
         public String politikreds;
         public String oprettetdato;
+        public String journalnummer;
     }
 }

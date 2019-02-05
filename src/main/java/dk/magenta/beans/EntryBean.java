@@ -14,6 +14,7 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.model.FileFolderService;
+import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -131,7 +132,10 @@ public class EntryBean {
 
             ChildAssociationRef child = (ChildAssociationRef)i.next();
             try {
-                fileFolderService.copy(child.getChildRef(), nodeRef, (String)nodeService.getProperty(child.getChildRef(), ContentModel.PROP_NAME));
+                FileInfo newNode = fileFolderService.copy(child.getChildRef(), nodeRef, (String)nodeService.getProperty(child.getChildRef(), ContentModel.PROP_NAME));
+                nodeService.addAspect(newNode.getNodeRef(),ContentModel.ASPECT_HIDDEN,null);
+
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
