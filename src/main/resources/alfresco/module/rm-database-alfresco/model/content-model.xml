@@ -58,6 +58,13 @@
                     <protected>true</protected>
                 </property>
 
+                <property name="rm:journalNumber">
+                    <title>Journalnummer</title>
+                    <type>d:int</type>
+                    <protected>true</protected>
+                </property>
+
+
                 <property name="rm:status">
                     <title>Status</title>
                     <type>d:text</type>
@@ -212,6 +219,11 @@
                     <type>d:text</type>
                 </property>
 
+                <property name="rm:socialworker">
+                    <title>Socialrådgiver</title>
+                    <type>d:text</type>
+                </property>
+
                 <!-- ICD-10 diagnosis -->
 
                 <property name="rm:mainDiagnosis">
@@ -287,9 +299,6 @@
         <aspect name="rm:bua">
             <title>Attributes to mark a declartion as bua</title>
         </aspect>
-
-
-
 
         <aspect name="rm:sendMaillogs">
             <title>Attributes related to a template</title>
