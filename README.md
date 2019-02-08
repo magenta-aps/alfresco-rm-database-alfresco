@@ -33,6 +33,3 @@ To run use `mvn clean install -DskipTests=true alfresco:run` or `./run.sh` and v
   * Abstract assembly into a dependency so we don't have to ship the assembly in the archetype
   * Purge, 
   * Functional/remote unit tests
-   
-  
- 
