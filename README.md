@@ -24,6 +24,9 @@ To run use `mvn clean install -DskipTests=true alfresco:run` or `./run.sh` and v
  * No unit testing/functional tests just yet
  * Resources loaded from META-INF
  * Web Fragment (this includes a sample servlet configured via web fragment)
+ * Only works with Java Version 8
+   * To force Java version, simply delete other versions from system by deleting their folders in `/Library/Java/JavaVirtualMachines/`
+   * Download Java Version 8: (https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
  
 # TODO
  
