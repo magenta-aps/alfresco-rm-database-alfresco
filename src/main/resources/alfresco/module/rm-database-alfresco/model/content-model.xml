@@ -145,8 +145,8 @@
                     <type>d:text</type>
                 </property>
 
-                <property name="rm:journalNumber">
-                    <title>Journalnummer</title>
+                <property name="rm:socialworker">
+                    <title>socialrådgiver</title>
                     <type>d:text</type>
                 </property>
 
