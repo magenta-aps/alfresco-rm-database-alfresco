@@ -19,6 +19,7 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -55,7 +56,6 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
         Writer webScriptWriter = res.getWriter();
         JSONObject result = new JSONObject();
-        System.out.println("hejjjjjj");
 
         try {
             String siteShortName = templateArgs.get("siteShortName");
@@ -75,19 +75,22 @@ public class GetPaginetedEntries extends AbstractWebScript {
             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 
-            LocalDate f_date = null;
+            LocalDateTime f_date = null;
 
-            if (input.has("fromDate")) {
+            // date range for createtiondate
+
+            if (input.has("createdFromDate")) {
                 JSONObject o = new JSONObject();
-                f_date = LocalDate.parse(input.getString("fromDate"), inputFormatter);
+                f_date = LocalDateTime.parse(input.getString("createdFromDate"), inputFormatter).plusHours(1);
+
                 String f_formattedDate = outputFormatter.format(f_date);
                 System.out.println("hvad er f" + f_formattedDate    );
 
                 o.put("key", "creationDate");
 
-                if (input.has("toDate")) {
+                if (input.has("createdToDate")) {
 
-                    LocalDate t_date = LocalDate.parse(input.getString("toDate"), inputFormatter);
+                    LocalDateTime t_date = LocalDateTime.parse(input.getString("createdToDate"), inputFormatter).plusHours(1);
                     String t_formattedDate = outputFormatter.format(t_date);
                     o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, t_formattedDate));
                 }
@@ -97,9 +100,42 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 o.put("include", true);
                 queryArray.put(o);
             }
-            else if (input.has("toDate")) {
+            else if (input.has("createdToDate")) {
                 JSONObject o = new JSONObject();
-                LocalDate t_date = LocalDate.parse(input.getString("to Date"), inputFormatter);
+                LocalDateTime t_date = LocalDateTime.parse(input.getString("createdToDate"), inputFormatter).plusHours(1);
+                String t_formattedDate = outputFormatter.format(t_date);
+                o.put("key", "declarationDate");
+                o.put("value", QueryUtils.dateRangeQuery("MIN",t_formattedDate));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            // date range for declarationsdate
+
+
+            if (input.has("declarationFromDate")) {
+                JSONObject o = new JSONObject();
+                f_date = LocalDateTime.parse(input.getString("declarationFromDate"), inputFormatter).plusHours(1);
+                String f_formattedDate = outputFormatter.format(f_date);
+                System.out.println("hvad er f" + f_formattedDate    );
+
+                o.put("key", "declarationDate");
+
+                if (input.has("declarationToDate")) {
+
+                    LocalDateTime t_date = LocalDateTime.parse(input.getString("declarationToDate"), inputFormatter).plusHours(1);
+                    String t_formattedDate = outputFormatter.format(t_date);
+                    o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, t_formattedDate));
+                }
+                else {
+                    o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, "MAX"));
+                }
+                o.put("include", true);
+                queryArray.put(o);
+            }
+            else if (input.has("declarationToDate")) {
+                JSONObject o = new JSONObject();
+                LocalDateTime t_date = LocalDateTime.parse(input.getString("declarationToDate"), inputFormatter).plusHours(1);
                 String t_formattedDate = outputFormatter.format(t_date);
                 o.put("key", "declarationDate");
                 o.put("value", QueryUtils.dateRangeQuery("MIN",t_formattedDate));
@@ -117,9 +153,10 @@ public class GetPaginetedEntries extends AbstractWebScript {
             }
 
             if (input.has("mainCharge")) {
+                System.out.println("show me the maincharge" + input.get("mainCharge"));
                 JSONObject o = new JSONObject();
                 o.put("key", "mainCharge");
-                o.put("value", "\"" + input.get("mainCharge") + "\"");
+                o.put("value", input.get("mainCharge"));
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -127,7 +164,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("sanctionProposal")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "sanctionProposal");
-                o.put("value", "\"" + input.get("sanctionProposal") + "\"");
+                o.put("value", input.get("sanctionProposal"));
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -135,7 +172,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("placement")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "placement");
-                o.put("value", "\"" + input.get("placement") + "\"");
+                o.put("value", input.get("placement"));
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -143,7 +180,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("mainDiagnosis")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "mainDiagnosis");
-                o.put("value", "\"" + input.get("mainDiagnosis") + "\"");
+                o.put("value", input.get("mainDiagnosis"));
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -158,23 +195,31 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             if (input.has("givenDeclaration")) {
                 JSONObject o = new JSONObject();
-                o.put("key", "givenDeclaration");
-                o.put("value", input.get("givenDeclaration"));
-                o.put("include", true);
-                queryArray.put(o);
+                o.put("key", "doctor");
+
+                if (input.getBoolean("givenDeclaration")) {
+                    o.put("value", "NULL");
+                    o.put("include", false);
+                    queryArray.put(o);
+                }
             }
 
             if (input.has("doctor")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "doctor");
-                o.put("value", input.get("doctor"));
+
+                // hack to support the import of the names without titles in the old system
+                String doctor = (String)input.get("doctor");
+                doctor = doctor.split("-")[0];
+
+                o.put("value", doctor.trim() + "*");
                 o.put("include", true);
                 queryArray.put(o);
             }
 
             if (input.has("noDeclaration")) {
                 JSONObject o = new JSONObject();
-                o.put("key", "noDeclaration");
+                o.put("key", "closedWithoutDeclaration");
                 o.put("value", input.get("noDeclaration"));
                 o.put("include", true);
                 queryArray.put(o);
@@ -223,7 +268,12 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("psychologist")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "psychologist");
-                o.put("value", input.get("psychologist"));
+
+                // hack to support the import of the names without titles in the old system
+                String psychologist = (String)input.get("psychologist");
+                psychologist = psychologist.split("-")[0];
+
+                o.put("value", psychologist + "*");
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -241,7 +291,12 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("socialworker")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "socialworker");
-                o.put("value", input.get("socialworker"));
+
+                // hack to support the import of the names without titles in the old system
+                String socialworker = (String)input.get("socialworker");
+                socialworker = socialworker.split("-")[0];
+
+                o.put("value", socialworker + "*");
                 o.put("include", true);
                 queryArray.put(o);
             }

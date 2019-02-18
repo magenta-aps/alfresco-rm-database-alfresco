@@ -47,12 +47,17 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
 
             String keyValue = "";
 
-            if (input.matches(".*\\d+.*")) {
+
+            if (input.contains("#")) {
+                keyValue = "[{\"key\" :\"caseNumber\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
+            }
+            else if (input.matches(".*\\d+.*")) {
                 keyValue = "[{\"key\" :\"cprNumber\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
             }
             else {
                 keyValue = "[{\"key\" :\"fullName\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
             }
+
             System.out.println("the json:" + keyValue);
 
 

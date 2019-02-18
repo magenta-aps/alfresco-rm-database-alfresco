@@ -176,6 +176,7 @@ public class EntryBean {
         QName closed = QName.createQName(uri, "closed");
         Boolean closedProp = (Boolean)nodeService.getProperty(entryRef, closed);
         if(closedProp != null && closedProp) {
+
             AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
             lockEntry(entryRef);
         }
