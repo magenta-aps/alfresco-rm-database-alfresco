@@ -104,7 +104,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 JSONObject o = new JSONObject();
                 LocalDateTime t_date = LocalDateTime.parse(input.getString("createdToDate"), inputFormatter).plusHours(1);
                 String t_formattedDate = outputFormatter.format(t_date);
-                o.put("key", "declarationDate");
+                o.put("key", "creationDate");
                 o.put("value", QueryUtils.dateRangeQuery("MIN",t_formattedDate));
                 o.put("include", true);
                 queryArray.put(o);
