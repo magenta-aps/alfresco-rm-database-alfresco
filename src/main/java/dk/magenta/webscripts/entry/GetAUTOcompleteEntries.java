@@ -48,8 +48,9 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
             String keyValue = "";
 
 
-            if (input.contains("#")) {
-                keyValue = "[{\"key\" :\"caseNumber\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
+            if (input.contains("!")) {
+                input = input.replace("!","");
+                keyValue = "[{\"key\" :\"caseNumber\" , \"value\" : \"" + input +  "\"" + " , \"include\" :\"true\"}]";
             }
             else if (input.matches(".*\\d+.*")) {
                 keyValue = "[{\"key\" :\"cprNumber\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
