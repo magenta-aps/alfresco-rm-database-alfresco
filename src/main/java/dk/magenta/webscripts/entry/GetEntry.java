@@ -77,6 +77,7 @@ public class GetEntry extends AbstractWebScript {
             // check if declaration exists
             String info = (String)result.get("cprNumber");
             String documentName = info.substring(0,7) + "erklaering.odt";
+            System.out.println("documentname:" + documentName);
 
             List<String> list = new ArrayList<>();
             list.add(documentName);
