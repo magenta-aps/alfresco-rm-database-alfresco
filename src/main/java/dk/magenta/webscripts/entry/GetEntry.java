@@ -5,6 +5,8 @@ import dk.magenta.beans.EntryBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
+import org.alfresco.service.cmr.model.FileFolderService;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.json.JSONObject;
@@ -14,12 +16,20 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class GetEntry extends AbstractWebScript {
 
     private EntryBean entryBean;
     private DatabaseBean databaseBean;
+
+    public void setFileFolderService(FileFolderService fileFolderService) {
+        this.fileFolderService = fileFolderService;
+    }
+
+    private FileFolderService fileFolderService;
 
     public NodeService getNodeService() {
         return nodeService;
@@ -62,6 +72,28 @@ public class GetEntry extends AbstractWebScript {
             else {
                 result.put("bua", false);
             }
+
+
+            // check if declaration exists
+            String info = (String)result.get("cprNumber");
+            String documentName = info.substring(0,7) + "erklaering.odt";
+
+            List<String> list = new ArrayList<>();
+            list.add(documentName);
+
+            try {
+                fileFolderService.resolveNamePath(nodeRef, list);
+                result.put("declaration", true);
+            }
+            catch (FileNotFoundException f) {
+             result.put("declaration", false);
+            }
+
+
+
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
