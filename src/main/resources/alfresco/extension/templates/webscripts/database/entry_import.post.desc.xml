@@ -1,0 +1,7 @@
+<webscript>
+<shortname>Add Entry during import</shortname>
+    <description>Add entry during import</description>
+    <url>/database/{siteShortName}/entry_import</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

@@ -90,7 +90,7 @@ public class GetEntry extends AbstractWebScript {
              result.put("declaration", false);
             }
 
-            
+
 
 
 

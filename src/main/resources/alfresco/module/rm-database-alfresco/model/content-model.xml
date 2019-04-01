@@ -193,8 +193,13 @@
                     <type>d:text</type>
                 </property>
 
-                <property name="rm:finalVerdictNote">
+                <property name="rm:verdict">
                     <title>Dom</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:finalVerdictNote">
+                    <title>Bemærkninger til dom</title>
                     <type>d:text</type>
                 </property>
 

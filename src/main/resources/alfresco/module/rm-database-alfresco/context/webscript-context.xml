@@ -21,6 +21,10 @@
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
+	<bean id="webscript.database.entry_import.post" class="dk.magenta.webscripts.database.AddEntry_import" parent="webscript">
+		<property name="entryBean" ref="entryBean"/>
+	</bean>
+
 	<bean id="webscript.entries.entry.get" class="dk.magenta.webscripts.entry.GetEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 		<property name="databaseBean" ref="databaseBean"/>
@@ -53,6 +57,10 @@
 	</bean>
 
 	<bean id="webscript.entries.entry.put" class="dk.magenta.webscripts.entry.UpdateEntry" parent="webscript">
+		<property name="entryBean" ref="entryBean"/>
+	</bean>
+
+	<bean id="webscript.entries.entry_update.put" class="dk.magenta.webscripts.entry.UpdateProperties" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 

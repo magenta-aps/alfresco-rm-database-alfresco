@@ -1,5 +1,5 @@
 <webscript>
-    <shortname>Add Entry</shortname>
+<shortname>Add Entry</shortname>
     <description>Add entry</description>
     <url>/database/{siteShortName}/entry</url>
     <authentication>user</authentication>

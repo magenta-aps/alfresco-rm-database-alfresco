@@ -146,12 +146,79 @@ public class EntryBean {
         if (bua) {
             nodeService.addAspect(nodeRef, DatabaseModel.ASPECT_BUA,null);
         }
+        return nodeRef;
+    }
+
+    public NodeRef addEntry_import (String siteShortName, String type, Map<QName, Serializable> properties, boolean bua) throws JSONException {
+
+        String oldcaseid = (String)properties.get(DatabaseModel.PROP_CASE_NUMBER_OLD);
+
+        //Get counter for this site document library
+        NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
+        Integer counter = Integer.parseInt(oldcaseid);
+
+        //Get entry key for this type
+        String entryKey = TypeUtils.getEntryKey(type);
+        QName entryKeyQName = QName.createQName(DatabaseModel.RM_MODEL_URI, entryKey);
+
+        //Remove value if set
+        if (properties.containsKey(entryKeyQName))
+            properties.remove(entryKeyQName);
+
+        //Set unique value and name
+        properties.put(entryKeyQName, counter);
+        properties.put(ContentModel.PROP_NAME, counter);
+
+        //Create name for node (This is not displayed anywhere)
+        QName nameQName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, counter.toString());
+
+        //Get creation date folder to place the entry in
+        String dateTimeStr = (String)properties.get(DatabaseModel.PROP_CREATION_DATE);
+        String[] dateTime = dateTimeStr.split("T");
+        String[] date = dateTime[0].split("-");
+        String year = date[0];
+        String month = date[1];
+        String day = date[2];
+
+        NodeRef yearRef = getOrCreateChildByName(docLibRef, year);
+        NodeRef monthRef = getOrCreateChildByName(yearRef, month);
+        NodeRef dayRef = getOrCreateChildByName(monthRef, day);
+
+        //Create entry
+        QName typeQName = QName.createQName(DatabaseModel.RM_MODEL_URI, type);
+        ChildAssociationRef childAssociationRef =
+                nodeService.createNode(dayRef, ContentModel.ASSOC_CONTAINS, nameQName, typeQName, properties);
+        NodeRef nodeRef = childAssociationRef.getChildRef();
+
+        // add the contents of the template library
+
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+
+        NodeRef nodeRef_templateFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+
+        List<ChildAssociationRef> children = nodeService.getChildAssocs(nodeRef_templateFolder);
+
+        Iterator i = children.iterator();
 
 
 
+        while (i.hasNext()) {
+
+            ChildAssociationRef child = (ChildAssociationRef)i.next();
+            try {
+                FileInfo newNode = fileFolderService.copy(child.getChildRef(), nodeRef, (String)nodeService.getProperty(child.getChildRef(), ContentModel.PROP_NAME));
+                nodeService.addAspect(newNode.getNodeRef(),ContentModel.ASPECT_HIDDEN,null);
+
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
 
         return nodeRef;
     }
+
+
 
     private NodeRef getOrCreateChildByName(NodeRef parentRef, String name) {
 
@@ -181,6 +248,33 @@ public class EntryBean {
             lockEntry(entryRef);
         }
     }
+
+    public NodeRef updateProperty (String caseid, Map<QName, Serializable> properties) throws JSONException {
+
+        String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+
+        System.out.println("hvad er query:" + query);
+
+        NodeRef n = this.getEntry(query);
+        System.out.println("hvad er nodeRef" + n);
+
+
+        boolean temporaryUnlocked = false;
+
+        if (lockService.isLocked(n)) {
+            lockService.unlock(n);
+            temporaryUnlocked = true;
+        }
+
+        this.updateEntry(n,properties);
+
+        if (temporaryUnlocked) {
+            lockService.lock(n, LockType.READ_ONLY_LOCK);
+        }
+
+        return n;
+    }
+
 
     public void deleteEntry (NodeRef entryRef) { nodeService.deleteNode(entryRef); }
 

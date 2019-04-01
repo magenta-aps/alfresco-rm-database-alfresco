@@ -94,7 +94,7 @@ public class QueryUtils {
         }
     }
 
-    public static String getKeyValueQuery (String siteShortName, String type, JSONArray keyValues) throws JSONException {
+    public static String    getKeyValueQuery (String siteShortName, String type, JSONArray keyValues) throws JSONException {
 
         String query = getSiteQuery(siteShortName) + " AND " + getTypeQuery(type);
 

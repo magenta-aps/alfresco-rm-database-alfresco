@@ -16,6 +16,7 @@ public interface DatabaseModel {
     QName PROP_DATABASE_TYPE = QName.createQName(RM_MODEL_URI, "databaseType");
 
     QName PROP_CASE_NUMBER = QName.createQName(RM_MODEL_URI, "caseNumber");
+    QName PROP_CASE_NUMBER_OLD = QName.createQName(RM_MODEL_URI, "oldcaseNumber");
     QName PROP_JOURNALNUMMER = QName.createQName(RM_MODEL_URI, "journalNumber");
     QName PROP_STATUS = QName.createQName(RM_MODEL_URI, "status");
     QName PROP_CLOSED = QName.createQName(RM_MODEL_URI, "closed");

@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Update Entry</shortname>
+    <description>Update entry information</description>
+    <url>/entry_update/{uuid}</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
