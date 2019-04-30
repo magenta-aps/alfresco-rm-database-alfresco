@@ -105,7 +105,7 @@ public interface DatabaseModel {
 
 
     QName ASPECT_SENDMAILLOGS = QName.createQName(RM_MODEL_URI, "sendMaillogs");
-    QName ASPECT_DECLARATIONMARKEDFOREDIT = QName.createQName(RM_MODEL_URI, "declarationMarkedForEdit");
+    QName ASPECT_DECLARATIONMARKEDFOREDIT = QName.createQName(RM_MODEL_URI, "documentMarkedForEdit");
 
 
 

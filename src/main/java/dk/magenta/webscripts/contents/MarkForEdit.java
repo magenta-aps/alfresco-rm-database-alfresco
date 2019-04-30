@@ -54,7 +54,10 @@ public class MarkForEdit extends AbstractWebScript {
                 JSONUtils.write(webScriptWriter, result);
             }
             else  if (method.equals("state")) {
-                result = JSONUtils.getSuccess();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("state", nodeService.hasAspect(new NodeRef(nodeRef), DatabaseModel.ASPECT_DECLARATIONMARKEDFOREDIT));
+
+                result = jsonObject;
                 JSONUtils.write(webScriptWriter, result);
             }
 
