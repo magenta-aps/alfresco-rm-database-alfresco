@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Mark for edit</shortname>
+    <description>Mark a document as beeing edited or finsihed edited</description>
+    <url>/contents/markforedit</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
