@@ -311,7 +311,7 @@
             </properties>
         </aspect>
 
-        <aspect name="rm:documentMarkedForEditMarkedForEdit">
+        <aspect name="rm:documentMarkedForEdit">
             <title>Attributes to mark a documentMarkedForEdit as beeing edited</title>
         </aspect>
 
