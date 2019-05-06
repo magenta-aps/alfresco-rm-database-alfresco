@@ -106,6 +106,10 @@ public interface DatabaseModel {
 
     QName ASPECT_SENDMAILLOGS = QName.createQName(RM_MODEL_URI, "sendMaillogs");
 
+    // groups
+
+    String GROUP_ALLOWEDTODELETE = "GROUP_ALLOWEDTODELETE";
+
 
 
 }

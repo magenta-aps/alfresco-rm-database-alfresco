@@ -110,7 +110,6 @@
 		<property name="authorityService" ref="AuthorityService"/>
 	</bean>
 
-
 	<bean id="webscript.contents.getchildnodes.get" class="dk.magenta.webscripts.contents.GetChildNodes" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
@@ -121,6 +120,10 @@
 
 	<bean id="webscript.contents.mailcontent.post" class="dk.magenta.webscripts.contents.MailContent" parent="webscript">
 		<property name="mailBean" ref="mailBean"/>
+	</bean>
+
+	<bean id="webscript.contents.addpermission.post" class="dk.magenta.webscripts.contents.AddPermission" parent="webscript">
+		<property name="permissionService" ref="permissionService"/>
 	</bean>
 
 	<bean id="webscript.contents.mergedoctemplate.post" class="dk.magenta.webscripts.contents.MergeDocTemplate" parent="webscript">

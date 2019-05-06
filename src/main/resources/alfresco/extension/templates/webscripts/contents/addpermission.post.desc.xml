@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>add permission</shortname>
+    <description>add persion that allow all memebers of retspsyk to delete a document</description>
+    <url>/contents/addpermission</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
