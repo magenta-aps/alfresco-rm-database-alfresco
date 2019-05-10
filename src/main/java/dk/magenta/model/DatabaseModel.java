@@ -86,8 +86,11 @@ public interface DatabaseModel {
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
 
     // template docs
-    String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke.odt";
-    String PROP_TEMPLATE_DOC_KENDELSE = "kendelse.odt";
+    String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke";
+    String PROP_TEMPLATE_DOC_KENDELSE = "kendelse";
+
+    String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME = "samtykke.odt";
+    String PROP_TEMPLATE_DOC_KENDELSE_FILENAME = "kendelse.odt";
 
 
     /**

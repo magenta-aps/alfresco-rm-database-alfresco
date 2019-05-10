@@ -76,7 +76,7 @@ public class DocumentTemplateBean {
 
             NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
-            List<String> list = Arrays.asList(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE);
+            List<String> list = Arrays.asList(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE_FILENAME);
             List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
 
             NodeRef template_doc = children.get(0).getChildRef();
@@ -88,7 +88,7 @@ public class DocumentTemplateBean {
 
             NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
-            List<String> list = Arrays.asList(DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE);
+            List<String> list = Arrays.asList(DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME);
             List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
 
             NodeRef template_doc = children.get(0).getChildRef();
