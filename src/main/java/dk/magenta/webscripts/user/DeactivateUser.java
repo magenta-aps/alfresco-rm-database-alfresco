@@ -1,6 +1,7 @@
 package dk.magenta.webscripts.user;
 
 import dk.magenta.beans.PropertyValuesBean;
+import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -75,7 +76,6 @@ public class DeactivateUser extends AbstractWebScript {
 
         AuthenticationUtil.setRunAsUserSystem();
 
-
         if (isMember()) {
 
             webScriptResponse.setContentEncoding("UTF-8");
@@ -87,6 +87,7 @@ public class DeactivateUser extends AbstractWebScript {
             String userName = params.get("userName");
 
             siteService.removeMembership("retspsyk", userName);
+            authorityService.removeAuthority(DatabaseModel.GROUP_ALLOWEDTODELETE, userName);
 
             AuthenticationUtil.clearCurrentSecurityContext();
 

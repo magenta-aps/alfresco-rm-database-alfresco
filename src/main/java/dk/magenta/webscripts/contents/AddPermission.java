@@ -4,6 +4,10 @@ import dk.magenta.beans.MailBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.search.ResultSet;
+import org.alfresco.service.cmr.search.ResultSetRow;
+import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.json.JSONArray;
@@ -16,6 +20,8 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class AddPermission extends AbstractWebScript {
@@ -26,6 +32,12 @@ public class AddPermission extends AbstractWebScript {
     }
 
     private PermissionService permissionService;
+
+    public void setSearchService(SearchService searchService) {
+        this.searchService = searchService;
+    }
+
+    private SearchService searchService;
 
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
@@ -40,10 +52,26 @@ public class AddPermission extends AbstractWebScript {
         try {
             json = new JSONObject(c.getContent());
 
-            Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
-            NodeRef n = new NodeRef(( String)json.get("nodeRef"));
 
-            permissionService.setPermission(n, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
+
+            if (json.has("update")) {
+
+                ResultSet resultSet = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, "lucene", " PATH:\"/app:company_home/st:sites/cm:retspsyk/cm:documentLibrary//*\" AND TYPE:\"cm:content\" ");
+
+                List<NodeRef> nodeRefs = resultSet.getNodeRefs();
+
+                Iterator i = nodeRefs.iterator();
+
+                while (i.hasNext()) {
+                    NodeRef node = (NodeRef)i.next();
+                    System.out.println(node);
+                    permissionService.setPermission(node, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
+                }
+            }
+            else {
+                NodeRef n = new NodeRef(( String)json.get("nodeRef"));
+//                permissionService.setPermission(n, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
+            }
 
             result = JSONUtils.getSuccess();
             JSONUtils.write(webScriptWriter, result);

@@ -68,6 +68,7 @@ public class UserPermissions extends AbstractWebScript {
         o.put("GROUP_site_retspsyk_SiteRoleManager",false);
         o.put("GROUP_site_retspsyk_SitePropertyValueManager",false);
         o.put("GROUP_site_retspsyk_TemplateFolderValueManager",false);
+        o.put("GROUP_site_retspsyk_SiteConsumer",false);
 
 
         Set<String> auths = authorityService.getAuthoritiesForUser(user);
@@ -126,9 +127,10 @@ public class UserPermissions extends AbstractWebScript {
 
 
                 o.put("GROUP_site_retspsyk_SiteEntryLockManager", membership.getBoolean("GROUP_site_retspsyk_SiteEntryLockManager"));
-                o.put("GROUP_site_retspsyk_SitePropertyValueManager", membership.getBoolean("GROUP_site_retspsyk_SitePropertyValueManager"));
+                o.put("GROUP_site_retspsyk_ReadOnlyUser", membership.getBoolean("GROUP_site_retspsyk_SitePropertyValueManager"));
                 o.put("GROUP_site_retspsyk_SiteRoleManager", membership.getBoolean("GROUP_site_retspsyk_SiteRoleManager"));
                 o.put("GROUP_site_retspsyk_TemplateFolderValueManager", membership.getBoolean("GROUP_site_retspsyk_TemplateFolderValueManager"));
+                o.put("GROUP_site_retspsyk_SiteConsumer", membership.getBoolean("GROUP_site_retspsyk_SiteConsumer"));
 
                 array.put(o);
             } catch (JSONException e) {
