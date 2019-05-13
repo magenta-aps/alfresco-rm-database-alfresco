@@ -70,7 +70,7 @@ public class AddPermission extends AbstractWebScript {
             }
             else {
                 NodeRef n = new NodeRef(( String)json.get("nodeRef"));
-//                permissionService.setPermission(n, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
+                permissionService.setPermission(n, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
             }
 
             result = JSONUtils.getSuccess();
