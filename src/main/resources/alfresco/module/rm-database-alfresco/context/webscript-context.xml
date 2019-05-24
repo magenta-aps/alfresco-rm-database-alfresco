@@ -123,6 +123,10 @@
 		<property name="mailBean" ref="mailBean"/>
 	</bean>
 
+	<bean id="webscript.contents.markedforedit.post" class="dk.magenta.webscripts.contents.MarkForEdit" parent="webscript">
+		<property name="nodeService" ref="nodeService"/>
+	</bean>
+
 	<bean id="webscript.contents.mergedoctemplate.post" class="dk.magenta.webscripts.contents.MergeDocTemplate" parent="webscript">
 		<property name="documentTemplateBean" ref="documentTemplateBean"/>
 
