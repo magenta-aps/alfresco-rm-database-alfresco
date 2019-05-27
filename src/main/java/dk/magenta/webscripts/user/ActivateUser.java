@@ -1,10 +1,12 @@
 package dk.magenta.webscripts.user;
 
 import dk.magenta.beans.PropertyValuesBean;
+import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.MutableAuthenticationService;
+import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.json.JSONObject;
@@ -29,6 +31,12 @@ public class ActivateUser extends AbstractWebScript {
     public void setAuthenticationService(MutableAuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
+
+    public void setPermissionService(PermissionService permissionService) {
+        this.permissionService = permissionService;
+    }
+
+    PermissionService permissionService;
 
 
     public void setAuthorityService(AuthorityService authorityService) {
@@ -78,6 +86,7 @@ public class ActivateUser extends AbstractWebScript {
             String userName = params.get("userName");
 
             siteService.setMembership("retspsyk", userName,"SiteCollaborator");
+            authorityService.addAuthority(DatabaseModel.GROUP_ALLOWEDTODELETE, userName);
 
             AuthenticationUtil.clearCurrentSecurityContext();
 

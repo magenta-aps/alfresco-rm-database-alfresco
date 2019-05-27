@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>validate templatename</shortname>
+    <description>validate template name and optional rename if not following the standard</description>
+    <url>/contents/validatetemplatename</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

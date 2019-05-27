@@ -86,8 +86,11 @@ public interface DatabaseModel {
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
 
     // template docs
-    String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke.odt";
-    String PROP_TEMPLATE_DOC_KENDELSE = "kendelse.odt";
+    String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke";
+    String PROP_TEMPLATE_DOC_KENDELSE = "kendelse";
+
+    String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME = "samtykke.odt";
+    String PROP_TEMPLATE_DOC_KENDELSE_FILENAME = "kendelse.odt";
 
 
     /**
@@ -106,6 +109,9 @@ public interface DatabaseModel {
 
     QName ASPECT_SENDMAILLOGS = QName.createQName(RM_MODEL_URI, "sendMaillogs");
     QName ASPECT_DECLARATIONMARKEDFOREDIT = QName.createQName(RM_MODEL_URI, "documentMarkedForEdit");
+
+    // groups
+    String GROUP_ALLOWEDTODELETE = "GROUP_site_retspsyk_ALLOWEDTODELETE";
 
 
 

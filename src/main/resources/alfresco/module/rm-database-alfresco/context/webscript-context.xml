@@ -15,6 +15,7 @@
 
 	<bean id="webscript.database.role.put" class="dk.magenta.webscripts.database.UpdateUserRoles" parent="webscript">
 		<property name="databaseBean" ref="databaseBean"/>
+		<property name="authorityService" ref="authorityService"/>
 	</bean>
 
 	<bean id="webscript.database.entry.post" class="dk.magenta.webscripts.database.AddEntry" parent="webscript">
@@ -110,7 +111,6 @@
 		<property name="authorityService" ref="AuthorityService"/>
 	</bean>
 
-
 	<bean id="webscript.contents.getchildnodes.get" class="dk.magenta.webscripts.contents.GetChildNodes" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
@@ -125,6 +125,16 @@
 
 	<bean id="webscript.contents.markedforedit.post" class="dk.magenta.webscripts.contents.MarkForEdit" parent="webscript">
 		<property name="nodeService" ref="nodeService"/>
+	</bean>
+
+	<bean id="webscript.contents.addpermission.post" class="dk.magenta.webscripts.contents.AddPermission" parent="webscript">
+		<property name="permissionService" ref="permissionService"/>
+		<property name="searchService" ref="searchService"/>
+	</bean>
+
+	<bean id="webscript.contents.validatetemplatename.post" class="dk.magenta.webscripts.contents.ValidateTemplateName" parent="webscript">
+		<property name="permissionService" ref="permissionService"/>
+		<property name="searchService" ref="searchService"/>
 	</bean>
 
 	<bean id="webscript.contents.mergedoctemplate.post" class="dk.magenta.webscripts.contents.MergeDocTemplate" parent="webscript">
