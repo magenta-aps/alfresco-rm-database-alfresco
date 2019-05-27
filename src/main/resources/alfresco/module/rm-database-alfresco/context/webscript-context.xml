@@ -135,6 +135,8 @@
 	<bean id="webscript.contents.validatetemplatename.post" class="dk.magenta.webscripts.contents.ValidateTemplateName" parent="webscript">
 		<property name="permissionService" ref="permissionService"/>
 		<property name="searchService" ref="searchService"/>
+		<property name="fileFolderService" ref="FileFolderService"/>
+		<property name="nodeService" ref="nodeService"/>
 	</bean>
 
 	<bean id="webscript.contents.mergedoctemplate.post" class="dk.magenta.webscripts.contents.MergeDocTemplate" parent="webscript">
