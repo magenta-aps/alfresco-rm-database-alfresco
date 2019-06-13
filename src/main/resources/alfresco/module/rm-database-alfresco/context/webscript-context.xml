@@ -126,6 +126,8 @@
 	<bean id="webscript.contents.addpermission.post" class="dk.magenta.webscripts.contents.AddPermission" parent="webscript">
 		<property name="permissionService" ref="permissionService"/>
 		<property name="searchService" ref="searchService"/>
+		<property name="siteService" ref="siteService"/>
+		<property name="nodeService" ref="nodeService"/>
 	</bean>
 
 	<bean id="webscript.contents.mergedoctemplate.post" class="dk.magenta.webscripts.contents.MergeDocTemplate" parent="webscript">
