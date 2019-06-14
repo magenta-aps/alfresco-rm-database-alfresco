@@ -126,6 +126,8 @@
 
 	<bean id="webscript.contents.markedforedit.post" class="dk.magenta.webscripts.contents.MarkForEdit" parent="webscript">
 		<property name="nodeService" ref="nodeService"/>
+		<property name="personService" ref="personService"/>
+		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 
 	<bean id="webscript.contents.addpermission.post" class="dk.magenta.webscripts.contents.AddPermission" parent="webscript">

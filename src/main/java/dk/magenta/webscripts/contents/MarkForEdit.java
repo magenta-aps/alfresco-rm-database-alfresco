@@ -5,6 +5,9 @@ import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.security.AuthenticationService;
+import org.alfresco.service.cmr.security.PersonService;
+import org.alfresco.service.namespace.QName;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +17,9 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MarkForEdit extends AbstractWebScript {
@@ -24,6 +29,17 @@ public class MarkForEdit extends AbstractWebScript {
     }
 
     private NodeService nodeService;
+
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
+
+    public void setAuthenticationService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+
+    private PersonService personService;
+    private AuthenticationService authenticationService;
 
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
@@ -44,7 +60,14 @@ public class MarkForEdit extends AbstractWebScript {
             String nodeRef = (String)json.get("nodeRef");
 
             if (method.equals("add")) {
-                nodeService.addAspect(new NodeRef(nodeRef), DatabaseModel.ASPECT_DECLARATIONMARKEDFOREDIT, null);
+
+                String username = authenticationService.getCurrentUserName();
+                NodeRef user = personService.getPerson(username);
+
+                Map<QName, Serializable> aspectProps = new HashMap<>();
+                aspectProps.put(DatabaseModel.PROP_MARKEDBY, user);
+
+                nodeService.addAspect(new NodeRef(nodeRef), DatabaseModel.ASPECT_DECLARATIONMARKEDFOREDIT, aspectProps);
                 result = JSONUtils.getSuccess();
                 JSONUtils.write(webScriptWriter, result);
             }
@@ -55,7 +78,19 @@ public class MarkForEdit extends AbstractWebScript {
             }
             else  if (method.equals("state")) {
                 JSONObject jsonObject = new JSONObject();
+
                 jsonObject.put("state", nodeService.hasAspect(new NodeRef(nodeRef), DatabaseModel.ASPECT_DECLARATIONMARKEDFOREDIT));
+                if (nodeService.hasAspect(new NodeRef(nodeRef), DatabaseModel.ASPECT_DECLARATIONMARKEDFOREDIT)) {
+
+                    NodeRef person = (NodeRef)nodeService.getProperty(new NodeRef(nodeRef), DatabaseModel.PROP_MARKEDBY);
+                    System.out.println("hvad er personNode");
+                    System.out.println(person);
+
+                    PersonService.PersonInfo personInfo = personService.getPerson(person);
+                    jsonObject.put("firstName", personInfo.getFirstName());
+                    jsonObject.put("lastName", personInfo.getLastName());
+                }
+
 
                 result = jsonObject;
                 JSONUtils.write(webScriptWriter, result);
