@@ -71,8 +71,6 @@ public class ValidateTemplateName extends AbstractWebScript {
             System.out.println(json);
 
 
-
-
             FileInfo newNode = fileFolderService.create(nodeService.getPrimaryParent(n).getParentRef(), "tmp", org.alfresco.model.ContentModel.TYPE_CONTENT);
 
 
@@ -96,9 +94,6 @@ public class ValidateTemplateName extends AbstractWebScript {
 
             }
 
-
-            // get the node and rename to default name for that type
-
             result = JSONUtils.getSuccess();
             JSONUtils.write(webScriptWriter, result);
 
@@ -109,6 +104,5 @@ public class ValidateTemplateName extends AbstractWebScript {
         catch (org.alfresco.service.cmr.model.FileNotFoundException e) {
             e.printStackTrace();
         }
-
     }
 }
