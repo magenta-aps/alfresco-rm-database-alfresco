@@ -140,6 +140,7 @@
 
 	<bean id="webscript.contents.validatetemplatename.post" class="dk.magenta.webscripts.contents.ValidateTemplateName" parent="webscript">
 		<property name="permissionService" ref="permissionService"/>
+		<property name="nodeService" ref="nodeService"/>
 		<property name="searchService" ref="searchService"/>
 		<property name="fileFolderService" ref="FileFolderService"/>
 	</bean>
