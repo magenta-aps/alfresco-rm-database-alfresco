@@ -61,6 +61,9 @@ public interface DatabaseModel {
     QName PROP_WAITING_ACTIVE = QName.createQName(RM_MODEL_URI, "waiting_active");
     QName PROP_WAITING_TOTAL = QName.createQName(RM_MODEL_URI, "waiting_total");
 
+
+    QName PROP_MARKEDBY = QName.createQName(RM_MODEL_URI, "markedBy");
+
     /* Generic */
     QName PROP_LOCKED_FOR_EDIT = QName.createQName(RM_MODEL_URI, "locked4edit");
     QName PROP_LOCKED_FOR_EDIT_BY = QName.createQName(RM_MODEL_URI, "locked4editBy");
