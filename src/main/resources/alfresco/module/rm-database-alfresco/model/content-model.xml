@@ -313,6 +313,12 @@
 
         <aspect name="rm:documentMarkedForEdit">
             <title>Attributes to mark a documentMarkedForEdit as beeing edited</title>
+            <properties>
+                <property name="rm:markedBy">
+                    <title>person</title>
+                    <type>d:noderef</type>
+                </property>
+            </properties>
         </aspect>
 
 
