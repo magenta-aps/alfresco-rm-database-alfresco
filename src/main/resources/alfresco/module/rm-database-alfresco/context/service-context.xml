@@ -51,6 +51,7 @@
         <property name="personService" ref="PersonService"/>
         <property name="siteService" ref="SiteService"/>
         <property name="fileFolderService" ref="FileFolderService"/>
+        <property name="PermissionService" ref="PermissionService"/>
     </bean>
 
 </beans>
