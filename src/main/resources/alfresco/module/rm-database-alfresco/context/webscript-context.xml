@@ -121,8 +121,14 @@
 
 	<bean id="webscript.contents.mailcontent.post" class="dk.magenta.webscripts.contents.MailContent" parent="webscript">
 		<property name="mailBean" ref="mailBean"/>
+		<property name="entryBean" ref="entryBean"/>
+		<property name="nodeService" ref="nodeService"/>
+		<property name="fileFolderService" ref="fileFolderService"/>
+		<property name="contentService" ref="contentService"/>
+		<property name="mimetypeService" ref="mimetypeService"/>
+		<property name="authenticationService" ref="authenticationService"/>
+		<property name="personService" ref="personService"/>
 	</bean>
-
 
 	<bean id="webscript.contents.markedforedit.post" class="dk.magenta.webscripts.contents.MarkForEdit" parent="webscript">
 		<property name="nodeService" ref="nodeService"/>
