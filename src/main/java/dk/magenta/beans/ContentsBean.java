@@ -85,7 +85,7 @@ public class ContentsBean {
                 } else {
                     type = "cmis:document";
                     ContentData contentData = (ContentData) nodeService.getProperty(childNodeRef, ContentModel.PROP_CONTENT);
-                    String mimeType = contentData.getMimetype();
+                     String mimeType = contentData.getMimetype();
                     json.put("mimeType", mimeType);
                     String nodeRefStr = childNodeRef.toString().replace("://", "/");
                     String thumbnail = "/alfresco/service/api/node/" + nodeRefStr + "/content/thumbnails/doclib?c=force";
