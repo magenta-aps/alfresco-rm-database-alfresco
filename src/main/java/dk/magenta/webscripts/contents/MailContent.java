@@ -117,11 +117,9 @@ public class MailContent extends AbstractWebScript {
             String caseid = (String)json.get("caseid");
             System.out.println("caseid: " + caseid);
 
-//            mailBean.sendEmail(nodeRefs, authority, body, subject);
+            mailBean.sendEmail(nodeRefs, authority, body, subject);
 
-            // add to list of recorded emails
-
-            // pak dette væk i en bean senere
+             // pak dette væk i en bean senere
 
 
             String query = "@rm\\:caseNumber:\"" + caseid + "\"";
@@ -142,9 +140,6 @@ public class MailContent extends AbstractWebScript {
             int year = cal.get(Calendar.YEAR);
             int day = cal.get(Calendar.DATE);
             int month = (cal.get(Calendar.MONTH)+1);
-
-
-
 
 
             String line = "";
@@ -168,9 +163,6 @@ public class MailContent extends AbstractWebScript {
 
                 contentWriter.setMimetype("text/plain");
 
-                System.out.println("den nye node");
-                System.out.println(newNode.getNodeRef());
-
                 contentWriter.putContent(line);
 
 
@@ -188,9 +180,6 @@ public class MailContent extends AbstractWebScript {
 
                 ContentWriter contentWriter = contentService.getWriter(template_doc, org.alfresco.model.ContentModel.PROP_CONTENT, true);
                 contentWriter.putContent(line);
-
-                System.out.println("dette er kvitteringsnoden: ");
-                System.out.println(template_doc);
 
             }
 
