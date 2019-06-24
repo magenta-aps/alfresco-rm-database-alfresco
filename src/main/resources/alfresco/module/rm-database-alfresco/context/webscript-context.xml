@@ -130,6 +130,8 @@
 		<property name="personService" ref="personService"/>
 	</bean>
 
+
+
 	<bean id="webscript.contents.markedforedit.post" class="dk.magenta.webscripts.contents.MarkForEdit" parent="webscript">
 		<property name="nodeService" ref="nodeService"/>
 		<property name="personService" ref="personService"/>
@@ -141,6 +143,11 @@
 		<property name="searchService" ref="searchService"/>
 		<property name="siteService" ref="siteService"/>
 		<property name="nodeService" ref="nodeService"/>
+	</bean>
+
+	<bean id="webscript.contents.rename.post" class="dk.magenta.webscripts.contents.Rename" parent="webscript">
+		<property name="nodeService" ref="nodeService"/>
+		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
 
