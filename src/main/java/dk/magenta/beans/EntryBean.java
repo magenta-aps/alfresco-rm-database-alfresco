@@ -281,6 +281,7 @@ public class EntryBean {
     private void lockEntry (NodeRef entryRef) {
         if (!nodeService.hasAspect(entryRef, ContentModel.ASPECT_LOCKABLE)) {
             Map<QName, Serializable> prop = new HashMap<>();
+            prop.put(DatabaseModel.PROP_CLOSED_DATE, new Date());
             nodeService.addAspect(entryRef, ContentModel.ASPECT_LOCKABLE, prop);
         }
         lockService.lock(entryRef, LockType.READ_ONLY_LOCK);
@@ -443,6 +444,25 @@ public class EntryBean {
         return JSONUtils.getSuccess();
     }
 
+
+    public List<NodeRef> getEntriesbyQuery(String query) {
+
+        SearchParameters sp = new SearchParameters();
+        sp.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+
+
+
+        sp.setLanguage("lucene");
+        sp.setQuery(query);
+
+        ResultSet resultSet = searchService.query(sp);
+
+
+        System.out.println("the query.... ****");
+        System.out.println(sp.getQuery());
+
+        return resultSet.getNodeRefs();
+    }
 
     public List<NodeRef> getEntries(String query, int skip, int maxItems, String sort, boolean desc) {
 

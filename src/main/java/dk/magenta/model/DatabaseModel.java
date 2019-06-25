@@ -20,6 +20,7 @@ public interface DatabaseModel {
     QName PROP_JOURNALNUMMER = QName.createQName(RM_MODEL_URI, "journalNumber");
     QName PROP_STATUS = QName.createQName(RM_MODEL_URI, "status");
     QName PROP_CLOSED = QName.createQName(RM_MODEL_URI, "closed");
+    QName PROP_CLOSED_DATE = QName.createQName(RM_MODEL_URI, "closedDate");
     QName PROP_CPR = QName.createQName(RM_MODEL_URI, "cprNumber");
     QName PROP_FIRST_NAME = QName.createQName(RM_MODEL_URI, "firstName");
     QName PROP_LAST_NAME = QName.createQName(RM_MODEL_URI, "lastName");
@@ -63,6 +64,7 @@ public interface DatabaseModel {
 
 
     QName PROP_MARKEDBY = QName.createQName(RM_MODEL_URI, "markedBy");
+
 
     /* Generic */
     QName PROP_LOCKED_FOR_EDIT = QName.createQName(RM_MODEL_URI, "locked4edit");

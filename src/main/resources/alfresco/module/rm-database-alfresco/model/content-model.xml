@@ -75,6 +75,11 @@
                     <type>d:boolean</type>
                 </property>
 
+                <property name="rm:closedDate">
+                    <title>Dato for afslutning af sag</title>
+                    <type>d:date</type>
+                </property>
+
                 <property name="rm:cprNumber">
                     <title>CPR</title>
                     <type>d:text</type>
