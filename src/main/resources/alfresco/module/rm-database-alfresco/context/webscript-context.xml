@@ -148,7 +148,6 @@
 		<property name="nodeService" ref="nodeService"/>
 		<property name="searchService" ref="searchService"/>
 		<property name="fileFolderService" ref="FileFolderService"/>
-		<property name="nodeService" ref="nodeService"/>
 	</bean>
 
 	<bean id="webscript.contents.mergedoctemplate.post" class="dk.magenta.webscripts.contents.MergeDocTemplate" parent="webscript">
