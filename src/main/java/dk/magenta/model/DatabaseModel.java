@@ -95,6 +95,8 @@ public interface DatabaseModel {
     String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME = "samtykke.odt";
     String PROP_TEMPLATE_DOC_KENDELSE_FILENAME = "kendelse.odt";
 
+    String PROP_LOGFORMAILS = "mail_kvitteringer.txt";
+
 
     /**
      * caselink properties

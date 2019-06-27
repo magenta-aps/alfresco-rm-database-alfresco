@@ -82,6 +82,14 @@ public class AddPermission extends AbstractWebScript {
         else {
             for (int i = 0; i <= children.size()-1;i++) {
                 NodeRef subChild = children.get(i).getChildRef();
+
+                // need a check here, as the child might be a thumbnail
+                if ((nodeService.getType(child).equals(org.alfresco.model.ContentModel.TYPE_CONTENT))) {
+                    System.out.println("true");
+                    System.out.println("setting permission for node"  + child);
+                    permissionService.setPermission(child, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
+                }
+
                 rekur(subChild);
             }
         }
