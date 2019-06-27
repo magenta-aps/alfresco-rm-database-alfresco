@@ -2,29 +2,25 @@ package dk.magenta.beans;
 
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.QueryUtils;
-import org.alfresco.model.ContentModel;
-import org.alfresco.repo.model.Repository;
-import org.alfresco.service.cmr.download.DownloadService;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
-import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.security.AccessStatus;
-import org.alfresco.service.cmr.security.PermissionService;
-import org.alfresco.service.cmr.security.PersonService;
-import org.alfresco.service.cmr.site.SiteInfo;
-import org.alfresco.service.cmr.site.SiteService;
-import org.alfresco.service.namespace.QName;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import org.odftoolkit.odfdom.pkg.OdfFileDom;
+import org.odftoolkit.simple.SpreadsheetDocument;
+import org.odftoolkit.simple.table.Table;
+import org.odftoolkit.simple.table.TableContainer;
+
 public class StatBean {
 
+
+    private TableContainer document;
+    private Table table;
 
     public void setDatabaseBean(DatabaseBean databaseBean) {
         this.databaseBean = databaseBean;
@@ -39,8 +35,6 @@ public class StatBean {
     private EntryBean entryBean;
 
     public int query(String field) {
-
-
         String query = "";
         JSONArray queryArray = new JSONArray();
 
@@ -48,7 +42,6 @@ public class StatBean {
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 
         try {
-
 
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime onemonthback = now.minusMonths(1);
@@ -83,5 +76,20 @@ public class StatBean {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    private void writeToDocument()   {
+
+        try {
+            SpreadsheetDocument document = SpreadsheetDocument.newSpreadsheetDocument();
+
+            table = document.getSheetByIndex(0);
+            Table.newTable(this.document);
+        }
+        catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+        }
+
     }
 }
