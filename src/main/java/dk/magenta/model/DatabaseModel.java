@@ -65,6 +65,18 @@ public interface DatabaseModel {
 
     QName PROP_MARKEDBY = QName.createQName(RM_MODEL_URI, "markedBy");
 
+    QName PROP_NEXT_NEWCASES_X = QName.createQName(RM_MODEL_URI, "next_newCases_x");
+    QName PROP_NEXT_NEWCASES_Y = QName.createQName(RM_MODEL_URI, "next_newCases_y");
+
+    int INIT_NEXT_NEWCASES_X = 1;
+    int INIT_NEXT_NEWCASES_Y = 2;
+
+    QName PROP_NEXT_CLOSEDCASES_X = QName.createQName(RM_MODEL_URI, "next_closedCases_x");
+    QName PROP_NEXT_CLOSEDCASES_Y = QName.createQName(RM_MODEL_URI, "next_closedCases_y");
+
+    int INIT_NEXT_CLOSEDCASES_X = 4;
+    int INIT_NEXT_CLOSEDCASES_Y = 2;
+
 
     /* Generic */
     QName PROP_LOCKED_FOR_EDIT = QName.createQName(RM_MODEL_URI, "locked4edit");
@@ -79,6 +91,7 @@ public interface DatabaseModel {
 
     /* Aspects */
     QName ASPECT_BUA = QName.createQName(RM_MODEL_URI, "bua");
+    QName ASPECT_STAT = QName.createQName(RM_MODEL_URI, "stat");
 
     // Prop Strings
     String NAME = "name";
@@ -119,6 +132,8 @@ public interface DatabaseModel {
 
     // groups
     String GROUP_ALLOWEDTODELETE = "GROUP_site_retspsyk_ALLOWEDTODELETE";
+
+    String MONTHLY_REPORT_SPREADSHEET_NAME = "rapport.ods";
 
 
 

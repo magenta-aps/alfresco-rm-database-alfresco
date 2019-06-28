@@ -40,6 +40,8 @@ public class ScheduledJobExecuter {
 
         System.out.println("øh" + new Date());
 
+        statBean.writeToDocument();
+
         // Work/Job implementation goes here...
     }
 }

@@ -105,6 +105,11 @@
     <bean id="statBean" class="dk.magenta.beans.StatBean">
         <property name="databaseBean" ref="databaseBean"/>
         <property name="entryBean" ref="entryBean"/>
+        <property name="fileFolderService" ref="fileFolderService"/>
+        <property name="searchService" ref="searchService"/>
+        <property name="nodeService" ref="nodeService"/>
+        <property name="transactionService" ref="transactionService"/>
+        <property name="contentService" ref="contentService"/>
     </bean>
 
 </beans>
