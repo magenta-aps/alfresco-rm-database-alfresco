@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Move content</shortname>
+    <description>Move content</description>
+    <url>/contents/movecontent</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
