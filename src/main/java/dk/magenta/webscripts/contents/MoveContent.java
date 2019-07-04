@@ -28,58 +28,11 @@ import java.util.Map;
 
 public class MoveContent extends AbstractWebScript {
 
-    private MailBean mailBean;
-
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
+    public void setContentsBean(ContentsBean contentsBean) {
+        this.contentsBean = contentsBean;
     }
 
-    private PersonService personService;
-
-    public void setContentBean(ContentsBean contentBean) {
-        this.contentBean = contentBean;
-    }
-
-    private ContentsBean contentBean;
-
-    public void setAuthenticationService(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
-
-    private AuthenticationService authenticationService;
-
-    public void setFileFolderService(FileFolderService fileFolderService) {
-        this.fileFolderService = fileFolderService;
-    }
-
-    private FileFolderService fileFolderService;
-
-    public void setEntryBean(EntryBean entryBean) {
-        this.entryBean = entryBean;
-    }
-
-    private EntryBean entryBean;
-
-    public void setNodeService(NodeService nodeService) {
-        this.nodeService = nodeService;
-    }
-
-    private NodeService nodeService;
-    private ContentService contentService;
-
-    public void setContentService(ContentService contentService) {
-        this.contentService = contentService;
-    }
-
-    public void setMimetypeService(MimetypeService mimetypeService) {
-        this.mimetypeService = mimetypeService;
-    }
-
-    private MimetypeService mimetypeService;
-
-    public void setMailBean(MailBean mailBean) {
-        this.mailBean = mailBean;
-    }
+    private ContentsBean contentsBean;
 
 
     @Override
@@ -110,7 +63,7 @@ public class MoveContent extends AbstractWebScript {
 
 
             try {
-                contentBean.moveContent(nodeRefs, new NodeRef(destNode));
+                contentsBean.moveContent(nodeRefs, new NodeRef(destNode));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
