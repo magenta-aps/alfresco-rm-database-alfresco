@@ -148,6 +148,11 @@
 		<property name="nodeService" ref="nodeService"/>
 	</bean>
 
+	<bean id="webscript.contents.rename.post" class="dk.magenta.webscripts.contents.Rename" parent="webscript">
+		<property name="nodeService" ref="nodeService"/>
+		<property name="contentsBean" ref="contentsBean"/>
+	</bean>
+
 	<bean id="webscript.contents.validatetemplatename.post" class="dk.magenta.webscripts.contents.ValidateTemplateName" parent="webscript">
 		<property name="permissionService" ref="permissionService"/>
 		<property name="nodeService" ref="nodeService"/>

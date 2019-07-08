@@ -170,11 +170,53 @@ public class ContentsBean {
 
     public void moveContent(NodeRef[] requestedNodes, NodeRef dest) throws FileNotFoundException {
 
-        for (int i = 0; i <= requestedNodes.length-1; i++) {
+        for (int i = 0; i <= requestedNodes.length - 1; i++) {
             NodeRef n = requestedNodes[i];
-            FileInfo f = fileFolderService.move(n, dest,null);
+            FileInfo f = fileFolderService.move(n, dest, null);
         }
+    }
 
+    public void rename(NodeRef nodeRef, String name) {
+            String fileExtension = getFileExtension(nodeRef);
+            if(fileExtension != null) {
+                name += fileExtension;
+            }
+
+        nodeService.setProperty(nodeRef, ContentModel.PROP_NAME, name);
+    }
+
+    private String[] getNameAndExtension(NodeRef nodeRef) {
+        String name = (String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
+        boolean isContent = isContent(nodeRef);
+        return getNameAndExtension(name, isContent);
+    }
+
+    public boolean isContent(NodeRef nodeRef) {
+        QName type = nodeService.getType(nodeRef);
+        return type.equals(ContentModel.TYPE_CONTENT);
+    }
+
+    public String getFileExtension(NodeRef nodeRef) {
+        String[] nameAndExtension = getNameAndExtension(nodeRef);
+        return nameAndExtension[1];
+    }
+
+    private String[] getNameAndExtension(String name, boolean isContent) {
+        String[] split = new String[2];
+        if(isContent) {
+            int extensionIndex = name.lastIndexOf(".");
+            if (extensionIndex > 0) {
+                split[0] = name.substring(0, extensionIndex);
+                split[1] = name.substring(extensionIndex);
+            } else {
+                split[0] = name;
+            }
+        }
+        else {
+            split[0] = name;
+            split[1] = "";
+        }
+        return split;
     }
 
     public String getDownloadStatus(NodeRef downloadNodeRef) {
