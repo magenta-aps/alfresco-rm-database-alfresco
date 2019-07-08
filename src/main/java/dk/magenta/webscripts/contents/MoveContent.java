@@ -19,12 +19,15 @@ import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
+import javax.swing.text.html.parser.ContentModel;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+
+import static dk.magenta.model.DatabaseModel.TYPE_PSYC_DEC;
 
 public class MoveContent extends AbstractWebScript {
 
@@ -33,6 +36,30 @@ public class MoveContent extends AbstractWebScript {
     }
 
     private ContentsBean contentsBean;
+
+    public void setNodeService(NodeService nodeService) {
+        this.nodeService = nodeService;
+    }
+
+    private NodeService nodeService;
+
+
+    private NodeRef getParentNode(NodeRef nodeToBeMoved) {
+
+
+        NodeRef primaryParent = nodeService.getPrimaryParent(nodeToBeMoved).getParentRef();
+
+        if (nodeService.getType(primaryParent).getLocalName().equals(TYPE_PSYC_DEC)) {
+            return null; //  you cant move beyond the root
+        }
+
+
+        System.out.println("hvad er primaryParentsParent");
+        NodeRef primaryParentsParent = nodeService.getPrimaryParent(primaryParent).getParentRef();
+
+        return primaryParentsParent;
+
+    }
 
 
     @Override
@@ -47,7 +74,6 @@ public class MoveContent extends AbstractWebScript {
         JSONObject json = null;
         try {
 
-            System.out.println("the json" + c.getContent());
             json = new JSONObject(c.getContent());
 
             JSONArray jsonNodeRefs = JSONUtils.getArray(json, "nodeRefs");
@@ -59,17 +85,32 @@ public class MoveContent extends AbstractWebScript {
             }
 
             String destNode = (String)json.get("destNode");
-            System.out.println("destNode: " + destNode);
 
 
             try {
-                contentsBean.moveContent(nodeRefs, new NodeRef(destNode));
+
+                if (destNode.equals("parent")) {
+
+                    // locate the parent of current folder
+                    NodeRef nodeToBeMoved = nodeRefs[0];
+                    contentsBean.moveContent(nodeRefs, getParentNode(nodeToBeMoved));
+                }
+                else {
+                    contentsBean.moveContent(nodeRefs, new NodeRef(destNode));
+                }
+
+
+
+                result = JSONUtils.getSuccess();
+                JSONUtils.write(webScriptWriter, result);
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+                result = JSONUtils.getError(e);
+                JSONUtils.write(webScriptWriter, result);
+
             }
 
-            result = JSONUtils.getSuccess();
-            JSONUtils.write(webScriptWriter, result);
 
 
         } catch (JSONException e) {

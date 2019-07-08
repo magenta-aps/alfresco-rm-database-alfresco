@@ -5,6 +5,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.service.cmr.download.DownloadService;
 import org.alfresco.service.cmr.model.FileFolderService;
+import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.ContentData;
@@ -30,6 +31,11 @@ public class ContentsBean {
     private SiteService siteService;
     private DownloadService downloadService;
     private Repository repository;
+
+    public void setFileFolderService(FileFolderService fileFolderService) {
+        this.fileFolderService = fileFolderService;
+    }
+
     private FileFolderService fileFolderService;
 
     public void setNodeService(NodeService nodeService) {
@@ -166,7 +172,7 @@ public class ContentsBean {
 
         for (int i = 0; i <= requestedNodes.length-1; i++) {
             NodeRef n = requestedNodes[i];
-            fileFolderService.move(n, dest,null);
+            FileInfo f = fileFolderService.move(n, dest,null);
         }
 
     }

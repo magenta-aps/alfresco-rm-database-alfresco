@@ -132,6 +132,7 @@
 
 	<bean id="webscript.contents.movecontent.post" class="dk.magenta.webscripts.contents.MoveContent" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
+		<property name="nodeService" ref="nodeService"/>
 	</bean>
 
 	<bean id="webscript.contents.markedforedit.post" class="dk.magenta.webscripts.contents.MarkForEdit" parent="webscript">
