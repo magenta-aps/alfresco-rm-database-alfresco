@@ -81,7 +81,7 @@ public class StatBean {
 
     private EntryBean entryBean;
 
-    public int query(String field) {
+    public double query(String field) {
         String query = "";
         JSONArray queryArray = new JSONArray();
 
@@ -116,7 +116,9 @@ public class StatBean {
 
             List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(query);
 
-            return nodeRefs.size();
+
+
+            return Double.valueOf(nodeRefs.size());
 
 
         } catch (Exception e) {
@@ -241,6 +243,8 @@ public class StatBean {
 
             try {
 
+
+
                 NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRef();
 
                 ContentReader contentReader = contentService.getReader(spreadSheetNodeRef, ContentModel.PROP_CONTENT);
@@ -256,16 +260,21 @@ public class StatBean {
                 table = spreadsheetDocument.getSheetByIndex(0);
 
                 Cell e = table.getCellByPosition(newCasesXY.getX(), newCasesXY.getY());
-                e.setStringValue(new Date().toString());
+                e.setDateValue(Calendar.getInstance());
+
+                e.setFormatString("MM-yyyy");
 
                 Cell e2 = table.getCellByPosition(newCasesXY.getX()+1, newCasesXY.getY());
-                e2.setStringValue(String.valueOf(this.query("creationDate")));
+                e2.setDoubleValue(this.query("creationDate"));
+
 
                 Cell e3 = table.getCellByPosition(closedCasesXY.getX(), closedCasesXY.getY());
-                e3.setStringValue(new Date().toString());
+                e3.setDateValue(Calendar.getInstance());
+
+                e3.setFormatString("MM-yyyy");
 
                 Cell e4 = table.getCellByPosition(closedCasesXY.getX()+1, closedCasesXY.getY());
-                e4.setStringValue(String.valueOf(this.query("closedDate")));
+                e4.setDoubleValue(this.query("closedDate"));
 
 
 
