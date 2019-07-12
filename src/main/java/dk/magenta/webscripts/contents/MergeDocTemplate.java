@@ -17,6 +17,7 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -59,6 +60,22 @@ public class MergeDocTemplate extends AbstractWebScript {
             if (json.get("type").equals(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE)) {
 
                 if (json.has("dato") && json.has("retten")) {
+
+                    Calendar cal = Calendar.getInstance();
+                    int year;
+                    int day;
+                    int month;
+                    Date d = new Date((String)json.get("dato"));
+
+                    cal.setTime(d);
+                    System.out.println("hvad er din konvertering");
+                    System.out.println(d);
+                    System.out.println(d);
+                    System.out.println(d);
+                    System.out.println(d);
+                    System.out.println(d);
+
+
                     String newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
                     result = JSONUtils.getObject("id", newDocument.toString());
                     JSONUtils.write(webScriptWriter, result);
