@@ -239,15 +239,17 @@ public class DocumentTemplateBean {
     public String generateOfferLetterDocumentSamtykke(NodeRef templateDoc, NodeRef declaration) throws Exception {
 
         DeclarationInfo info = this.getProperties(declaration);
-//        System.out.println("hvad er cpr:  " + info.cpr);
-//        System.out.println("hvad er fornavn:  " + info.fornavn);
-//        System.out.println("hvad er efternavn:  " + info.efternavn);
-//        System.out.println("hvad er post:  " + info.postnr);
-//        System.out.println("hvad er by:  " + info.by);
-//        System.out.println("amlb:  " + info.ambldato);
-//        System.out.println("laege:  " + info.laege);
-//        System.out.println("journalnummer:  " + info.journalnummer);
-//        System.out.println("sagsnr:  " + info.sagsnr);
+
+        System.out.println("hvad er cpr:  " + info.cpr);
+        System.out.println("hvad er fornavn:  " + info.fornavn);
+        System.out.println("hvad er efternavn:  " + info.efternavn);
+        System.out.println("hvad er post:  " + info.postnr);
+        System.out.println("hvad er by:  " + info.by);
+        System.out.println("amlb:  " + info.ambldato);
+        System.out.println("laege:  " + info.laege);
+        System.out.println("journalnummer:  " + info.journalnummer);
+        System.out.println("sagsnr:  " + info.sagsnr);
+        System.out.println("oprettet dato:  " + info.oprettetdato);
 
         NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 

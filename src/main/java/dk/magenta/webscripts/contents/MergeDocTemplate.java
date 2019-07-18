@@ -35,7 +35,6 @@ public class MergeDocTemplate extends AbstractWebScript {
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
         Content c = webScriptRequest.getContent();
-        System.out.println("status på mailBean" + documentTemplateBean);
         JSONObject json = null;
 
         try {
@@ -65,7 +64,7 @@ public class MergeDocTemplate extends AbstractWebScript {
                     // it has the format 19.7.2019
                     String d_string = (String)json.get("dato");
 
-                    String[] split = d_string.split(".");
+                    String[] split = d_string.split("\\.");
 
                     // requested formatting #29732
 
