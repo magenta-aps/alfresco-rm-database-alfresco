@@ -27,6 +27,7 @@
         <property name="siteService" ref="SiteService"/>
         <property name="downloadService" ref="DownloadService"/>
         <property name="repository" ref="repositoryHelper"/>
+        <property name="fileFolderService" ref="fileFolderService"/>
     </bean>
 
     <bean id="databaseBean" class="dk.magenta.beans.DatabaseBean">
@@ -52,6 +53,64 @@
         <property name="siteService" ref="SiteService"/>
         <property name="fileFolderService" ref="FileFolderService"/>
         <property name="PermissionService" ref="PermissionService"/>
+    </bean>
+
+    <bean id="org.alfresco.tutorial.scheduledjob.actions.ScheduledJobExecuter"
+          class="dk.magenta.scheduledjob.ScheduledJobExecuter">
+        <property name="serviceRegistry">
+            <ref bean="ServiceRegistry" />
+        </property>
+
+        <property name="statBean">
+            <ref bean="statBean" />
+        </property>
+
+    </bean>
+
+    <bean id="org.alfresco.tutorial.scheduledjob.jobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>dk.magenta.scheduledjob.ScheduledJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="jobExecuter">
+                    <ref bean="org.alfresco.tutorial.scheduledjob.actions.ScheduledJobExecuter" />
+                </entry>
+                <entry key="jobLockService">
+                    <ref bean="jobLockService" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="org.alfresco.tutorial.scheduledjob.trigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="org.alfresco.tutorial.scheduledjob.jobDetail" />
+        </property>
+        <property name="cronExpression">
+            <value>${org.alfresco.tutorial.scheduledjob.cronexpression}</value>
+        </property>
+        <property name="startDelay">
+            <value>${org.alfresco.tutorial.scheduledjob.cronstartdelay}</value>
+        </property>
+    </bean>
+
+    <bean id="org.alfresco.tutorial.scheduledjob.SchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="org.alfresco.tutorial.scheduledjob.trigger"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="statBean" class="dk.magenta.beans.StatBean">
+        <property name="databaseBean" ref="databaseBean"/>
+        <property name="entryBean" ref="entryBean"/>
+        <property name="fileFolderService" ref="fileFolderService"/>
+        <property name="searchService" ref="searchService"/>
+        <property name="nodeService" ref="nodeService"/>
+        <property name="transactionService" ref="transactionService"/>
+        <property name="contentService" ref="contentService"/>
     </bean>
 
 </beans>

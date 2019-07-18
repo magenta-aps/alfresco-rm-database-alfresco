@@ -75,6 +75,11 @@
                     <type>d:boolean</type>
                 </property>
 
+                <property name="rm:closedDate">
+                    <title>Dato for afslutning af sag</title>
+                    <type>d:date</type>
+                </property>
+
                 <property name="rm:cprNumber">
                     <title>CPR</title>
                     <type>d:text</type>
@@ -318,6 +323,32 @@
                     <title>person</title>
                     <type>d:noderef</type>
                 </property>
+            </properties>
+        </aspect>
+
+        <aspect name="rm:stat">
+            <title>Attributes used to lookup where in the spreadsheet to write next</title>
+            <properties>
+                <property name="rm:next_newCases_x">
+                    <title>next_newCases_x</title>
+                    <type>d:int</type>
+                </property>
+
+                <property name="rm:next_newCases_y">
+                    <title>next_newCases_y</title>
+                    <type>d:int</type>
+                </property>
+
+                <property name="rm:next_closedCases_x">
+                    <title>next_newCases_x</title>
+                    <type>d:int</type>
+                </property>
+
+                <property name="rm:next_closedCases_y">
+                    <title>next_newCases_y</title>
+                    <type>d:int</type>
+                </property>
+
             </properties>
         </aspect>
 

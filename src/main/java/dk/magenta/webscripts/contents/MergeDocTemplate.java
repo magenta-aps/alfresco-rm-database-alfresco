@@ -61,22 +61,33 @@ public class MergeDocTemplate extends AbstractWebScript {
 
                 if (json.has("dato") && json.has("retten")) {
 
-                    Calendar cal = Calendar.getInstance();
-                    int year;
-                    int day;
-                    int month;
-                    Date d = new Date((String)json.get("dato"));
 
-                    cal.setTime(d);
-                    System.out.println("hvad er din konvertering");
-                    System.out.println(d);
-                    System.out.println(d);
-                    System.out.println(d);
-                    System.out.println(d);
-                    System.out.println(d);
+                    // it has the format 19.7.2019
+                    String d_string = (String)json.get("dato");
+
+                    String[] split = d_string.split(".");
+
+                    // requested formatting #29732
+
+                    int day = Integer.valueOf(split[0]);
+                    String s_day = String.valueOf(day);
+
+                    int month = Integer.valueOf(split[1]);
+                    String s_month = String.valueOf(month);
+
+                    int year = Integer.valueOf(split[2]);
 
 
-                    String newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), (String)json.get("dato") );
+                    // requested formatting #29732
+                    if (day < 10) {
+                        s_day = "0" + s_day;
+                    }
+
+                    if (month < 10) {
+                        s_month = "0" + s_month;
+                    }
+
+                    String newDocument = documentTemplateBean.populateDocument(new NodeRef("workspace://SpacesStore/" + json.get("id")), (String)json.get("type") , (String)json.get("retten"), s_day + "." + s_month + "." + year);
                     result = JSONUtils.getObject("id", newDocument.toString());
                     JSONUtils.write(webScriptWriter, result);
                 }

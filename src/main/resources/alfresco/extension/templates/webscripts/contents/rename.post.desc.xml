@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>rename</shortname>
+    <description>renames a node</description>
+    <url>/contents/rename</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
