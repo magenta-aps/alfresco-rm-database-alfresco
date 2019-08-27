@@ -83,7 +83,7 @@
         </property>
     </bean>
 
-    <bean id="org.alfresco.tutorial.scheduledjob.trigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="org.alfresco.tutorial.scheduledjob.trigger" class="org.alfresco.util.CronTriggerBean">
         <property name="jobDetail">
             <ref bean="org.alfresco.tutorial.scheduledjob.jobDetail" />
         </property>
@@ -93,15 +93,18 @@
         <property name="startDelay">
             <value>${org.alfresco.tutorial.scheduledjob.cronstartdelay}</value>
         </property>
+
+        <property name="scheduler" ref="schedulerFactory" />
+
     </bean>
 
-    <bean id="org.alfresco.tutorial.scheduledjob.SchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="triggers">
-            <list>
-                <ref bean="org.alfresco.tutorial.scheduledjob.trigger"/>
-            </list>
-        </property>
-    </bean>
+    <!--<bean id="org.alfresco.tutorial.scheduledjob.SchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">-->
+        <!--<property name="triggers">-->
+            <!--<list>-->
+                <!--<ref bean="org.alfresco.tutorial.scheduledjob.trigger"/>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
 
     <bean id="statBean" class="dk.magenta.beans.StatBean">
         <property name="databaseBean" ref="databaseBean"/>

@@ -16,11 +16,15 @@ import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
+import org.alfresco.service.cmr.version.Version;
+import org.alfresco.service.cmr.version.VersionHistory;
+import org.alfresco.service.cmr.version.VersionService;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ContentsBean {
@@ -31,6 +35,12 @@ public class ContentsBean {
     private SiteService siteService;
     private DownloadService downloadService;
     private Repository repository;
+
+    public void setVersionService(VersionService versionService) {
+        this.versionService = versionService;
+    }
+
+    private VersionService versionService;
 
     public void setFileFolderService(FileFolderService fileFolderService) {
         this.fileFolderService = fileFolderService;
@@ -231,5 +241,41 @@ public class ContentsBean {
     public NodeRef getCompanyHome() throws JSONException {
         return repository.getCompanyHome();
     }
+
+    public org.json.simple.JSONArray getVersions(NodeRef nodeRef) throws JSONException {
+        org.json.simple.JSONArray result = new org.json.simple.JSONArray();
+        VersionHistory h = versionService.getVersionHistory(nodeRef);
+
+        if (h != null) {
+            Collection<Version> versions = h.getAllVersions();
+
+            for (Version v : versions) {
+
+                JSONObject json = new JSONObject();
+                json.put("parent_nodeRef", nodeRef.getId());
+                json.put("nodeRef", v.getFrozenStateNodeRef().getId());
+
+                String modifier = v.getFrozenModifier();
+                NodeRef personNoderef = personService.getPerson(modifier);
+                PersonService.PersonInfo personInfo = personService.getPerson(personNoderef);
+
+                String displayName = personInfo.getFirstName() + " " + personInfo.getLastName();
+                if(displayName != null) {
+                    json.put("modifier", displayName);
+                }
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                json.put("created", sdf.format(v.getFrozenModifiedDate()));
+
+                json.put("version", v.getVersionLabel());
+
+                result.add(json);
+            }
+        }
+
+        return result;
+    }
+
+
 
 }
