@@ -114,6 +114,8 @@
         <property name="nodeService" ref="nodeService"/>
         <property name="transactionService" ref="transactionService"/>
         <property name="contentService" ref="contentService"/>
+        <property name="override" value="${magenta.custom.override}"/>
+        <property name="override_months" value="${magenta.custom.override_months}"/>
     </bean>
 
 </beans>

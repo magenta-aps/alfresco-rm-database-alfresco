@@ -35,6 +35,16 @@ import static dk.magenta.model.DatabaseModel.*;
 
 public class StatBean {
 
+    public void setOverride(boolean override) {
+        this.override = override;
+    }
+
+    public void setOverride_months(int override_months) {
+        this.override_months = override_months;
+    }
+
+    private boolean override;
+    private int override_months;
 
     private TableContainer document;
     private Table table;
@@ -81,7 +91,8 @@ public class StatBean {
 
     private EntryBean entryBean;
 
-    public double query(String field) {
+    public double query(String field, boolean override, int override_months) {
+
         String query = "";
         JSONArray queryArray = new JSONArray();
 
@@ -90,8 +101,19 @@ public class StatBean {
 
         try {
 
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime onemonthback = now.minusMonths(1);
+            LocalDateTime now;
+            LocalDateTime onemonthback;
+
+            if (override) {
+                now = LocalDateTime.now().minusMonths(override_months * -1);
+                onemonthback = now.minusMonths(1);
+            }
+            else {
+                now = LocalDateTime.now();
+                onemonthback = now.minusMonths(1);
+            }
+
+
 
             System.out.println("now");
             System.out.println(now);
@@ -244,6 +266,14 @@ public class StatBean {
             try {
 
 
+                System.out.println("hvad er override");
+                System.out.println(override);
+                System.out.println("hvad er override_months");
+                System.out.println(override_months);
+
+
+
+
 
                 NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRef();
 
@@ -256,25 +286,47 @@ public class StatBean {
                 ClosedCasesXY closedCasesXY = new ClosedCasesXY();
                 closedCasesXY.next(spreadSheetNodeRef);
 
-
                 table = spreadsheetDocument.getSheetByIndex(0);
 
                 Cell e = table.getCellByPosition(newCasesXY.getX(), newCasesXY.getY());
-                e.setDateValue(Calendar.getInstance());
+
+                if (override) {
+
+                    Date referenceDate = new Date();
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(referenceDate);
+                    c.add(Calendar.MONTH, override_months);
+
+                    e.setDateValue(c);
+                }
+                else {
+                    e.setDateValue(Calendar.getInstance());
+                }
 
                 e.setFormatString("MM-yyyy");
 
                 Cell e2 = table.getCellByPosition(newCasesXY.getX()+1, newCasesXY.getY());
-                e2.setDoubleValue(this.query("creationDate"));
-
+                e2.setDoubleValue(this.query("creationDate", override, override_months));
 
                 Cell e3 = table.getCellByPosition(closedCasesXY.getX(), closedCasesXY.getY());
-                e3.setDateValue(Calendar.getInstance());
+
+                if (override) {
+                    Date referenceDate = new Date();
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(referenceDate);
+                    c.add(Calendar.MONTH, override_months);
+
+                    e3.setDateValue(c);
+                }
+                else {
+                    e3.setDateValue(Calendar.getInstance());
+                }
+
 
                 e3.setFormatString("MM-yyyy");
 
                 Cell e4 = table.getCellByPosition(closedCasesXY.getX()+1, closedCasesXY.getY());
-                e4.setDoubleValue(this.query("closedDate"));
+                e4.setDoubleValue(this.query("closedDate", override, override_months));
 
 
 
@@ -285,9 +337,6 @@ public class StatBean {
 
                 spreadsheetDocument.save(f);
                 writer.putContent(f);
-
-
-                // get the nodeRef of the spreadsheet
 
 
             } catch (Exception e) {

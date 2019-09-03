@@ -32,16 +32,10 @@ public class ScheduledJobExecuter {
     public void execute() {
         LOG.info("Running the scheduled job");
 
-        Double created = statBean.query("creationDate");
-        System.out.println("number created:" + created);
 
-        Double closed = statBean.query("closedDate");
-        System.out.println("number closed:" + closed);
 
-        System.out.println("øh" + new Date());
 
         statBean.writeToDocument();
 
-        // Work/Job implementation goes here...
     }
 }
