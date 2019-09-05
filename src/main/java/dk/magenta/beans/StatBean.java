@@ -114,11 +114,6 @@ public class StatBean {
             }
 
 
-
-            System.out.println("now");
-            System.out.println(now);
-            System.out.println(onemonthback);
-
             JSONObject o = new JSONObject();
 
             String from_formattedDate = outputFormatter.format(now);
