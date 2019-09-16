@@ -169,6 +169,14 @@
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
+	<bean id="webscript.contents.getversions.get" class="dk.magenta.webscripts.contents.GetVersions" parent="webscript">
+		<property name="contentsBean" ref="contentsBean"/>
+	</bean>
+
+	<bean id="webscript.contents.getthumbnail.get" class="dk.magenta.webscripts.contents.GetThumbnail" parent="webscript">
+		<property name="contentsBean" ref="contentsBean"/>
+	</bean>
+
 	<bean id="webscript.contents.companyhome.get" class="dk.magenta.webscripts.contents.GetCompanyHome" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
