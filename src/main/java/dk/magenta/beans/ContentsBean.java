@@ -181,6 +181,13 @@ public class ContentsBean {
         return downloadNodeRef;
     }
 
+
+    public void revert() {
+
+
+
+    }
+
     public void moveContent(NodeRef[] requestedNodes, NodeRef dest) throws FileNotFoundException {
 
         for (int i = 0; i <= requestedNodes.length - 1; i++) {
@@ -310,7 +317,7 @@ public class ContentsBean {
             // Add version previewable aspect if it is not present
 
             // Create new preview node of earlier version
-            Map<QName, Serializable> properties = new HashMap<>();
+            Map<QName,  Serializable> properties = new HashMap<>();
             properties.put(ContentModel.PROP_NAME, name);
             Serializable content = nodeService.getProperty(versionRef, ContentModel.PROP_CONTENT);
             properties.put(ContentModel.PROP_CONTENT, content);
