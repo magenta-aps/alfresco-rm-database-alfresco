@@ -28,6 +28,7 @@
         <property name="downloadService" ref="DownloadService"/>
         <property name="repository" ref="repositoryHelper"/>
         <property name="fileFolderService" ref="fileFolderService"/>
+        <property name="versionService" ref="versionService"/>
     </bean>
 
     <bean id="databaseBean" class="dk.magenta.beans.DatabaseBean">

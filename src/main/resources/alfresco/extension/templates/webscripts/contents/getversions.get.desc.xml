@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get download status</shortname>
+    <description>gets versions</description>
+    <url>/contents/getversions</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

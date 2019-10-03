@@ -136,5 +136,6 @@ public interface DatabaseModel {
     String MONTHLY_REPORT_SPREADSHEET_NAME = "rapport.ods";
 
 
+    QName ASSOC_VERSION_PREVIEW = QName.createQName(RM_MODEL_URI, "version_preview");
 
 }
