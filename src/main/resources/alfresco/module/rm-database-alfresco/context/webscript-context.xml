@@ -178,7 +178,7 @@
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
-	<bean id="webscript.contents.getversions.get" class="dk.magenta.webscripts.contents.GetVersions" parent="webscript">
+	<bean id="webscript.contents.fetchversions.get" class="dk.magenta.webscripts.contents.fetchVersions" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 

@@ -29,7 +29,7 @@ import java.io.Writer;
 import java.util.Map;
 
 
-public class GetVersions extends AbstractWebScript {
+public class fetchVersions extends AbstractWebScript {
 
     private ContentsBean contentsBean;
 
