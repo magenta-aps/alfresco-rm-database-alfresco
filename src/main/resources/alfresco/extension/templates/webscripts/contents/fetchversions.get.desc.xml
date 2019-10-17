@@ -1,5 +1,5 @@
 <webscript>
-    <shortname>Get download status</shortname>
+    <shortname>Gets version</shortname>
     <description>gets versions</description>
     <url>/contents/fetchversions</url>
     <authentication>user</authentication>

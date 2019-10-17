@@ -4,6 +4,7 @@ import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.version.VersionModel;
 import org.alfresco.service.cmr.download.DownloadService;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -258,18 +259,38 @@ public class ContentsBean {
     public org.json.JSONArray getVersions(NodeRef nodeRef) throws JSONException {
         JSONArray result = new JSONArray();
         VersionHistory h = versionService.getVersionHistory(nodeRef);
+        JSONObject json = new JSONObject();
+
 
         if (h != null) {
             Collection<Version> versions = h.getAllVersions();
 
+            String latestVersion = versionService.getCurrentVersion(nodeRef).getVersionLabel();
+
             for (Version v : versions) {
 
-                JSONObject json = new JSONObject();
+                json = new JSONObject();
+                json.put("latest", v.getVersionLabel().equals(latestVersion));
+
                 json.put("parent_nodeRef", nodeRef.getId());
                 json.put("nodeRef", v.getFrozenStateNodeRef().getId());
 
                 String modifier = v.getFrozenModifier();
-                NodeRef personNoderef = personService.getPerson(modifier);
+
+                String metadata_modifier = (String)v.getVersionProperty("{http://www.alfresco.org/model/content/1.0}modifier");
+
+
+                NodeRef personNoderef;
+
+                if (metadata_modifier != null) {
+                    personNoderef = personService.getPerson(metadata_modifier);
+                }
+                else {
+                    personNoderef = personService.getPerson(modifier);
+                }
+
+
+
                 PersonService.PersonInfo personInfo = personService.getPerson(personNoderef);
 
                 String displayName = personInfo.getFirstName() + " " + personInfo.getLastName();
@@ -281,6 +302,9 @@ public class ContentsBean {
                 json.put("created", sdf.format(v.getFrozenModifiedDate()));
 
                 json.put("version", v.getVersionLabel());
+
+                System.out.println("object");
+                System.out.println(json);
 
                 result.put(json);
             }
@@ -295,23 +319,31 @@ public class ContentsBean {
      * @param versionId id of version node.
      * @return a JSONArray containing a JSONObject 'nodeRef'.
      */
-    public NodeRef getThumbnail(String nodeId, String versionId) {
+    public NodeRef getThumbnail(String nodeId, String versionId, boolean forceUpdate) {
 
-        System.out.println("du er kommet her til: *****");
 
         NodeRef nodeRef = new NodeRef("workspace", "SpacesStore", nodeId);
         NodeRef versionRef = new NodeRef("versionStore", "version2Store", versionId);
-
-        System.out.println("hvad er nodeRef:  " + nodeRef);
-        System.out.println("hvad er versionRef: " + versionRef);
 
         Serializable parentName = nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
         Serializable versionLabel = nodeService.getProperty(versionRef, ContentModel.PROP_VERSION_LABEL);
         System.out.println("hvad er versionlabel: " + versionLabel);
         String name =  "(v. " + versionLabel + ") " + parentName;
         NodeRef versionPreviewRef = nodeService.getChildByName(nodeRef, DatabaseModel.ASSOC_VERSION_PREVIEW, name);
-        if(versionPreviewRef != null)
+
+        System.out.println("indhold af versionPreviewRef");
+        System.out.println(versionPreviewRef);
+
+        if(versionPreviewRef != null && !forceUpdate) {
+            System.out.println("returning the versionPreviewRef");
             return versionPreviewRef;
+        }
+        else if (forceUpdate && versionPreviewRef != null) {
+            System.out.println("forcing update");
+            nodeService.deleteNode(versionPreviewRef);
+        }
+
+
 
         AuthenticationUtil.runAs(() -> {
             // Add version previewable aspect if it is not present
@@ -328,6 +360,10 @@ public class ContentsBean {
                     cmName,
                     ContentModel.TYPE_CONTENT,
                     properties);
+
+            System.out.println("the new preview");
+            System.out.println(childAssocRef.getChildRef());
+
             nodeService.addAspect(childAssocRef.getChildRef(), ContentModel.ASPECT_HIDDEN, null);
             return true;
         }, AuthenticationUtil.getSystemUserName());

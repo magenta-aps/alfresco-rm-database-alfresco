@@ -155,6 +155,8 @@
 		<property name="nodeService" ref="nodeService"/>
 		<property name="VersionService" ref="VersionService"/>
 		<property name="authorityService" ref="authorityService"/>
+		<property name="contentsBean" ref="contentsBean"/>
+		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 
 	<bean id="webscript.contents.rename.post" class="dk.magenta.webscripts.contents.Rename" parent="webscript">
@@ -178,7 +180,7 @@
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
-	<bean id="webscript.contents.fetchversions.get" class="dk.magenta.webscripts.contents.fetchVersions" parent="webscript">
+	<bean id="webscript.contents.fetchversions.get" class="dk.magenta.webscripts.contents.FetchVersions" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 

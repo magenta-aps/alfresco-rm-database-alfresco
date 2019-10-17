@@ -29,7 +29,7 @@ import java.io.Writer;
 import java.util.Map;
 
 
-public class fetchVersions extends AbstractWebScript {
+public class FetchVersions extends AbstractWebScript {
 
     private ContentsBean contentsBean;
 
@@ -40,7 +40,12 @@ public class fetchVersions extends AbstractWebScript {
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
 
+        System.out.println("getting versions");
+
         Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
+
+        System.out.println("getting versions");
+
 
         webScriptResponse.setContentEncoding("UTF-8");
         Writer webScriptWriter = webScriptResponse.getWriter();

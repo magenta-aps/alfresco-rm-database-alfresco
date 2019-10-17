@@ -132,6 +132,10 @@ public interface DatabaseModel {
 
     // groups
     String GROUP_ALLOWEDTODELETE = "GROUP_site_retspsyk_ALLOWEDTODELETE";
+    String GROUP_TEMPLATEFOLDERVALUEMANAGER = "GROUP_site_retspsyk_TemplateFolderValueManager";
+    String GROUP_SITEROLEMANAGER = "GROUP_site_retspsyk_SiteRoleManager";
+    String GROUP_SITEPROPERTYVALUEMANAGER = "GROUP_site_retspsyk_SitePropertyValueManager";
+    String GROUP_SITEENTRYLOCKMANAGER = "GROUP_site_retspsyk_SiteEntryLockManager";
 
     String MONTHLY_REPORT_SPREADSHEET_NAME = "rapport.ods";
 
