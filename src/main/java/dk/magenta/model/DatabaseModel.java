@@ -103,7 +103,7 @@ public interface DatabaseModel {
     String PROP_VALUES = "propertyValues";
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
 
-    String PROP_DEFAULTDOCUMENTS_LIBRARY = "defaultDocuments";
+    String PROP_PSYCOLOGICALDOCUMENT = "Psyk test.odt";
 
     // template docs
     String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke";

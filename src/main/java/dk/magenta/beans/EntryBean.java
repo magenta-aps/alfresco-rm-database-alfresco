@@ -145,25 +145,6 @@ public class EntryBean {
             nodeService.addAspect(nodeRef, DatabaseModel.ASPECT_BUA,null);
         }
 
-        if (!bua) {
-            // add the default documents
-
-            nodeRef_templateFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_DEFAULTDOCUMENTS_LIBRARY);
-
-            children = nodeService.getChildAssocs(nodeRef_templateFolder);
-
-            i = children.iterator();
-
-            while (i.hasNext()) {
-
-                ChildAssociationRef child = (ChildAssociationRef)i.next();
-                try {
-                    fileFolderService.copy(child.getChildRef(), nodeRef, (String)nodeService.getProperty(child.getChildRef(), ContentModel.PROP_NAME));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
         return nodeRef;
     }
 
