@@ -46,6 +46,15 @@
 		<property name="nodeService" ref="NodeService"/>
 	</bean>
 
+	<bean id="webscript.entries.flowchart.get" class="dk.magenta.webscripts.entry.FlowChart" parent="webscript">
+		<property name="entryBean" ref="entryBean"/>
+		<property name="databaseBean" ref="databaseBean"/>
+		<property name="nodeService" ref="NodeService"/>
+		<property name="flowChartBean" ref="flowChartBean"/>
+		<property name="propertyValuesBean" ref="propertyValuesBean"/>
+		<property name="authenticationService" ref="authenticationService"/>
+	</bean>
+
 	<bean id="webscript.entries.waitinglist.get" class="dk.magenta.webscripts.entry.GetWaitingList" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 		<property name="databaseBean" ref="databaseBean"/>

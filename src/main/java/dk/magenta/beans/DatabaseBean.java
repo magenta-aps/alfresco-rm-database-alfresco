@@ -329,6 +329,8 @@ public class DatabaseBean {
 
     public String getType(String siteShortName) {
         SiteInfo site = siteService.getSite(siteShortName);
+        System.out.println("hvad er site");
+        System.out.println(site);
         NodeRef nodeRef = site.getNodeRef();
         Serializable databaseType = nodeService.getProperty(nodeRef, DatabaseModel.PROP_DATABASE_TYPE);
 

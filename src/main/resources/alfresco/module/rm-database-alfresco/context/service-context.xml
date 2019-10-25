@@ -45,6 +45,12 @@
         <property name="personService" ref="PersonService"/>
     </bean>
 
+    <bean id="flowChartBean" class="dk.magenta.beans.FlowChartBean">
+        <property name="searchService" ref="searchService"/>
+        <property name="databaseBean" ref="databaseBean"/>
+        <property name="entryBean" ref="entryBean"/>
+    </bean>
+
     <bean id="documentTemplateBean" class="dk.magenta.beans.DocumentTemplateBean">
         <property name="nodeService" ref="NodeService"/>
         <property name="contentService" ref="ContentService"/>
