@@ -91,20 +91,33 @@ public class FlowChart extends AbstractWebScript {
         JSONObject json = null;
         try {
 
+            System.out.println("hvad er c content");
+            System.out.println(c.getContent());
+
             json = new JSONObject(c.getContent());
             jsonProperties = JSONUtils.getObject(json, "properties");
             String method = jsonProperties.getString("method");
 
+
+            List<NodeRef> entries;
+
             switch (method) {
                 case "state":
-//                    nodeRef = nodeBean.getNodeByPath(OpenDeskModel.PATH_NODE_TEMPLATES);
+                    String state = jsonProperties.getString("state");
+                    entries = flowChartBean.getEntriesByStatus(siteShortName, state, defaultQuery);
+                    result.put("entries", flowChartBean.nodeRefsTOData(entries));
+                    result.put("total", entries.size());
+
                     break;
                 case "user":
-//                    nodeRef = nodeBean.getNodeByPath(OpenDeskModel.PATH_NODE_TEMPLATES);
+                    String user = jsonProperties.getString("user");
+                    entries = flowChartBean.getEntriesbyUser(user, siteShortName, defaultQuery);
+                    result.put("entries", flowChartBean.nodeRefsTOData(entries));
+                    result.put("total", entries.size());
                     break;
                 case "ongoing":
-                    List<NodeRef> entries = flowChartBean.getEntriesByOngoing(siteShortName, defaultQuery);
-                    result.put("entries", entries);
+                    entries = flowChartBean.getEntriesByOngoing(siteShortName, defaultQuery);
+                    result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
                 case "waitinglist":

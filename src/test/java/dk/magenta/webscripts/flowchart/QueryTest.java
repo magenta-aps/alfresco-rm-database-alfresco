@@ -1,9 +1,11 @@
-package dk.magenta.webscripts.users;
+package dk.magenta.webscripts.flowchart;
 
 import dk.magenta.Const;
 import dk.magenta.beans.EntryBean;
+import dk.magenta.webscripts.users.UserHelperTest;
 import org.alfresco.rad.test.AbstractAlfrescoIT;
 import org.alfresco.rad.test.AlfrescoTestRunner;
+import org.alfresco.repo.web.scripts.BaseWebScriptTest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -18,14 +20,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 
+import static org.alfresco.util.ApplicationContextHelper.getApplicationContext;
+
 /**
  * Created by flemmingheidepedersen on 18/05/2018.
  */
 
 @RunWith(value = AlfrescoTestRunner.class)
-public class ActivateUserTest extends AbstractAlfrescoIT {
+public class QueryTest extends AbstractAlfrescoIT {
 
-    private static Logger log = Logger.getLogger(ActivateUserTest.class);
+    private static Logger log = Logger.getLogger(QueryTest.class);
 
     private UserHelperTest helper = UserHelperTest.getInstance();
 
@@ -33,7 +37,9 @@ public class ActivateUserTest extends AbstractAlfrescoIT {
 
     private EntryBean entryBean = (EntryBean) appContext.getBean("entryBean");
 
-    public ActivateUserTest() {
+    private DataProducer dataProducer = new DataProducer();
+
+    public QueryTest() {
         super();
 
 
@@ -50,21 +56,17 @@ public class ActivateUserTest extends AbstractAlfrescoIT {
     }
 
     @Test
-    public void isGenericUserActivated() throws Exception {
+    public void testQueryTest() throws Exception {
 
-        try (CloseableHttpClient httpclient = HttpClientBuilder.create().setDefaultCredentialsProvider(helper.getProviderForRegularUser()).build()) {
+                System.out.println("entryBean");
+        System.out.println(entryBean);
 
-                HttpGet http = new HttpGet(Const.HOST + "/alfresco/s/isActivated?userName=" + Const.GENERIC_USERNAME);
+        dataProducer.wipeAllCases();
+        dataProducer.createDeclarationsForOngoingTest();
 
-                HttpResponse httpResponse = httpclient.execute(http);
-                String s = EntityUtils.toString(httpResponse.getEntity());
-
-                JSONObject returnJSON = new JSONObject(s);
-
-                Assert.assertTrue("Attribute member is present.", returnJSON.has("member"));
-                Assert.assertTrue("Member  equals true", "true".equals(returnJSON.getString("member")));
+                Assert.assertTrue("Attribute member is present.", true);
         }
-    }
+
 
 
 }

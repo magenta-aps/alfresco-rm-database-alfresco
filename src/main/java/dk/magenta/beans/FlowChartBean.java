@@ -65,7 +65,7 @@ public class FlowChartBean {
         query += " OR " + QueryUtils.getParametersQuery("psychologist", user, false);
         query += ")";
 
-        query += " AND ISUNSET:\"rm:closed\"";
+        query += " AND " + default_query;
 
         System.out.println("getEntriesbyUser query");
         System.out.println(query);
@@ -134,10 +134,11 @@ public class FlowChartBean {
 
         // atleast one assigned
 
-        query += " AND (" + QueryUtils.getParametersQuery("socialworker", "*", false);
-        query += " OR " + QueryUtils.getParametersQuery("doctor", "*", false);
-        query += " OR " + QueryUtils.getParametersQuery("psychologist", "*", false);
+        query += " AND (" + " (" + QueryUtils.getParametersQuery("socialworker", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("socialworker", true) + ") ";
+        query += " OR " + " (" + QueryUtils.getParametersQuery("doctor", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("doctor", true) + ") ";;
+        query += " OR " + " (" + QueryUtils.getParametersQuery("psychologist", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("psychologist", true) + ") ";;
         query += ")";
+
 
         // not closed
 
@@ -176,7 +177,7 @@ public class FlowChartBean {
         return nodeRefs;
     }
 
-    public List<NodeRef> getEntriesByStatus(String siteShortName, String[] status, boolean bua) {
+    public List<NodeRef> getEntriesByStatus(String siteShortName, String status, String default_query) {
 
         JSONObject o = new JSONObject();
 
@@ -188,20 +189,10 @@ public class FlowChartBean {
         query += " OR " + QueryUtils.getParametersQuery("psychologist", "*", false);
         query += ")";
 
-        query += " AND ISUNSET:\"rm:closed\"";
+        query += " AND " + default_query;
 
         String statusQuery = "AND ( ";
-
-        for (int i=0; i<= status.length-1; i++) {
-
-            String state = status[i];
-            if (statusQuery.equals("AND ( ")) {
-                statusQuery += QueryUtils.getParameterQuery("status", state, false);
-            }
-            else {
-                statusQuery += " OR " + QueryUtils.getParameterQuery("status", state, false);
-            }
-        }
+        statusQuery += QueryUtils.getParameterQuery("status", status, false);
         statusQuery += ") ";
 
         query += statusQuery;
@@ -249,9 +240,36 @@ public class FlowChartBean {
                 e.put("doctor", tmp.get("doctor"));
             }
 
+
+            if (tmp.has("node-uuid")) {
+                e.put("node_uuid", tmp.get("node-uuid"));
+            }
+
+
+
+            if (tmp.has("firstName")) {
+                e.put("firstName", tmp.get("firstName"));
+            }
+
+            if (tmp.has("lastName")) {
+                e.put("lastName", tmp.get("lastName"));
+            }
+
             if (tmp.has("closed")) {
                 e.put("closed", tmp.get("closed"));
             }
+
+            if (tmp.has("mainCharge")) {
+                e.put("mainCharge", tmp.get("mainCharge"));
+            }
+
+            if (tmp.has("status")) {
+                e.put("status", tmp.get("status"));
+            }
+
+
+
+
 
             if (tmp.has("declarationDate")) {
                 e.put("declarationDate", tmp.get("declarationDate"));

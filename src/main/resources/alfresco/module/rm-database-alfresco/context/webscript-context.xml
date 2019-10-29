@@ -46,7 +46,7 @@
 		<property name="nodeService" ref="NodeService"/>
 	</bean>
 
-	<bean id="webscript.entries.flowchart.get" class="dk.magenta.webscripts.entry.FlowChart" parent="webscript">
+	<bean id="webscript.entries.flowchart.post" class="dk.magenta.webscripts.entry.FlowChart" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 		<property name="databaseBean" ref="databaseBean"/>
 		<property name="nodeService" ref="NodeService"/>
