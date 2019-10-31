@@ -20,10 +20,10 @@ public class QueryUtils {
     public static String getParametersQueryNullValue (String paramKey, boolean not) {
 
         if (not) {
-            return "!@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + "NULL" + "\"";
+            return "!@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + "null" + "\"";
         }
         else {
-            return "@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + "NULL" + "\"";
+            return "@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + "null" + "\"";
         }
     }
 

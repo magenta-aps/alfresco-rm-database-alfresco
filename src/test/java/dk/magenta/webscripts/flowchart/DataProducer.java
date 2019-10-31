@@ -10,6 +10,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.rad.test.AbstractAlfrescoIT;
 import org.alfresco.rad.test.AlfrescoTestRunner;
 import org.alfresco.repo.web.scripts.BaseWebScriptTest;
+import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -38,6 +39,7 @@ import javax.xml.soap.Node;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static org.alfresco.util.ApplicationContextHelper.getApplicationContext;
 
@@ -53,43 +55,29 @@ public class DataProducer extends AbstractAlfrescoIT {
 
     private EntryBean entryBean = (EntryBean) appContext.getBean("entryBean");
     private SiteService siteService = (SiteService) appContext.getBean("siteService");
+    private LockService lockService = (LockService) appContext.getBean("lockService");
     private NodeService nodeService = (NodeService) appContext.getBean("nodeService");
     private PropertyValuesBean propertyValuesBean = (PropertyValuesBean) appContext.getBean("propertyValuesBean");
 
-    public DataProducer() {
+    private List<String> femaleNames = new ArrayList<>();
+    private List<String> maleNames = new ArrayList<>();
+    private Map<Boolean, List<String>> firstNames = new HashMap<>();
+    private List<String> lastname = new ArrayList<>();
+    private JSONObject result;
+
+    private org.json.JSONArray ethnicity;
+    private org.json.JSONArray referingAgency;
+    private org.json.JSONArray mainCharge;
+    private org.json.JSONArray placement;
+    private org.json.JSONArray sanctionProposal;
+    private org.json.JSONArray diagnosis;
+    private org.json.JSONArray finalVerdict;
+    private org.json.JSONArray status;
+    private org.json.JSONArray noDeclarationReason;
+
+    public DataProducer() throws JSONException {
         super();
 
-
-
-    }
-
-
-    private void removeAspect(NodeRef child) {
-
-        List<ChildAssociationRef> children = nodeService.getChildAssocs(child);
-
-        System.out.println("hvad er children");
-        System.out.println(children);
-
-        if (children.size() == 0) {
-            nodeService.removeAspect(child, ContentModel.ASPECT_LOCKABLE);
-        }
-        else {
-            for (int i = 0; i <= children.size()-1;i++) {
-                NodeRef subChild = children.get(i).getChildRef();
-                removeAspect(subChild);
-            }
-        }
-    }
-
-
-    private void createDeclarations(int number, String state, String doctor, String psychologist, String socialworker  ) {
-
-        JSONObject jsonProperties = new JSONObject();
-
-        Random r = new Random();
-
-        List<String> femaleNames = new ArrayList<>();
         femaleNames.add("Mathilde");
         femaleNames.add("Clara");
         femaleNames.add("Mona");
@@ -100,7 +88,7 @@ public class DataProducer extends AbstractAlfrescoIT {
         femaleNames.add("Lykke");
         femaleNames.add("Majbrit");
 
-        List<String> maleNames = new ArrayList<>();
+
         maleNames.add("Jens");
         maleNames.add("Kurt");
         maleNames.add("Mathias");
@@ -111,11 +99,11 @@ public class DataProducer extends AbstractAlfrescoIT {
         maleNames.add("Niels");
         maleNames.add("Jan");
 
-        Map<Boolean, List<String>> firstNames = new HashMap<>();
+
         firstNames.put(true, maleNames);
         firstNames.put(false, femaleNames);
 
-        List<String> lastname = new ArrayList<>();
+
         lastname.add("Eskildsen");
         lastname.add("Fischer");
         lastname.add("Vestergaard");
@@ -129,24 +117,55 @@ public class DataProducer extends AbstractAlfrescoIT {
         lastname.add("Østergaard");
         lastname.add("Holm");
 
-        JSONObject result;
+
         result = propertyValuesBean.getPropertyValues(DatabaseModel.TYPE_PSYC_SITENAME);
 
+
+
+        ethnicity = result.getJSONArray("ethnicity");
+        referingAgency = result.getJSONArray("referingAgency");
+        mainCharge = result.getJSONArray("mainCharge");
+        placement = result.getJSONArray("placement");
+        sanctionProposal = result.getJSONArray("sanctionProposal");
+        diagnosis = result.getJSONArray("diagnosis");
+        finalVerdict = result.getJSONArray("finalVerdict");
+        status = result.getJSONArray("status");
+        noDeclarationReason = result.getJSONArray("noDeclarationReason");
+
+
+
+
+    }
+
+
+    private void unlock(NodeRef child) {
+        List<ChildAssociationRef> children = nodeService.getChildAssocs(child);
+
+        if (children.size() == 0) {
+
+            if (lockService.isLocked(child)) {
+                lockService.unlock(child);
+            }
+        }
+        else {
+            for (int i = 0; i <= children.size()-1;i++) {
+                NodeRef subChild = children.get(i).getChildRef();
+                unlock(subChild);
+            }
+        }
+    }
+
+
+    private List<NodeRef> createDeclarations(int number, String state, String doctor, String psychologist, String socialworker ) {
+        List<NodeRef> returnlist = new ArrayList<>();
+
+        JSONObject jsonProperties = new JSONObject();
+
+        Random r = new Random();
 
         for (int i = 1; i <= number; i++) {
 
             try {
-
-                org.json.JSONArray ethnicity = result.getJSONArray("ethnicity");
-                org.json.JSONArray referingAgency = result.getJSONArray("referingAgency");
-                org.json.JSONArray mainCharge = result.getJSONArray("mainCharge");
-                org.json.JSONArray placement = result.getJSONArray("placement");
-                org.json.JSONArray sanctionProposal = result.getJSONArray("sanctionProposal");
-                org.json.JSONArray diagnosis = result.getJSONArray("diagnosis");
-                org.json.JSONArray finalVerdict = result.getJSONArray("finalVerdict");
-                org.json.JSONArray status = result.getJSONArray("status");
-                org.json.JSONArray noDeclarationReason = result.getJSONArray("noDeclarationReason");
-
 
                 boolean isMale = r.nextBoolean();
                 jsonProperties.put("cprNumber", getRandomCPRString(isMale));
@@ -178,18 +197,19 @@ public class DataProducer extends AbstractAlfrescoIT {
                 jsonProperties.put("mainDiagnosis", diagnosis.get(r.nextInt(1000)));
                 jsonProperties.put("biDiagnoses", "[\"" + diagnosis.get(r.nextInt(1000)) + "\"]");
                 jsonProperties.put("biDiagnoses", "[\"" + diagnosis.get(r.nextInt(1000)) + "\"]");
-                System.out.println(jsonProperties);
+
 
                 Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
                 NodeRef nodeRef = entryBean.addEntry(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.TYPE_PSYC_DEC, properties, false);
 
+                returnlist.add(nodeRef);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-
+        return returnlist;
     }
 
     private String getRandomCPRString(boolean isMale) {
@@ -235,12 +255,7 @@ public class DataProducer extends AbstractAlfrescoIT {
     }
 
 
-
-    public void createDeclarationsForOngoingTest() {
-
-        // I området ”Igangværende” findes de sager som har fået tildelt enten en psykolog, læge eller socialrådgiver, og som ikke har Status enten Ambulant/Arrestant,
-        // Ambulant/Surrogatbehandling, Indlagt til observation, eller Status der begynder med ”GR-”
-
+    public void createDeclarationsForStateArrestanterTest() throws JSONException, InterruptedException {
 
         // negative hits
 
@@ -248,16 +263,82 @@ public class DataProducer extends AbstractAlfrescoIT {
         this.createDeclarations(10, "Gr-afsoner", "", "Dam, Iris Billeskov", "");
         this.createDeclarations(10, "Gr-afsoner", "", "", "Hansen, Anne Marie");
 
-        this.createDeclarations(10, "Ambulant/Surrogatbehandling", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+        this.createDeclarations(10, "Indlagt til observation", "", "Dam, Iris Billeskov", "");
+
+        this.createDeclarations(10, "Benådningssag", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+
+        List<NodeRef> closed = this.createDeclarations(15, "Ambulant/Arrestant", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("closed","true");
+
+        Map<QName, Serializable> properties = JSONUtils.getMap(jsonObject);
+
+        Iterator i = closed.iterator();
+
+        while (i.hasNext()) {
+            NodeRef nodeRef = (NodeRef)i.next();
+            entryBean.updateEntry(nodeRef,properties);
+        }
+
+        // postive hits
+
+        this.createDeclarations(10, "Ambulant/Arrestant", "", "", "Hansen, Anne Marie");
+        this.createDeclarations(10, "Ambulant/surrogatanbragt", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+
+
+        System.out.println("sleep");
+        TimeUnit.SECONDS.sleep(2); // make sure the solr indexed the new declaration
+        System.out.println("wake up");
+
+    }
+
+    public void createDeclarationsForOngoingTest() throws JSONException {
+
+        // I området ”Igangværende” findes de sager som har fået tildelt enten en psykolog, læge eller socialrådgiver, og som ikke har Status enten Ambulant/Arrestant,
+        // Ambulant/Surrogatbehandling, Indlagt til observation, eller Status der begynder med ”GR-”
+
+        // negative hits
+
+        this.createDeclarations(10, "Gr-afsoner", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+        this.createDeclarations(10, "Gr-afsoner", "", "Dam, Iris Billeskov", "");
+        this.createDeclarations(10, "Gr-afsoner", "", "", "Hansen, Anne Marie");
+
+        this.createDeclarations(10, "Ambulant/surrogatanbragt", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
         this.createDeclarations(10, "Indlagt til observation", "", "Dam, Iris Billeskov", "");
         this.createDeclarations(10, "Ambulant/Arrestant", "", "", "Hansen, Anne Marie");
 
-        this.createDeclarations(10, "Ambulant/Surrogatbehandling", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "Dam, Iris Billeskov", "");
+        this.createDeclarations(10, "Ambulant/surrogatanbragt", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "Dam, Iris Billeskov", "");
         this.createDeclarations(10, "Indlagt til observation", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "Dam, Iris Billeskov", "");
-        this.createDeclarations(10, "Ambulant/Arrestant", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "Dam, Iris Billeskov", "Hansen, Anne Marie");
+        this.createDeclarations(10, "Ambulant/arrestant", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "Dam, Iris Billeskov", "Hansen, Anne Marie");
+
+        List<NodeRef> closed = this.createDeclarations(5, "Ambulant", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("closed","true");
+
+        Map<QName, Serializable> properties = JSONUtils.getMap(jsonObject);
+
+        Iterator i = closed.iterator();
+
+        while (i.hasNext()) {
+            NodeRef nodeRef = (NodeRef)i.next();
+            entryBean.updateEntry(nodeRef,properties);
+        }
 
 
         // positive hits
+
+        this.createDeclarations(10, "Ambulant", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+        this.createDeclarations(10, "Afsoner", "", "Dam, Iris Billeskov", "");
+        this.createDeclarations(10, "Torturundersøgelse", "", "", "Hansen, Anne Marie");
+
+        this.createDeclarations(10, "Benådningssag", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+        this.createDeclarations(10, "Ambulant", "", "Dam, Iris Billeskov", "");
+        this.createDeclarations(10, "Torturundersøgelse", "", "Dam, Iris Billeskov", "Hansen, Anne Marie");
+
 
 
 
@@ -321,10 +402,6 @@ public class DataProducer extends AbstractAlfrescoIT {
     public void createDeclarations () {
 
 
-
-
-
-
         String[] status = new String[4];
         status[0] = "Ambulant/arrestant";
         status[1] = "Ambulant/surrogatanbragt";
@@ -368,29 +445,19 @@ public class DataProducer extends AbstractAlfrescoIT {
 
     public void wipeAllCases()  {
 
-        System.out.println("entryBean");
-        System.out.println(entryBean);
-
-
         NodeRef docLibRef = siteService.getContainer("retspsyk", SiteService.DOCUMENT_LIBRARY);
 
         // reset counter
         nodeService.setProperty(docLibRef, ContentModel.PROP_COUNTER, 0);
 
-        this.removeAspect(docLibRef);
+        this.unlock(docLibRef);
 
         List<ChildAssociationRef> children = nodeService.getChildAssocs(docLibRef);
-
-        System.out.println("hvad er children");
-        System.out.println(children);
 
         for (int i = 0; i <= children.size()-1;i++) {
             NodeRef subChild = children.get(i).getChildRef();
             nodeService.deleteNode(subChild);
         }
-
-
-
     }
 
 

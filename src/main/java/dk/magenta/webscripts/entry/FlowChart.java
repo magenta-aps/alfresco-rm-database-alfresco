@@ -102,9 +102,8 @@ public class FlowChart extends AbstractWebScript {
             List<NodeRef> entries;
 
             switch (method) {
-                case "state":
-                    String state = jsonProperties.getString("state");
-                    entries = flowChartBean.getEntriesByStatus(siteShortName, state, defaultQuery);
+                case "arrestanter":
+                    entries = flowChartBean.getEntriesByArrestanter(siteShortName, defaultQuery);
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
 

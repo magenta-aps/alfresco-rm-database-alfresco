@@ -136,7 +136,7 @@ public class FlowChartBean {
 
         query += " AND (" + " (" + QueryUtils.getParametersQuery("socialworker", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("socialworker", true) + ") ";
         query += " OR " + " (" + QueryUtils.getParametersQuery("doctor", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("doctor", true) + ") ";;
-        query += " OR " + " (" + QueryUtils.getParametersQuery("psychologist", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("psychologist½", true) + ") ";;
+        query += " OR " + " (" + QueryUtils.getParametersQuery("psychologist", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("psychologist", true) + ") ";;
         query += ")";
 
 
@@ -177,7 +177,7 @@ public class FlowChartBean {
         return nodeRefs;
     }
 
-    public List<NodeRef> getEntriesByStatus(String siteShortName, String status, String default_query) {
+    public List<NodeRef> getEntriesByArrestanter(String siteShortName, String default_query) {
 
         JSONObject o = new JSONObject();
 
@@ -191,8 +191,22 @@ public class FlowChartBean {
 
         query += " AND " + default_query;
 
-        String statusQuery = "AND ( ";
-        statusQuery += QueryUtils.getParameterQuery("status", status, false);
+        String[] status = new String[2];
+        status[0] = "Ambulant/arrestant";
+        status[1] = "Ambulant/surrogatanbragt";
+
+        String statusQuery = " AND ( ";
+
+        for (int i=0; i<= status.length-1; i++) {
+
+            String state = status[i];
+            if (statusQuery.equals(" AND ( ")) {
+                statusQuery += QueryUtils.getParameterQuery("status", state, false);
+            }
+            else {
+                statusQuery += " OR " + QueryUtils.getParameterQuery("status", state, false);
+            }
+        }
         statusQuery += ") ";
 
         query += statusQuery;
@@ -201,12 +215,6 @@ public class FlowChartBean {
         System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
-
-        System.out.println("resultat fra getentriesbyuser");
-
-        for (int i=0; i <= nodeRefs.size()-1;i++) {
-            System.out.println(nodeRefs.get(0));
-        }
 
         return nodeRefs;
     }
