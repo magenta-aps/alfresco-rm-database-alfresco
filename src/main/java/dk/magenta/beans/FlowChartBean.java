@@ -136,7 +136,7 @@ public class FlowChartBean {
 
         query += " AND (" + " (" + QueryUtils.getParametersQuery("socialworker", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("socialworker", true) + ") ";
         query += " OR " + " (" + QueryUtils.getParametersQuery("doctor", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("doctor", true) + ") ";;
-        query += " OR " + " (" + QueryUtils.getParametersQuery("psychologist", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("psychologist", true) + ") ";;
+        query += " OR " + " (" + QueryUtils.getParametersQuery("psychologist", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("psychologist½", true) + ") ";;
         query += ")";
 
 

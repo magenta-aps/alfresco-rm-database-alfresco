@@ -244,7 +244,17 @@ public class DataProducer extends AbstractAlfrescoIT {
 
         // negative hits
 
-        this.createDeclarations(10, "Gr-afsoner", "", "", "");
+        this.createDeclarations(10, "Gr-afsoner", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+        this.createDeclarations(10, "Gr-afsoner", "", "Dam, Iris Billeskov", "");
+        this.createDeclarations(10, "Gr-afsoner", "", "", "Hansen, Anne Marie");
+
+        this.createDeclarations(10, "Ambulant/Surrogatbehandling", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+        this.createDeclarations(10, "Indlagt til observation", "", "Dam, Iris Billeskov", "");
+        this.createDeclarations(10, "Ambulant/Arrestant", "", "", "Hansen, Anne Marie");
+
+        this.createDeclarations(10, "Ambulant/Surrogatbehandling", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "Dam, Iris Billeskov", "");
+        this.createDeclarations(10, "Indlagt til observation", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "Dam, Iris Billeskov", "");
+        this.createDeclarations(10, "Ambulant/Arrestant", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "Dam, Iris Billeskov", "Hansen, Anne Marie");
 
 
         // positive hits
