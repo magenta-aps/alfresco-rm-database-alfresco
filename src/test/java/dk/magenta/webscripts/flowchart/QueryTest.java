@@ -53,6 +53,7 @@ public class QueryTest extends AbstractAlfrescoIT {
     private EntryBean entryBean = (EntryBean) appContext.getBean("entryBean");
 
     private DataProducer dataProducer = new DataProducer();
+    private DataProducerHelper dataProducerHelper = new DataProducerHelper();
 
     public QueryTest() throws JSONException {
         super();
@@ -107,11 +108,45 @@ public class QueryTest extends AbstractAlfrescoIT {
 //        }
 //    }
 
-    @Test
-    public void ArrestantStateTest() throws Exception {
+//    @Test
+//    public void ArrestantStateTest() throws Exception {
+//
+//        dataProducerHelper.wipeAllCases();
+//        dataProducer.createDeclarationsForStateArrestanterTest();
+//
+//        JSONObject properties = new JSONObject();
+//        properties.put("method", "arrestanter");
+//
+//        JSONObject data = new JSONObject();
+//
+//        data.put("properties", properties);
+//
+//        // Execute Web Script call
+//        try (CloseableHttpClient httpclient = HttpClientBuilder.create()
+//                .setDefaultCredentialsProvider(provider)
+//                .build()) {
+//
+//            HttpPost http = new HttpPost("http://localhost:8080/alfresco/service/database/retspsyk/flowchart");
+//
+//            StringEntity se = new StringEntity(data.toString());
+//            se.setContentType(new BasicHeader("Content-type", "application/json"));
+//            http.setEntity(se);
+//
+//            HttpResponse httpResponse = httpclient.execute(http);
+//
+//            String s = EntityUtils.toString(httpResponse.getEntity());
+//
+//            JSONObject result = new JSONObject(s);
+//
+//            Assert.assertTrue("Assert total is equal to 20" + " result was : " + result.getString("total"), result.getString("total").equals("20"));
+//        }
+//    }
 
-        dataProducer.wipeAllCases();
-        dataProducer.createDeclarationsForStateArrestanterTest();
+    @Test
+    public void ObservationStateTest() throws Exception {
+
+        dataProducerHelper.wipeAllCases();
+        dataProducer.createDeclarationsForStateIndlagtObservationTest();
 
         JSONObject properties = new JSONObject();
         properties.put("method", "arrestanter");

@@ -103,10 +103,14 @@ public class FlowChart extends AbstractWebScript {
 
             switch (method) {
                 case "arrestanter":
-                    entries = flowChartBean.getEntriesByArrestanter(siteShortName, defaultQuery);
+                    entries = flowChartBean.getEntriesByStateArrestanter(siteShortName, defaultQuery);
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
-
+                    break;
+                case "observation":
+                    entries = flowChartBean.getEntriesByStateObservation(siteShortName, defaultQuery);
+                    result.put("entries", flowChartBean.nodeRefsTOData(entries));
+                    result.put("total", entries.size());
                     break;
                 case "user":
                     String user = jsonProperties.getString("user");
@@ -115,7 +119,7 @@ public class FlowChart extends AbstractWebScript {
                     result.put("total", entries.size());
                     break;
                 case "ongoing":
-                    entries = flowChartBean.getEntriesByOngoing(siteShortName, defaultQuery);
+                    entries = flowChartBean.getEntriesByIgangvaerende(siteShortName, defaultQuery);
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;

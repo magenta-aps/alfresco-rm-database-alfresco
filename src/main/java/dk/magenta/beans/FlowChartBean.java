@@ -125,7 +125,7 @@ public class FlowChartBean {
         return nodeRefs;
     }
 
-    public List<NodeRef> getEntriesByOngoing(String siteShortName, String default_query) {
+    public List<NodeRef> getEntriesByIgangvaerende(String siteShortName, String default_query) {
 
         JSONObject o = new JSONObject();
 
@@ -177,17 +177,12 @@ public class FlowChartBean {
         return nodeRefs;
     }
 
-    public List<NodeRef> getEntriesByArrestanter(String siteShortName, String default_query) {
+    public List<NodeRef> getEntriesByStateArrestanter(String siteShortName, String default_query) {
 
         JSONObject o = new JSONObject();
 
         String type = databaseBean.getType(siteShortName);
         String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
-
-        query += " AND (" + QueryUtils.getParametersQuery("socialworker", "*", false);
-        query += " OR " + QueryUtils.getParametersQuery("doctor", "*", false);
-        query += " OR " + QueryUtils.getParametersQuery("psychologist", "*", false);
-        query += ")";
 
         query += " AND " + default_query;
 
@@ -212,6 +207,42 @@ public class FlowChartBean {
         query += statusQuery;
 
         System.out.println("getEntriesByStatus query");
+        System.out.println(query);
+
+        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
+
+        return nodeRefs;
+    }
+
+    public List<NodeRef> getEntriesByStateObservation(String siteShortName, String default_query) {
+
+        JSONObject o = new JSONObject();
+
+        String type = databaseBean.getType(siteShortName);
+        String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
+
+        query += " AND " + default_query;
+
+        String[] status = new String[2];
+        status[0] = "Indlagt til observation";
+
+        String statusQuery = " AND ( ";
+
+        for (int i=0; i<= status.length-1; i++) {
+
+            String state = status[i];
+            if (statusQuery.equals(" AND ( ")) {
+                statusQuery += QueryUtils.getParameterQuery("status", state, false);
+            }
+            else {
+                statusQuery += " OR " + QueryUtils.getParameterQuery("status", state, false);
+            }
+        }
+        statusQuery += ") ";
+
+        query += statusQuery;
+
+        System.out.println("getEntriesByStateObservation query");
         System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
