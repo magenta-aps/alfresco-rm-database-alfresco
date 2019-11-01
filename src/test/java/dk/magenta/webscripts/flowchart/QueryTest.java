@@ -45,15 +45,13 @@ public class QueryTest extends AbstractAlfrescoIT {
 
     private static Logger log = Logger.getLogger(QueryTest.class);
 
-    private UserHelperTest helper = UserHelperTest.getInstance();
-
     private CredentialsProvider provider = new BasicCredentialsProvider();
     public ApplicationContext appContext = getApplicationContext();
 
     private EntryBean entryBean = (EntryBean) appContext.getBean("entryBean");
 
-    private DataProducer dataProducer = new DataProducer();
-    private DataProducerHelper dataProducerHelper = new DataProducerHelper();
+    private DataProducer dataProducer;
+    private DataProducerHelper dataProducerHelper;
 
     public QueryTest() throws JSONException {
         super();
@@ -67,6 +65,9 @@ public class QueryTest extends AbstractAlfrescoIT {
         // Login credentials for Alfresco Repo
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("admin", "admin");
         provider.setCredentials(AuthScope.ANY, credentials);
+
+        this.dataProducer = new DataProducer();
+        this.dataProducerHelper = new DataProducerHelper();
 
     }
 
@@ -146,10 +147,10 @@ public class QueryTest extends AbstractAlfrescoIT {
     public void ObservationStateTest() throws Exception {
 
         dataProducerHelper.wipeAllCases();
-        dataProducer.createDeclarationsForStateIndlagtObservationTest();
+        dataProducer.createDeclarationsForStateArrestanterTest();
 
         JSONObject properties = new JSONObject();
-        properties.put("method", "arrestanter");
+        properties.put("method", "observation");
 
         JSONObject data = new JSONObject();
 
@@ -172,7 +173,7 @@ public class QueryTest extends AbstractAlfrescoIT {
 
             JSONObject result = new JSONObject(s);
 
-            Assert.assertTrue("Assert total is equal to 20" + " result was : " + result.getString("total"), result.getString("total").equals("20"));
+            Assert.assertTrue("Assert total is equal to 13" + " result was : " + result.getString("total"), result.getString("total").equals("13"));
         }
     }
 }

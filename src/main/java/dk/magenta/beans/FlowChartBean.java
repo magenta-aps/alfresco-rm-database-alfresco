@@ -223,21 +223,12 @@ public class FlowChartBean {
 
         query += " AND " + default_query;
 
-        String[] status = new String[2];
-        status[0] = "Indlagt til observation";
+
+        String state = "Indlagt til observation";
+
 
         String statusQuery = " AND ( ";
-
-        for (int i=0; i<= status.length-1; i++) {
-
-            String state = status[i];
-            if (statusQuery.equals(" AND ( ")) {
-                statusQuery += QueryUtils.getParameterQuery("status", state, false);
-            }
-            else {
-                statusQuery += " OR " + QueryUtils.getParameterQuery("status", state, false);
-            }
-        }
+        statusQuery += QueryUtils.getParameterQuery("status", state, false);
         statusQuery += ") ";
 
         query += statusQuery;
