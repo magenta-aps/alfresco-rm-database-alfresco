@@ -36,6 +36,17 @@ public interface DatabaseModel {
     QName PROP_PLACEMENT = QName.createQName(RM_MODEL_URI, "placement");
     QName PROP_SANCTION_PROPOSAL = QName.createQName(RM_MODEL_URI, "sanctionProposal");
 
+
+    /* Fields from flowchart */
+    QName PROP_FLOW_ARREST = QName.createQName(RM_MODEL_URI, "arrest");
+    QName PROP_FLOW_PSYKOLOGFOKUS = QName.createQName(RM_MODEL_URI, "psykologfokus");
+    QName PROP_FLOW_SAMTYKKEOPL = QName.createQName(RM_MODEL_URI, "samtykkeopl");
+    QName PROP_FLOW_TOLKSPROG = QName.createQName(RM_MODEL_URI, "tolksprog");
+    QName PROP_FLOW_KOMMENTAR = QName.createQName(RM_MODEL_URI, "kommentar");
+    QName PROP_FLOW_FRITIDVED = QName.createQName(RM_MODEL_URI, "fritidved");
+    QName PROP_FLOW_KVALITETSKONTROL = QName.createQName(RM_MODEL_URI, "kvalitetskontrol");
+
+
     /* History */
     QName PROP_CREATION_DATE = QName.createQName(RM_MODEL_URI, "creationDate");
     QName PROP_OBSERVATION_DATE = QName.createQName(RM_MODEL_URI, "observationDate");
@@ -92,6 +103,7 @@ public interface DatabaseModel {
     /* Aspects */
     QName ASPECT_BUA = QName.createQName(RM_MODEL_URI, "bua");
     QName ASPECT_STAT = QName.createQName(RM_MODEL_URI, "stat");
+    QName ASPECT_FLOWCHART = QName.createQName(RM_MODEL_URI, "flowchart");
 
     // Prop Strings
     String NAME = "name";

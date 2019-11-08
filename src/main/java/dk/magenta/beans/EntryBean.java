@@ -236,6 +236,13 @@ public class EntryBean {
     }
 
     public void updateEntry (NodeRef entryRef, Map<QName, Serializable> properties) throws JSONException {
+
+
+
+        if (!nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_FLOWCHART)) {
+            nodeService.addAspect(entryRef, DatabaseModel.ASPECT_FLOWCHART, null);
+        }
+
         for (Map.Entry<QName, Serializable> property : properties.entrySet())
             nodeService.setProperty(entryRef, property.getKey(), property.getValue());
 

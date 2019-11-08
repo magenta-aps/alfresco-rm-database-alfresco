@@ -114,7 +114,7 @@ public class DataProducer extends AbstractAlfrescoIT {
 
 
         System.out.println("sleep");
-        TimeUnit.SECONDS.sleep(20); // make sure the solr indexed the new declaration
+        TimeUnit.SECONDS.sleep(40); // make sure the solr indexed the new declaration
         System.out.println("wake up");
 
     }
@@ -162,7 +162,7 @@ public class DataProducer extends AbstractAlfrescoIT {
 
     }
 
-    public void createDeclarationsForOngoingTest() throws JSONException {
+    public void createDeclarationsForOngoingTest() throws JSONException, InterruptedException {
 
         // I området ”Igangværende” findes de sager som har fået tildelt enten en psykolog, læge eller socialrådgiver, og som ikke har Status enten Ambulant/Arrestant,
         // Ambulant/Surrogatbehandling, Indlagt til observation, eller Status der begynder med ”GR-”
@@ -264,8 +264,14 @@ public class DataProducer extends AbstractAlfrescoIT {
 //        2: "Sand, Mette"
 
 
+        System.out.println("sleep");
+        TimeUnit.SECONDS.sleep(20); // make sure the solr indexed the new declaration
+        System.out.println("wake up");
+
 
     }
+
+
 
 
 

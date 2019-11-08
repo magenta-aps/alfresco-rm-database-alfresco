@@ -332,10 +332,14 @@ public class DatabaseBean {
         System.out.println("hvad er site");
         System.out.println(site);
         NodeRef nodeRef = site.getNodeRef();
+        System.out.println("hvad er nodeRef");
+        System.out.println("before getproperty");;
         Serializable databaseType = nodeService.getProperty(nodeRef, DatabaseModel.PROP_DATABASE_TYPE);
-
-        if(databaseType == null)
+        System.out.println("after property");
+        if(databaseType == null) {
+            System.out.println("the siteshortname is not a database");
             throw new IllegalArgumentException("The site '" + siteShortName + "' is not a database.");
+        }
 
         return databaseType.toString();
     }

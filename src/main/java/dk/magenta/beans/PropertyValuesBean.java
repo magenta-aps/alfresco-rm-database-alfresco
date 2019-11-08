@@ -112,6 +112,7 @@ public class PropertyValuesBean {
         JSONObject values = propertyValuesMap.get("retspsyk");
 
 
+
         JSONArray secretaries = values.getJSONArray("secretary");
         for (int i=0; i<= secretaries.length()-1; i++) {
 
@@ -149,6 +150,10 @@ public class PropertyValuesBean {
         for (int i=0; i<= doctor.length()-1; i++) {
 
             String s = doctor.getString(i);
+            System.out.println("s");
+            System.out.println(s);
+            System.out.println("s.contains(userName");
+            System.out.println(s.contains(userName));
 
             if (s.contains(userName)) {
                 s = s.replace("(" + userName +")","").trim();

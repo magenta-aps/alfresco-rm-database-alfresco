@@ -72,9 +72,6 @@ public class FlowChart extends AbstractWebScript {
 
         Map<String, String> templateArgs = req.getServiceMatch().getTemplateVars();
 
-        System.out.println("templateArgs");
-        System.out.println(templateArgs);
-
         res.setContentEncoding("UTF-8");
         Content c = req.getContent();
         JSONObject result = new JSONObject();
@@ -101,6 +98,8 @@ public class FlowChart extends AbstractWebScript {
 
             List<NodeRef> entries;
 
+            String userName;
+
             switch (method) {
                 case "arrestanter":
                     entries = flowChartBean.getEntriesByStateArrestanter(siteShortName, defaultQuery);
@@ -112,9 +111,14 @@ public class FlowChart extends AbstractWebScript {
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
+                case "ventendegr":
+                    entries = flowChartBean.getEntriesByStateObservation(siteShortName, defaultQuery);
+                    result.put("entries", flowChartBean.nodeRefsTOData(entries));
+                    result.put("total", entries.size());
+                    break;
                 case "user":
-                    String user = jsonProperties.getString("user");
-                    entries = flowChartBean.getEntriesbyUser(user, siteShortName, defaultQuery);
+                    userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
+                    entries = flowChartBean.getEntriesbyUser(userName, siteShortName, defaultQuery);
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
@@ -124,7 +128,16 @@ public class FlowChart extends AbstractWebScript {
                     result.put("total", entries.size());
                     break;
                 case "waitinglist":
-//                    nodeRef = nodeBean.getNodeByPath(OpenDeskModel.PATH_TEXT_TEMPLATES);
+                    entries = flowChartBean.getWaitingList(siteShortName);
+                    result.put("entries", flowChartBean.nodeRefsTOData(entries));
+                    result.put("total", entries.size());
+                    break;
+                case "total":
+
+                    userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
+                    System.out.println("hvad er username");
+                    System.out.println(userName);
+                    result = flowChartBean.getTotals(siteShortName, defaultQuery, userName);
                     break;
             }
 
@@ -132,6 +145,9 @@ public class FlowChart extends AbstractWebScript {
 
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        catch (Exception e) {
+            System.out.println(e);
         }
 
         Writer webScriptWriter = res.getWriter();

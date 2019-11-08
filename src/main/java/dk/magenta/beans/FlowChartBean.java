@@ -216,13 +216,17 @@ public class FlowChartBean {
 
     public List<NodeRef> getEntriesByStateObservation(String siteShortName, String default_query) {
 
+        System.out.println("doing observationsquery");
+
         JSONObject o = new JSONObject();
 
         String type = databaseBean.getType(siteShortName);
+        System.out.println("done type");
         String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
 
         query += " AND " + default_query;
 
+        System.out.println("after default query");
 
         String state = "Indlagt til observation";
 
@@ -240,6 +244,39 @@ public class FlowChartBean {
 
         return nodeRefs;
     }
+
+    public List<NodeRef> getEntriesByStateVentedeGR(String siteShortName, String default_query) {
+
+        System.out.println("doing ventedegr");
+
+        JSONObject o = new JSONObject();
+
+        String type = databaseBean.getType(siteShortName);
+        System.out.println("done type");
+        String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
+
+        query += " AND " + default_query;
+
+        System.out.println("after default query");
+
+        String state = "Gr-*";
+
+
+        String statusQuery = " AND ( ";
+        statusQuery += QueryUtils.getParameterQuery("status", state, false);
+        statusQuery += ") ";
+
+        query += statusQuery;
+
+        System.out.println("getEntriesByStateventedegr query");
+        System.out.println(query);
+
+        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
+
+        return nodeRefs;
+    }
+
+
 
 
     public JSONArray nodeRefsTOData(List<NodeRef> nodeRefs) throws JSONException {
@@ -270,6 +307,14 @@ public class FlowChartBean {
                 e.put("doctor", tmp.get("doctor"));
             }
 
+            if (tmp.has("psychologist") && !tmp.get("psychologist").equals("null")) {
+                e.put("psychologist", tmp.get("psychologist"));
+            }
+
+            if (tmp.has("socialworker") && !tmp.get("socialworker").equals("null")) {
+                e.put("socialworker", tmp.get("socialworker"));
+            }
+
 
             if (tmp.has("node-uuid")) {
                 e.put("node_uuid", tmp.get("node-uuid"));
@@ -298,6 +343,33 @@ public class FlowChartBean {
             }
 
 
+            if (tmp.has("kommentar")) {
+                e.put("kommentar", tmp.get("kommentar"));
+            }
+
+            if (tmp.has("samtykkeopl")) {
+                e.put("samtykkeopl", tmp.get("samtykkeopl"));
+            }
+
+            if (tmp.has("tolksprog")) {
+                e.put("tolksprog", tmp.get("tolksprog"));
+            }
+
+            if (tmp.has("arrest")) {
+                e.put("arrest", tmp.get("arrest"));
+            }
+
+            if (tmp.has("fritidved")) {
+                e.put("fritidved", tmp.get("fritidved"));
+            }
+
+            if (tmp.has("kvalitetskontrol")) {
+                e.put("kvalitetskontrol", tmp.get("kvalitetskontrol"));
+            }
+
+            if (tmp.has("psykologfokus")) {
+                e.put("psykologfokus", tmp.get("psykologfokus"));
+            }
 
 
 
@@ -313,6 +385,23 @@ public class FlowChartBean {
         }
 
         return entries;
+    }
+
+
+    public JSONObject getTotals(String siteShortName, String default_query, String user) throws JSONException {
+
+        JSONObject result = new JSONObject();
+
+        result.put("igangværende",this.getEntriesByIgangvaerende(siteShortName, default_query).size());
+        result.put("arrestanter",this.getEntriesByStateArrestanter(siteShortName, default_query).size());
+        result.put("observation",this.getEntriesByStateObservation(siteShortName, default_query).size());
+        result.put("user",this.getEntriesbyUser(user, siteShortName, default_query).size());
+        result.put("waitinglist",this.getWaitingList(siteShortName).size());
+        result.put("ventendegr",this.getEntriesByStateVentedeGR(siteShortName,default_query).size());
+
+        return result;
+
+
     }
 
 

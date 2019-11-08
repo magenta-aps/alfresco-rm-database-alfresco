@@ -1,5 +1,6 @@
 package dk.magenta.webscripts.flowchart;
 
+import com.google.gdata.data.DateTime;
 import dk.magenta.Const;
 import dk.magenta.beans.EntryBean;
 import dk.magenta.beans.FlowChartBean;
@@ -32,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import static org.alfresco.util.ApplicationContextHelper.getApplicationContext;
@@ -47,8 +49,6 @@ public class QueryTest extends AbstractAlfrescoIT {
 
     private CredentialsProvider provider = new BasicCredentialsProvider();
     public ApplicationContext appContext = getApplicationContext();
-
-    private EntryBean entryBean = (EntryBean) appContext.getBean("entryBean");
 
     private DataProducer dataProducer;
     private DataProducerHelper dataProducerHelper;
@@ -75,79 +75,80 @@ public class QueryTest extends AbstractAlfrescoIT {
     public void tearDown() throws Exception {
     }
 
-//    @Test
-//    public void OngoingTest() throws Exception {
-//
-//        dataProducer.wipeAllCases();
-//        dataProducer.createDeclarationsForOngoingTest();
-//
-//        JSONObject properties = new JSONObject();
-//        properties.put("method", "ongoing");
-//
-//        JSONObject data = new JSONObject();
-//
-//        data.put("properties", properties);
-//
-//        // Execute Web Script call
-//        try (CloseableHttpClient httpclient = HttpClientBuilder.create()
-//                .setDefaultCredentialsProvider(provider)
-//                .build()) {
-//
-//            HttpPost http = new HttpPost("http://localhost:8080/alfresco/service/database/retspsyk/flowchart");
-//
-//            StringEntity se = new StringEntity(data.toString());
-//            se.setContentType(new BasicHeader("Content-type", "application/json"));
-//            http.setEntity(se);
-//
-//            HttpResponse httpResponse = httpclient.execute(http);
-//
-//            String s = EntityUtils.toString(httpResponse.getEntity());
-//
-//            JSONObject result = new JSONObject(s);
-//
-//            Assert.assertTrue("Assert total is equal to 60" + " result was : " + result.getString("total"), result.getString("total").equals("60"));
-//        }
-//    }
+    @Test
+    public void OngoingTest() throws Exception {
 
-//    @Test
-//    public void ArrestantStateTest() throws Exception {
-//
-//        dataProducerHelper.wipeAllCases();
-//        dataProducer.createDeclarationsForStateArrestanterTest();
-//
-//        JSONObject properties = new JSONObject();
-//        properties.put("method", "arrestanter");
-//
-//        JSONObject data = new JSONObject();
-//
-//        data.put("properties", properties);
-//
-//        // Execute Web Script call
-//        try (CloseableHttpClient httpclient = HttpClientBuilder.create()
-//                .setDefaultCredentialsProvider(provider)
-//                .build()) {
-//
-//            HttpPost http = new HttpPost("http://localhost:8080/alfresco/service/database/retspsyk/flowchart");
-//
-//            StringEntity se = new StringEntity(data.toString());
-//            se.setContentType(new BasicHeader("Content-type", "application/json"));
-//            http.setEntity(se);
-//
-//            HttpResponse httpResponse = httpclient.execute(http);
-//
-//            String s = EntityUtils.toString(httpResponse.getEntity());
-//
-//            JSONObject result = new JSONObject(s);
-//
-//            Assert.assertTrue("Assert total is equal to 20" + " result was : " + result.getString("total"), result.getString("total").equals("20"));
-//        }
-//    }
+        dataProducerHelper.wipeAllCases();
+        System.out.println("wiped");
+        dataProducer.createDeclarationsForOngoingTest();
+
+        JSONObject properties = new JSONObject();
+        properties.put("method", "ongoing");
+
+        JSONObject data = new JSONObject();
+
+        data.put("properties", properties);
+
+        // Execute Web Script call
+        try (CloseableHttpClient httpclient = HttpClientBuilder.create()
+                .setDefaultCredentialsProvider(provider)
+                .build()) {
+
+            HttpPost http = new HttpPost("http://localhost:8080/alfresco/service/database/retspsyk/flowchart");
+
+            StringEntity se = new StringEntity(data.toString());
+            se.setContentType(new BasicHeader("Content-type", "application/json"));
+            http.setEntity(se);
+
+            HttpResponse httpResponse = httpclient.execute(http);
+
+            String s = EntityUtils.toString(httpResponse.getEntity());
+
+            JSONObject result = new JSONObject(s);
+
+            Assert.assertTrue("Assert total is equal to 60" + " result was : " + result.getString("total"), result.getString("total").equals("60"));
+        }
+    }
+
+    @Test
+    public void ArrestantStateTest() throws Exception {
+
+        dataProducerHelper.wipeAllCases();
+        dataProducer.createDeclarationsForStateArrestanterTest();
+
+        JSONObject properties = new JSONObject();
+        properties.put("method", "arrestanter");
+
+        JSONObject data = new JSONObject();
+
+        data.put("properties", properties);
+
+        // Execute Web Script call
+        try (CloseableHttpClient httpclient = HttpClientBuilder.create()
+                .setDefaultCredentialsProvider(provider)
+                .build()) {
+
+            HttpPost http = new HttpPost("http://localhost:8080/alfresco/service/database/retspsyk/flowchart");
+
+            StringEntity se = new StringEntity(data.toString());
+            se.setContentType(new BasicHeader("Content-type", "application/json"));
+            http.setEntity(se);
+
+            HttpResponse httpResponse = httpclient.execute(http);
+
+            String s = EntityUtils.toString(httpResponse.getEntity());
+
+            JSONObject result = new JSONObject(s);
+
+            Assert.assertTrue("Assert total is equal to 20" + " result was : " + result.getString("total"), result.getString("total").equals("20"));
+        }
+    }
 
     @Test
     public void ObservationStateTest() throws Exception {
 
         dataProducerHelper.wipeAllCases();
-        dataProducer.createDeclarationsForStateArrestanterTest();
+        dataProducer.createDeclarationsForStateIndlagtObservationTest();
 
         JSONObject properties = new JSONObject();
         properties.put("method", "observation");
