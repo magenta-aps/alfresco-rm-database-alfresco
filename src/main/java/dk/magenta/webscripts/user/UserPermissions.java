@@ -122,12 +122,9 @@ public class UserPermissions extends AbstractWebScript {
 
 
                 JSONObject membership = isMember(authorityName.getUserName());
-                System.out.println("the membership");
-                System.out.println(membership);
-
 
                 o.put("GROUP_site_retspsyk_SiteEntryLockManager", membership.getBoolean("GROUP_site_retspsyk_SiteEntryLockManager"));
-                o.put("GROUP_site_retspsyk_ReadOnlyUser", membership.getBoolean("GROUP_site_retspsyk_SitePropertyValueManager"));
+                o.put("GROUP_site_retspsyk_SitePropertyValueManager", membership.getBoolean("GROUP_site_retspsyk_SitePropertyValueManager"));
                 o.put("GROUP_site_retspsyk_SiteRoleManager", membership.getBoolean("GROUP_site_retspsyk_SiteRoleManager"));
                 o.put("GROUP_site_retspsyk_TemplateFolderValueManager", membership.getBoolean("GROUP_site_retspsyk_TemplateFolderValueManager"));
                 o.put("GROUP_site_retspsyk_SiteConsumer", membership.getBoolean("GROUP_site_retspsyk_SiteConsumer"));
