@@ -5,6 +5,8 @@ import dk.magenta.beans.EntryBean;
 import dk.magenta.beans.MailBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
+import org.alfresco.service.cmr.lock.LockService;
+import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.*;
@@ -29,6 +31,12 @@ import java.util.Map;
 public class MailContent extends AbstractWebScript {
 
     private MailBean mailBean;
+
+    public void setLockService(LockService lockService) {
+        this.lockService = lockService;
+    }
+
+    private LockService lockService;
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
@@ -76,6 +84,8 @@ public class MailContent extends AbstractWebScript {
     }
 
 
+
+
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
 
@@ -91,6 +101,10 @@ public class MailContent extends AbstractWebScript {
 
 
         JSONObject json = null;
+
+        boolean temporaryUnlocked = false;
+        NodeRef declaration = null;
+
         try {
 
             System.out.println("the json" + c.getContent());
@@ -119,13 +133,26 @@ public class MailContent extends AbstractWebScript {
 
             mailBean.sendEmail(nodeRefs, authority, body, subject);
 
+
+
+
              // pak dette væk i en bean senere
 
 
             String query = "@rm\\:caseNumber:\"" + caseid + "\"";
             System.out.println("hvad er query:" + query);
 
-            NodeRef declaration = entryBean.getEntry(query);
+            declaration = entryBean.getEntry(query);
+
+
+            // unlock if the case is locked and luck after email has been sent
+
+            if (lockService.isLocked(declaration)) {
+                lockService.unlock(declaration);
+                temporaryUnlocked = true;
+            }
+
+
 
             List<String> criteria = Arrays.asList(DatabaseModel.PROP_LOGFORMAILS);
             List<ChildAssociationRef> documents = nodeService.getChildrenByName(declaration, org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
@@ -184,14 +211,20 @@ public class MailContent extends AbstractWebScript {
             }
 
 
-
-
-
             result = JSONUtils.getSuccess();
             JSONUtils.write(webScriptWriter, result);
 
+            if (temporaryUnlocked) {
+                lockService.lock(declaration, LockType.READ_ONLY_LOCK);
+            }
+
 
         } catch (JSONException e) {
+
+            if (temporaryUnlocked) {
+                lockService.lock(declaration, LockType.READ_ONLY_LOCK);
+            }
+
             e.printStackTrace();
             result = JSONUtils.getError(e);
             webScriptResponse.setStatus(400);
