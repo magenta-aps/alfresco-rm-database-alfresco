@@ -89,7 +89,7 @@ public class MailContent extends AbstractWebScript {
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
 
-        System.out.println("status på mailBean" + mailBean);
+
 
 
         webScriptResponse.setContentEncoding("UTF-8");
@@ -107,7 +107,7 @@ public class MailContent extends AbstractWebScript {
 
         try {
 
-            System.out.println("the json" + c.getContent());
+
             json = new JSONObject(c.getContent());
 
             JSONArray jsonNodeRefs = JSONUtils.getArray(json, "nodeRefs");
@@ -119,33 +119,31 @@ public class MailContent extends AbstractWebScript {
             }
 
             String subject = (String)json.get("subject");
-            System.out.println("the subject: " + subject);
+
 
             String body = (String)json.get("body");
-            System.out.println("the body: " + body);
+
 
 
             String authority = (String)json.get("authority");
-            System.out.println("authority: " + authority);
+
 
             String caseid = (String)json.get("caseid");
-            System.out.println("caseid: " + caseid);
+
 
             mailBean.sendEmail(nodeRefs, authority, body, subject);
-
-
 
 
              // pak dette væk i en bean senere
 
 
             String query = "@rm\\:caseNumber:\"" + caseid + "\"";
-            System.out.println("hvad er query:" + query);
+
 
             declaration = entryBean.getEntry(query);
 
 
-            // unlock if the case is locked and luck after email has been sent
+            // unlock if the case is locked and lock after email has been sent
 
             if (lockService.isLocked(declaration)) {
                 lockService.unlock(declaration);
