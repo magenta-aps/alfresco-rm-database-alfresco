@@ -115,14 +115,14 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("declarationFromDate")) {
                 JSONObject o = new JSONObject();
 
-                String f_formattedDate = (String)input.get("createdFromDate");
+                String f_formattedDate = (String)input.get("declarationFromDate");
 
                 o.put("key", "declarationDate");
 
                 if (input.has("declarationToDate")) {
 
 
-                    String t_formattedDate = (String)input.get("createdToDate");
+                    String t_formattedDate = (String)input.get("declarationToDate");
                     o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, t_formattedDate));
                 }
                 else {
@@ -134,7 +134,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
             else if (input.has("declarationToDate")) {
                 JSONObject o = new JSONObject();
 
-                String t_formattedDate = (String)input.get("createdToDate");
+                String t_formattedDate = (String)input.get("declarationToDate");
                 o.put("key", "declarationDate");
                 o.put("value", QueryUtils.dateRangeQuery("MIN",t_formattedDate));
                 o.put("include", true);
