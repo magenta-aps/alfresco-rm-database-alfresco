@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 public class FlowChartBean {
@@ -130,6 +133,7 @@ public class FlowChartBean {
         JSONObject o = new JSONObject();
 
         String type = databaseBean.getType(siteShortName);
+
         String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
 
         // atleast one assigned
@@ -206,7 +210,7 @@ public class FlowChartBean {
 
         query += statusQuery;
 
-        System.out.println("getEntriesByStatus query");
+        System.out.println("getEntriesByStateArrestanter query");
         System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
@@ -216,7 +220,7 @@ public class FlowChartBean {
 
     public List<NodeRef> getEntriesByStateObservation(String siteShortName, String default_query) {
 
-        System.out.println("doing observationsquery");
+        System.out.println("doing getEntriesByStateObservation");
 
         JSONObject o = new JSONObject();
 
@@ -225,8 +229,6 @@ public class FlowChartBean {
         String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
 
         query += " AND " + default_query;
-
-        System.out.println("after default query");
 
         String state = "Indlagt til observation";
 
@@ -252,15 +254,11 @@ public class FlowChartBean {
         JSONObject o = new JSONObject();
 
         String type = databaseBean.getType(siteShortName);
-        System.out.println("done type");
         String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
 
         query += " AND " + default_query;
 
-        System.out.println("after default query");
-
         String state = "Gr-*";
-
 
         String statusQuery = " AND ( ";
         statusQuery += QueryUtils.getParameterQuery("status", state, false);
@@ -377,9 +375,19 @@ public class FlowChartBean {
                 e.put("declarationDate", tmp.get("declarationDate"));
             }
 
+            if (tmp.has("locked4edit")) {
+                e.put("locked4edit", tmp.get("locked4edit"));
+            }
+
+            if (tmp.has("locked4editBy")) {
+                e.put("locked4editBy", tmp.get("locked4editBy"));
+            }
+
             if (tmp.has("psychologist") && !tmp.get("psychologist").equals("null") ) {
                 e.put("psychologist", tmp.get("psychologist"));
             }
+
+            e.put("show","false");
 
             entries.put(e);
         }
@@ -392,7 +400,7 @@ public class FlowChartBean {
 
         JSONObject result = new JSONObject();
 
-        result.put("igangværende",this.getEntriesByIgangvaerende(siteShortName, default_query).size());
+        result.put("ongoing",this.getEntriesByIgangvaerende(siteShortName, default_query).size());
         result.put("arrestanter",this.getEntriesByStateArrestanter(siteShortName, default_query).size());
         result.put("observation",this.getEntriesByStateObservation(siteShortName, default_query).size());
         result.put("user",this.getEntriesbyUser(user, siteShortName, default_query).size());

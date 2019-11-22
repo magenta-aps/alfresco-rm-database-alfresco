@@ -118,7 +118,6 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 f_date = LocalDateTime.parse(input.getString("declarationFromDate"), inputFormatter).plusHours(1);
                 String f_formattedDate = outputFormatter.format(f_date);
                 System.out.println("hvad er f" + f_formattedDate    );
-
                 o.put("key", "declarationDate");
 
                 if (input.has("declarationToDate")) {

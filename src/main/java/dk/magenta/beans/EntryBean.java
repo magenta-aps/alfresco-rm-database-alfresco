@@ -43,6 +43,11 @@ public class EntryBean {
     private SearchService searchService;
     private LockService lockService;
     private AuditComponent auditComponent;
+
+    public void setAuthenticationService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+
     private AuthenticationService authenticationService;
 
     public FileFolderService getFileFolderService() {
@@ -237,7 +242,27 @@ public class EntryBean {
 
     public void updateEntry (NodeRef entryRef, Map<QName, Serializable> properties) throws JSONException {
 
+        String currentUser = authenticationService.getCurrentUserName();
+        Serializable locked_for_edit = nodeService.getProperty(entryRef, DatabaseModel.PROP_LOCKED_FOR_EDIT);
+        Serializable locked_for_edit_by = nodeService.getProperty(entryRef, DatabaseModel.PROP_LOCKED_FOR_EDIT_BY);
 
+
+        System.out.println(currentUser);
+        System.out.println(locked_for_edit);
+        System.out.println(locked_for_edit_by);
+
+        // initialize locked_for_edit
+        if (locked_for_edit == null) {
+            locked_for_edit = false;
+        }
+
+        if ((boolean)locked_for_edit) {
+            // check if its the same user that edits that holds the lock
+            if (!((String)locked_for_edit_by).equals(currentUser)) {
+                System.out.println(currentUser + "not allowed to update as case is locked by " + locked_for_edit_by);
+                return;
+            }
+        }
 
         if (!nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_FLOWCHART)) {
             nodeService.addAspect(entryRef, DatabaseModel.ASPECT_FLOWCHART, null);
@@ -248,38 +273,42 @@ public class EntryBean {
 
         String uri = DatabaseModel.RM_MODEL_URI;
         QName closed = QName.createQName(uri, "closed");
-        Boolean closedProp = (Boolean)nodeService.getProperty(entryRef, closed);
-        if(closedProp != null && closedProp) {
+        Boolean closedProp = (Boolean) nodeService.getProperty(entryRef, closed);
+        if (closedProp != null && closedProp) {
 
             AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
             lockEntry(entryRef);
         }
+
+
+
     }
 
+    // used for converting data from the old system
     public NodeRef updateProperty (String caseid, Map<QName, Serializable> properties) throws JSONException {
 
-        String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+//        String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+//
+//        System.out.println("hvad er query:" + query);
+//
+//        NodeRef n = this.getEntry(query);
+//        System.out.println("hvad er nodeRef" + n);
+//
+//
+//        boolean temporaryUnlocked = false;
+//
+//        if (lockService.isLocked(n)) {
+//            lockService.unlock(n);
+//            temporaryUnlocked = true;
+//        }
+//
+//        this.updateEntry(n,properties);
+//
+//        if (temporaryUnlocked) {
+//            lockService.lock(n, LockType.READ_ONLY_LOCK);
+//        }
 
-        System.out.println("hvad er query:" + query);
-
-        NodeRef n = this.getEntry(query);
-        System.out.println("hvad er nodeRef" + n);
-
-
-        boolean temporaryUnlocked = false;
-
-        if (lockService.isLocked(n)) {
-            lockService.unlock(n);
-            temporaryUnlocked = true;
-        }
-
-        this.updateEntry(n,properties);
-
-        if (temporaryUnlocked) {
-            lockService.lock(n, LockType.READ_ONLY_LOCK);
-        }
-
-        return n;
+        return null;
     }
 
 

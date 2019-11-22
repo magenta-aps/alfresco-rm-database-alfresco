@@ -10,6 +10,7 @@ import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
+import org.codehaus.groovy.transform.SourceURIASTTransformation;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,6 +138,8 @@ public class FlowChart extends AbstractWebScript {
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
                     System.out.println("hvad er username");
                     System.out.println(userName);
+
+                    System.out.println("hvad er totals");
                     result = flowChartBean.getTotals(siteShortName, defaultQuery, userName);
                     break;
             }
@@ -144,10 +147,13 @@ public class FlowChart extends AbstractWebScript {
 
 
         } catch (JSONException e) {
+            System.out.println("json exception");
             e.printStackTrace();
         }
         catch (Exception e) {
-            System.out.println(e);
+            System.out.println("this exception");
+            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         Writer webScriptWriter = res.getWriter();
