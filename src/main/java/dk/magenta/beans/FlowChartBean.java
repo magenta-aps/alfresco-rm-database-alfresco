@@ -403,7 +403,15 @@ public class FlowChartBean {
         result.put("ongoing",this.getEntriesByIgangvaerende(siteShortName, default_query).size());
         result.put("arrestanter",this.getEntriesByStateArrestanter(siteShortName, default_query).size());
         result.put("observation",this.getEntriesByStateObservation(siteShortName, default_query).size());
-        result.put("user",this.getEntriesbyUser(user, siteShortName, default_query).size());
+
+        if (user != null) {
+            result.put("user",this.getEntriesbyUser(user, siteShortName, default_query).size());
+        }
+        else {
+            result.put("user","bruger ikke fundet");
+        }
+
+
         result.put("waitinglist",this.getWaitingList(siteShortName).size());
         result.put("ventendegr",this.getEntriesByStateVentedeGR(siteShortName,default_query).size());
 
