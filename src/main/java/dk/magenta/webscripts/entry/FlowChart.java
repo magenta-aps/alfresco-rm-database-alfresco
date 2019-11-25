@@ -140,7 +140,12 @@ public class FlowChart extends AbstractWebScript {
                     System.out.println(userName);
 
                     System.out.println("hvad er totals");
-                    result = flowChartBean.getTotals(siteShortName, defaultQuery, userName);
+
+                    if (userName != null) {
+                        result = flowChartBean.getTotals(siteShortName, defaultQuery, userName);
+                    }
+                    else
+                        result.put("user","bruger ikke fundet");
                     break;
             }
 
