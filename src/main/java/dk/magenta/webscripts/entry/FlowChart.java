@@ -113,7 +113,7 @@ public class FlowChart extends AbstractWebScript {
                     result.put("total", entries.size());
                     break;
                 case "ventendegr":
-                    entries = flowChartBean.getEntriesByStateObservation(siteShortName, defaultQuery);
+                    entries = flowChartBean.getEntriesByStateVentedeGR(siteShortName, defaultQuery);
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
