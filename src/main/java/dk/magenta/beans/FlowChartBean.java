@@ -181,7 +181,7 @@ public class FlowChartBean {
         return nodeRefs;
     }
 
-    public List<NodeRef> getEntriesByStateArrestanter(String siteShortName, String default_query) {
+    public List<NodeRef> getEntriesByStateArrestanter(String siteShortName, String default_query, String sort, boolean desc) {
 
         JSONObject o = new JSONObject();
 
@@ -213,7 +213,7 @@ public class FlowChartBean {
         System.out.println("getEntriesByStateArrestanter query");
         System.out.println(query);
 
-        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
+        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
         return nodeRefs;
     }
@@ -401,7 +401,7 @@ public class FlowChartBean {
         JSONObject result = new JSONObject();
 
         result.put("ongoing",this.getEntriesByIgangvaerende(siteShortName, default_query).size());
-        result.put("arrestanter",this.getEntriesByStateArrestanter(siteShortName, default_query).size());
+        result.put("arrestanter",this.getEntriesByStateArrestanter(siteShortName, default_query, "@rm:creationDate", false).size());
         result.put("observation",this.getEntriesByStateObservation(siteShortName, default_query).size());
 
         if (user != null) {
