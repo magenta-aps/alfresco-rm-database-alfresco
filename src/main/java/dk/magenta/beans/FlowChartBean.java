@@ -408,7 +408,7 @@ public class FlowChartBean {
             result.put("user",this.getEntriesbyUser(user, siteShortName, default_query).size());
         }
         else {
-            result.put("user","bruger ikke fundet");
+            result.put("user"," -bruger ikke fundet-");
         }
 
 
