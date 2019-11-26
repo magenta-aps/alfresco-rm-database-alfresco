@@ -218,7 +218,7 @@ public class FlowChartBean {
         return nodeRefs;
     }
 
-    public List<NodeRef> getEntriesByStateObservation(String siteShortName, String default_query) {
+    public List<NodeRef> getEntriesByStateObservation(String siteShortName, String default_query, String sort, boolean desc) {
 
         System.out.println("doing getEntriesByStateObservation");
 
@@ -242,7 +242,7 @@ public class FlowChartBean {
         System.out.println("getEntriesByStateObservation query");
         System.out.println(query);
 
-        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
+        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
         return nodeRefs;
     }
@@ -402,7 +402,7 @@ public class FlowChartBean {
 
         result.put("ongoing",this.getEntriesByIgangvaerende(siteShortName, default_query).size());
         result.put("arrestanter",this.getEntriesByStateArrestanter(siteShortName, default_query, "@rm:creationDate", false).size());
-        result.put("observation",this.getEntriesByStateObservation(siteShortName, default_query).size());
+        result.put("observation",this.getEntriesByStateObservation(siteShortName, default_query, "@rm:creationDate", false).size());
 
         if (user != null) {
             result.put("user",this.getEntriesbyUser(user, siteShortName, default_query).size());
@@ -414,6 +414,30 @@ public class FlowChartBean {
 
         result.put("waitinglist",this.getWaitingList(siteShortName).size());
         result.put("ventendegr",this.getEntriesByStateVentedeGR(siteShortName,default_query).size());
+
+        return result;
+
+
+    }
+
+    public JSONObject getAlle(String siteShortName, String default_query, String user) throws JSONException {
+
+        JSONObject result = new JSONObject();
+
+        result.put("ongoing",this.nodeRefsTOData(this.getEntriesByIgangvaerende(siteShortName, default_query)));
+        result.put("arrestanter",this.nodeRefsTOData(this.getEntriesByStateArrestanter(siteShortName, default_query, "@rm:creationDate", false)));
+        result.put("observation",this.nodeRefsTOData(this.getEntriesByStateObservation(siteShortName, default_query, "@rm:creationDate", false)));
+
+        if (user != null) {
+            result.put("user",this.nodeRefsTOData(this.getEntriesbyUser(user, siteShortName, default_query)));
+        }
+        else {
+            result.put("user"," -bruger ikke fundet-");
+        }
+
+
+        result.put("waitinglist",this.nodeRefsTOData(this.getWaitingList(siteShortName)));
+        result.put("ventendegr",this.nodeRefsTOData(this.getEntriesByStateVentedeGR(siteShortName,default_query)));
 
         return result;
 

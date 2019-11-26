@@ -96,6 +96,8 @@ public class FlowChart extends AbstractWebScript {
             jsonProperties = JSONUtils.getObject(json, "properties");
             String method = jsonProperties.getString("method");
 
+            String sort = "";
+            boolean desc = false;
 
             List<NodeRef> entries;
 
@@ -104,15 +106,17 @@ public class FlowChart extends AbstractWebScript {
             switch (method) {
                 case "arrestanter":
 
-                    String sort = jsonProperties.getString("sort");
-                    boolean desc = jsonProperties.getBoolean("desc");
+                    sort = jsonProperties.getString("sort");
+                    desc = jsonProperties.getBoolean("desc");
                     entries = flowChartBean.getEntriesByStateArrestanter(siteShortName, defaultQuery, sort, desc);
 
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
                 case "observation":
-                    entries = flowChartBean.getEntriesByStateObservation(siteShortName, defaultQuery);
+                    sort = jsonProperties.getString("sort");
+                    desc = jsonProperties.getBoolean("desc");
+                    entries = flowChartBean.getEntriesByStateObservation(siteShortName, defaultQuery, sort, desc);
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
@@ -136,6 +140,14 @@ public class FlowChart extends AbstractWebScript {
                     entries = flowChartBean.getWaitingList(siteShortName);
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
+                    break;
+                case "alle":
+
+                    userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
+                    System.out.println("hvad er username");
+                    System.out.println(userName);
+
+                    result.put("entries", flowChartBean.getAlle(siteShortName, defaultQuery, userName));
                     break;
                 case "total":
 
