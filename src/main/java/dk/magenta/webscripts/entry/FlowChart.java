@@ -121,46 +121,47 @@ public class FlowChart extends AbstractWebScript {
                     result.put("total", entries.size());
                     break;
                 case "ventendegr":
-                    entries = flowChartBean.getEntriesByStateVentedeGR(siteShortName, defaultQuery);
+                    sort = jsonProperties.getString("sort");
+                    desc = jsonProperties.getBoolean("desc");
+
+                    entries = flowChartBean.getEntriesByStateVentedeGR(siteShortName, defaultQuery, sort, desc);
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
                 case "user":
+                    sort = jsonProperties.getString("sort");
+                    desc = jsonProperties.getBoolean("desc");
+
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
-                    entries = flowChartBean.getEntriesbyUser(userName, siteShortName, defaultQuery);
-                    result.put("entries", flowChartBean.nodeRefsTOData(entries));
-                    result.put("total", entries.size());
+                    result.put("entries", flowChartBean.getEntriesbyUser(userName, siteShortName, defaultQuery, sort, desc));
                     break;
                 case "ongoing":
-                    entries = flowChartBean.getEntriesByIgangvaerende(siteShortName, defaultQuery);
+                    sort = jsonProperties.getString("sort");
+                    desc = jsonProperties.getBoolean("desc");
+
+                    entries = flowChartBean.getEntriesByIgangvaerende(siteShortName, defaultQuery, sort, desc);
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
                 case "waitinglist":
-                    entries = flowChartBean.getWaitingList(siteShortName);
+                    sort = jsonProperties.getString("sort");
+                    desc = jsonProperties.getBoolean("desc");
+
+                    entries = flowChartBean.getWaitingList(siteShortName, sort, desc);
+
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
                 case "alle":
-
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
-                    System.out.println("hvad er username");
-                    System.out.println(userName);
-
                     result.put("entries", flowChartBean.getAlle(siteShortName, defaultQuery, userName));
                     break;
                 case "total":
-
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
-                    System.out.println("hvad er username");
-                    System.out.println(userName);
-
-                    System.out.println("hvad er totals");
                     result = flowChartBean.getTotals(siteShortName, defaultQuery, userName);
-
-
                     break;
             }
+
 
 
 

@@ -58,6 +58,7 @@ public class FlowChartBean {
 
     private EntryBean entryBean;
 
+
     public List<NodeRef> getEntriesbyUser(String user, String siteShortName, String default_query) throws JSONException {
 
         String type = databaseBean.getType(siteShortName);
@@ -78,7 +79,99 @@ public class FlowChartBean {
         return nodeRefs;
     }
 
-    public List<NodeRef> getWaitingList(String siteShortName) {
+    public List<NodeRef> getEntriesbyUserStateArrestanter(String user, String siteShortName, String default_query, String sort, boolean desc) throws JSONException {
+
+        String type = databaseBean.getType(siteShortName);
+        String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
+
+        query += " AND (" + QueryUtils.getParametersQuery("socialworker", user, false);
+        query += " OR " + QueryUtils.getParametersQuery("doctor", user, false);
+        query += " OR " + QueryUtils.getParametersQuery("psychologist", user, false);
+        query += ")";
+
+        query += " AND " + default_query;
+
+        String[] status = new String[2];
+        status[0] = "Ambulant/arrestant";
+        status[1] = "Ambulant/surrogatanbragt";
+
+        String statusQuery = " AND ( ";
+
+        for (int i=0; i<= status.length-1; i++) {
+
+            String state = status[i];
+            if (statusQuery.equals(" AND ( ")) {
+                statusQuery += QueryUtils.getParameterQuery("status", state, false);
+            }
+            else {
+                statusQuery += " OR " + QueryUtils.getParameterQuery("status", state, false);
+            }
+        }
+        statusQuery += ") ";
+
+        query += statusQuery;
+
+
+        System.out.println("getEntriesbyUserStateArrestanter query");
+        System.out.println(query);
+
+        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
+
+        return nodeRefs;
+    }
+
+    public List<NodeRef> getEntriesbyUserStateNOTArrestanter(String user, String siteShortName, String default_query, String sort, boolean desc) throws JSONException {
+
+        String type = databaseBean.getType(siteShortName);
+        String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
+
+        query += " AND (" + QueryUtils.getParametersQuery("socialworker", user, false);
+        query += " OR " + QueryUtils.getParametersQuery("doctor", user, false);
+        query += " OR " + QueryUtils.getParametersQuery("psychologist", user, false);
+        query += ")";
+
+        query += " AND " + default_query;
+
+        String[] status = new String[2];
+        status[0] = "Ambulant/arrestant";
+        status[1] = "Ambulant/surrogatanbragt";
+
+        String statusQuery = " AND NOT ( ";
+
+        for (int i=0; i<= status.length-1; i++) {
+
+            String state = status[i];
+            if (statusQuery.equals(" AND NOT ( ")) {
+                statusQuery += QueryUtils.getParameterQuery("status", state, false);
+            }
+            else {
+                statusQuery += " OR " + QueryUtils.getParameterQuery("status", state, false);
+            }
+        }
+        statusQuery += ") ";
+
+        query += statusQuery;
+
+
+        System.out.println("getEntriesbyUserStateNOTArrestanter query");
+        System.out.println(query);
+
+        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
+
+        return nodeRefs;
+    }
+
+    public JSONObject getEntriesbyUser(String user, String siteShortName, String default_query, String sort, boolean desc) throws JSONException {
+
+        JSONObject result = new JSONObject();
+
+        result.put("arrestanter",this.nodeRefsTOData(this.getEntriesbyUserStateArrestanter(user, siteShortName, default_query, sort, desc)));
+        result.put("andre",this.nodeRefsTOData(this.getEntriesbyUserStateNOTArrestanter(user, siteShortName, default_query, sort, desc)));
+
+        return result;
+    }
+
+    public List<NodeRef> getWaitingList(String siteShortName, String sort, boolean desc) {
 
         JSONObject o = new JSONObject();
 
@@ -123,12 +216,12 @@ public class FlowChartBean {
         System.out.println("getWaitingList query");
         System.out.println(query);
 
-        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
+        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
         return nodeRefs;
     }
 
-    public List<NodeRef> getEntriesByIgangvaerende(String siteShortName, String default_query) {
+    public List<NodeRef> getEntriesByIgangvaerende(String siteShortName, String default_query, String sort, boolean desc) {
 
         JSONObject o = new JSONObject();
 
@@ -176,7 +269,7 @@ public class FlowChartBean {
         System.out.println("getEntriesByOngoing query");
         System.out.println(query);
 
-        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
+        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
         return nodeRefs;
     }
@@ -247,7 +340,7 @@ public class FlowChartBean {
         return nodeRefs;
     }
 
-    public List<NodeRef> getEntriesByStateVentedeGR(String siteShortName, String default_query) {
+    public List<NodeRef> getEntriesByStateVentedeGR(String siteShortName, String default_query, String sort, boolean desc) {
 
         System.out.println("doing ventedegr");
 
@@ -269,7 +362,7 @@ public class FlowChartBean {
         System.out.println("getEntriesByStateventedegr query");
         System.out.println(query);
 
-        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
+        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
         return nodeRefs;
     }
@@ -400,7 +493,7 @@ public class FlowChartBean {
 
         JSONObject result = new JSONObject();
 
-        result.put("ongoing",this.getEntriesByIgangvaerende(siteShortName, default_query).size());
+        result.put("ongoing",this.getEntriesByIgangvaerende(siteShortName, default_query, "@rm:creationDate", true).size());
         result.put("arrestanter",this.getEntriesByStateArrestanter(siteShortName, default_query, "@rm:creationDate", false).size());
         result.put("observation",this.getEntriesByStateObservation(siteShortName, default_query, "@rm:creationDate", false).size());
 
@@ -412,8 +505,8 @@ public class FlowChartBean {
         }
 
 
-        result.put("waitinglist",this.getWaitingList(siteShortName).size());
-        result.put("ventendegr",this.getEntriesByStateVentedeGR(siteShortName,default_query).size());
+        result.put("waitinglist",this.getWaitingList(siteShortName, "@rm:creationDate", true).size());
+        result.put("ventendegr",this.getEntriesByStateVentedeGR(siteShortName,default_query, "@rm:creationDate", true).size());
 
         return result;
 
@@ -424,20 +517,20 @@ public class FlowChartBean {
 
         JSONObject result = new JSONObject();
 
-        result.put("ongoing",this.nodeRefsTOData(this.getEntriesByIgangvaerende(siteShortName, default_query)));
-        result.put("arrestanter",this.nodeRefsTOData(this.getEntriesByStateArrestanter(siteShortName, default_query, "@rm:creationDate", false)));
-        result.put("observation",this.nodeRefsTOData(this.getEntriesByStateObservation(siteShortName, default_query, "@rm:creationDate", false)));
-
-        if (user != null) {
-            result.put("user",this.nodeRefsTOData(this.getEntriesbyUser(user, siteShortName, default_query)));
-        }
-        else {
-            result.put("user"," -bruger ikke fundet-");
-        }
-
-
-        result.put("waitinglist",this.nodeRefsTOData(this.getWaitingList(siteShortName)));
-        result.put("ventendegr",this.nodeRefsTOData(this.getEntriesByStateVentedeGR(siteShortName,default_query)));
+//        result.put("ongoing",this.nodeRefsTOData(this.getEntriesByIgangvaerende(siteShortName, default_query, "@rm:creationDate", true)));
+//        result.put("arrestanter",this.nodeRefsTOData(this.getEntriesByStateArrestanter(siteShortName, default_query, "@rm:creationDate", false)));
+//        result.put("observation",this.nodeRefsTOData(this.getEntriesByStateObservation(siteShortName, default_query, "@rm:creationDate", false)));
+//
+//        if (user != null) {
+//            result.put("user",this.nodeRefsTOData(this.getEntriesbyUser(user, siteShortName, default_query, "@rm:creationDate", true)));
+//        }
+//        else {
+//            result.put("user"," -bruger ikke fundet-");
+//        }
+//
+//
+//        result.put("waitinglist",this.nodeRefsTOData(this.getWaitingList(siteShortName, "@rm:creationDate", true)));
+//        result.put("ventendegr",this.nodeRefsTOData(this.getEntriesByStateVentedeGR(siteShortName,default_query, "@rm:creationDate", true)));
 
         return result;
 

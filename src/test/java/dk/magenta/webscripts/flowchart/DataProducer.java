@@ -70,7 +70,7 @@ public class DataProducer extends AbstractAlfrescoIT {
         dataProducerUtils.createDeclarations(10, "Ambulant/surrogatanbragt", "", "Dam, Iris Billeskov", "");
         dataProducerUtils.createDeclarations(10, "Gr-afsoner", "", "", "Hansen, Anne Marie");
 
-        dataProducerUtils.createDeclarations(10, "Ambulant/Arrestant", "", "Dam, Iris Billeskov", "");
+        dataProducerUtils.createDeclarations(10, "Ambulant/arrestant", "", "Dam, Iris Billeskov", "");
 
         dataProducerUtils.createDeclarations(10, "Benådningssag", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
 
@@ -89,7 +89,7 @@ public class DataProducer extends AbstractAlfrescoIT {
             entryBean.updateEntry(nodeRef,properties);
         }
 
-        closed = dataProducerUtils.createDeclarations(5, "Ambulant/Arrestant", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+        closed = dataProducerUtils.createDeclarations(5, "Ambulant/arrestant", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
 
 
         jsonObject = new JSONObject();
@@ -133,7 +133,7 @@ public class DataProducer extends AbstractAlfrescoIT {
 
         dataProducerUtils.createDeclarations(10, "Benådningssag", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
 
-        List<NodeRef> closed = dataProducerUtils.createDeclarations(15, "Ambulant/Arrestant", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+        List<NodeRef> closed = dataProducerUtils.createDeclarations(15, "Ambulant/arrestant", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
 
 
         JSONObject jsonObject = new JSONObject();
@@ -152,7 +152,7 @@ public class DataProducer extends AbstractAlfrescoIT {
 
         // postive hits
 
-        dataProducerUtils.createDeclarations(10, "Ambulant/Arrestant", "", "", "Hansen, Anne Marie");
+        dataProducerUtils.createDeclarations(10, "Ambulant/arrestant", "", "", "Hansen, Anne Marie");
         dataProducerUtils.createDeclarations(10, "Ambulant/surrogatanbragt", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
 
 
@@ -175,7 +175,7 @@ public class DataProducer extends AbstractAlfrescoIT {
 
         dataProducerUtils.createDeclarations(10, "Ambulant/surrogatanbragt", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
         dataProducerUtils.createDeclarations(10, "Indlagt til observation", "", "Dam, Iris Billeskov", "");
-        dataProducerUtils.createDeclarations(10, "Ambulant/Arrestant", "", "", "Hansen, Anne Marie");
+        dataProducerUtils.createDeclarations(10, "Ambulant/arrestant", "", "", "Hansen, Anne Marie");
 
         dataProducerUtils.createDeclarations(10, "Ambulant/surrogatanbragt", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "Dam, Iris Billeskov", "");
         dataProducerUtils.createDeclarations(10, "Indlagt til observation", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "Dam, Iris Billeskov", "");
