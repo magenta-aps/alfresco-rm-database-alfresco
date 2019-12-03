@@ -75,12 +75,18 @@ public class QueryTest extends AbstractAlfrescoIT {
     public void tearDown() throws Exception {
     }
 
+
+    @Test
+    public void all() throws Exception {
+
+        dataProducerHelper.wipeAllCases();
+        dataProducer.createALL();
+
+    }
+
     @Test
     public void OngoingTest() throws Exception {
 
-        dataProducerHelper.wipeAllCases();
-        System.out.println("wiped");
-        dataProducer.createDeclarationsForOngoingTest();
 
         JSONObject properties = new JSONObject();
         properties.put("method", "ongoing");
@@ -113,11 +119,10 @@ public class QueryTest extends AbstractAlfrescoIT {
     @Test
     public void ArrestantStateTest() throws Exception {
 
-        dataProducerHelper.wipeAllCases();
-        dataProducer.createDeclarationsForStateArrestanterTest();
-
         JSONObject properties = new JSONObject();
         properties.put("method", "arrestanter");
+        properties.put("sort", "@rm:creationDate");
+        properties.put("desc", "false");
 
         JSONObject data = new JSONObject();
 
@@ -140,18 +145,17 @@ public class QueryTest extends AbstractAlfrescoIT {
 
             JSONObject result = new JSONObject(s);
 
-            Assert.assertTrue("Assert total is equal to 20" + " result was : " + result.getString("total"), result.getString("total").equals("20"));
+            Assert.assertTrue("Assert total is equal to 30" + " result was : " + result.getString("total"), result.getString("total").equals("30"));
         }
     }
 
     @Test
     public void ObservationStateTest() throws Exception {
 
-        dataProducerHelper.wipeAllCases();
-        dataProducer.createDeclarationsForStateIndlagtObservationTest();
-
         JSONObject properties = new JSONObject();
         properties.put("method", "observation");
+        properties.put("sort", "@rm:creationDate");
+        properties.put("desc", "false");
 
         JSONObject data = new JSONObject();
 

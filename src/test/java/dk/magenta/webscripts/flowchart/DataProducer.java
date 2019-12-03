@@ -60,6 +60,94 @@ public class DataProducer extends AbstractAlfrescoIT {
     }
 
 
+
+    public void createALL() throws JSONException, InterruptedException{
+
+
+// I området ”Arrestanter” findes de sager som har Status enten Ambulant/Arrestant eller Ambulant/Surrogatbehandling - behøver ikke en tildelt
+
+
+            // postive hits: 30 stk.
+
+            dataProducerUtils.createDeclarations(10, "Ambulant/arrestant", "", "", "Hansen, Anne Marie");
+            dataProducerUtils.createDeclarations(10, "Ambulant/arrestant", "", "", "");
+            dataProducerUtils.createDeclarations(10, "Ambulant/surrogatanbragt", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+
+
+            List<NodeRef> closed = dataProducerUtils.createDeclarations(15, "Ambulant/arrestant", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("closed","true");
+
+            Map<QName, Serializable> properties = JSONUtils.getMap(jsonObject);
+
+            Iterator i = closed.iterator();
+
+            while (i.hasNext()) {
+                NodeRef nodeRef = (NodeRef)i.next();
+                entryBean.updateEntry(nodeRef,properties);
+            }
+
+            closed = dataProducerUtils.createDeclarations(15, "Ambulant/arrestant", "", "", "");
+
+
+            jsonObject = new JSONObject();
+            jsonObject.put("closed","true");
+
+            properties = JSONUtils.getMap(jsonObject);
+
+            i = closed.iterator();
+
+            while (i.hasNext()) {
+                NodeRef nodeRef = (NodeRef)i.next();
+                entryBean.updateEntry(nodeRef,properties);
+            }
+
+// I området ”Indlagte” findes de sager som har Status Indlagt til observation
+
+            // positive hits: 13 stk.
+
+
+            dataProducerUtils.createDeclarations(5, "Indlagt til observation", "", "", "Hansen, Anne Marie");
+            dataProducerUtils.createDeclarations(8, "Indlagt til observation", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+
+
+            closed = dataProducerUtils.createDeclarations(5, "Indlagt til observation", "Harees, Farahna\t- lægekonsulent, speciallæge i psykiatri", "", "");
+
+
+            jsonObject = new JSONObject();
+            jsonObject.put("closed","true");
+
+            properties = JSONUtils.getMap(jsonObject);
+
+            i = closed.iterator();
+
+            while (i.hasNext()) {
+                NodeRef nodeRef = (NodeRef)i.next();
+                entryBean.updateEntry(nodeRef,properties);
+            }
+
+            closed = dataProducerUtils.createDeclarations(5, "Indlagt til observation", "", "", "Hansen, Anne Marie");
+
+
+            jsonObject = new JSONObject();
+            jsonObject.put("closed","true");
+
+            properties = JSONUtils.getMap(jsonObject);
+
+            i = closed.iterator();
+
+            while (i.hasNext()) {
+                NodeRef nodeRef = (NodeRef)i.next();
+                entryBean.updateEntry(nodeRef,properties);
+            }
+
+
+
+    }
+
+
     public void createDeclarationsForStateIndlagtObservationTest() throws JSONException, InterruptedException {
 
         // I området ”Indlagte” findes de sager som har Status Indlagt til observation
