@@ -128,6 +128,7 @@
 		<property name="mimetypeService" ref="mimetypeService"/>
 		<property name="authenticationService" ref="authenticationService"/>
 		<property name="personService" ref="personService"/>
+		<property name="lockService" ref="lockService"/>
 	</bean>
 
 	<bean id="webscript.contents.movecontent.post" class="dk.magenta.webscripts.contents.MoveContent" parent="webscript">
