@@ -44,6 +44,7 @@
         <property name="contentService" ref="contentService"/>
         <property name="authenticationService" ref="AuthenticationService"/>
         <property name="personService" ref="PersonService"/>
+        <property name="siteService" ref="siteService"/>
     </bean>
 
     <bean id="documentTemplateBean" class="dk.magenta.beans.DocumentTemplateBean">

@@ -18,8 +18,6 @@ public class QueryUtils {
     }
 
     public static String getParameterQuery (String paramKey, String paramValue, boolean not) {
-        System.out.println("hvad er paramvalue");
-        System.out.println(paramValue);
 
         if (not) {
             return "!@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + paramValue + "\"";
@@ -30,9 +28,6 @@ public class QueryUtils {
     }
 
     public static String getParametersQuery (String paramKey, String paramValue, boolean not) {
-        System.out.println("hvad er paramvalue");
-        System.out.println(paramValue);
-
 
         if (not) {
             if (paramValue.contains("[")) {
@@ -108,8 +103,6 @@ public class QueryUtils {
                 query += " AND " + getParametersQuery(key, value, true);
 
             } else {
-                System.out.println("hvad er tilføjet: ");
-                System.out.println(getParametersQuery(key, value, false));
                 query += " AND " + getParametersQuery(key, value, false);
             }
 

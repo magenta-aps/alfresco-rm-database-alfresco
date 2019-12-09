@@ -70,10 +70,11 @@ public class GetPaginetedEntries extends AbstractWebScript {
             // setup query
 
             JSONObject input = new JSONObject(c.getContent());
-            JSONArray queryArray = new JSONArray();
 
-            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
-            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+            System.out.println("hvad er input");
+            System.out.println(input);
+
+            JSONArray queryArray = new JSONArray();
 
             LocalDateTime f_date = null;
 
@@ -81,17 +82,15 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             if (input.has("createdFromDate")) {
                 JSONObject o = new JSONObject();
-                f_date = LocalDateTime.parse(input.getString("createdFromDate"), inputFormatter).plusHours(1);
 
-                String f_formattedDate = outputFormatter.format(f_date);
-                System.out.println("hvad er f" + f_formattedDate    );
+                String f_formattedDate = (String)input.get("createdFromDate");
 
                 o.put("key", "creationDate");
 
                 if (input.has("createdToDate")) {
 
-                    LocalDateTime t_date = LocalDateTime.parse(input.getString("createdToDate"), inputFormatter).plusHours(1);
-                    String t_formattedDate = outputFormatter.format(t_date);
+
+                    String t_formattedDate = (String)input.get("createdToDate");
                     o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, t_formattedDate));
                 }
                 else {
@@ -102,8 +101,8 @@ public class GetPaginetedEntries extends AbstractWebScript {
             }
             else if (input.has("createdToDate")) {
                 JSONObject o = new JSONObject();
-                LocalDateTime t_date = LocalDateTime.parse(input.getString("createdToDate"), inputFormatter).plusHours(1);
-                String t_formattedDate = outputFormatter.format(t_date);
+
+                String t_formattedDate = (String)input.get("createdToDate");
                 o.put("key", "creationDate");
                 o.put("value", QueryUtils.dateRangeQuery("MIN",t_formattedDate));
                 o.put("include", true);
@@ -115,16 +114,15 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             if (input.has("declarationFromDate")) {
                 JSONObject o = new JSONObject();
-                f_date = LocalDateTime.parse(input.getString("declarationFromDate"), inputFormatter).plusHours(1);
-                String f_formattedDate = outputFormatter.format(f_date);
-                System.out.println("hvad er f" + f_formattedDate    );
+
+                String f_formattedDate = (String)input.get("declarationFromDate");
 
                 o.put("key", "declarationDate");
 
                 if (input.has("declarationToDate")) {
 
-                    LocalDateTime t_date = LocalDateTime.parse(input.getString("declarationToDate"), inputFormatter).plusHours(1);
-                    String t_formattedDate = outputFormatter.format(t_date);
+
+                    String t_formattedDate = (String)input.get("declarationToDate");
                     o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, t_formattedDate));
                 }
                 else {
@@ -135,8 +133,8 @@ public class GetPaginetedEntries extends AbstractWebScript {
             }
             else if (input.has("declarationToDate")) {
                 JSONObject o = new JSONObject();
-                LocalDateTime t_date = LocalDateTime.parse(input.getString("declarationToDate"), inputFormatter).plusHours(1);
-                String t_formattedDate = outputFormatter.format(t_date);
+
+                String t_formattedDate = (String)input.get("declarationToDate");
                 o.put("key", "declarationDate");
                 o.put("value", QueryUtils.dateRangeQuery("MIN",t_formattedDate));
                 o.put("include", true);
@@ -153,7 +151,6 @@ public class GetPaginetedEntries extends AbstractWebScript {
             }
 
             if (input.has("mainCharge")) {
-                System.out.println("show me the maincharge" + input.get("mainCharge"));
                 JSONObject o = new JSONObject();
                 o.put("key", "mainCharge");
                 o.put("value", input.get("mainCharge"));
@@ -387,4 +384,3 @@ public class GetPaginetedEntries extends AbstractWebScript {
 // F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/database/retspsyk/entry/445644-4545-4564-8848-1849155'
 
 //http://localhost:8080/alfresco/service/database/retspsyk/page_entries?skip=0&maxItems=10&keyValue=[{"key":"cprNumber","value" : "220111571234", "include" : "true"}]
-

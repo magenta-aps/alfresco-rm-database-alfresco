@@ -60,6 +60,14 @@ public class MailBean {
 
     private NodeService nodeService;
 
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    private SiteService siteService;
+
+    private String siteShortName = "Retspsyk";
+
     public void setPersonService(PersonService personService) {
         this.personService = personService;
     }
@@ -181,7 +189,6 @@ public class MailBean {
 
             msg.setContent(multipart);
 
-//            Transport.send(msg, "magentatestdokument2018@gmail.com", "alexandersnegl");
             Transport.send(msg);
 
             // cleanup the genereted pdfs
@@ -203,13 +210,14 @@ public class MailBean {
 
         String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);
 
+        NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
+
         // Create new PDF
         Map<QName, Serializable> documentLibaryProps = new HashMap<>();
         documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
 
-        NodeRef parent = nodeService.getPrimaryParent(source).getParentRef();
 
-        ChildAssociationRef pdf = nodeService.createNode(parent, ContentModel.ASSOC_CONTAINS,
+        ChildAssociationRef pdf = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS,
                 QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
                 ContentModel.TYPE_CONTENT, documentLibaryProps);
 
