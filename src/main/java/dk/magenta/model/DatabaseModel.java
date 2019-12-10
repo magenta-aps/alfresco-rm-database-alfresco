@@ -105,13 +105,20 @@ public interface DatabaseModel {
     String PROP_TMP = "tmp";
 
     String PROP_PSYCOLOGICALDOCUMENT = "Psyk test.odt";
+    String PROP_PSYCOLOGICALDOCUMENT_BUA = "Psyk test_bua.odt";
 
     // template docs
     String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke";
     String PROP_TEMPLATE_DOC_KENDELSE = "kendelse";
 
+    String PROP_TEMPLATE_DOC_SAMTYKKE_BUA = "samtykke_bua";
+    String PROP_TEMPLATE_DOC_KENDELSE_BUA = "kendelse_bua";
+
     String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME = "samtykke.odt";
     String PROP_TEMPLATE_DOC_KENDELSE_FILENAME = "kendelse.odt";
+
+    String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME_BUA = "samtykke_bua.odt";
+    String PROP_TEMPLATE_DOC_KENDELSE_FILENAME_BUA = "kendelse_bua.odt";
 
     String PROP_LOGFORMAILS = "mail_kvitteringer.txt";
 

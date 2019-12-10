@@ -83,7 +83,7 @@ public class DocumentTemplateBean {
 
             NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
-            List<String> list = Arrays.asList(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE_FILENAME);
+            List<String> list = Arrays.asList(((nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) ? DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE_FILENAME_BUA : DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE_FILENAME));
             List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
 
             NodeRef template_doc = children.get(0).getChildRef();
@@ -95,7 +95,7 @@ public class DocumentTemplateBean {
 
             NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
-            List<String> list = Arrays.asList(DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME);
+            List<String> list = Arrays.asList(((nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) ? DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME_BUA : DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME));
             List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
 
             NodeRef template_doc = children.get(0).getChildRef();
@@ -104,15 +104,15 @@ public class DocumentTemplateBean {
         }
 
         NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
-        List<String> list = Arrays.asList(DatabaseModel.PROP_PSYCOLOGICALDOCUMENT);
+        List<String> list = Arrays.asList((nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) ? DatabaseModel.PROP_PSYCOLOGICALDOCUMENT_BUA : DatabaseModel.PROP_PSYCOLOGICALDOCUMENT);
         List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
 
         NodeRef template_doc = children.get(0).getChildRef();
 
         NodeRef psycologicalDocument = this.generatePsycologicalDocumen(template_doc, declaration);
 
-
         permissionService.setPermission(new NodeRef("workspace://SpacesStore/" + documentNodeRef), DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
+        permissionService.setPermission(new NodeRef("workspace://SpacesStore/" + psycologicalDocument), DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
 
         return documentNodeRef;
     }
@@ -131,10 +131,6 @@ public class DocumentTemplateBean {
         info.by = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_CITY);
 
 
-
-
-
-
         info.laege = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
 
         int sagsnummer = (int)nodeService.getProperty(declaration, DatabaseModel.PROP_CASE_NUMBER);
@@ -142,8 +138,6 @@ public class DocumentTemplateBean {
 
         String journalnummer = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_JOURNALNUMMER);
         info.journalnummer = journalnummer;
-
-
 
         info.politikreds = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_REFERING_AGENCY);
 
