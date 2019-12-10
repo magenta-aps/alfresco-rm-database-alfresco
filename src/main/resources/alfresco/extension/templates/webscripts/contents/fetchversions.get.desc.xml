@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Gets version</shortname>
+    <description>gets versions</description>
+    <url>/contents/fetchversions</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

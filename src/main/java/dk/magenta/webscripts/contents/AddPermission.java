@@ -150,6 +150,7 @@ public class AddPermission extends AbstractWebScript {
                 }
             }
             else {
+                System.out.println("sætter admin og delete");
                 NodeRef n = new NodeRef(( String)json.get("nodeRef"));
                 permissionService.setPermission(n, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
             }

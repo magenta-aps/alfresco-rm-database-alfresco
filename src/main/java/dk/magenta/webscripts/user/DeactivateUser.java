@@ -85,9 +85,26 @@ public class DeactivateUser extends AbstractWebScript {
             Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
 
             String userName = params.get("userName");
+            System.out.println("hvad er username");
+            System.out.println(userName);
 
             siteService.removeMembership("retspsyk", userName);
             authorityService.removeAuthority(DatabaseModel.GROUP_ALLOWEDTODELETE, userName);
+
+            System.out.println("removing from " + DatabaseModel.GROUP_TEMPLATEFOLDERVALUEMANAGER);
+
+            authorityService.removeAuthority(DatabaseModel.GROUP_TEMPLATEFOLDERVALUEMANAGER, userName);
+
+
+            System.out.println("member of: ");
+            System.out.println(authorityService.getAuthoritiesForUser(userName));
+
+
+
+
+            authorityService.removeAuthority(DatabaseModel.GROUP_SITEENTRYLOCKMANAGER, userName);
+            authorityService.removeAuthority(DatabaseModel.GROUP_SITEPROPERTYVALUEMANAGER, userName);
+            authorityService.removeAuthority(DatabaseModel.GROUP_SITEROLEMANAGER, userName);
 
             AuthenticationUtil.clearCurrentSecurityContext();
 

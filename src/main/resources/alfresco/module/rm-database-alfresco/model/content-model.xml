@@ -366,6 +366,7 @@
         </aspect>
 
 
+
          <!--additional data added from the flowchart module -->
 
         <aspect name="rm:flowchart">
@@ -411,6 +412,21 @@
             </properties>
         </aspect>
 
+
+
+
+        <aspect name="rm:version_previewable">
+            <title>Enables saving versions as live nodes for preview</title>
+            <associations>
+                <child-association name="rm:version_preview">
+                    <target>
+                        <class>cm:content</class>
+                        <many>true</many>
+                    </target>
+                    <duplicate>false</duplicate>
+                </child-association>
+            </associations>
+        </aspect>
 
 
     </aspects>

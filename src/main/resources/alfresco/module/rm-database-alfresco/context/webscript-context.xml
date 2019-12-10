@@ -137,6 +137,7 @@
 		<property name="mimetypeService" ref="mimetypeService"/>
 		<property name="authenticationService" ref="authenticationService"/>
 		<property name="personService" ref="personService"/>
+		<property name="lockService" ref="lockService"/>
 	</bean>
 
 	<bean id="webscript.contents.movecontent.post" class="dk.magenta.webscripts.contents.MoveContent" parent="webscript">
@@ -157,6 +158,17 @@
 		<property name="nodeService" ref="nodeService"/>
 	</bean>
 
+	<bean id="webscript.contents.revert.post" class="dk.magenta.webscripts.contents.Revert" parent="webscript">
+		<property name="permissionService" ref="permissionService"/>
+		<property name="searchService" ref="searchService"/>
+		<property name="siteService" ref="siteService"/>
+		<property name="nodeService" ref="nodeService"/>
+		<property name="VersionService" ref="VersionService"/>
+		<property name="authorityService" ref="authorityService"/>
+		<property name="contentsBean" ref="contentsBean"/>
+		<property name="authenticationService" ref="authenticationService"/>
+	</bean>
+
 	<bean id="webscript.contents.rename.post" class="dk.magenta.webscripts.contents.Rename" parent="webscript">
 		<property name="nodeService" ref="nodeService"/>
 		<property name="contentsBean" ref="contentsBean"/>
@@ -175,6 +187,14 @@
 	</bean>
 
 	<bean id="webscript.contents.getdownloadstatus.get" class="dk.magenta.webscripts.contents.GetDownloadStatus" parent="webscript">
+		<property name="contentsBean" ref="contentsBean"/>
+	</bean>
+
+	<bean id="webscript.contents.fetchversions.get" class="dk.magenta.webscripts.contents.FetchVersions" parent="webscript">
+		<property name="contentsBean" ref="contentsBean"/>
+	</bean>
+
+	<bean id="webscript.contents.getthumbnail.get" class="dk.magenta.webscripts.contents.GetThumbnail" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 

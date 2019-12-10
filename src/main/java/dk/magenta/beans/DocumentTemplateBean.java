@@ -83,7 +83,7 @@ public class DocumentTemplateBean {
 
             NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
-            List<String> list = Arrays.asList(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE_FILENAME);
+            List<String> list = Arrays.asList(((nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) ? DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE_FILENAME_BUA : DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE_FILENAME));
             List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
 
             NodeRef template_doc = children.get(0).getChildRef();
@@ -95,7 +95,7 @@ public class DocumentTemplateBean {
 
             NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
-            List<String> list = Arrays.asList(DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME);
+            List<String> list = Arrays.asList(((nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) ? DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME_BUA : DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME));
             List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
 
             NodeRef template_doc = children.get(0).getChildRef();
@@ -103,7 +103,16 @@ public class DocumentTemplateBean {
             documentNodeRef = this.generateOfferLetterDocumentSamtykke(template_doc, declaration);
         }
 
+        NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+        List<String> list = Arrays.asList((nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) ? DatabaseModel.PROP_PSYCOLOGICALDOCUMENT_BUA : DatabaseModel.PROP_PSYCOLOGICALDOCUMENT);
+        List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
+
+        NodeRef template_doc = children.get(0).getChildRef();
+
+        NodeRef psycologicalDocument = this.generatePsycologicalDocumen(template_doc, declaration);
+
         permissionService.setPermission(new NodeRef("workspace://SpacesStore/" + documentNodeRef), DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
+        permissionService.setPermission(new NodeRef("workspace://SpacesStore/" + psycologicalDocument), DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
 
         return documentNodeRef;
     }
@@ -122,10 +131,6 @@ public class DocumentTemplateBean {
         info.by = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_CITY);
 
 
-
-
-
-
         info.laege = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
 
         int sagsnummer = (int)nodeService.getProperty(declaration, DatabaseModel.PROP_CASE_NUMBER);
@@ -133,8 +138,6 @@ public class DocumentTemplateBean {
 
         String journalnummer = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_JOURNALNUMMER);
         info.journalnummer = journalnummer;
-
-
 
         info.politikreds = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_REFERING_AGENCY);
 
@@ -206,7 +209,7 @@ public class DocumentTemplateBean {
 
         // make the new document below the case
 
-        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "erklaering.odt", ContentModel.TYPE_CONTENT);
+        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "_erklaering.odt", ContentModel.TYPE_CONTENT);
 
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
@@ -265,7 +268,7 @@ public class DocumentTemplateBean {
 
         // make the new document below the case
 
-        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,6) + "erklaering.odt", ContentModel.TYPE_CONTENT);
+        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,6) + "_erklaering.odt", ContentModel.TYPE_CONTENT);
 
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
@@ -277,6 +280,47 @@ public class DocumentTemplateBean {
         writer.putContent(f);
 
         return newFile.getNodeRef().getId();
+    }
+
+    public NodeRef generatePsycologicalDocumen(NodeRef templateDoc, NodeRef declaration) throws Exception {
+
+        DeclarationInfo info = this.getProperties(declaration);
+//        System.out.println("hvad er cpr:  " + info.cpr);
+//        System.out.println("hvad er fornavn:  " + info.fornavn);
+//        System.out.println("hvad er efternavn:  " + info.efternavn);
+//        System.out.println("hvad er post:  " + info.postnr);
+//        System.out.println("hvad er by:  " + info.by);
+//        System.out.println("amlb:  " + info.ambldato);
+//        System.out.println("laege:  " + info.laege);
+//        System.out.println("journalnummer:  " + info.journalnummer);
+//        System.out.println("sagsnr:  " + info.sagsnr);
+
+        NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+
+
+        ContentReader contentReader = contentService.getReader(templateDoc, ContentModel.PROP_CONTENT);
+        TextDocument templateDocument = TextDocument.loadDocument(contentReader.getContentInputStream());
+
+        VariableField candidateVar = templateDocument.getVariableFieldByName("CPR");
+        candidateVar.updateField(info.cpr, null);
+
+        VariableField navn = templateDocument.getVariableFieldByName("NAVN");
+        navn.updateField(info.fornavn + " " + info.efternavn, null);
+
+        // make the new document below the case
+
+        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,6) + "_psykundersøgelse.odt", ContentModel.TYPE_CONTENT);
+
+
+        ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
+        writer.setMimetype("application/vnd.oasis.opendocument.text");
+
+        File f = new File("tmp");
+
+        templateDocument.save(f);
+        writer.putContent(f);
+
+        return newFile.getNodeRef();
     }
 
     private class DeclarationInfo {

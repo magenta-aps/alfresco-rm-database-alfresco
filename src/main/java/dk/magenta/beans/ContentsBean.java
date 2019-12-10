@@ -3,6 +3,8 @@ package dk.magenta.beans;
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.model.Repository;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.version.VersionModel;
 import org.alfresco.service.cmr.download.DownloadService;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -19,11 +21,13 @@ import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.cmr.version.Version;
 import org.alfresco.service.cmr.version.VersionHistory;
 import org.alfresco.service.cmr.version.VersionService;
+import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -178,6 +182,13 @@ public class ContentsBean {
         return downloadNodeRef;
     }
 
+
+    public void revert() {
+
+
+
+    }
+
     public void moveContent(NodeRef[] requestedNodes, NodeRef dest) throws FileNotFoundException {
 
         for (int i = 0; i <= requestedNodes.length - 1; i++) {
@@ -242,21 +253,44 @@ public class ContentsBean {
         return repository.getCompanyHome();
     }
 
-    public org.json.simple.JSONArray getVersions(NodeRef nodeRef) throws JSONException {
-        org.json.simple.JSONArray result = new org.json.simple.JSONArray();
+
+
+
+    public org.json.JSONArray getVersions(NodeRef nodeRef) throws JSONException {
+        JSONArray result = new JSONArray();
         VersionHistory h = versionService.getVersionHistory(nodeRef);
+        JSONObject json = new JSONObject();
+
 
         if (h != null) {
             Collection<Version> versions = h.getAllVersions();
 
+            String latestVersion = versionService.getCurrentVersion(nodeRef).getVersionLabel();
+
             for (Version v : versions) {
 
-                JSONObject json = new JSONObject();
+                json = new JSONObject();
+                json.put("latest", v.getVersionLabel().equals(latestVersion));
+
                 json.put("parent_nodeRef", nodeRef.getId());
                 json.put("nodeRef", v.getFrozenStateNodeRef().getId());
 
                 String modifier = v.getFrozenModifier();
-                NodeRef personNoderef = personService.getPerson(modifier);
+
+                String metadata_modifier = (String)v.getVersionProperty("{http://www.alfresco.org/model/content/1.0}modifier");
+
+
+                NodeRef personNoderef;
+
+                if (metadata_modifier != null) {
+                    personNoderef = personService.getPerson(metadata_modifier);
+                }
+                else {
+                    personNoderef = personService.getPerson(modifier);
+                }
+
+
+
                 PersonService.PersonInfo personInfo = personService.getPerson(personNoderef);
 
                 String displayName = personInfo.getFirstName() + " " + personInfo.getLastName();
@@ -269,13 +303,74 @@ public class ContentsBean {
 
                 json.put("version", v.getVersionLabel());
 
-                result.add(json);
+                System.out.println("object");
+                System.out.println(json);
+
+                result.put(json);
             }
         }
 
         return result;
     }
 
+    /**
+     * Creates a thumbnail of a version
+     * @param nodeId id of parent node.
+     * @param versionId id of version node.
+     * @return a JSONArray containing a JSONObject 'nodeRef'.
+     */
+    public NodeRef getThumbnail(String nodeId, String versionId, boolean forceUpdate) {
 
 
+        NodeRef nodeRef = new NodeRef("workspace", "SpacesStore", nodeId);
+        NodeRef versionRef = new NodeRef("versionStore", "version2Store", versionId);
+
+        Serializable parentName = nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
+        Serializable versionLabel = nodeService.getProperty(versionRef, ContentModel.PROP_VERSION_LABEL);
+        System.out.println("hvad er versionlabel: " + versionLabel);
+        String name =  "(v. " + versionLabel + ") " + parentName;
+        NodeRef versionPreviewRef = nodeService.getChildByName(nodeRef, DatabaseModel.ASSOC_VERSION_PREVIEW, name);
+
+        System.out.println("indhold af versionPreviewRef");
+        System.out.println(versionPreviewRef);
+
+        if(versionPreviewRef != null && !forceUpdate) {
+            System.out.println("returning the versionPreviewRef");
+            return versionPreviewRef;
+        }
+        else if (forceUpdate && versionPreviewRef != null) {
+            System.out.println("forcing update");
+            nodeService.deleteNode(versionPreviewRef);
+        }
+
+
+
+        AuthenticationUtil.runAs(() -> {
+            // Add version previewable aspect if it is not present
+
+            // Create new preview node of earlier version
+            Map<QName,  Serializable> properties = new HashMap<>();
+            properties.put(ContentModel.PROP_NAME, name);
+            Serializable content = nodeService.getProperty(versionRef, ContentModel.PROP_CONTENT);
+            properties.put(ContentModel.PROP_CONTENT, content);
+            QName cmName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, name);
+            ChildAssociationRef childAssocRef = nodeService.createNode(
+                    nodeRef,
+                    DatabaseModel.ASSOC_VERSION_PREVIEW,
+                    cmName,
+                    ContentModel.TYPE_CONTENT,
+                    properties);
+
+            System.out.println("the new preview");
+            System.out.println(childAssocRef.getChildRef());
+
+            nodeService.addAspect(childAssocRef.getChildRef(), ContentModel.ASPECT_HIDDEN, null);
+            return true;
+        }, AuthenticationUtil.getSystemUserName());
+        versionPreviewRef = nodeService.getChildByName(nodeRef, DatabaseModel.ASSOC_VERSION_PREVIEW, name);
+        if(versionPreviewRef != null)
+            return versionPreviewRef;
+        else
+            return null;
+    }
 }

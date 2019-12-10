@@ -131,8 +131,6 @@ public class EntryBean {
 
         Iterator i = children.iterator();
 
-
-
         while (i.hasNext()) {
 
             ChildAssociationRef child = (ChildAssociationRef)i.next();
@@ -151,6 +149,7 @@ public class EntryBean {
         if (bua) {
             nodeService.addAspect(nodeRef, DatabaseModel.ASPECT_BUA,null);
         }
+
         return nodeRef;
     }
 

@@ -116,12 +116,8 @@ public class QueryUtils {
                 query += " AND " + getParametersQuery(key, value, true);
 
             } else {
-//                System.out.println("hvad er tilføjet: ");
-//                System.out.println(getParametersQuery(key, value, false));
                 query += " AND " + getParametersQuery(key, value, false);
             }
-
-//            System.out.println(key + ":" + value);
         }
         return query;
     }

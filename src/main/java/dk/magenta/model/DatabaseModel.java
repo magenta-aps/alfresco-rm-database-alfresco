@@ -114,13 +114,23 @@ public interface DatabaseModel {
     // Containers
     String PROP_VALUES = "propertyValues";
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
+    String PROP_TMP = "tmp";
+
+    String PROP_PSYCOLOGICALDOCUMENT = "Psyk test.odt";
+    String PROP_PSYCOLOGICALDOCUMENT_BUA = "Psyk test_bua.odt";
 
     // template docs
     String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke";
     String PROP_TEMPLATE_DOC_KENDELSE = "kendelse";
 
+    String PROP_TEMPLATE_DOC_SAMTYKKE_BUA = "samtykke_bua";
+    String PROP_TEMPLATE_DOC_KENDELSE_BUA = "kendelse_bua";
+
     String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME = "samtykke.odt";
     String PROP_TEMPLATE_DOC_KENDELSE_FILENAME = "kendelse.odt";
+
+    String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME_BUA = "samtykke_bua.odt";
+    String PROP_TEMPLATE_DOC_KENDELSE_FILENAME_BUA = "kendelse_bua.odt";
 
     String PROP_LOGFORMAILS = "mail_kvitteringer.txt";
 
@@ -144,9 +154,14 @@ public interface DatabaseModel {
 
     // groups
     String GROUP_ALLOWEDTODELETE = "GROUP_site_retspsyk_ALLOWEDTODELETE";
+    String GROUP_TEMPLATEFOLDERVALUEMANAGER = "GROUP_site_retspsyk_TemplateFolderValueManager";
+    String GROUP_SITEROLEMANAGER = "GROUP_site_retspsyk_SiteRoleManager";
+    String GROUP_SITEPROPERTYVALUEMANAGER = "GROUP_site_retspsyk_SitePropertyValueManager";
+    String GROUP_SITEENTRYLOCKMANAGER = "GROUP_site_retspsyk_SiteEntryLockManager";
 
     String MONTHLY_REPORT_SPREADSHEET_NAME = "rapport.ods";
 
 
+    QName ASSOC_VERSION_PREVIEW = QName.createQName(RM_MODEL_URI, "version_preview");
 
 }

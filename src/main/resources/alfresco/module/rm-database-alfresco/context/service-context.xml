@@ -29,6 +29,7 @@
         <property name="downloadService" ref="DownloadService"/>
         <property name="repository" ref="repositoryHelper"/>
         <property name="fileFolderService" ref="fileFolderService"/>
+        <property name="versionService" ref="versionService"/>
     </bean>
 
     <bean id="databaseBean" class="dk.magenta.beans.DatabaseBean">
@@ -44,6 +45,7 @@
         <property name="contentService" ref="contentService"/>
         <property name="authenticationService" ref="AuthenticationService"/>
         <property name="personService" ref="PersonService"/>
+        <property name="siteService" ref="siteService"/>
     </bean>
 
     <bean id="flowChartBean" class="dk.magenta.beans.FlowChartBean">
