@@ -35,6 +35,7 @@ public class MergeDocTemplate extends AbstractWebScript {
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
         Content c = webScriptRequest.getContent();
         System.out.println("status på mailBean" + documentTemplateBean);
+        System.out.println("der er noget galt");
         JSONObject json = null;
 
         try {
