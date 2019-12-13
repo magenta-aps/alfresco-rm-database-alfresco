@@ -86,6 +86,8 @@ public class DocumentTemplateBean {
 
         if (type.equals(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE)) {
 
+            System.out.println("hep1");
+
             NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
             List<String> list = Arrays.asList(((nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) ? DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE_FILENAME_BUA : DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE_FILENAME));
@@ -115,6 +117,9 @@ public class DocumentTemplateBean {
         NodeRef template_doc = children.get(0).getChildRef();
 
         NodeRef psycologicalDocument = this.generatePsycologicalDocumen(template_doc, declaration);
+
+        System.out.println("documentNodeRef" + documentNodeRef);
+        System.out.println("psycologicalDocument" + psycologicalDocument);
 
         permissionService.setPermission(new NodeRef("workspace://SpacesStore/" + documentNodeRef), DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
         permissionService.setPermission(new NodeRef("workspace://SpacesStore/" + psycologicalDocument), DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
