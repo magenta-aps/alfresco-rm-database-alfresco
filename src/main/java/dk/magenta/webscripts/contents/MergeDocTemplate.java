@@ -34,14 +34,10 @@ public class MergeDocTemplate extends AbstractWebScript {
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
         Content c = webScriptRequest.getContent();
-        System.out.println("status på mailBean" + documentTemplateBean);
-        System.out.println("der er noget galt");
         JSONObject json = null;
 
         try {
             json = new JSONObject(c.getContent());
-            System.out.println(json);
-
 
         webScriptResponse.setContentEncoding("UTF-8");
         webScriptWriter = webScriptResponse.getWriter();
