@@ -76,6 +76,11 @@ public class DocumentTemplateBean {
     public String populateDocument(NodeRef declaration, String type, String retten, String dato) throws Exception{
 
 
+        System.out.println("er det en bua sag?");
+        System.out.println(nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA));
+        System.out.println(nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA));
+        System.out.println(nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA));
+
         String documentNodeRef = null;
 
 
