@@ -122,7 +122,7 @@ public class DocumentTemplateBean {
         System.out.println("psycologicalDocument" + psycologicalDocument);
 
         permissionService.setPermission(new NodeRef("workspace://SpacesStore/" + documentNodeRef), DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
-        permissionService.setPermission(new NodeRef("workspace://SpacesStore/" + psycologicalDocument), DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
+        permissionService.setPermission(psycologicalDocument, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
 
         return documentNodeRef;
     }
