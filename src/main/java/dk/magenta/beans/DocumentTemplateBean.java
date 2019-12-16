@@ -75,18 +75,10 @@ public class DocumentTemplateBean {
 
     public String populateDocument(NodeRef declaration, String type, String retten, String dato) throws Exception{
 
-
-        System.out.println("er det en bua sag?");
-        System.out.println(nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA));
-        System.out.println(nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA));
-        System.out.println(nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA));
-
         String documentNodeRef = null;
 
 
         if (type.equals(DatabaseModel.PROP_TEMPLATE_DOC_KENDELSE)) {
-
-            System.out.println("hep1");
 
             NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
@@ -117,9 +109,6 @@ public class DocumentTemplateBean {
         NodeRef template_doc = children.get(0).getChildRef();
 
         NodeRef psycologicalDocument = this.generatePsycologicalDocumen(template_doc, declaration);
-
-        System.out.println("documentNodeRef" + documentNodeRef);
-        System.out.println("psycologicalDocument" + psycologicalDocument);
 
         permissionService.setPermission(new NodeRef("workspace://SpacesStore/" + documentNodeRef), DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
         permissionService.setPermission(psycologicalDocument, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
@@ -311,11 +300,25 @@ public class DocumentTemplateBean {
         ContentReader contentReader = contentService.getReader(templateDoc, ContentModel.PROP_CONTENT);
         TextDocument templateDocument = TextDocument.loadDocument(contentReader.getContentInputStream());
 
-        VariableField candidateVar = templateDocument.getVariableFieldByName("CPR");
-        candidateVar.updateField(info.cpr, null);
 
-        VariableField navn = templateDocument.getVariableFieldByName("NAVN");
-        navn.updateField(info.fornavn + " " + info.efternavn, null);
+        if (nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) {
+            VariableField candidateVar = templateDocument.getVariableFieldByName("cpr");
+            candidateVar.updateField(info.cpr, null);
+
+            VariableField navn = templateDocument.getVariableFieldByName("Navn");
+            navn.updateField(info.fornavn + " " + info.efternavn, null);
+        }
+        else {
+
+            VariableField candidateVar = templateDocument.getVariableFieldByName("CPR");
+            candidateVar.updateField(info.cpr, null);
+
+            VariableField navn = templateDocument.getVariableFieldByName("NAVN");
+            navn.updateField(info.fornavn + " " + info.efternavn, null);
+
+        }
+
+
 
         // make the new document below the case
 
