@@ -67,9 +67,6 @@ public class ValidateTemplateName extends AbstractWebScript {
             NodeRef n = new NodeRef((String) json.get("nodeRef"));
             String templateType = (String) json.get("templateType");
 
-            System.out.println("hvad er json");
-            System.out.println(json);
-
 
             FileInfo newNode = fileFolderService.create(nodeService.getPrimaryParent(n).getParentRef(), "tmp", org.alfresco.model.ContentModel.TYPE_CONTENT);
 

@@ -52,7 +52,6 @@ public class PropertyValuesBean {
             JSONObject result = new JSONObject();
 
             for (FileInfo fileInfo : fileInfos) {
-                System.out.println("fileinfo" + fileInfo.getName());
                 JSONArray values = new JSONArray();
                 NodeRef nodeRef = fileInfo.getNodeRef();
                 ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
@@ -150,10 +149,6 @@ public class PropertyValuesBean {
         for (int i=0; i<= doctor.length()-1; i++) {
 
             String s = doctor.getString(i);
-            System.out.println("s");
-            System.out.println(s);
-            System.out.println("s.contains(userName");
-            System.out.println(s.contains(userName));
 
             if (s.contains(userName)) {
                 s = s.replace("(" + userName +")","").trim();

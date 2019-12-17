@@ -128,9 +128,6 @@ public class StatBean {
 
             query = query + " AND -ASPECT:\"rm:bua\"";
 
-            System.out.println("the query");
-            System.out.println(query);
-
             List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(query);
 
 
@@ -226,13 +223,7 @@ public class StatBean {
                     nodeService.addAspect(childRef, DatabaseModel.ASPECT_STAT, aspectProps);
 
                 }
-                System.out.println("hvad er shared noderef");
-                System.out.println(sharedNodeRef);
-                System.out.println("hvad er shared noderef");
 
-                System.out.println("hvad er spreadsheet noderef");
-                System.out.println(childRef);
-                System.out.println("hvad er spreadsheet noderef");
 
 
 
@@ -259,15 +250,6 @@ public class StatBean {
         return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
 
             try {
-
-
-                System.out.println("hvad er override");
-                System.out.println(override);
-                System.out.println("hvad er override_months");
-                System.out.println(override_months);
-
-
-
 
 
                 NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRef();

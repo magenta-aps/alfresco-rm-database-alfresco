@@ -12,6 +12,7 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+import org.apache.cxf.wsdl11.SOAPBindingUtil;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -114,20 +115,18 @@ public  class DataProducerHelper extends AbstractAlfrescoIT {
 
 
     public void unlock(NodeRef child) {
-        List<ChildAssociationRef> children = nodeService.getChildAssocs(child);
 
-        if (children.size() == 0) {
+        List<ChildAssociationRef> children = nodeService.getChildAssocs(child);
 
             if (lockService.isLocked(child)) {
                 lockService.unlock(child);
             }
-        }
-        else {
+
             for (int i = 0; i <= children.size()-1;i++) {
                 NodeRef subChild = children.get(i).getChildRef();
                 unlock(subChild);
             }
-        }
+
     }
 
 

@@ -46,7 +46,7 @@ public class MergeDocTemplate extends AbstractWebScript {
         Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
 
         String nodeRef = params.get("nodeRef");
-        System.out.println(nodeRef);
+
 
         if (json.has("type")) {
 
@@ -87,7 +87,6 @@ public class MergeDocTemplate extends AbstractWebScript {
 
         }
         catch (org.alfresco.service.cmr.model.FileExistsException e) {
-            System.out.println(e.toString());
             result = JSONUtils.getError("document already exists");
             JSONUtils.write(webScriptWriter, result);
         }

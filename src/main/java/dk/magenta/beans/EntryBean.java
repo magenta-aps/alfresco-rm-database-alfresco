@@ -246,10 +246,6 @@ public class EntryBean {
         Serializable locked_for_edit_by = nodeService.getProperty(entryRef, DatabaseModel.PROP_LOCKED_FOR_EDIT_BY);
 
 
-        System.out.println(currentUser);
-        System.out.println(locked_for_edit);
-        System.out.println(locked_for_edit_by);
-
         // initialize locked_for_edit
         if (locked_for_edit == null) {
             locked_for_edit = false;
@@ -405,8 +401,6 @@ public class EntryBean {
         Date declaration = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_DECLARATION_DATE);
         Date observation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
 
-        System.out.println(declaration);
-        System.out.println(observation);
 
 
         if (declaration == null || observation == null) {
@@ -492,10 +486,6 @@ public class EntryBean {
 
         ResultSet resultSet = searchService.query(sp);
 
-
-        System.out.println("the query.... ****");
-        System.out.println(sp.getQuery());
-
         return resultSet.getNodeRefs();
     }
 
@@ -513,10 +503,6 @@ public class EntryBean {
         sp.setSkipCount(skip);
         sp.addSort(sort, desc);
         ResultSet resultSet = searchService.query(sp);
-
-
-        System.out.println("the query.... ****");
-        System.out.println(sp.getQuery());
 
         return resultSet.getNodeRefs();
     }

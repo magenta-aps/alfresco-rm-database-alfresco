@@ -305,8 +305,6 @@ public class DatabaseBean {
         Set<String> authorities = authorityService.getAuthoritiesForUser(username);
 
         for (int i = 0; i < groups.length(); i++) {
-            System.out.println("hvad er add");
-            System.out.println(add);
             String group = groups.getString(i);
             String groupSite = group.split("_")[2];
             if (siteShortName.equals(groupSite))
