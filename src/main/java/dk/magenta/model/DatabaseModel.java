@@ -89,6 +89,9 @@ public interface DatabaseModel {
     int INIT_NEXT_CLOSEDCASES_Y = 2;
 
 
+    QName PROP_BUA_COUNTER = QName.createQName(RM_MODEL_URI, "buaCounter");
+
+
     /* Generic */
     QName PROP_LOCKED_FOR_EDIT = QName.createQName(RM_MODEL_URI, "locked4edit");
     QName PROP_LOCKED_FOR_EDIT_BY = QName.createQName(RM_MODEL_URI, "locked4editBy");
