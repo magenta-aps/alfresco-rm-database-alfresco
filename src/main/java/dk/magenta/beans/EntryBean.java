@@ -74,8 +74,21 @@ public class EntryBean {
     public NodeRef addEntry (String siteShortName, String type, Map<QName, Serializable> properties, boolean bua) throws JSONException {
 
         //Get counter for this site document library
+
+
+
         NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
-        Integer counter = (Integer) nodeService.getProperty(docLibRef, ContentModel.PROP_COUNTER);
+
+        Integer counter;
+
+        if (bua) {
+            counter = (Integer) nodeService.getProperty(docLibRef, DatabaseModel.PROP_BUA_COUNTER);
+        }
+        else {
+            counter = (Integer) nodeService.getProperty(docLibRef, ContentModel.PROP_COUNTER);
+        }
+
+
         if(counter == null)
             counter = 0;
         counter++;
@@ -114,7 +127,15 @@ public class EntryBean {
         NodeRef nodeRef = childAssociationRef.getChildRef();
 
         //Increment the site document library counter when the entry has been created successfully
-        nodeService.setProperty(docLibRef, ContentModel.PROP_COUNTER, counter);
+
+        if (bua) {
+            nodeService.setProperty(docLibRef, DatabaseModel.PROP_BUA_COUNTER, counter);
+        }
+        else {
+            nodeService.setProperty(docLibRef, ContentModel.PROP_COUNTER, counter);
+        }
+
+
 
         // add the contents of the template library
 
