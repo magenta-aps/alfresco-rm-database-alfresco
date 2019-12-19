@@ -262,6 +262,9 @@ public class EntryBean {
 
     public void updateEntry (NodeRef entryRef, Map<QName, Serializable> properties) throws JSONException {
 
+
+        System.out.println("editing now ");
+
         String currentUser = authenticationService.getCurrentUserName();
         Serializable locked_for_edit = nodeService.getProperty(entryRef, DatabaseModel.PROP_LOCKED_FOR_EDIT);
         Serializable locked_for_edit_by = nodeService.getProperty(entryRef, DatabaseModel.PROP_LOCKED_FOR_EDIT_BY);
@@ -284,8 +287,18 @@ public class EntryBean {
             nodeService.addAspect(entryRef, DatabaseModel.ASPECT_FLOWCHART, null);
         }
 
-        for (Map.Entry<QName, Serializable> property : properties.entrySet())
+
+        boolean erklaringdate = false;
+        for (Map.Entry<QName, Serializable> property : properties.entrySet()) {
+
             nodeService.setProperty(entryRef, property.getKey(), property.getValue());
+            if (property.getKey().equals(DatabaseModel.PROP_DECLARATION_DATE)) {
+                erklaringdate = true;
+            }
+        }
+
+
+
 
         String uri = DatabaseModel.RM_MODEL_URI;
         QName closed = QName.createQName(uri, "closed");
@@ -295,6 +308,17 @@ public class EntryBean {
             AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
             lockEntry(entryRef);
         }
+        // check if datefield "erklæaring afgivet is set - then close the case # 31284
+        else if (closedProp == null && erklaringdate) {
+            nodeService.setProperty(entryRef, DatabaseModel.PROP_CLOSED, true);
+            AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+            lockEntry(entryRef);
+        }
+
+
+
+
+
 
 
 
