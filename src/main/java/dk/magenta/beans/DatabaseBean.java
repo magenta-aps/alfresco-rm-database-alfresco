@@ -282,13 +282,7 @@ public class DatabaseBean {
     public JSONObject updateUserRoles(String siteShortName, String username, JSONArray addGroups, JSONArray removeGroups)
             throws JSONException {
 
-        System.out.println("hvad er addGroups" + addGroups);
-
         Set<String> authorities = authorityService.getAuthorities();
-
-        System.out.println("svar fra authorites: nedenunder");
-        System.out.println(authorities.contains("GROUP_site_" + siteShortName + "_SiteRoleManager") || authorities.contains("GROUP_ALFRESCO_ADMINISTRATORS"));
-        System.out.println("svar fra authorites: ovenover");
 
         if(authorities.contains("GROUP_site_" + siteShortName + "_SiteRoleManager") || authorities.contains("GROUP_ALFRESCO_ADMINISTRATORS") ) {
             try {
@@ -310,11 +304,7 @@ public class DatabaseBean {
                                 boolean add) throws JSONException {
         Set<String> authorities = authorityService.getAuthoritiesForUser(username);
 
-        System.out.println("site roles for :" + username);
-
         for (int i = 0; i < groups.length(); i++) {
-            System.out.println("hvad er add");
-            System.out.println(add);
             String group = groups.getString(i);
             String groupSite = group.split("_")[2];
             if (siteShortName.equals(groupSite))
@@ -333,9 +323,10 @@ public class DatabaseBean {
         SiteInfo site = siteService.getSite(siteShortName);
         NodeRef nodeRef = site.getNodeRef();
         Serializable databaseType = nodeService.getProperty(nodeRef, DatabaseModel.PROP_DATABASE_TYPE);
-
-        if(databaseType == null)
+        if(databaseType == null) {
+            System.out.println("the siteshortname is not a database");
             throw new IllegalArgumentException("The site '" + siteShortName + "' is not a database.");
+        }
 
         return databaseType.toString();
     }

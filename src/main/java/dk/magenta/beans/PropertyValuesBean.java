@@ -52,7 +52,6 @@ public class PropertyValuesBean {
             JSONObject result = new JSONObject();
 
             for (FileInfo fileInfo : fileInfos) {
-                System.out.println("fileinfo" + fileInfo.getName());
                 JSONArray values = new JSONArray();
                 NodeRef nodeRef = fileInfo.getNodeRef();
                 ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
@@ -67,6 +66,11 @@ public class PropertyValuesBean {
                 br.close();
 
                 String propertyName = fileInfo.getName().replace(".txt", "");
+
+                // cleanup if socialworker, secretary, doctor or psycologist -
+
+                // TODO code to cleanup
+
                 result.put(propertyName, values);
             }
             propertyValuesMap.put(siteShortName, result);
@@ -99,5 +103,61 @@ public class PropertyValuesBean {
         writer.setEncoding("UTF-8");
         writer.putContent(output.toString());
     }
+
+    public String getUserByUserName (String userName) throws JSONException {
+
+        // secretaries
+
+        JSONObject values = propertyValuesMap.get("retspsyk");
+
+
+
+        JSONArray secretaries = values.getJSONArray("secretary");
+        for (int i=0; i<= secretaries.length()-1; i++) {
+
+            String s = secretaries.getString(i);
+
+            if (s.contains(userName)) {
+                s = s.replace("(" + userName +")","").trim();
+                return s;
+            }
+        }
+
+        JSONArray socialworker = values.getJSONArray("socialworker");
+        for (int i=0; i<= socialworker.length()-1; i++) {
+
+            String s = socialworker.getString(i);
+
+            if (s.contains(userName)) {
+                s = s.replace("(" + userName +")","").trim();
+                return s;
+            }
+        }
+
+        JSONArray psychologist = values.getJSONArray("psychologist");
+        for (int i=0; i<= psychologist.length()-1; i++) {
+
+            String s = psychologist.getString(i);
+
+            if (s.contains(userName)) {
+                s = s.replace("(" + userName +")","").trim();
+                return s;
+            }
+        }
+
+        JSONArray doctor = values.getJSONArray("doctor");
+        for (int i=0; i<= doctor.length()-1; i++) {
+
+            String s = doctor.getString(i);
+
+            if (s.contains(userName)) {
+                s = s.replace("(" + userName +")","").trim();
+                return s;
+            }
+        }
+
+        return null;
+    }
+
 }
 

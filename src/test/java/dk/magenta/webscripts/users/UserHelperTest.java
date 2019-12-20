@@ -224,6 +224,7 @@ public class UserHelperTest extends AbstractAlfrescoIT {
             String s = EntityUtils.toString(httpResponse.getEntity());
 
             JSONObject returnJSON = new JSONObject(s);
+            System.out.println(returnJSON);
 
             Assert.assertTrue("Attribute member is present.", returnJSON.has("member"));
             Assert.assertTrue("Member  equals true", "true".equals(returnJSON.getString("member")));

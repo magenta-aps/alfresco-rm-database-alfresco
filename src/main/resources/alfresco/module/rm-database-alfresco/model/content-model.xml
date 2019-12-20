@@ -64,10 +64,14 @@
                     <protected>true</protected>
                 </property>
 
-
                 <property name="rm:status">
                     <title>Status</title>
                     <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
                 </property>
 
                 <property name="rm:closed">
@@ -93,6 +97,15 @@
                 <property name="rm:lastName">
                     <title>Efternavn</title>
                     <type>d:text</type>
+                    <index enabled="true">
+
+                        <atomic>true</atomic>
+
+                        <stored>false</stored>
+
+                        <tokenised>both</tokenised>
+
+                    </index>
                 </property>
 
                 <property name="rm:fullName">
@@ -352,6 +365,56 @@
             </properties>
         </aspect>
 
+
+
+         <!--additional data added from the flowchart module -->
+
+        <aspect name="rm:flowchart">
+            <title>additional data added from the flowchart module</title>
+            <properties>
+
+                <property name="rm:arrest">
+                    <title>arrest</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:psykologfokus">
+                    <title>psykolog fokus</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:samtykkeopl">
+                    <title>samtykke til oplysninger</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:tolksprog">
+                    <title>tolk sprog</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:kommentar">
+                    <title>kommentar</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:fritidved">
+                    <title>fritid ved navne</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:kvalitetskontrol">
+                    <title>kvalitetskontrol</title>
+                    <type>d:text</type>
+                </property>
+
+
+            </properties>
+        </aspect>
+
+
+
+
         <aspect name="rm:version_previewable">
             <title>Enables saving versions as live nodes for preview</title>
             <associations>
@@ -364,6 +427,7 @@
                 </child-association>
             </associations>
         </aspect>
+
 
     </aspects>
 </model>

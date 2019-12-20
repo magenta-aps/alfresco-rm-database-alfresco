@@ -34,13 +34,10 @@ public class MergeDocTemplate extends AbstractWebScript {
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
         Content c = webScriptRequest.getContent();
-        System.out.println("status på mailBean" + documentTemplateBean);
         JSONObject json = null;
 
         try {
             json = new JSONObject(c.getContent());
-            System.out.println(json);
-
 
         webScriptResponse.setContentEncoding("UTF-8");
         webScriptWriter = webScriptResponse.getWriter();
@@ -49,7 +46,7 @@ public class MergeDocTemplate extends AbstractWebScript {
         Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
 
         String nodeRef = params.get("nodeRef");
-        System.out.println(nodeRef);
+
 
         if (json.has("type")) {
 
@@ -90,7 +87,6 @@ public class MergeDocTemplate extends AbstractWebScript {
 
         }
         catch (org.alfresco.service.cmr.model.FileExistsException e) {
-            System.out.println(e.toString());
             result = JSONUtils.getError("document already exists");
             JSONUtils.write(webScriptWriter, result);
         }

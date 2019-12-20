@@ -85,6 +85,23 @@
             <version>3.2.17.RELEASE</version>
         </dependency>
 
+        <!-- Webscripts testing dependencies -->
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-repository</artifactId>
+            <version>${alfresco.platform.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-remote-api</artifactId>
+            <version>${alfresco.platform.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+
 
         <!--<dependency>-->
             <!--<groupId>org.springframework.extensions.surf</groupId>-->

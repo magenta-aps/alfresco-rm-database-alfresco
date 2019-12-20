@@ -54,7 +54,7 @@ public class MoveContent extends AbstractWebScript {
         }
 
 
-        System.out.println("hvad er primaryParentsParent");
+
         NodeRef primaryParentsParent = nodeService.getPrimaryParent(primaryParent).getParentRef();
 
         return primaryParentsParent;

@@ -71,9 +71,6 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             JSONObject input = new JSONObject(c.getContent());
 
-            System.out.println("hvad er input");
-            System.out.println(input);
-
             JSONArray queryArray = new JSONArray();
 
             LocalDateTime f_date = null;
@@ -120,7 +117,6 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 o.put("key", "declarationDate");
 
                 if (input.has("declarationToDate")) {
-
 
                     String t_formattedDate = (String)input.get("declarationToDate");
                     o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, t_formattedDate));
@@ -302,8 +298,6 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             String type = databaseBean.getType(siteShortName);
             String query = QueryUtils.getKeyValueQuery(siteShortName, type, queryArray);
-            System.out.println("the query");
-            System.out.println(query);
 
 
             if (input.has("bua")) {

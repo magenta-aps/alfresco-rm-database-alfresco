@@ -60,16 +60,8 @@ public class GetThumbnail extends AbstractWebScript {
             String nodeId = params.get("nodeId");
             String versionId = params.get("versionId");
 
-            System.out.println("hvad er nodeId");
-            System.out.println(nodeId);
-
-            System.out.println("hvad er versionid");
-            System.out.println(versionId);
-
-
             NodeRef versionPreviewRef = contentsBean.getThumbnail(nodeId, versionId, false);
-            System.out.println("hvad er versionPreviewPref");
-            System.out.println(versionPreviewRef);
+
             result.put("nodeRef", versionPreviewRef.toString());
 
 

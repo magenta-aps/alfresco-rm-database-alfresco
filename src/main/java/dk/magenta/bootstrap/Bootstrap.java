@@ -87,7 +87,7 @@ public class Bootstrap extends AbstractLifecycleBean {
             e.printStackTrace();
         }
 
-         //this.createDeclarations(1000);
+//         this.createDeclarations(150);
     }
 
     @Override
@@ -163,6 +163,7 @@ public class Bootstrap extends AbstractLifecycleBean {
                 boolean isMale = r.nextBoolean();
                 jsonProperties.put("cprNumber", getRandomCPRString(isMale));
                 jsonProperties.put("firstName", firstNames.get(isMale).get(r.nextInt(8)));
+                jsonProperties.put("status", status.get(r.nextInt(11)));
                 jsonProperties.put("lastName", lastname.get(r.nextInt(11)));
                 jsonProperties.put("fullName", jsonProperties.get("firstName") + " " + jsonProperties.get("lastName"));
                 jsonProperties.put("address", "Singularisvej 12");

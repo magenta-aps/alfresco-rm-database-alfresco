@@ -1,6 +1,7 @@
 package dk.magenta.webscripts.users;
 
 import dk.magenta.Const;
+import dk.magenta.beans.EntryBean;
 import org.alfresco.rad.test.AbstractAlfrescoIT;
 import org.alfresco.rad.test.AlfrescoTestRunner;
 import org.apache.http.HttpResponse;
@@ -15,6 +16,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by flemmingheidepedersen on 18/05/2018.
@@ -26,6 +28,10 @@ public class ActivateUserTest extends AbstractAlfrescoIT {
     private static Logger log = Logger.getLogger(ActivateUserTest.class);
 
     private UserHelperTest helper = UserHelperTest.getInstance();
+
+    public ApplicationContext appContext = getApplicationContext();
+
+    private EntryBean entryBean = (EntryBean) appContext.getBean("entryBean");
 
     public ActivateUserTest() {
         super();

@@ -40,10 +40,7 @@ public class UpdateProperties extends AbstractWebScript {
             Map<QName, Serializable> properties = JSONUtils.getMap(jsonProperties);
 
             String caseid = templateArgs.get("uuid");
-            System.out.println("hvad er id" + caseid);
-
-
-
+            
             NodeRef n = entryBean.updateProperty(caseid, properties);
 
 

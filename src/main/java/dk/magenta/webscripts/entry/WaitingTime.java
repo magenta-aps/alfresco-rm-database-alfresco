@@ -73,11 +73,6 @@ public class WaitingTime extends AbstractWebScript {
 
             NodeRef nodeRef = entryBean.getEntry(query);
 
-            System.out.println("method");
-            System.out.println(method);
-            System.out.println("entryvalue");
-            System.out.println(entryValue);
-
             if (method != null) {
                 switch (method) {
                     case "calculatePassive":
