@@ -262,9 +262,6 @@ public class EntryBean {
 
     public void updateEntry (NodeRef entryRef, Map<QName, Serializable> properties) throws JSONException {
 
-
-        System.out.println("editing now ");
-
         String currentUser = authenticationService.getCurrentUserName();
         Serializable locked_for_edit = nodeService.getProperty(entryRef, DatabaseModel.PROP_LOCKED_FOR_EDIT);
         Serializable locked_for_edit_by = nodeService.getProperty(entryRef, DatabaseModel.PROP_LOCKED_FOR_EDIT_BY);
