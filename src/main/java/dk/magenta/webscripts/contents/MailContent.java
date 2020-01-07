@@ -186,7 +186,8 @@ public class MailContent extends AbstractWebScript {
                 FileInfo newNode = fileFolderService.create(declaration, DatabaseModel.PROP_LOGFORMAILS, org.alfresco.model.ContentModel.TYPE_CONTENT);
                 ContentWriter contentWriter = contentService.getWriter(newNode.getNodeRef(), org.alfresco.model.ContentModel.PROP_CONTENT, true);
 
-                contentWriter.setMimetype("text/plain");
+//                contentWriter.setMimetype("text/plain");
+                contentWriter.setMimetype("application/vnd.oasis.opendocument.text");
 
                 contentWriter.putContent(line);
 
