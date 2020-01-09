@@ -15,12 +15,14 @@ import org.alfresco.service.cmr.security.PersonService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.odftoolkit.simple.TextDocument;
 import org.springframework.extensions.surf.util.Content;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import javax.swing.text.html.parser.ContentModel;
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
@@ -184,28 +186,40 @@ public class MailContent extends AbstractWebScript {
 
             if (documents.size() == 0) {
                 FileInfo newNode = fileFolderService.create(declaration, DatabaseModel.PROP_LOGFORMAILS, org.alfresco.model.ContentModel.TYPE_CONTENT);
+
+                TextDocument log_entires = TextDocument.newTextDocument();
+                log_entires.addParagraph(line);
+                File f = new File("tmp");
+
+                log_entires.save(f);
+
                 ContentWriter contentWriter = contentService.getWriter(newNode.getNodeRef(), org.alfresco.model.ContentModel.PROP_CONTENT, true);
 
                 contentWriter.setMimetype("application/vnd.oasis.opendocument.text");
 
-                contentWriter.putContent(line);
 
-// node made editable and deletable acording to 31
-//                nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_UNDELETABLE, null);
+                contentWriter.putContent(f);
 
+                // node made editable and deletable acording to 31698
+                // nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_UNDELETABLE, null);
 
             }
             else {
 
                 NodeRef template_doc = documents.get(0).getChildRef();
                 ContentReader contentReader = contentService.getReader(template_doc, org.alfresco.model.ContentModel.PROP_CONTENT);
-                String content = contentReader.getContentString();
 
-                line += "\n\n\n";
-                line += content;
+                TextDocument log_entires = TextDocument.loadDocument(contentReader.getContentInputStream());
+
+                log_entires.addParagraph(line);
 
                 ContentWriter contentWriter = contentService.getWriter(template_doc, org.alfresco.model.ContentModel.PROP_CONTENT, true);
-                contentWriter.putContent(line);
+
+                File f = new File("tmp");
+
+                log_entires.save(f);
+
+                contentWriter.putContent(f);
 
             }
 
@@ -218,7 +232,7 @@ public class MailContent extends AbstractWebScript {
             }
 
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
 
             if (temporaryUnlocked) {
                 lockService.lock(declaration, LockType.READ_ONLY_LOCK);
