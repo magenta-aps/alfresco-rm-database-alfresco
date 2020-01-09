@@ -21,15 +21,13 @@ import org.springframework.extensions.surf.util.Content;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
-
-import javax.swing.text.html.parser.ContentModel;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.*;
 
-import org.alfresco.model.ContentModel;
+
 public class MailContent extends AbstractWebScript {
 
     private MailBean mailBean;
@@ -39,6 +37,11 @@ public class MailContent extends AbstractWebScript {
     }
 
     private LockService lockService;
+
+    public void setVersionService(VersionService versionService) {
+        this.versionService = versionService;
+    }
+
     private VersionService versionService;
 
     public void setPersonService(PersonService personService) {
@@ -221,7 +224,7 @@ public class MailContent extends AbstractWebScript {
 
 
 
-                ContentWriter contentWriter = contentService.getWriter(log_node, org.alfresco.model.ContentModel.PROP_CONTENT, true);
+
 
                 File f = new File("tmp");
 
@@ -229,13 +232,13 @@ public class MailContent extends AbstractWebScript {
 
 
                 Map<String, Serializable> properties = new HashMap<>();
-                properties.put(org.alfresco.model.ContentModel.PROP_CONTENT.toString(), f);
-                properties.put(org.alfresco.model.ContentModel.PROP_MODIFIER.toString(), currentUser);
                 properties.put("modifier", currentUser);
 
                 versionService.createVersion(log_node, properties);
 
-//                contentWriter.putContent(f);
+                ContentWriter contentWriter = contentService.getWriter(log_node, org.alfresco.model.ContentModel.PROP_CONTENT, true);
+
+                contentWriter.putContent(f);
 
             }
 
