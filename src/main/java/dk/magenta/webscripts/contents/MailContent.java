@@ -12,6 +12,7 @@ import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
+import org.alfresco.service.cmr.version.VersionService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +30,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-
+import org.alfresco.model.ContentModel;
 public class MailContent extends AbstractWebScript {
 
     private MailBean mailBean;
@@ -39,6 +40,7 @@ public class MailContent extends AbstractWebScript {
     }
 
     private LockService lockService;
+    private VersionService versionService;
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
@@ -186,6 +188,8 @@ public class MailContent extends AbstractWebScript {
 
             if (documents.size() == 0) {
                 FileInfo newNode = fileFolderService.create(declaration, DatabaseModel.PROP_LOGFORMAILS, org.alfresco.model.ContentModel.TYPE_CONTENT);
+
+                nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_VERSIONABLE, null);
 
                 TextDocument log_entires = TextDocument.newTextDocument();
                 log_entires.addParagraph(line);
