@@ -25,11 +25,10 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 import javax.swing.text.html.parser.ContentModel;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.alfresco.model.ContentModel;
 public class MailContent extends AbstractWebScript {
 
@@ -210,20 +209,33 @@ public class MailContent extends AbstractWebScript {
             }
             else {
 
-                NodeRef template_doc = documents.get(0).getChildRef();
-                ContentReader contentReader = contentService.getReader(template_doc, org.alfresco.model.ContentModel.PROP_CONTENT);
+                NodeRef log_node = documents.get(0).getChildRef();
+
+                ContentReader contentReader = contentService.getReader(log_node, org.alfresco.model.ContentModel.PROP_CONTENT);
 
                 TextDocument log_entires = TextDocument.loadDocument(contentReader.getContentInputStream());
 
                 log_entires.addParagraph(line);
 
-                ContentWriter contentWriter = contentService.getWriter(template_doc, org.alfresco.model.ContentModel.PROP_CONTENT, true);
+
+
+
+
+                ContentWriter contentWriter = contentService.getWriter(log_node, org.alfresco.model.ContentModel.PROP_CONTENT, true);
 
                 File f = new File("tmp");
 
                 log_entires.save(f);
 
-                contentWriter.putContent(f);
+
+                Map<String, Serializable> properties = new HashMap<>();
+                properties.put(org.alfresco.model.ContentModel.PROP_CONTENT.toString(), f);
+                properties.put(org.alfresco.model.ContentModel.PROP_MODIFIER.toString(), currentUser);
+                properties.put("modifier", currentUser);
+
+                versionService.createVersion(log_node, properties);
+
+//                contentWriter.putContent(f);
 
             }
 
