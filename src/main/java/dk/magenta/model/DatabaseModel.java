@@ -114,6 +114,7 @@ public interface DatabaseModel {
     String PROP_TEMPLATE_DOC_KENDELSE_FILENAME = "kendelse.odt";
 
     String PROP_LOGFORMAILS = "mail_kvitteringer.odt";
+    String PROP_DEFAULTFOLDER_MAILRECEIPTS = "erklærings_test";
 
 
     /**
