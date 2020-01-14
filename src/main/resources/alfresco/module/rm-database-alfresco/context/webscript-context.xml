@@ -86,6 +86,10 @@
 		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 
+	<bean id="webscript.systemsettings.settings.get" class="dk.magenta.webscripts.systemsettings.Settings" parent="webscript">
+		<property name="settingsBean" ref="settingsBean"/>
+	</bean>
+
 	<bean id="webscript.user.deactivateUser.get" class="dk.magenta.webscripts.user.DeactivateUser" parent="webscript">
 		<property name="siteService" ref="SiteService"/>
 		<property name="authorityService" ref="AuthorityService"/>
