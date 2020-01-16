@@ -12,8 +12,13 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.odftoolkit.odfdom.pkg.MediaType;
+import org.odftoolkit.odfdom.pkg.OdfElement;
+import org.odftoolkit.simple.Document;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.TextDocument;
+import org.odftoolkit.simple.common.EditableTextExtractor;
+import org.odftoolkit.simple.common.TextExtractor;
 import org.odftoolkit.simple.style.Font;
 import org.odftoolkit.simple.style.StyleTypeDefinitions;
 import org.odftoolkit.simple.table.Cell;
@@ -27,6 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static dk.magenta.model.DatabaseModel.*;
+import static org.apache.poi.hslf.record.RecordTypes.Document;
 
 public class SettingsBean {
 
@@ -108,7 +114,25 @@ public class SettingsBean {
             ContentReader contentReader = contentService.getReader(childRef, org.alfresco.model.ContentModel.PROP_CONTENT);
             TextDocument contents = TextDocument.loadDocument(contentReader.getContentInputStream());
 
-            return contents.getContentRoot().getTextContent();
+            OdfElement elem=contents.getContentRoot();
+            EditableTextExtractor extractorE = EditableTextExtractor.newOdfEditableTextExtractor(elem);
+//            System.out.println(extractorE.getText());
+
+
+//            EditableTextExtractor extractorD =
+//                    EditableTextExtractor.newOdfEditableTextExtractor(contents);
+//            String output = extractorD.getText();
+
+
+//            System.out.println("hvad er default text");
+//            System.out.println(extractorE.getText());
+
+            String value = extractorE.getText();
+
+
+//            System.out.println(contents.getContentRoot().getTextContent());
+
+            return value;
        }
 
 
