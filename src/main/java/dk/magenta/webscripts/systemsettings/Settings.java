@@ -42,6 +42,8 @@ public class Settings extends AbstractWebScript {
             webScriptResponse.setStatus(400);
         }
 
+        webScriptResponse.setContentEncoding("UTF-8");
+
         JSONUtils.write(webScriptResponse.getWriter(), result);
 
 
