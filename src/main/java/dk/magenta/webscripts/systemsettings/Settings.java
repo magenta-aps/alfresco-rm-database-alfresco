@@ -36,11 +36,6 @@ public class Settings extends AbstractWebScript {
 
 
 
-
-
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
             result = JSONUtils.getError(e);
