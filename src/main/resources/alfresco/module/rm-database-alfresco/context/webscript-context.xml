@@ -88,6 +88,7 @@
 
 	<bean id="webscript.systemsettings.settings.get" class="dk.magenta.webscripts.systemsettings.Settings" parent="webscript">
 		<property name="settingsBean" ref="settingsBean"/>
+		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
 	<bean id="webscript.user.deactivateUser.get" class="dk.magenta.webscripts.user.DeactivateUser" parent="webscript">

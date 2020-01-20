@@ -60,7 +60,7 @@ public class SettingsBean {
 
 
     // # 361807
-    public String getDefaultMailText() throws Exception {
+    public String getDefaultMailText(NodeRef decl) throws Exception {
 
         // get node - if not exists, create
 
@@ -98,8 +98,6 @@ public class SettingsBean {
 
             TextDocument document = TextDocument.newTextDocument();
 
-//            document.addParagraph(line);
-
             File f = new File("tmp");
 
             document.save(f);
@@ -116,21 +114,24 @@ public class SettingsBean {
 
             OdfElement elem=contents.getContentRoot();
             EditableTextExtractor extractorE = EditableTextExtractor.newOdfEditableTextExtractor(elem);
-//            System.out.println(extractorE.getText());
-
-
-//            EditableTextExtractor extractorD =
-//                    EditableTextExtractor.newOdfEditableTextExtractor(contents);
-//            String output = extractorD.getText();
-
-
-//            System.out.println("hvad er default text");
-//            System.out.println(extractorE.getText());
 
             String value = extractorE.getText();
 
+            // substitut journalnumber, name and cpr
 
-//            System.out.println(contents.getContentRoot().getTextContent());
+            String navn = (String)nodeService.getProperty(decl, DatabaseModel.PROP_FIRST_NAME) + " " + (String)nodeService.getProperty(decl, DatabaseModel.PROP_LAST_NAME);
+
+            String journalnummer = "xxx";
+            if (nodeService.getProperty(decl, DatabaseModel.PROP_JOURNALNUMMER) != null) {
+                journalnummer = (String)nodeService.getProperty(decl, DatabaseModel.PROP_JOURNALNUMMER);
+            }
+
+            String cpr = (String)nodeService.getProperty(decl, DatabaseModel.PROP_CPR);
+            cpr = cpr.substring(0,6) + "-" + cpr.substring(6,10);
+
+            value = value.replace("##journalnummer", journalnummer);
+            value = value.replace("##navn", navn);
+            value = value.replace("##cpr", cpr);
 
             return value;
        }

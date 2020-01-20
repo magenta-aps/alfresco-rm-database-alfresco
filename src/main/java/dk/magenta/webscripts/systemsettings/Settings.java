@@ -1,7 +1,9 @@
 package dk.magenta.webscripts.systemsettings;
 
+import dk.magenta.beans.EntryBean;
 import dk.magenta.beans.SettingsBean;
 import dk.magenta.utils.JSONUtils;
+import org.alfresco.service.cmr.repository.NodeRef;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -23,6 +25,12 @@ public class Settings extends AbstractWebScript {
 
     private SettingsBean settingsBean;
 
+    public void setEntryBean(EntryBean entryBean) {
+        this.entryBean = entryBean;
+    }
+
+    private EntryBean entryBean;
+
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException   {
 
@@ -30,7 +38,12 @@ public class Settings extends AbstractWebScript {
 
         try {
 
-            String defaultText = settingsBean.getDefaultMailText();
+            String caseid = webScriptRequest.getParameter("node");
+
+            String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+            NodeRef declaration = entryBean.getEntry(query);
+
+            String defaultText = settingsBean.getDefaultMailText(declaration);
 
             result.put("text", defaultText);
 
