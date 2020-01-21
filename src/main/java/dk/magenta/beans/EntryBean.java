@@ -368,7 +368,11 @@ public class EntryBean {
         QName closedWithoutDeclaration = QName.createQName(uri, "closedWithoutDeclaration");
         QName closedWithoutDeclarationReason = QName.createQName(uri, "closedWithoutDeclarationReason");
         QName closedWithoutDeclarationSentTo = QName.createQName(uri, "closedWithoutDeclarationSentTo");
-        nodeService.setProperty(entryRef, closed, false);
+
+        // 34111 - removing the property makes the declaration reappear in the flowchart
+        nodeService.removeProperty(entryRef, closed);
+        // nodeService.setProperty(entryRef, closed, false);
+
         nodeService.setProperty(entryRef, closedWithoutDeclaration, null);
         nodeService.setProperty(entryRef, closedWithoutDeclarationReason, null);
         nodeService.setProperty(entryRef, closedWithoutDeclarationSentTo, null);
