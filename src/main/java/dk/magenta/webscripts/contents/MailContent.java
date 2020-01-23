@@ -5,6 +5,7 @@ import dk.magenta.beans.EntryBean;
 import dk.magenta.beans.MailBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
+import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.model.FileFolderService;
@@ -12,21 +13,21 @@ import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
+import org.alfresco.service.cmr.version.VersionService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.odftoolkit.simple.TextDocument;
 import org.springframework.extensions.surf.util.Content;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
-
-import javax.swing.text.html.parser.ContentModel;
+import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 public class MailContent extends AbstractWebScript {
 
@@ -37,6 +38,12 @@ public class MailContent extends AbstractWebScript {
     }
 
     private LockService lockService;
+
+    public void setVersionService(VersionService versionService) {
+        this.versionService = versionService;
+    }
+
+    private VersionService versionService;
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
@@ -152,8 +159,6 @@ public class MailContent extends AbstractWebScript {
 
 
 
-            List<String> criteria = Arrays.asList(DatabaseModel.PROP_LOGFORMAILS);
-            List<ChildAssociationRef> documents = nodeService.getChildrenByName(declaration, org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
 
 
             String currentUser = authenticationService.getCurrentUserName();
@@ -181,30 +186,62 @@ public class MailContent extends AbstractWebScript {
             }
 
 
+            List<String> criteria = Arrays.asList(DatabaseModel.PROP_DEFAULTFOLDER_MAILRECEIPTS);
+            List<ChildAssociationRef> mailFolder = nodeService.getChildrenByName(declaration, org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
 
-            if (documents.size() == 0) {
-                FileInfo newNode = fileFolderService.create(declaration, DatabaseModel.PROP_LOGFORMAILS, org.alfresco.model.ContentModel.TYPE_CONTENT);
+
+            if (mailFolder.size() == 0) {
+
+                FileInfo mailFolderInfo = fileFolderService.create(declaration, DatabaseModel.PROP_DEFAULTFOLDER_MAILRECEIPTS, ContentModel.TYPE_FOLDER);
+
+                NodeRef mail_folder = mailFolderInfo.getNodeRef();
+
+                FileInfo newNode = fileFolderService.create(mail_folder, DatabaseModel.PROP_LOGFORMAILS, org.alfresco.model.ContentModel.TYPE_CONTENT);
+
+                nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_VERSIONABLE, null);
+
+                TextDocument log_entires = TextDocument.newTextDocument();
+                log_entires.addParagraph(line);
+                File f = new File("tmp");
+
+                log_entires.save(f);
+
                 ContentWriter contentWriter = contentService.getWriter(newNode.getNodeRef(), org.alfresco.model.ContentModel.PROP_CONTENT, true);
 
-                contentWriter.setMimetype("text/plain");
-
-                contentWriter.putContent(line);
+                contentWriter.setMimetype("application/vnd.oasis.opendocument.text");
 
 
-                nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_UNDELETABLE, null);
+                contentWriter.putContent(f);
+
+                // node made editable and deletable acording to 31698
+                // nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_UNDELETABLE, null);
 
             }
             else {
 
-                NodeRef template_doc = documents.get(0).getChildRef();
-                ContentReader contentReader = contentService.getReader(template_doc, org.alfresco.model.ContentModel.PROP_CONTENT);
-                String content = contentReader.getContentString();
+                criteria = Arrays.asList(DatabaseModel.PROP_LOGFORMAILS);
+                List<ChildAssociationRef> log = nodeService.getChildrenByName(mailFolder.get(0).getChildRef(), org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
 
-                line += "\n\n\n";
-                line += content;
+                NodeRef log_node = log.get(0).getChildRef();
 
-                ContentWriter contentWriter = contentService.getWriter(template_doc, org.alfresco.model.ContentModel.PROP_CONTENT, true);
-                contentWriter.putContent(line);
+                ContentReader contentReader = contentService.getReader(log_node, org.alfresco.model.ContentModel.PROP_CONTENT);
+
+                TextDocument log_entires = TextDocument.loadDocument(contentReader.getContentInputStream());
+
+                log_entires.addParagraph(line);
+
+                File f = new File("tmp");
+
+                log_entires.save(f);
+
+                Map<String, Serializable> properties = new HashMap<>();
+                properties.put("modifier", currentUser);
+
+                versionService.createVersion(log_node, properties);
+
+                ContentWriter contentWriter = contentService.getWriter(log_node, org.alfresco.model.ContentModel.PROP_CONTENT, true);
+
+                contentWriter.putContent(f);
 
             }
 
@@ -217,7 +254,7 @@ public class MailContent extends AbstractWebScript {
             }
 
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
 
             if (temporaryUnlocked) {
                 lockService.lock(declaration, LockType.READ_ONLY_LOCK);
@@ -229,4 +266,19 @@ public class MailContent extends AbstractWebScript {
             JSONUtils.write(webScriptWriter, result);
         }
     }
+
+    private NodeRef makeFolderForMailReceipts(NodeRef dec) {
+
+        List<String> criteria = Arrays.asList(DatabaseModel.PROP_DEFAULTFOLDER_MAILRECEIPTS);
+        List<ChildAssociationRef> documents = nodeService.getChildrenByName(dec, org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
+
+        if (documents.size() == 0) {
+            FileInfo newNode = fileFolderService.create(dec, DatabaseModel.PROP_LOGFORMAILS, ContentModel.TYPE_FOLDER);
+            return newNode.getNodeRef();
+        }
+        else {
+            return documents.get(0).getChildRef();
+        }
+    }
+
 }
