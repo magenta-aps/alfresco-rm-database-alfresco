@@ -134,6 +134,7 @@ public interface DatabaseModel {
     QName ASPECT_SENDMAILLOGS = QName.createQName(RM_MODEL_URI, "sendMaillogs");
     QName ASPECT_DECLARATIONMARKEDFOREDIT = QName.createQName(RM_MODEL_URI, "documentMarkedForEdit");
 
+
     // groups
     String GROUP_ALLOWEDTODELETE = "GROUP_site_retspsyk_ALLOWEDTODELETE";
     String GROUP_TEMPLATEFOLDERVALUEMANAGER = "GROUP_site_retspsyk_TemplateFolderValueManager";
@@ -142,6 +143,7 @@ public interface DatabaseModel {
     String GROUP_SITEENTRYLOCKMANAGER = "GROUP_site_retspsyk_SiteEntryLockManager";
 
     String MONTHLY_REPORT_SPREADSHEET_NAME = "rapport.ods";
+    String DEFAULT_MAIL_TEXT_NAME = "standardtext.odt";
 
 
     QName ASSOC_VERSION_PREVIEW = QName.createQName(RM_MODEL_URI, "version_preview");
