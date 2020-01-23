@@ -75,7 +75,7 @@ public class UpdateUserRoles extends AbstractWebScript {
                     // if removed from the siteConsumer group (only readaccess), make the user able to delete all documents again and add user to the colaborator group
                     if (o.equals("GROUP_site_retspsyk_SiteConsumer")) {
 
-                        // added check, #32745 - as existing memberships breaks the update
+                        // added check, #32745 - as existing membership breaks the update
 
                         boolean member_allowedToDelete = false;
                         boolean member_site_retspsyk_SiteCollaborator = false;
