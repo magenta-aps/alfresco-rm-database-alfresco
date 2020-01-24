@@ -284,10 +284,15 @@ public class EntryBean {
             nodeService.addAspect(entryRef, ContentModel.ASPECT_LOCKABLE, prop);
         }
         lockService.lock(entryRef, LockType.READ_ONLY_LOCK);
+
+        // cleanup after a possible temporary editing of the case (#34257)
+        if (nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW)) {
+            nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW);
+        }
     }
 
     //TODO: Make this generic. Atm this only work with forensicDeclarations
-    public void unlockEntry (NodeRef entryRef) {
+    public void unlockEntry (NodeRef entryRef, String mode) {
         lockService.unlock(entryRef);
         String uri = DatabaseModel.RM_MODEL_URI;
         QName closed = QName.createQName(uri, "closed");
@@ -298,6 +303,10 @@ public class EntryBean {
         nodeService.setProperty(entryRef, closedWithoutDeclaration, null);
         nodeService.setProperty(entryRef, closedWithoutDeclarationReason, null);
         nodeService.setProperty(entryRef, closedWithoutDeclarationSentTo, null);
+
+        if (mode.equals(DatabaseModel.PROP_SKIPFLOW)) {
+            nodeService.addAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW,null);
+        }
     }
 
     public JSONObject toJSON (NodeRef entryRef) throws JSONException {

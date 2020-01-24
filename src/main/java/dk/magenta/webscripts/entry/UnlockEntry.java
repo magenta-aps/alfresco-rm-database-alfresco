@@ -23,6 +23,9 @@ public class UnlockEntry extends AbstractWebScript {
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
 
         Map<String, String> templateArgs = req.getServiceMatch().getTemplateVars();
+        Map<String, String> params = JSONUtils.parseParameters(req.getURL());
+
+        String mode = params.get("mode");
 
         res.setContentEncoding("UTF-8");
         Writer webScriptWriter = res.getWriter();
@@ -31,7 +34,7 @@ public class UnlockEntry extends AbstractWebScript {
         try {
             String uuid = templateArgs.get("uuid");
             NodeRef nodeRef = entryBean.getNodeRef(uuid);
-            entryBean.unlockEntry(nodeRef);
+            entryBean.unlockEntry(nodeRef, mode);
             result = entryBean.toJSON(nodeRef);
 
         } catch (Exception e) {

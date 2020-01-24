@@ -131,6 +131,7 @@ public interface DatabaseModel {
 
 
     QName ASPECT_SENDMAILLOGS = QName.createQName(RM_MODEL_URI, "sendMaillogs");
+    QName ASPECT_SKIPFLOW = QName.createQName(RM_MODEL_URI, "skip_flowchart");
     QName ASPECT_DECLARATIONMARKEDFOREDIT = QName.createQName(RM_MODEL_URI, "documentMarkedForEdit");
 
     // groups
@@ -144,5 +145,9 @@ public interface DatabaseModel {
 
 
     QName ASSOC_VERSION_PREVIEW = QName.createQName(RM_MODEL_URI, "version_preview");
+
+    // unlock modes
+    String PROP_SKIPFLOW = "skipflow";
+
 
 }
