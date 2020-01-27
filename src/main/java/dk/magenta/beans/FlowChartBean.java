@@ -71,8 +71,8 @@ public class FlowChartBean {
 
         query += " AND " + default_query;
 
-        System.out.println("getEntriesbyUser query");
-        System.out.println(query);
+        //System.out.println("getEntriesbyUser query");
+        //System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
 
@@ -112,8 +112,8 @@ public class FlowChartBean {
         query += statusQuery;
 
 
-        System.out.println("getEntriesbyUserStateArrestanter query");
-        System.out.println(query);
+        //System.out.println("getEntriesbyUserStateArrestanter query");
+        //System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
@@ -153,8 +153,8 @@ public class FlowChartBean {
         query += statusQuery;
 
 
-        System.out.println("getEntriesbyUserStateNOTArrestanter query");
-        System.out.println(query);
+        //System.out.println("getEntriesbyUserStateNOTArrestanter query");
+        //System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
@@ -213,8 +213,8 @@ public class FlowChartBean {
 
 
 
-        System.out.println("getWaitingList query");
-        System.out.println(query);
+        //System.out.println("getWaitingList query");
+        //System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
@@ -266,8 +266,8 @@ public class FlowChartBean {
 
         query += statusQuery;
 
-        System.out.println("getEntriesByOngoing query");
-        System.out.println(query);
+        //System.out.println("getEntriesByOngoing query");
+        //System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
@@ -303,8 +303,8 @@ public class FlowChartBean {
 
         query += statusQuery;
 
-        System.out.println("getEntriesByStateArrestanter query");
-        System.out.println(query);
+        //System.out.println("getEntriesByStateArrestanter query");
+        //System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
@@ -313,12 +313,12 @@ public class FlowChartBean {
 
     public List<NodeRef> getEntriesByStateObservation(String siteShortName, String default_query, String sort, boolean desc) {
 
-        System.out.println("doing getEntriesByStateObservation");
+        //System.out.println("doing getEntriesByStateObservation");
 
         JSONObject o = new JSONObject();
 
         String type = databaseBean.getType(siteShortName);
-        System.out.println("done type");
+        //System.out.println("done type");
         String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
 
         query += " AND " + default_query;
@@ -332,8 +332,8 @@ public class FlowChartBean {
 
         query += statusQuery;
 
-        System.out.println("getEntriesByStateObservation query");
-        System.out.println(query);
+        //System.out.println("getEntriesByStateObservation query");
+        //System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
@@ -342,7 +342,7 @@ public class FlowChartBean {
 
     public List<NodeRef> getEntriesByStateVentedeGR(String siteShortName, String default_query, String sort, boolean desc) {
 
-        System.out.println("doing ventedegr");
+        //System.out.println("doing ventedegr");
 
         JSONObject o = new JSONObject();
 
@@ -359,8 +359,8 @@ public class FlowChartBean {
 
         query += statusQuery;
 
-        System.out.println("getEntriesByStateventedegr query");
-        System.out.println(query);
+        //System.out.println("getEntriesByStateventedegr query");
+        //System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 

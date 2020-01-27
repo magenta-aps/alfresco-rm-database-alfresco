@@ -83,14 +83,15 @@ public class FlowChart extends AbstractWebScript {
 
         String defaultQuery = "ISUNSET:\"rm:closed\"";
         defaultQuery += " AND -ASPECT:\"rm:bua\"";
+        defaultQuery += " AND -ASPECT:\"rm:skip_flowchart\"";
 
 
 
         JSONObject json = null;
         try {
 
-            System.out.println("hvad er c content");
-            System.out.println(c.getContent());
+            //System.out.println("hvad er c content");
+            //System.out.println(c.getContent());
 
             json = new JSONObject(c.getContent());
             jsonProperties = JSONUtils.getObject(json, "properties");

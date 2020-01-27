@@ -429,5 +429,9 @@
         </aspect>
 
 
+        <aspect name="rm:skip_flowchart">
+            <title>dont show in flowchar</title>
+        </aspect>
+
     </aspects>
 </model>
