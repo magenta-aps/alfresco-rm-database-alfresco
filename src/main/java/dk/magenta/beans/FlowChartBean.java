@@ -332,8 +332,8 @@ public class FlowChartBean {
 
         query += statusQuery;
 
-        //System.out.println("getEntriesByStateObservation query");
-        //System.out.println(query);
+        System.out.println("getEntriesByStateObservation query");
+        System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
@@ -433,9 +433,12 @@ public class FlowChartBean {
                 e.put("status", tmp.get("status"));
             }
 
-
             if (tmp.has("kommentar")) {
                 e.put("kommentar", tmp.get("kommentar"));
+            }
+
+            if (tmp.has("oplysningerEksternt")) {
+                e.put("oplysningerEksternt", tmp.get("oplysningerEksternt"));
             }
 
             if (tmp.has("samtykkeopl")) {

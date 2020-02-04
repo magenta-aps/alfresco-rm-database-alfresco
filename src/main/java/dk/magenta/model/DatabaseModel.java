@@ -43,6 +43,7 @@ public interface DatabaseModel {
     QName PROP_FLOW_SAMTYKKEOPL = QName.createQName(RM_MODEL_URI, "samtykkeopl");
     QName PROP_FLOW_TOLKSPROG = QName.createQName(RM_MODEL_URI, "tolksprog");
     QName PROP_FLOW_KOMMENTAR = QName.createQName(RM_MODEL_URI, "kommentar");
+    QName PROP_FLOW_OPLYSNINGEREKSTERNT = QName.createQName(RM_MODEL_URI, "oplysningerEksternt");
     QName PROP_FLOW_FRITIDVED = QName.createQName(RM_MODEL_URI, "fritidved");
     QName PROP_FLOW_KVALITETSKONTROL = QName.createQName(RM_MODEL_URI, "kvalitetskontrol");
 

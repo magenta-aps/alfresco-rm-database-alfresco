@@ -398,6 +398,11 @@
                     <type>d:text</type>
                 </property>
 
+                <property name="rm:oplysningerEksternt">
+                    <title>oplysninger eksternt journalmateriale</title>
+                    <type>d:text</type>
+                </property>
+
                 <property name="rm:fritidved">
                     <title>fritid ved navne</title>
                     <type>d:text</type>
