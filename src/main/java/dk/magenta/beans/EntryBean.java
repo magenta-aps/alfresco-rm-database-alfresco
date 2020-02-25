@@ -43,6 +43,11 @@ public class EntryBean {
     private SearchService searchService;
     private LockService lockService;
     private AuditComponent auditComponent;
+
+    public void setAuthenticationService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+
     private AuthenticationService authenticationService;
 
     public FileFolderService getFileFolderService() {
@@ -74,8 +79,21 @@ public class EntryBean {
     public NodeRef addEntry (String siteShortName, String type, Map<QName, Serializable> properties, boolean bua) throws JSONException {
 
         //Get counter for this site document library
+
+
+
         NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
-        Integer counter = (Integer) nodeService.getProperty(docLibRef, ContentModel.PROP_COUNTER);
+
+        Integer counter;
+
+        if (bua) {
+            counter = (Integer) nodeService.getProperty(docLibRef, DatabaseModel.PROP_BUA_COUNTER);
+        }
+        else {
+            counter = (Integer) nodeService.getProperty(docLibRef, ContentModel.PROP_COUNTER);
+        }
+
+
         if(counter == null)
             counter = 0;
         counter++;
@@ -114,7 +132,15 @@ public class EntryBean {
         NodeRef nodeRef = childAssociationRef.getChildRef();
 
         //Increment the site document library counter when the entry has been created successfully
-        nodeService.setProperty(docLibRef, ContentModel.PROP_COUNTER, counter);
+
+        if (bua) {
+            nodeService.setProperty(docLibRef, DatabaseModel.PROP_BUA_COUNTER, counter);
+        }
+        else {
+            nodeService.setProperty(docLibRef, ContentModel.PROP_COUNTER, counter);
+        }
+
+
 
         // add the contents of the template library
 
@@ -235,43 +261,91 @@ public class EntryBean {
     }
 
     public void updateEntry (NodeRef entryRef, Map<QName, Serializable> properties) throws JSONException {
-        for (Map.Entry<QName, Serializable> property : properties.entrySet())
+
+        String currentUser = authenticationService.getCurrentUserName();
+        Serializable locked_for_edit = nodeService.getProperty(entryRef, DatabaseModel.PROP_LOCKED_FOR_EDIT);
+        Serializable locked_for_edit_by = nodeService.getProperty(entryRef, DatabaseModel.PROP_LOCKED_FOR_EDIT_BY);
+
+
+        // initialize locked_for_edit
+        if (locked_for_edit == null) {
+            locked_for_edit = false;
+        }
+
+        if ((boolean)locked_for_edit) {
+            // check if its the same user that edits that holds the lock
+            if (!((String)locked_for_edit_by).equals(currentUser)) {
+                System.out.println(currentUser + "not allowed to update as case is locked by " + locked_for_edit_by);
+                return;
+            }
+        }
+
+        if (!nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_FLOWCHART)) {
+            nodeService.addAspect(entryRef, DatabaseModel.ASPECT_FLOWCHART, null);
+        }
+
+
+        boolean erklaringdate = false;
+        for (Map.Entry<QName, Serializable> property : properties.entrySet()) {
+
             nodeService.setProperty(entryRef, property.getKey(), property.getValue());
+            if (property.getKey().equals(DatabaseModel.PROP_DECLARATION_DATE)) {
+                erklaringdate = true;
+            }
+        }
+
+
+
 
         String uri = DatabaseModel.RM_MODEL_URI;
         QName closed = QName.createQName(uri, "closed");
-        Boolean closedProp = (Boolean)nodeService.getProperty(entryRef, closed);
-        if(closedProp != null && closedProp) {
+        Boolean closedProp = (Boolean) nodeService.getProperty(entryRef, closed);
+        if (closedProp != null && closedProp) {
 
             AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
             lockEntry(entryRef);
         }
+        // check if datefield "erklæaring afgivet is set - then close the case # 31284
+        else if (closedProp == null && erklaringdate) {
+            nodeService.setProperty(entryRef, DatabaseModel.PROP_CLOSED, true);
+            AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+            lockEntry(entryRef);
+        }
+
+
+
+
+
+
+
+
     }
 
+    // used for converting data from the old system
     public NodeRef updateProperty (String caseid, Map<QName, Serializable> properties) throws JSONException {
 
-        String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+//        String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+//
+//        System.out.println("hvad er query:" + query);
+//
+//        NodeRef n = this.getEntry(query);
+//        System.out.println("hvad er nodeRef" + n);
+//
+//
+//        boolean temporaryUnlocked = false;
+//
+//        if (lockService.isLocked(n)) {
+//            lockService.unlock(n);
+//            temporaryUnlocked = true;
+//        }
+//
+//        this.updateEntry(n,properties);
+//
+//        if (temporaryUnlocked) {
+//            lockService.lock(n, LockType.READ_ONLY_LOCK);
+//        }
 
-        System.out.println("hvad er query:" + query);
-
-        NodeRef n = this.getEntry(query);
-        System.out.println("hvad er nodeRef" + n);
-
-
-        boolean temporaryUnlocked = false;
-
-        if (lockService.isLocked(n)) {
-            lockService.unlock(n);
-            temporaryUnlocked = true;
-        }
-
-        this.updateEntry(n,properties);
-
-        if (temporaryUnlocked) {
-            lockService.lock(n, LockType.READ_ONLY_LOCK);
-        }
-
-        return n;
+        return null;
     }
 
 
@@ -283,21 +357,37 @@ public class EntryBean {
             prop.put(DatabaseModel.PROP_CLOSED_DATE, new Date());
             nodeService.addAspect(entryRef, ContentModel.ASPECT_LOCKABLE, prop);
         }
+
+        // cleanup after a possible temporary editing of the case (#34257)
+        if (nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW)) {
+            nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW);
+        }
+
         lockService.lock(entryRef, LockType.READ_ONLY_LOCK);
+
+
     }
 
     //TODO: Make this generic. Atm this only work with forensicDeclarations
-    public void unlockEntry (NodeRef entryRef) {
+    public void unlockEntry (NodeRef entryRef, String mode) {
         lockService.unlock(entryRef);
         String uri = DatabaseModel.RM_MODEL_URI;
         QName closed = QName.createQName(uri, "closed");
         QName closedWithoutDeclaration = QName.createQName(uri, "closedWithoutDeclaration");
         QName closedWithoutDeclarationReason = QName.createQName(uri, "closedWithoutDeclarationReason");
         QName closedWithoutDeclarationSentTo = QName.createQName(uri, "closedWithoutDeclarationSentTo");
-        nodeService.setProperty(entryRef, closed, false);
+
+        // 34111 - removing the property makes the declaration reappear in the flowchart
+        nodeService.removeProperty(entryRef, closed);
+        // nodeService.setProperty(entryRef, closed, false);
+
         nodeService.setProperty(entryRef, closedWithoutDeclaration, null);
         nodeService.setProperty(entryRef, closedWithoutDeclarationReason, null);
         nodeService.setProperty(entryRef, closedWithoutDeclarationSentTo, null);
+
+        if (mode.equals(DatabaseModel.PROP_SKIPFLOW)) {
+            nodeService.addAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW,null);
+        }
     }
 
     public JSONObject toJSON (NodeRef entryRef) throws JSONException {
@@ -369,8 +459,6 @@ public class EntryBean {
         Date declaration = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_DECLARATION_DATE);
         Date observation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
 
-        System.out.println(declaration);
-        System.out.println(observation);
 
 
         if (declaration == null || observation == null) {
@@ -456,10 +544,6 @@ public class EntryBean {
 
         ResultSet resultSet = searchService.query(sp);
 
-
-        System.out.println("the query.... ****");
-        System.out.println(sp.getQuery());
-
         return resultSet.getNodeRefs();
     }
 
@@ -477,10 +561,6 @@ public class EntryBean {
         sp.setSkipCount(skip);
         sp.addSort(sort, desc);
         ResultSet resultSet = searchService.query(sp);
-
-
-        System.out.println("the query.... ****");
-        System.out.println(sp.getQuery());
 
         return resultSet.getNodeRefs();
     }

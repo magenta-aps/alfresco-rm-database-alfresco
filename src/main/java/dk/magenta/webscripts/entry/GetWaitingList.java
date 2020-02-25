@@ -56,9 +56,6 @@ public class GetWaitingList extends AbstractWebScript {
 
         int skip = Integer.valueOf(req.getParameter("skip"));
         int maxItems = Integer.valueOf(req.getParameter("maxItems"));
-        System.out.println("hej");
-
-
 
 
         res.setContentEncoding("UTF-8");

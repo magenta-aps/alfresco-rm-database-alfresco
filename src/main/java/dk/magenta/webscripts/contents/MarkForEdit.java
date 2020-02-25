@@ -53,7 +53,6 @@ public class MarkForEdit extends AbstractWebScript {
         JSONObject json = null;
         try {
 
-            System.out.println("the json" + c.getContent());
             json = new JSONObject(c.getContent());
 
             String method = (String)json.get("method");
@@ -82,8 +81,6 @@ public class MarkForEdit extends AbstractWebScript {
                 if (nodeService.hasAspect(new NodeRef(nodeRef), DatabaseModel.ASPECT_DECLARATIONMARKEDFOREDIT)) {
 
                     NodeRef person = (NodeRef)nodeService.getProperty(new NodeRef(nodeRef), DatabaseModel.PROP_MARKEDBY);
-                    System.out.println("hvad er personNode");
-                    System.out.println(person);
 
                     // only lock, if its not the same person editing, if the same, it means that the user or system didnt succeed unlocking when leaving libreoffice online
                     String currentUser = authenticationService.getCurrentUserName();

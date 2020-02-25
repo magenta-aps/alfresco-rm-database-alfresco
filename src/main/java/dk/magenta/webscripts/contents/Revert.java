@@ -120,7 +120,7 @@ public class Revert extends AbstractWebScript {
                 if (isMember()) {
 
                     json = new JSONObject(c.getContent());
-                    System.out.println(json);
+
 
                     NodeRef n = new NodeRef((String) json.get("nodeRef"));
                     String version = (String) json.get("version");
@@ -132,9 +132,6 @@ public class Revert extends AbstractWebScript {
 //                    versionProperties.put(Version.PROP_DESCRIPTION, "reverted back to version: " + versionObject.getVersionLabel());
 
                     String currentUser = authenticationService.getCurrentUserName();
-
-                    System.out.println("hvad er da current");
-                    System.out.println(currentUser);
 
                     AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
 
@@ -163,21 +160,16 @@ public class Revert extends AbstractWebScript {
 
 
 
-                    System.out.println("about to update thew thumbnail after reverting");
 
 
-                    System.out.println("nyeste version");
-                    System.out.println(versionService.getCurrentVersion(n).getVersionLabel());
 
-                    System.out.println("versionRef for nyeste version");
 
-                    System.out.println(versionService.getCurrentVersion(n));
 
 
                     VersionHistory h = versionService.getVersionHistory(n);
 
-                    System.out.println("head id");
-                    System.out.println(h.getHeadVersion().getFrozenStateNodeRef().getId());
+
+
 
                     contentsBean.getThumbnail(n.getId(), h.getHeadVersion().getFrozenStateNodeRef().getId(), true);
 

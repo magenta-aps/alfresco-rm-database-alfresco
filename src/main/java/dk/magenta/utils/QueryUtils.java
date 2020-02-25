@@ -17,6 +17,16 @@ public class QueryUtils {
         return  "TYPE:\"" + DatabaseModel.RM_MODEL_PREFIX +":" + type + "\"";
     }
 
+    public static String getParametersQueryNullValue (String paramKey, boolean not) {
+
+        if (not) {
+            return "!@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + "null" + "\"";
+        }
+        else {
+            return "@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":\"" + "null" + "\"";
+        }
+    }
+
     public static String getParameterQuery (String paramKey, String paramValue, boolean not) {
 
         if (not) {
@@ -47,6 +57,9 @@ public class QueryUtils {
 
         }
     }
+
+
+
 
     public static String getEntryQuery (String siteShortName, String type, String entryValue) throws JSONException {
         String entryKey = TypeUtils.types.get(type).getString(DatabaseModel.ENTRY_KEY);
@@ -89,7 +102,7 @@ public class QueryUtils {
         }
     }
 
-    public static String    getKeyValueQuery (String siteShortName, String type, JSONArray keyValues) throws JSONException {
+    public static String getKeyValueQuery (String siteShortName, String type, JSONArray keyValues) throws JSONException {
 
         String query = getSiteQuery(siteShortName) + " AND " + getTypeQuery(type);
 
@@ -105,6 +118,21 @@ public class QueryUtils {
             } else {
                 query += " AND " + getParametersQuery(key, value, false);
             }
+        }
+        return query;
+    }
+
+    public static String getKeyValueORQuery (String siteShortName, String type, JSONArray keyValues) throws JSONException {
+
+        String query = getSiteQuery(siteShortName) + " AND " + getTypeQuery(type) + " AND ";
+
+        for (int i = 0 ; i < keyValues.length(); i++) {
+            JSONObject obj = keyValues.getJSONObject(i);
+            String key = obj.getString("key");
+            String value = obj.getString("value");
+            String include = obj.getString("include");
+
+            query += " OR " + getParametersQuery(key, value, true);
 
             System.out.println(key + ":" + value);
         }
