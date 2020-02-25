@@ -64,17 +64,10 @@ public class AddPermission extends AbstractWebScript {
 
         List<ChildAssociationRef> children = nodeService.getChildAssocs(child);
 
-        System.out.println("hvad er children");
-        System.out.println(children);
-
         if (children.size() == 0) {
 
-            System.out.println("hvad er type fra nodeservice");
-            System.out.println(nodeService.getType(child));
-
             if ((nodeService.getType(child).equals(org.alfresco.model.ContentModel.TYPE_CONTENT))) {
-                System.out.println("true");
-                System.out.println("setting permission for node"  + child);
+
                 permissionService.setPermission(child, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
             }
 
@@ -85,8 +78,6 @@ public class AddPermission extends AbstractWebScript {
 
                 // need a check here, as the child might be a thumbnail
                 if ((nodeService.getType(child).equals(org.alfresco.model.ContentModel.TYPE_CONTENT))) {
-                    System.out.println("true");
-                    System.out.println("setting permission for node"  + child);
                     permissionService.setPermission(child, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
                 }
 
@@ -114,13 +105,10 @@ public class AddPermission extends AbstractWebScript {
 
 
                 SiteInfo siteInfo = siteService.getSite("retspsyk");
-                System.out.println("retspsyk noderef");
-                System.out.println(siteInfo.getNodeRef());
 
                 // Get the documentLibrary of the site.
                 NodeRef docLib = siteService.getContainer(siteInfo.getShortName(), "documentlibrary");
-                System.out.println("the document library");
-                System.out.println(docLib);
+
 
                 this.rekur(docLib);
 
@@ -143,14 +131,14 @@ public class AddPermission extends AbstractWebScript {
                 Iterator i = nodeRefs.iterator();
 
                 while (i.hasNext()) {
-                    System.out.println("output form old lucene search");
+
                     NodeRef node = (NodeRef)i.next();
-                    System.out.println(node);
+
                     permissionService.setPermission(node, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
                 }
             }
             else {
-                System.out.println("sætter admin og delete");
+
                 NodeRef n = new NodeRef(( String)json.get("nodeRef"));
                 permissionService.setPermission(n, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
             }

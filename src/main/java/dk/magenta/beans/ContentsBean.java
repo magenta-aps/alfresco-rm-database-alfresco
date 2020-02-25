@@ -303,9 +303,6 @@ public class ContentsBean {
 
                 json.put("version", v.getVersionLabel());
 
-                System.out.println("object");
-                System.out.println(json);
-
                 result.put(json);
             }
         }
@@ -327,19 +324,17 @@ public class ContentsBean {
 
         Serializable parentName = nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
         Serializable versionLabel = nodeService.getProperty(versionRef, ContentModel.PROP_VERSION_LABEL);
-        System.out.println("hvad er versionlabel: " + versionLabel);
+
         String name =  "(v. " + versionLabel + ") " + parentName;
         NodeRef versionPreviewRef = nodeService.getChildByName(nodeRef, DatabaseModel.ASSOC_VERSION_PREVIEW, name);
 
-        System.out.println("indhold af versionPreviewRef");
-        System.out.println(versionPreviewRef);
 
         if(versionPreviewRef != null && !forceUpdate) {
-            System.out.println("returning the versionPreviewRef");
+
             return versionPreviewRef;
         }
         else if (forceUpdate && versionPreviewRef != null) {
-            System.out.println("forcing update");
+
             nodeService.deleteNode(versionPreviewRef);
         }
 
@@ -360,9 +355,6 @@ public class ContentsBean {
                     cmName,
                     ContentModel.TYPE_CONTENT,
                     properties);
-
-            System.out.println("the new preview");
-            System.out.println(childAssocRef.getChildRef());
 
             nodeService.addAspect(childAssocRef.getChildRef(), ContentModel.ASPECT_HIDDEN, null);
             return true;

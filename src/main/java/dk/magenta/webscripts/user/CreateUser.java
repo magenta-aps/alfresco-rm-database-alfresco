@@ -75,7 +75,6 @@ public class CreateUser extends AbstractWebScript {
             user.put(ContentModel.PROP_EMAIL, email);
 
             NodeRef person = personService.createPerson(user);
-            System.out.println("person " + person.toString());
 
             try {
                 result = JSONUtils.getSuccess();

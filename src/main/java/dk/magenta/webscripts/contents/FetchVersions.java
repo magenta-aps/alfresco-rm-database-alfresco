@@ -40,11 +40,11 @@ public class FetchVersions extends AbstractWebScript {
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
 
-        System.out.println("getting versions");
+
 
         Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
 
-        System.out.println("getting versions");
+
 
 
         webScriptResponse.setContentEncoding("UTF-8");

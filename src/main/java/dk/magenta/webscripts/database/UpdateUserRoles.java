@@ -48,14 +48,12 @@ public class UpdateUserRoles extends AbstractWebScript {
 
             JSONArray addGroups = JSONUtils.getArray(json, "addGroups");
             JSONArray removeGroups = JSONUtils.getArray(json, "removeGroups");
-            System.out.println("addGroups");
+
 
             if (addGroups != null) {
                 for (int i = 0; i <= addGroups.length()-1; i++) {
 
                     String o = addGroups.getString(i);
-                    System.out.println("hvad er o");
-                    System.out.println(o.equals("GROUP_site_retspsyk_SiteConsumer"));
 
                     // if added to GROUP_site_retspsyk_SiteConsumer (only readaccess)- stripe the delete rights for all documents and remove from user from the colaborator group
                     if (o.equals("GROUP_site_retspsyk_SiteConsumer")) {
@@ -79,8 +77,6 @@ public class UpdateUserRoles extends AbstractWebScript {
                     }
                 }
             }
-            System.out.println("removeGroups");
-            System.out.println(removeGroups);
 
 
             result = databaseBean.updateUserRoles(siteShortName, username, addGroups, removeGroups);
