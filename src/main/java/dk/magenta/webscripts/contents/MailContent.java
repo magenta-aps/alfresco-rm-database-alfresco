@@ -210,11 +210,9 @@ public class MailContent extends AbstractWebScript {
 
                 contentWriter.setMimetype("application/vnd.oasis.opendocument.text");
 
-
                 contentWriter.putContent(f);
 
-                // node made editable and deletable acording to 31698
-                // nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_UNDELETABLE, null);
+                nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_UNDELETABLE, null);
 
             }
             else {
