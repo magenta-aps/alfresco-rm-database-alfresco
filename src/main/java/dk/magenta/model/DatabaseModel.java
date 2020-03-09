@@ -136,7 +136,7 @@ public interface DatabaseModel {
 
 
     String PROP_LOGFORMAILS = "mail_kvitteringer.odt";
-    String PROP_DEFAULTFOLDER_MAILRECEIPTS = "erklærings_test";
+    String PROP_DEFAULTFOLDER_MAILRECEIPTS = "mailkvittering";
 
     String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME_BUA = "samtykke_bua.odt";
     String PROP_TEMPLATE_DOC_KENDELSE_FILENAME_BUA = "kendelse_bua.odt";
