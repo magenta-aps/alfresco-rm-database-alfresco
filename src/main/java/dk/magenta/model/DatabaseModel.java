@@ -118,6 +118,8 @@ public interface DatabaseModel {
     // Containers
     String PROP_VALUES = "propertyValues";
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
+    String PROP_SHAREDFOLDER_BUA = "sharedFolderBua";
+
     String PROP_TMP = "tmp";
 
     String PROP_PSYCOLOGICALDOCUMENT = "Psyk test.odt";

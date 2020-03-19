@@ -202,6 +202,10 @@
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 
+	<bean id="webscript.contents.sharedfolderbua.get" class="dk.magenta.webscripts.contents.GetSharedFolderBua" parent="webscript">
+		<property name="contentsBean" ref="contentsBean"/>
+	</bean>
+
 	<bean id="webscript.preferences.get"
 		  class="dk.magenta.webscripts.Preferences"
 		  parent="webscript">
