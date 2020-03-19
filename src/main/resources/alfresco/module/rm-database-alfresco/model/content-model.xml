@@ -418,8 +418,6 @@
         </aspect>
 
 
-
-
         <aspect name="rm:version_previewable">
             <title>Enables saving versions as live nodes for preview</title>
             <associations>
@@ -436,6 +434,10 @@
 
         <aspect name="rm:skip_flowchart">
             <title>dont show in flowchar</title>
+        </aspect>
+
+        <aspect name="rm:bua_user">
+            <title>marks a user as a bua user</title>
         </aspect>
 
     </aspects>

@@ -155,7 +155,12 @@ public interface DatabaseModel {
 
     QName ASPECT_SENDMAILLOGS = QName.createQName(RM_MODEL_URI, "sendMaillogs");
     QName ASPECT_SKIPFLOW = QName.createQName(RM_MODEL_URI, "skip_flowchart");
+    QName ASPECT_BUA_USER = QName.createQName(RM_MODEL_URI, "bua_user");
     QName ASPECT_DECLARATIONMARKEDFOREDIT = QName.createQName(RM_MODEL_URI, "documentMarkedForEdit");
+
+    String USER_ALL = "Alle";
+    String USER_ONLY_BUA = "BUA";
+    String USER_ONLY_PS = "PS";
 
     // groups
     String GROUP_ALLOWEDTODELETE = "GROUP_site_retspsyk_ALLOWEDTODELETE";
