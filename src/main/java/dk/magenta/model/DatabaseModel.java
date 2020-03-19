@@ -162,6 +162,7 @@ public interface DatabaseModel {
 
     String USER_ALL = "Alle";
     String USER_ONLY_BUA = "BUA";
+    String USER_CURRENT = "CURRENT_USER";
     String USER_ONLY_PS = "PS";
 
     // groups

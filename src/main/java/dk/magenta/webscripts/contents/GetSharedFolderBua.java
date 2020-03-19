@@ -18,7 +18,6 @@ package dk.magenta.webscripts.contents;
 
 import dk.magenta.beans.ContentsBean;
 import dk.magenta.utils.JSONUtils;
-import org.alfresco.service.cmr.repository.NodeRef;
 import org.json.JSONObject;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -26,10 +25,9 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 
 
-public class GetCompanyHome extends AbstractWebScript {
+public class GetSharedFolderBua extends AbstractWebScript {
 
     private ContentsBean contentsBean;
     public void setContentsBean(ContentsBean contentsBean) {
@@ -44,7 +42,7 @@ public class GetCompanyHome extends AbstractWebScript {
         JSONObject result;
 
         try {
-            result = JSONUtils.getObject("nodeRef", contentsBean.getCompanyHome().toString());
+            result = JSONUtils.getObject("nodeRef", contentsBean.getSharedFolderBUA().toString());
 
         } catch (Exception e) {
             e.printStackTrace();

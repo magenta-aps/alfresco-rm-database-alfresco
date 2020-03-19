@@ -80,8 +80,6 @@ public class EntryBean {
 
         //Get counter for this site document library
 
-
-
         NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
 
         Integer counter;

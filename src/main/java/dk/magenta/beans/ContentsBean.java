@@ -253,6 +253,18 @@ public class ContentsBean {
         return repository.getCompanyHome();
     }
 
+    public NodeRef getSharedFolderBUA() throws JSONException {
+
+        NodeRef sharedFolderBua = siteService.getContainer("retspsyk", DatabaseModel.PROP_SHAREDFOLDER_BUA);
+
+        if (sharedFolderBua != null) {
+            return sharedFolderBua;
+        }
+        else {
+            return siteService.createContainer("retspsyk", DatabaseModel.PROP_SHAREDFOLDER_BUA, ContentModel.TYPE_FOLDER, null);
+        }
+    }
+
 
 
 

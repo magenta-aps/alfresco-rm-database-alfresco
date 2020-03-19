@@ -1,7 +1,7 @@
 <webscript>
-    <shortname>Get the Company Home</shortname>
-    <description>gets the Company Home</description>
-    <url>/contents/companyHome</url>
+    <shortname>Get the Shared Folder of bua</shortname>
+    <description>gets the shared folder bua</description>
+    <url>/contents/sharedfolderbua</url>
     <authentication>user</authentication>
     <format default="json"/>
 </webscript>

@@ -82,6 +82,8 @@ public class UpdateUser extends AbstractWebScript {
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
 
+        String currentUserName = authenticationService.getCurrentUserName();
+
         AuthenticationUtil.setRunAsUserSystem();
 
         webScriptResponse.setContentEncoding("UTF-8");
@@ -97,6 +99,10 @@ public class UpdateUser extends AbstractWebScript {
 
                 String userName = params.get("userName");
 
+                if (userName.equals(DatabaseModel.USER_CURRENT)) {
+                    userName = currentUserName;
+                }
+
                 NodeRef p = personService.getPerson(userName);
 
                 try {
@@ -111,7 +117,7 @@ public class UpdateUser extends AbstractWebScript {
 
             case "update":
 
-                if (isMember() || authenticationService.getCurrentUserName().equals("admin")) {
+                if (isMember() || currentUserName.equals("admin")) {
 
                     userName = params.get("userName");
 
