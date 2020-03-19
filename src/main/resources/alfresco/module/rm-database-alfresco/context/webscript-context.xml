@@ -112,6 +112,14 @@
 		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 
+	<bean id="webscript.user.updateUser.get" class="dk.magenta.webscripts.user.UpdateUser" parent="webscript">
+		<property name="siteService" ref="SiteService"/>
+		<property name="authorityService" ref="AuthorityService"/>
+		<property name="authenticationService" ref="authenticationService"/>
+		<property name="nodeService" ref="NodeService"/>
+		<property name="personService" ref="PersonService"/>
+	</bean>
+
 	<bean id="webscript.user.isActivated.get" class="dk.magenta.webscripts.user.IsActivated" parent="webscript">
 		<property name="siteService" ref="SiteService"/>
 		<property name="authorityService" ref="AuthorityService"/>
@@ -212,6 +220,10 @@
 	</bean>
 
 	<bean id="webscript.contents.companyhome.get" class="dk.magenta.webscripts.contents.GetCompanyHome" parent="webscript">
+		<property name="contentsBean" ref="contentsBean"/>
+	</bean>
+
+	<bean id="webscript.contents.sharedfolderbua.get" class="dk.magenta.webscripts.contents.GetSharedFolderBua" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 

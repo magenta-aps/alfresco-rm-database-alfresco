@@ -1,7 +1,9 @@
 package dk.magenta.webscripts.user;
 
+import com.google.gdata.data.Content;
 import com.google.gdata.data.Person;
 import dk.magenta.beans.PropertyValuesBean;
+import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 
 import org.alfresco.query.PagingResults;
@@ -21,6 +23,8 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import org.alfresco.model.ContentModel;
+
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
@@ -92,8 +96,17 @@ public class UserPermissions extends AbstractWebScript {
         Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
 
 
-        NodeRef peopleContainer = personService.getPeopleContainer();
 
+
+        String user = params.get("user");
+
+
+
+        String onlyActivate = params.get("onlyActivate");
+
+
+
+        NodeRef peopleContainer = personService.getPeopleContainer();
 
         List<ChildAssociationRef> allPeople = nodeService.getChildAssocs(peopleContainer);
 
@@ -114,22 +127,58 @@ public class UserPermissions extends AbstractWebScript {
             PersonService.PersonInfo authorityName = personService.getPerson(n);
 
             try {
-                o.put("nodeRef", n);
-                o.put("userName", name);
-                o.put("firstName", (String)nodeService.getProperty(n, ContentModel.PROP_FIRSTNAME));
-                o.put("lastName", (String) nodeService.getProperty(n, ContentModel.PROP_LASTNAME));
-                o.put("active", member);
 
+                boolean go = false;
 
-                JSONObject membership = isMember(authorityName.getUserName());
+                if (user.equals(DatabaseModel.USER_ALL)) {
+                    go = true;
+                }
+                else if (user.equals(DatabaseModel.USER_ONLY_BUA)) {
+                    go = nodeService.hasAspect(n, DatabaseModel.ASPECT_BUA_USER);
+                }
+                else if (user.equals(DatabaseModel.USER_ONLY_PS)) {
+                    go = !(nodeService.hasAspect(n, DatabaseModel.ASPECT_BUA_USER));
+                }
 
-                o.put("GROUP_site_retspsyk_SiteEntryLockManager", membership.getBoolean("GROUP_site_retspsyk_SiteEntryLockManager"));
-                o.put("GROUP_site_retspsyk_SitePropertyValueManager", membership.getBoolean("GROUP_site_retspsyk_SitePropertyValueManager"));
-                o.put("GROUP_site_retspsyk_SiteRoleManager", membership.getBoolean("GROUP_site_retspsyk_SiteRoleManager"));
-                o.put("GROUP_site_retspsyk_TemplateFolderValueManager", membership.getBoolean("GROUP_site_retspsyk_TemplateFolderValueManager"));
-                o.put("GROUP_site_retspsyk_SiteConsumer", membership.getBoolean("GROUP_site_retspsyk_SiteConsumer"));
+                if (go) {
 
-                array.put(o);
+                    o.put("nodeRef", n);
+                    o.put("userName", name);
+                    o.put("firstName", (String) nodeService.getProperty(n, ContentModel.PROP_FIRSTNAME));
+                    o.put("lastName", (String) nodeService.getProperty(n, ContentModel.PROP_LASTNAME));
+                    o.put("active", member);
+
+                    if (nodeService.hasAspect(n, DatabaseModel.ASPECT_BUA_USER)) {
+                        o.put("bua", "(BUA)");
+                    }
+                    else {
+                        o.put("bua", "");
+                    }
+
+                    NodeRef homefolder =  (NodeRef)nodeService.getProperty(n, ContentModel.PROP_HOMEFOLDER);
+                    if (homefolder != null) {
+                        o.put("oprettet", nodeService.getProperty(homefolder, ContentModel.PROP_CREATED));
+                    }
+
+                    JSONObject membership = isMember(authorityName.getUserName());
+
+                    o.put("GROUP_site_retspsyk_SiteEntryLockManager", membership.getBoolean("GROUP_site_retspsyk_SiteEntryLockManager"));
+                    o.put("GROUP_site_retspsyk_SitePropertyValueManager", membership.getBoolean("GROUP_site_retspsyk_SitePropertyValueManager"));
+                    o.put("GROUP_site_retspsyk_SiteRoleManager", membership.getBoolean("GROUP_site_retspsyk_SiteRoleManager"));
+                    o.put("GROUP_site_retspsyk_TemplateFolderValueManager", membership.getBoolean("GROUP_site_retspsyk_TemplateFolderValueManager"));
+                    o.put("GROUP_site_retspsyk_SiteConsumer", membership.getBoolean("GROUP_site_retspsyk_SiteConsumer"));
+
+                    // filter the active/nonactive
+                    if (onlyActivate.equals("true")) {
+                        if (o.get("active").equals(true)) {
+                            array.put(o);
+                        }
+                    }
+                    else {
+                        array.put(o);
+                    }
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
