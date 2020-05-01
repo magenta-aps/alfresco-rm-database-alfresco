@@ -118,6 +118,8 @@ public interface DatabaseModel {
     // Containers
     String PROP_VALUES = "propertyValues";
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
+    String PROP_SHAREDFOLDER_BUA = "sharedFolderBua";
+
     String PROP_TMP = "tmp";
 
     String PROP_PSYCOLOGICALDOCUMENT = "Psyk test.odt";
@@ -133,10 +135,14 @@ public interface DatabaseModel {
     String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME = "samtykke.odt";
     String PROP_TEMPLATE_DOC_KENDELSE_FILENAME = "kendelse.odt";
 
+
+
+    String PROP_LOGFORMAILS = "mail_kvitteringer.odt";
+    String PROP_DEFAULTFOLDER_MAILRECEIPTS = "mailkvittering";
+
     String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME_BUA = "samtykke_bua.odt";
     String PROP_TEMPLATE_DOC_KENDELSE_FILENAME_BUA = "kendelse_bua.odt";
 
-    String PROP_LOGFORMAILS = "mail_kvitteringer.txt";
 
 
     /**
@@ -155,7 +161,13 @@ public interface DatabaseModel {
 
     QName ASPECT_SENDMAILLOGS = QName.createQName(RM_MODEL_URI, "sendMaillogs");
     QName ASPECT_SKIPFLOW = QName.createQName(RM_MODEL_URI, "skip_flowchart");
+    QName ASPECT_BUA_USER = QName.createQName(RM_MODEL_URI, "bua_user");
     QName ASPECT_DECLARATIONMARKEDFOREDIT = QName.createQName(RM_MODEL_URI, "documentMarkedForEdit");
+
+    String USER_ALL = "Alle";
+    String USER_ONLY_BUA = "BUA";
+    String USER_CURRENT = "CURRENT_USER";
+    String USER_ONLY_PS = "PS";
 
     // groups
     String GROUP_ALLOWEDTODELETE = "GROUP_site_retspsyk_ALLOWEDTODELETE";
@@ -165,6 +177,7 @@ public interface DatabaseModel {
     String GROUP_SITEENTRYLOCKMANAGER = "GROUP_site_retspsyk_SiteEntryLockManager";
 
     String MONTHLY_REPORT_SPREADSHEET_NAME = "rapport.ods";
+    String DEFAULT_MAIL_TEXT_NAME = "standardtext.odt";
 
 
     QName ASSOC_VERSION_PREVIEW = QName.createQName(RM_MODEL_URI, "version_preview");

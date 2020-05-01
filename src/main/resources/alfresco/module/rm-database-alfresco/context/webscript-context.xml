@@ -95,6 +95,11 @@
 		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 
+	<bean id="webscript.systemsettings.settings.get" class="dk.magenta.webscripts.systemsettings.Settings" parent="webscript">
+		<property name="settingsBean" ref="settingsBean"/>
+		<property name="entryBean" ref="entryBean"/>
+	</bean>
+
 	<bean id="webscript.user.deactivateUser.get" class="dk.magenta.webscripts.user.DeactivateUser" parent="webscript">
 		<property name="siteService" ref="SiteService"/>
 		<property name="authorityService" ref="AuthorityService"/>
@@ -105,6 +110,14 @@
 		<property name="siteService" ref="SiteService"/>
 		<property name="authorityService" ref="AuthorityService"/>
 		<property name="authenticationService" ref="authenticationService"/>
+	</bean>
+
+	<bean id="webscript.user.updateUser.get" class="dk.magenta.webscripts.user.UpdateUser" parent="webscript">
+		<property name="siteService" ref="SiteService"/>
+		<property name="authorityService" ref="AuthorityService"/>
+		<property name="authenticationService" ref="authenticationService"/>
+		<property name="nodeService" ref="NodeService"/>
+		<property name="personService" ref="PersonService"/>
 	</bean>
 
 	<bean id="webscript.user.isActivated.get" class="dk.magenta.webscripts.user.IsActivated" parent="webscript">
@@ -138,6 +151,14 @@
 		<property name="authenticationService" ref="authenticationService"/>
 		<property name="personService" ref="personService"/>
 		<property name="lockService" ref="lockService"/>
+		<property name="versionService" ref="versionService"/>
+	</bean>
+
+	<bean id="webscript.conversions.script.post" class="dk.magenta.webscripts.conversions.Script" parent="webscript">
+		<property name="entryBean" ref="entryBean"/>
+		<property name="nodeService" ref="nodeService"/>
+		<property name="fileFolderService" ref="fileFolderService"/>
+		<property name="contentService" ref="contentService"/>
 	</bean>
 
 	<bean id="webscript.contents.movecontent.post" class="dk.magenta.webscripts.contents.MoveContent" parent="webscript">
@@ -199,6 +220,10 @@
 	</bean>
 
 	<bean id="webscript.contents.companyhome.get" class="dk.magenta.webscripts.contents.GetCompanyHome" parent="webscript">
+		<property name="contentsBean" ref="contentsBean"/>
+	</bean>
+
+	<bean id="webscript.contents.sharedfolderbua.get" class="dk.magenta.webscripts.contents.GetSharedFolderBua" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
 

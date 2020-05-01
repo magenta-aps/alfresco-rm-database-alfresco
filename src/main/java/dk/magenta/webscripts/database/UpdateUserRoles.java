@@ -14,7 +14,9 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 import javax.faces.model.DataModel;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class UpdateUserRoles extends AbstractWebScript {
 
@@ -71,8 +73,36 @@ public class UpdateUserRoles extends AbstractWebScript {
                     // if removed from the siteConsumer group (only readaccess), make the user able to delete all documents again and add user to the colaborator group
                     if (o.equals("GROUP_site_retspsyk_SiteConsumer")) {
 
-                        authorityService.addAuthority(DatabaseModel.GROUP_ALLOWEDTODELETE, username);
-                        authorityService.addAuthority("GROUP_site_retspsyk_SiteCollaborator", username);
+                        // added check, #32745 - as existing membership breaks the update
+
+                        boolean member_allowedToDelete = false;
+                        boolean member_site_retspsyk_SiteCollaborator = false;
+
+                        authorityService.getAuthoritiesForUser(username);
+
+                        Set<String> auths = authorityService.getAuthoritiesForUser(username);
+                        Iterator<String> authIt = auths.iterator();
+                        while (authIt.hasNext()){
+
+                            String auth = authIt.next();
+
+                            if (auth.equals(DatabaseModel.GROUP_ALLOWEDTODELETE)) {
+                                member_allowedToDelete = true;
+                            }
+                            else if (auth.equals("GROUP_site_retspsyk_SiteCollaborator")) {
+                                member_site_retspsyk_SiteCollaborator = true;
+                            }
+                        }
+
+                        if (!member_allowedToDelete) {
+                            authorityService.addAuthority(DatabaseModel.GROUP_ALLOWEDTODELETE, username);
+                        }
+
+                        if (!member_site_retspsyk_SiteCollaborator) {
+                            authorityService.addAuthority("GROUP_site_retspsyk_SiteCollaborator", username);
+                        }
+
+
 
                     }
                 }

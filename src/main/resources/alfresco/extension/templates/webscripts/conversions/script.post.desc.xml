@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>data conversions</shortname>
+    <description>data conversions</description>
+    <url>/conversions/script</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
