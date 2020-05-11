@@ -106,6 +106,10 @@ public interface DatabaseModel {
 
     /* Aspects */
     QName ASPECT_BUA = QName.createQName(RM_MODEL_URI, "bua");
+
+    QName ASPECT_RETURNDATEFORDECLARATION = QName.createQName(RM_MODEL_URI, "returnDateForDeclaration");
+    QName PROP_RETURNOFDECLARATIONDATE = QName.createQName(RM_MODEL_URI, "returnOfDeclarationDate");
+
     QName ASPECT_STAT = QName.createQName(RM_MODEL_URI, "stat");
     QName ASPECT_FLOWCHART = QName.createQName(RM_MODEL_URI, "flowchart");
 

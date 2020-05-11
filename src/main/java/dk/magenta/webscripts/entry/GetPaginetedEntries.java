@@ -106,6 +106,40 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 queryArray.put(o);
             }
 
+
+            // date range for tilbagesendt
+
+            if (input.has("returnOfDeclarationFromDate")) {
+                JSONObject o = new JSONObject();
+
+                String f_formattedDate = (String)input.get("returnOfDeclarationFromDate");
+
+                o.put("key", "returnOfDeclarationDate");
+
+                if (input.has("returnOfDeclarationToDate")) {
+                    String t_formattedDate = (String)input.get("returnOfDeclarationToDate");
+                    o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, t_formattedDate));
+                }
+                else {
+                    o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, "MAX"));
+                }
+                o.put("include", true);
+                queryArray.put(o);
+            }
+            else if (input.has("returnOfDeclarationToDate")) {
+                JSONObject o = new JSONObject();
+
+                String t_formattedDate = (String)input.get("returnOfDeclarationToDate");
+                o.put("key", "returnOfDeclarationDate");
+                o.put("value", QueryUtils.dateRangeQuery("MIN",t_formattedDate));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+
+
+
+
             // date range for declarationsdate
 
 
@@ -309,6 +343,9 @@ public class GetPaginetedEntries extends AbstractWebScript {
                     query = query + " AND -ASPECT:\"rm:bua\"";
                 }
             }
+
+            System.out.println("the query");
+            System.out.println(query);
 
 
             List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
