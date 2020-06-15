@@ -171,7 +171,7 @@ public class FlowChartBean {
         return result;
     }
 
-    public List<NodeRef> getWaitingList(String siteShortName, String sort, boolean desc) {
+    public List<NodeRef> getWaitingList(String siteShortName, String default_query, String sort, boolean desc) {
 
         JSONObject o = new JSONObject();
 
@@ -211,6 +211,7 @@ public class FlowChartBean {
 
         query += statusQuery;
 
+        query += " AND " + default_query;
 
 
         //System.out.println("getWaitingList query");
@@ -508,7 +509,7 @@ public class FlowChartBean {
         }
 
 
-        result.put("waitinglist",this.getWaitingList(siteShortName, "@rm:creationDate", true).size());
+        result.put("waitinglist",this.getWaitingList(siteShortName, default_query, "@rm:creationDate", true).size());
         result.put("ventendegr",this.getEntriesByStateVentedeGR(siteShortName,default_query, "@rm:creationDate", true).size());
 
         return result;

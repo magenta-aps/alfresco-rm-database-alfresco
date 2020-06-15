@@ -10,6 +10,7 @@ import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
+import org.alfresco.service.cmr.security.PersonService;
 import org.codehaus.groovy.transform.SourceURIASTTransformation;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,6 +69,12 @@ public class FlowChart extends AbstractWebScript {
         this.databaseBean = databaseBean;
     }
 
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
+
+    PersonService personService;
+
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
 
@@ -82,7 +89,28 @@ public class FlowChart extends AbstractWebScript {
         JSONObject jsonProperties = null;
 
         String defaultQuery = "ISUNSET:\"rm:closed\"";
-        defaultQuery += " AND -ASPECT:\"rm:bua\"";
+
+        String userNameForbuaCheck = "";
+
+
+
+            userNameForbuaCheck = authenticationService.getCurrentUserName();
+            System.out.println("userNameForbuaCheck");
+            System.out.println(userNameForbuaCheck);
+
+        System.out.println("(nodeService.hasAspect(personService.getPerson(userNameForbuaCheck), DatabaseModel.ASPECT_BUA_USER)");
+        System.out.println(nodeService.hasAspect(personService.getPerson(userNameForbuaCheck), DatabaseModel.ASPECT_BUA_USER));
+
+
+            if (nodeService.hasAspect(personService.getPerson(userNameForbuaCheck), DatabaseModel.ASPECT_BUA_USER)) {
+                System.out.println("true");
+                defaultQuery += " AND ASPECT:\"rm:bua\"";
+            }
+            else {
+                System.out.println("false");
+                defaultQuery += " AND -ASPECT:\"rm:bua\"";
+            }
+
         defaultQuery += " AND -ASPECT:\"rm:skip_flowchart\"";
 
 
@@ -148,7 +176,7 @@ public class FlowChart extends AbstractWebScript {
                     sort = jsonProperties.getString("sort");
                     desc = jsonProperties.getBoolean("desc");
 
-                    entries = flowChartBean.getWaitingList(siteShortName, sort, desc);
+                    entries = flowChartBean.getWaitingList(siteShortName, defaultQuery, sort, desc);
 
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());

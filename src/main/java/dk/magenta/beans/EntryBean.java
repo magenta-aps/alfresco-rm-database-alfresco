@@ -86,6 +86,7 @@ public class EntryBean {
 
         if (bua) {
             counter = (Integer) nodeService.getProperty(docLibRef, DatabaseModel.PROP_BUA_COUNTER);
+
         }
         else {
             counter = (Integer) nodeService.getProperty(docLibRef, ContentModel.PROP_COUNTER);
@@ -93,7 +94,8 @@ public class EntryBean {
 
 
         if(counter == null)
-            counter = 0;
+            counter = 50000;
+
         counter++;
 
         //Get entry key for this type
