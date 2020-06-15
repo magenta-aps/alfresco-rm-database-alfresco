@@ -440,5 +440,15 @@
             <title>marks a user as a bua user</title>
         </aspect>
 
+        <aspect name="rm:returnDateForDeclaration">
+            <title>The date a declaration has been returned</title>
+            <properties>
+            <property name="rm:returnOfDeclarationDate">
+                <title>Dato for tilbagesendelse af en sag</title>
+                <type>d:date</type>
+            </property>
+            </properties>
+        </aspect>
+
     </aspects>
 </model>

@@ -170,6 +170,7 @@
 		<property name="nodeService" ref="nodeService"/>
 		<property name="personService" ref="personService"/>
 		<property name="authenticationService" ref="authenticationService"/>
+		<property name="authorityService" ref="authorityService"/>
 	</bean>
 
 	<bean id="webscript.contents.addpermission.post" class="dk.magenta.webscripts.contents.AddPermission" parent="webscript">

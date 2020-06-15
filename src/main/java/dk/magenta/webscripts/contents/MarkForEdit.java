@@ -6,6 +6,7 @@ import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
+import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONArray;
@@ -20,9 +21,17 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class MarkForEdit extends AbstractWebScript {
+
+    public void setAuthorityService(AuthorityService authorityService) {
+        this.authorityService = authorityService;
+    }
+
+    private AuthorityService authorityService;
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
@@ -58,6 +67,9 @@ public class MarkForEdit extends AbstractWebScript {
             String method = (String)json.get("method");
             String nodeRef = (String)json.get("nodeRef");
 
+            System.out.println("the method");
+            System.out.println(method);
+
             if (method.equals("add")) {
 
                 String username = authenticationService.getCurrentUserName();
@@ -69,6 +81,30 @@ public class MarkForEdit extends AbstractWebScript {
                 nodeService.addAspect(new NodeRef(nodeRef), DatabaseModel.ASPECT_DECLARATIONMARKEDFOREDIT, aspectProps);
                 result = JSONUtils.getSuccess();
                 JSONUtils.write(webScriptWriter, result);
+            }
+            else if (method.equals("forceUnlock")) {
+
+
+                System.out.println("noderef");
+                System.out.println(nodeRef);
+
+
+                // check if user is a member of
+
+                System.out.println("this.isMember()");
+                System.out.println(this.isMember());
+
+                if (this.isMember()) {
+                    nodeService.removeAspect(new NodeRef(nodeRef), DatabaseModel.ASPECT_DECLARATIONMARKEDFOREDIT);
+                    result = JSONUtils.getSuccess();
+                    JSONUtils.write(webScriptWriter, result);
+                }
+                else {
+                    result = JSONUtils.getError("user not allowed to remove lock on document " + nodeRef);
+                    JSONUtils.write(webScriptWriter, result);
+                }
+
+
             }
             else if (method.equals("remove")) {
                 nodeService.removeAspect(new NodeRef(nodeRef), DatabaseModel.ASPECT_DECLARATIONMARKEDFOREDIT);
@@ -108,5 +144,20 @@ public class MarkForEdit extends AbstractWebScript {
             webScriptResponse.setStatus(400);
             JSONUtils.write(webScriptWriter, result);
         }
+    }
+
+    private boolean isMember() {
+
+        String currentUser = authenticationService.getCurrentUserName();
+
+        Set<String> auths = authorityService.getAuthoritiesForUser(currentUser);
+        Iterator<String> authIt = auths.iterator();
+        while (authIt.hasNext()){
+            String group = authIt.next();
+            if (group.equals("GROUP_ALFRESCO_ADMINISTRATORS")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
