@@ -298,16 +298,22 @@ public class EntryBean {
         String uri = DatabaseModel.RM_MODEL_URI;
         QName closed = QName.createQName(uri, "closed");
         Boolean closedProp = (Boolean) nodeService.getProperty(entryRef, closed);
+
         if (closedProp != null && closedProp) {
 
             AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+            this.addMetaData(entryRef);
             lockEntry(entryRef);
         }
         // check if datefield "erklæaring afgivet is set - then close the case # 31284
         else if (closedProp == null && erklaringdate) {
             nodeService.setProperty(entryRef, DatabaseModel.PROP_CLOSED, true);
             AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+            this.addMetaData(entryRef);
             lockEntry(entryRef);
+
+
+
         }
 
 
@@ -317,6 +323,24 @@ public class EntryBean {
 
 
 
+    }
+
+    private void addMetaData(NodeRef entry) {
+
+        System.out.println("inside addMetaData");
+
+        // if closedWithoutDeclaration - check if need to add ASPECT_RETURNDATEFORDECLARATION
+        boolean  reason = (boolean)nodeService.getProperty(entry, DatabaseModel.PROP_CLOSED_WITHOUT_DECLARATION);
+        System.out.println("reason");
+        System.out.println(reason);
+
+        if (reason) {
+            Date returnDate = (Date)nodeService.getProperty(entry, DatabaseModel.PROP_RETURNOFDECLARATIONDATE);
+
+            Map<QName, Serializable> prop = new HashMap<>();
+            prop.put(DatabaseModel.PROP_RETURNOFDECLARATIONDATE, returnDate);
+            nodeService.addAspect(entry, DatabaseModel.ASPECT_RETURNDATEFORDECLARATION,prop);
+        }
     }
 
     // used for converting data from the old system
