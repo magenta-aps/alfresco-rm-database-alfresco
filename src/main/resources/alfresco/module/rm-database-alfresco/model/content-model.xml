@@ -311,6 +311,34 @@
             </properties>
         </type>
 
+
+        <type name="rm:weeklystat">
+            <title>ugestatestik</title>
+            <parent>cm:content</parent>
+            <properties>
+
+                <property name="rm:week">
+                    <title>week</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:year">
+                    <title>year</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:sent">
+                    <title>sent</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:received">
+                    <title>received</title>
+                    <type>d:text</type>
+                </property>
+            </properties>
+        </type>
+
     </types>
 
     <!-- Aspects -->
