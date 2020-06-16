@@ -195,8 +195,8 @@ public interface DatabaseModel {
 
     QName PROP_WEEKLY_TYPE = QName.createQName(RM_MODEL_URI, "weeklystat");
 
-    QName PROP_WEEK = QName.createQName(CONTENT_MODEL_URI, "week");
-    QName PROP_YEAR = QName.createQName(CONTENT_MODEL_URI, "year");
-    QName PROP_RECEIVED = QName.createQName(CONTENT_MODEL_URI, "received");
-    QName PROP_SENT = QName.createQName(CONTENT_MODEL_URI, "sent");
+    QName PROP_WEEK = QName.createQName(RM_MODEL_URI, "week");
+    QName PROP_YEAR = QName.createQName(RM_MODEL_URI, "year");
+    QName PROP_RECEIVED = QName.createQName(RM_MODEL_URI, "received");
+    QName PROP_SENT = QName.createQName(RM_MODEL_URI, "sent");
 }

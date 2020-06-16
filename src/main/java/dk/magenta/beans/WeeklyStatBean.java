@@ -4,9 +4,11 @@ import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.QueryUtils;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.search.ResultSet;
+import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
@@ -129,6 +131,12 @@ public class WeeklyStatBean {
         return childRef;
     }
 
+    public void initYear(String year) {
+        for (int i=1; i <=52; i++) {
+            this.calculate(String.valueOf(i), year);
+        }
+    }
+
     public void calculate(String week, String year) {
 
         // int year = Calendar.getInstance().get(Calendar.YEAR);
@@ -147,7 +155,8 @@ public class WeeklyStatBean {
 
         // afsendte
         int receivedCount = this.query("creationDate", dateStart, dateEnd, false);
-        this.createNodeRefForWeekYear(week, year, "0", String.valueOf(receivedCount));
+        int sentCount = this.query("declarationDate", dateStart, dateEnd, false);
+        this.createNodeRefForWeekYear(week, year, String.valueOf(sentCount), String.valueOf(receivedCount));
 
     }
 
@@ -162,10 +171,10 @@ public class WeeklyStatBean {
 
         Map<QName, Serializable> properties = new HashMap<>();
         properties.put(ContentModel.PROP_NAME, week);
-        properties.put(PROP_WEEK, week);
-        properties.put(PROP_YEAR, year);
-        properties.put(PROP_SENT, sent);
-        properties.put(PROP_RECEIVED, received);
+        properties.put(DatabaseModel.PROP_WEEK, week);
+        properties.put(DatabaseModel.PROP_YEAR, year);
+        properties.put(DatabaseModel.PROP_SENT, sent);
+        properties.put(DatabaseModel.PROP_RECEIVED, received);
         QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, week);
         ChildAssociationRef childAssociationRef = nodeService.createNode(this.getYearFolderForWeeklyStat(year), ContentModel.ASSOC_CONTAINS, qName, PROP_WEEKLY_TYPE, properties);
         childRef = childAssociationRef.getChildRef();
@@ -219,6 +228,116 @@ public class WeeklyStatBean {
         return 0;
     }
 
+
+    public NodeRef getWeekNodesForYear(String year) {
+
+
+
+        NodeRef yearFolder = this.getYearFolderForWeeklyStat(year);
+
+        List<WeekNode> weeks = new ArrayList<>();
+
+        List<ChildAssociationRef> weekNodeRef = nodeService.getChildAssocs(yearFolder);
+
+        Iterator i = weekNodeRef.iterator();
+
+        System.out.println("i");
+        System.out.println(i);
+
+        while (i.hasNext()) {
+            NodeRef week = ((ChildAssociationRef) i.next()).getChildRef();
+
+            WeekNode weekNode = new WeekNode();
+
+            System.out.println("weeknoderef" + week);
+
+            String sent = (String)nodeService.getProperty(week, PROP_SENT);
+            String received = (String)nodeService.getProperty(week, PROP_RECEIVED);
+
+            System.out.println("week" + (String)nodeService.getProperty(week, PROP_WEEK));
+            System.out.println("sent" + sent);
+            System.out.println("received" + received);
+
+            weekNode.year = (String)nodeService.getProperty(week, PROP_YEAR);
+            String weekString = (String)nodeService.getProperty(week, PROP_WEEK);
+            weekNode.week = Integer.valueOf(weekString);
+            weekNode.sent = (String)nodeService.getProperty(week, PROP_SENT);
+            weekNode.received = (String)nodeService.getProperty(week, PROP_RECEIVED);
+
+            weeks.add(weekNode);
+
+        }
+
+// Sorting
+
+        Collections.sort(weeks, new Comparator<WeekNode>()
+        {
+            @Override
+            public int compare(WeekNode o1, WeekNode o2)
+            {
+                return o1.week.compareTo(o2.week);
+            }
+        });
+
+        this.writeToDocument(weeks);
+
+
+        System.out.println("weeknodeRef count");
+        System.out.println(weekNodeRef.size());
+
+        System.out.println("weeknoderef");
+        System.out.println(weekNodeRef);
+
+        Iterator weeksIterator = weeks.iterator();
+
+        while (weeksIterator.hasNext()) {
+            WeekNode weekNode = (WeekNode) weeksIterator.next();
+            System.out.println(weekNode.week);
+        }
+
+
+
+
+
+//        while (stillgo) {
+//
+//            // add +1 as we also want the current week
+//            if (current_week != (startweek-weeksBack+1)) {
+//
+//                System.out.println("current_week");
+//                System.out.println(current_week);
+//                NodeRef weekNodeRef = nodeService.getChildByName(yearFolder, ContentModel.ASSOC_CONTAINS, String.valueOf(current_week));
+//
+//                System.out.println("weekNodeRef");
+//                System.out.println(weekNodeRef);
+//
+//                current_week = current_week-1;
+//            }
+//            else {
+//                stillgo = false;
+//            }
+//        }
+
+
+//        for (int i=startweek; i >= (startweek + weeksBack); i--) {
+//
+//            int week = startweek+i;
+//
+//            NodeRef weekNodeRef = nodeService.getChildByName(yearFolder, ContentModel.ASSOC_CONTAINS, String.valueOf(week));
+//
+//            System.out.println(weekNodeRef);
+//            System.out.println(weekNodeRef);
+//            System.out.println(weekNodeRef);
+//            System.out.println(weekNodeRef);
+//
+//        }
+
+
+
+
+
+        return null;
+    }
 
     private NodeRef getSpreadSheetNodeRef() {
 
@@ -313,28 +432,70 @@ public class WeeklyStatBean {
 
 
 //
-//    public boolean writeToDocument() {
-//
-//        return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
-//
-//            try {
-//
-//
-//                NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRef();
-//
-//                ContentReader contentReader = contentService.getReader(spreadSheetNodeRef, ContentModel.PROP_CONTENT);
-//                SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.loadDocument(contentReader.getContentInputStream());
-//
-//                NewCasesXY newCasesXY = new NewCasesXY();
-//                newCasesXY.next(spreadSheetNodeRef);
-//
-//                ClosedCasesXY closedCasesXY = new ClosedCasesXY();
-//                closedCasesXY.next(spreadSheetNodeRef);
-//
-//                table = spreadsheetDocument.getSheetByIndex(0);
-//
-//                Cell e = table.getCellByPosition(newCasesXY.getX(), newCasesXY.getY());
-//
+    public boolean writeToDocument(List<WeekNode> weeks) {
+
+        return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
+
+            try {
+
+                NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRef();
+
+                ContentReader contentReader = contentService.getReader(spreadSheetNodeRef, ContentModel.PROP_CONTENT);
+                SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.loadDocument(contentReader.getContentInputStream());
+
+                NewCasesXY newCasesXY = new NewCasesXY();
+                newCasesXY.next(spreadSheetNodeRef);
+
+                ClosedCasesXY closedCasesXY = new ClosedCasesXY();
+                closedCasesXY.next(spreadSheetNodeRef);
+
+                table = spreadsheetDocument.getSheetByIndex(0);
+
+                Iterator i = weeks.iterator();
+
+                while (i.hasNext()) {
+                    WeekNode weekNode = (WeekNode) i.next();
+                    Cell week = table.getCellByPosition(newCasesXY.getX(), newCasesXY.getY());
+                    week.setDoubleValue(Double.valueOf(weekNode.week));
+
+                    Cell sent = table.getCellByPosition(newCasesXY.getX()+1, newCasesXY.getY());
+                    sent.setDoubleValue(Double.valueOf(weekNode.sent));
+
+                    Cell received = table.getCellByPosition(newCasesXY.getX()+2, newCasesXY.getY());
+                    received.setDoubleValue(Double.valueOf(weekNode.received));
+
+                    Cell received_akk = table.getCellByPosition(newCasesXY.getX()+3, newCasesXY.getY());
+
+                    // 4 ugers received
+                    // current - weekNode
+                    // weeks.get(weekNode.week-1);
+                    System.out.println("weeks.get(weekNode.week-1).week");
+                    System.out.println(weeks.get(weekNode.week-1).week);
+
+                    // weeks.get(weekNode.week-2);
+                    // weeks.get(weekNode.week-3);
+                    // weeks.get(weekNode.week-4);
+
+
+
+                    received_akk.setDoubleValue(Double.valueOf(weekNode.received));
+
+
+
+
+
+                    newCasesXY.y = newCasesXY.y+1;
+                }
+
+                // write timestamp and user
+
+                String timestamp = "Rapport pr. " + new Date() + " af " + AuthenticationUtil.getFullyAuthenticatedUser();
+                Cell e1 = table.getCellByPosition(newCasesXY.getX(), newCasesXY.getY());
+                e1.setStringValue(timestamp);
+
+
+
+
 //                if (override) {
 //
 //                    Date referenceDate = new Date();
@@ -372,64 +533,70 @@ public class WeeklyStatBean {
 //
 //                Cell e4 = table.getCellByPosition(closedCasesXY.getX()+1, closedCasesXY.getY());
 //                e4.setDoubleValue(this.query("closedDate", override, override_months));
-//
-//
-//
-//                ContentWriter writer = contentService.getWriter(spreadSheetNodeRef, ContentModel.PROP_CONTENT, true);
-//
-//                File f = new File("tmp");
-//
-//
-//                spreadsheetDocument.save(f);
-//                writer.putContent(f);
-//
-//
-//            } catch (Exception e) {
-//                System.out.println(e);
-//                e.printStackTrace();
-//            }
-//
-//            return true;
-//        });
-//    }
-//
-//        public class NewCasesXY {
-//            private int x;
-//            private int y;
-//
-//            public void next(NodeRef n) {
-//                x = (int)nodeService.getProperty(n, DatabaseModel.PROP_NEXT_NEWCASES_X);
-//                y = (int)nodeService.getProperty(n, DatabaseModel.PROP_NEXT_NEWCASES_Y) +1;
-//
-//                nodeService.setProperty(n, DatabaseModel.PROP_NEXT_NEWCASES_Y, y);
-//            }
-//
-//            public int getX() {
-//                return x;
-//            }
-//
-//            public int getY() {
-//                return y;
-//            }
-//        }
-//
-//    public class ClosedCasesXY {
-//        private int x;
-//        private int y;
-//
-//        public void next(NodeRef n) {
-//            x = (int)nodeService.getProperty(n, DatabaseModel.PROP_NEXT_CLOSEDCASES_X);
-//            y = (int)nodeService.getProperty(n, DatabaseModel.PROP_NEXT_CLOSEDCASES_Y) +1;
-//
-//            nodeService.setProperty(n, DatabaseModel.PROP_NEXT_CLOSEDCASES_Y, y);
-//        }
-//
-//        public int getX() {
-//            return x;
-//        }
-//
-//        public int getY() {
-//            return y;
-//        }
-//    }
+
+
+
+                ContentWriter writer = contentService.getWriter(spreadSheetNodeRef, ContentModel.PROP_CONTENT, true);
+
+                File f = new File("tmp");
+
+
+                spreadsheetDocument.save(f);
+                writer.putContent(f);
+
+
+            } catch (Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+
+            return true;
+        });
+    }
+
+        public class NewCasesXY {
+            private int x;
+            private int y;
+
+            public void next(NodeRef n) {
+                x = (int)nodeService.getProperty(n, DatabaseModel.PROP_NEXT_NEWCASES_X);
+                y = (int)nodeService.getProperty(n, DatabaseModel.PROP_NEXT_NEWCASES_Y) +1;
+
+                nodeService.setProperty(n, DatabaseModel.PROP_NEXT_NEWCASES_Y, y);
+            }
+
+            public int getX() {
+                return x;
+            }
+
+            public int getY() {
+                return y;
+            }
+        }
+
+    public class ClosedCasesXY {
+        private int x;
+        private int y;
+
+        public void next(NodeRef n) {
+            x = (int)nodeService.getProperty(n, DatabaseModel.PROP_NEXT_CLOSEDCASES_X);
+            y = (int)nodeService.getProperty(n, DatabaseModel.PROP_NEXT_CLOSEDCASES_Y) +1;
+
+            nodeService.setProperty(n, DatabaseModel.PROP_NEXT_CLOSEDCASES_Y, y);
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+    }
+    class WeekNode  {
+        Integer week;
+        String year;
+        String sent;
+        String received;
+    }
 }

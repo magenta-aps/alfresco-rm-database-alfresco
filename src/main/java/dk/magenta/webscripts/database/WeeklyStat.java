@@ -38,10 +38,31 @@ public class WeeklyStat extends AbstractWebScript {
         try {
             JSONObject json = new JSONObject(c.getContent());
 
-            String year = JSONUtils.getString(json, "year");
-            String week = JSONUtils.getString(json, "week");
+            String method = JSONUtils.getString(json, "method");
 
-            weeklyStatBean.calculate(week,year);
+            if (method.equals("spreadsheetA")) {
+
+                System.out.println("method: spreadSheetA");
+
+                String year = JSONUtils.getString(json, "year");
+                String startweek = JSONUtils.getString(json, "startweek");
+                String weeksback = JSONUtils.getString(json, "weeksback");
+
+                this.weeklyStatBean.getWeekNodesForYear(year);
+            }
+            else if (method.equals("initYear")) {
+                String year = JSONUtils.getString(json, "year");
+                this.weeklyStatBean.initYear(year);
+            }
+            else {
+                String year = JSONUtils.getString(json, "year");
+                String week = JSONUtils.getString(json, "week");
+
+                weeklyStatBean.calculate(week,year);
+
+            }
+
+
 
 //            NodeRef nodeRef = entryBean.addEntry(siteShortName, type, properties, bua);
 //            result = entryBean.toJSON(nodeRef);
