@@ -150,8 +150,8 @@ public class WeeklyStatBean {
                 .with(weekFields.dayOfWeek(), 1);
 
         LocalDate dateEnd = dateStart.plusDays(7);
-        System.out.println(dateStart);
-        System.out.println(dateEnd);
+//        System.out.println(dateStart);
+//        System.out.println(dateEnd);
 
         // afsendte
         int receivedCount = this.query("creationDate", dateStart, dateEnd, false);
@@ -217,8 +217,8 @@ public class WeeklyStatBean {
 
             List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(query);
 
-            System.out.println("nodeRefs");
-            System.out.println(nodeRefs.size());
+//            System.out.println("nodeRefs");
+//            System.out.println(nodeRefs.size());
 
             return nodeRefs.size();
 
@@ -229,9 +229,26 @@ public class WeeklyStatBean {
     }
 
 
-    public NodeRef getWeekNodesForYear(String year) {
+    public void createChartB(String year) {
 
 
+        String yearM1 = String.valueOf(Integer.valueOf(year)-1);
+        String yearM2 = String.valueOf(Integer.valueOf(year)-2);
+
+        List<WeekNode> yearWeekNodes = this.getWeekNodesForYear(year);
+        List<WeekNode> yearWeekNodesM1 = this.getWeekNodesForYear(Integer.valueOf(year)-1));
+        List<WeekNode> yearWeekNodesM"" = this.getWeekNodesForYear(Integer.valueOf(year)-2);
+
+
+        this.writeToDocument(yearWeekNodes);
+    }
+
+    public void createChartA(String year) {
+        List<WeekNode> yearWeekNodes = this.getWeekNodesForYear(year);
+        this.writeToDocument(yearWeekNodes);
+    }
+
+    public List<WeekNode> getWeekNodesForYear(String year) {
 
         NodeRef yearFolder = this.getYearFolderForWeeklyStat(year);
 
@@ -241,22 +258,10 @@ public class WeeklyStatBean {
 
         Iterator i = weekNodeRef.iterator();
 
-        System.out.println("i");
-        System.out.println(i);
-
         while (i.hasNext()) {
             NodeRef week = ((ChildAssociationRef) i.next()).getChildRef();
 
             WeekNode weekNode = new WeekNode();
-
-            System.out.println("weeknoderef" + week);
-
-            String sent = (String)nodeService.getProperty(week, PROP_SENT);
-            String received = (String)nodeService.getProperty(week, PROP_RECEIVED);
-
-            System.out.println("week" + (String)nodeService.getProperty(week, PROP_WEEK));
-            System.out.println("sent" + sent);
-            System.out.println("received" + received);
 
             weekNode.year = (String)nodeService.getProperty(week, PROP_YEAR);
             String weekString = (String)nodeService.getProperty(week, PROP_WEEK);
@@ -268,8 +273,8 @@ public class WeeklyStatBean {
 
         }
 
-// Sorting
 
+        // Sorting
         Collections.sort(weeks, new Comparator<WeekNode>()
         {
             @Override
@@ -279,67 +284,12 @@ public class WeeklyStatBean {
             }
         });
 
-        this.writeToDocument(weeks);
+//        this.writeToDocument(weeks);
 
-
-        System.out.println("weeknodeRef count");
-        System.out.println(weekNodeRef.size());
-
-        System.out.println("weeknoderef");
-        System.out.println(weekNodeRef);
-
-        Iterator weeksIterator = weeks.iterator();
-
-        while (weeksIterator.hasNext()) {
-            WeekNode weekNode = (WeekNode) weeksIterator.next();
-            System.out.println(weekNode.week);
-        }
-
-
-
-
-
-//        while (stillgo) {
-//
-//            // add +1 as we also want the current week
-//            if (current_week != (startweek-weeksBack+1)) {
-//
-//                System.out.println("current_week");
-//                System.out.println(current_week);
-//                NodeRef weekNodeRef = nodeService.getChildByName(yearFolder, ContentModel.ASSOC_CONTAINS, String.valueOf(current_week));
-//
-//                System.out.println("weekNodeRef");
-//                System.out.println(weekNodeRef);
-//
-//                current_week = current_week-1;
-//            }
-//            else {
-//                stillgo = false;
-//            }
-//        }
-
-
-//        for (int i=startweek; i >= (startweek + weeksBack); i--) {
-//
-//            int week = startweek+i;
-//
-//            NodeRef weekNodeRef = nodeService.getChildByName(yearFolder, ContentModel.ASSOC_CONTAINS, String.valueOf(week));
-//
-//            System.out.println(weekNodeRef);
-//            System.out.println(weekNodeRef);
-//            System.out.println(weekNodeRef);
-//            System.out.println(weekNodeRef);
-//
-//        }
-
-
-
-
-
-        return null;
+        return weeks;
     }
 
-    private NodeRef getSpreadSheetNodeRef() {
+    private NodeRef getSpreadSheetNodeRefChartA() {
 
         return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
 
@@ -356,12 +306,16 @@ public class WeeklyStatBean {
                 }
                  sharedNodeRef = rs.getNodeRef(0);
 
-                 childRef = nodeService.getChildByName(sharedNodeRef, ContentModel.ASSOC_CONTAINS, DatabaseModel.MONTHLY_REPORT_SPREADSHEET_NAME);
+                 childRef = nodeService.getChildByName(sharedNodeRef, ContentModel.ASSOC_CONTAINS, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_A_NAME);
 
-                if(childRef == null) {
+                if(childRef != null) {
+                    nodeService.deleteNode(childRef);
+                }
+
+
                     Map<QName, Serializable> properties = new HashMap<>();
-                    properties.put(ContentModel.PROP_NAME, DatabaseModel.MONTHLY_REPORT_SPREADSHEET_NAME);
-                    QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, DatabaseModel.MONTHLY_REPORT_SPREADSHEET_NAME);
+                    properties.put(ContentModel.PROP_NAME, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_A_NAME);
+                    QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_A_NAME);
                     ChildAssociationRef childAssociationRef = nodeService.createNode(sharedNodeRef, ContentModel.ASSOC_CONTAINS, qName, ContentModel.TYPE_CONTENT, properties);
 
 
@@ -379,28 +333,31 @@ public class WeeklyStatBean {
                     table = document.getSheetByIndex(0);
 
                     Cell newcases_date = table.getCellByPosition(INIT_NEXT_NEWCASES_X, INIT_NEXT_NEWCASES_Y);
-                    newcases_date.setStringValue("Tidspunkt");
+                    newcases_date.setStringValue("Uge");
                     Font fn = newcases_date.getFont();
                     fn.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
 
                     Cell newcases_title = table.getCellByPosition(INIT_NEXT_NEWCASES_X+1, INIT_NEXT_NEWCASES_Y);
-                    newcases_title.setStringValue("Nye sager");
+                    newcases_title.setStringValue("Sendt");
                     Font fnt = newcases_title.getFont();
                     fnt.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
-                    Cell closedcases_date = table.getCellByPosition(INIT_NEXT_CLOSEDCASES_X, INIT_NEXT_CLOSEDCASES_Y);
-                    closedcases_date.setStringValue("Tidspunkt");
+                    Cell closedcases_date = table.getCellByPosition(INIT_NEXT_NEWCASES_X+2, INIT_NEXT_NEWCASES_Y);
+                    closedcases_date.setStringValue("Modtaget");
                     Font fc = newcases_date.getFont();
                     fc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
 
-                    Cell closedcases_title = table.getCellByPosition(INIT_NEXT_CLOSEDCASES_X+1, INIT_NEXT_CLOSEDCASES_Y);
-                    closedcases_title.setStringValue("Afsluttede sager");
+                    Cell closedcases_title = table.getCellByPosition(INIT_NEXT_NEWCASES_X+3, INIT_NEXT_NEWCASES_Y);
+                    closedcases_title.setStringValue("Sendt akk.");
                     Font fnc = newcases_title.getFont();
                     fnc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
-
+                    Cell ReceivedAkk_title = table.getCellByPosition(INIT_NEXT_NEWCASES_X+4, INIT_NEXT_NEWCASES_Y);
+                    ReceivedAkk_title.setStringValue("Modtaget akk.");
+                     fnc = ReceivedAkk_title.getFont();
+                    fnc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
                     ContentWriter writer = contentService.getWriter(childRef, ContentModel.PROP_CONTENT, true);
 
@@ -419,8 +376,8 @@ public class WeeklyStatBean {
 
                     nodeService.addAspect(childRef, DatabaseModel.ASPECT_STAT, aspectProps);
 
-                }
             }
+
             finally {
                 rs.close();
             }
@@ -429,16 +386,212 @@ public class WeeklyStatBean {
     }
 
 
+    private NodeRef getSpreadSheetNodeRefChartB() {
 
+        return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
+
+            final NodeRef sharedNodeRef;
+
+            StoreRef storeRef = new StoreRef(StoreRef.PROTOCOL_WORKSPACE, "SpacesStore");
+            ResultSet rs = searchService.query(storeRef, SearchService.LANGUAGE_LUCENE, "PATH:\"/app:company_home/app:shared\"");
+            NodeRef childRef;
+
+            try
+            {
+                if (rs.length() == 0) {
+                    throw new AlfrescoRuntimeException("Didn't find shared noderef");
+                }
+                sharedNodeRef = rs.getNodeRef(0);
+
+                childRef = nodeService.getChildByName(sharedNodeRef, ContentModel.ASSOC_CONTAINS, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_A_NAME);
+
+                if(childRef != null) {
+                    nodeService.deleteNode(childRef);
+                }
+
+
+                Map<QName, Serializable> properties = new HashMap<>();
+                properties.put(ContentModel.PROP_NAME, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_A_NAME);
+                QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_A_NAME);
+                ChildAssociationRef childAssociationRef = nodeService.createNode(sharedNodeRef, ContentModel.ASSOC_CONTAINS, qName, ContentModel.TYPE_CONTENT, properties);
+
+
+                childRef = childAssociationRef.getChildRef();
+
+                ContentData cd = (ContentData) nodeService.getProperty(childRef, ContentModel.PROP_CONTENT);
+                ContentData newCd = ContentData.setMimetype(cd, "application/vnd.oasis.opendocument.spreadsheet");
+                nodeService.setProperty(childRef, ContentModel.PROP_CONTENT, newCd);
+
+                // also make the conent of the node
+
+                SpreadsheetDocument document = SpreadsheetDocument.newSpreadsheetDocument();
+
+
+                table = document.getSheetByIndex(0);
+
+                Cell newcases_date = table.getCellByPosition(INIT_NEXT_NEWCASES_X, INIT_NEXT_NEWCASES_Y);
+                newcases_date.setStringValue("Uge");
+                Font fn = newcases_date.getFont();
+                fn.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
+
+
+                Cell newcases_title = table.getCellByPosition(INIT_NEXT_NEWCASES_X+1, INIT_NEXT_NEWCASES_Y);
+                newcases_title.setStringValue("Sendt");
+                Font fnt = newcases_title.getFont();
+                fnt.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
+
+                Cell closedcases_date = table.getCellByPosition(INIT_NEXT_NEWCASES_X+2, INIT_NEXT_NEWCASES_Y);
+                closedcases_date.setStringValue("Modtaget");
+                Font fc = newcases_date.getFont();
+                fc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
+
+
+                Cell closedcases_title = table.getCellByPosition(INIT_NEXT_NEWCASES_X+3, INIT_NEXT_NEWCASES_Y);
+                closedcases_title.setStringValue("Sendt akk.");
+                Font fnc = newcases_title.getFont();
+                fnc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
+
+                Cell ReceivedAkk_title = table.getCellByPosition(INIT_NEXT_NEWCASES_X+4, INIT_NEXT_NEWCASES_Y);
+                ReceivedAkk_title.setStringValue("Modtaget akk.");
+                fnc = ReceivedAkk_title.getFont();
+                fnc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
+
+                ContentWriter writer = contentService.getWriter(childRef, ContentModel.PROP_CONTENT, true);
+
+                File f = new File("tmp");
+
+                document.save(f);
+                writer.putContent(f);
+
+
+                Map<QName, Serializable> aspectProps = new HashMap<>();
+                aspectProps.put(DatabaseModel.PROP_NEXT_NEWCASES_X, INIT_NEXT_NEWCASES_X);
+                aspectProps.put(DatabaseModel.PROP_NEXT_NEWCASES_Y, INIT_NEXT_NEWCASES_Y);
+
+                aspectProps.put(DatabaseModel.PROP_NEXT_CLOSEDCASES_X, INIT_NEXT_CLOSEDCASES_X);
+                aspectProps.put(DatabaseModel.PROP_NEXT_CLOSEDCASES_Y, INIT_NEXT_CLOSEDCASES_Y);
+
+                nodeService.addAspect(childRef, DatabaseModel.ASPECT_STAT, aspectProps);
+
+            }
+
+            finally {
+                rs.close();
+            }
+            return childRef;
+        });
+    }
+
+    private int last4weeksTotal(WeekNode weekNode, List<WeekNode> weeks, String property) {
+
+            int total = 0;
+
+            int possibleStepsBack = 0;
+
+            if (weekNode.week > 4) {
+                possibleStepsBack = 3;
+            }
+            else if (weekNode.week == 3) {
+                possibleStepsBack = 2;
+            }
+            else if (weekNode.week == 2) {
+                possibleStepsBack = 1;
+            }
+            else if (weekNode.week == 1) {
+                possibleStepsBack = 0;
+            }
+
+
+            for (int i=0; i<=possibleStepsBack; i++) {
+                System.out.println("hvad er i" + i);;
+                WeekNode w = weeks.get((weekNode.week-1) - i);  // (weekNode.week-1) as the array is indexed from 0
+
+                if (property.equals("received")) {
+                    total = total + Integer.valueOf(w.received);
+                }
+                else {
+                    total = total + Integer.valueOf(w.sent);
+                }
+            }
+            return total;
+    }
 
 //
-    public boolean writeToDocument(List<WeekNode> weeks) {
+
+    public boolean writeToDocumentChartB (List<WeekNode> weeksC, List<WeekNode> weeksM1, List<WeekNode> weeksM2) {
+
+
+        System.out.println("writing " + weeksC.size() + " of weeks" + "staring with [0] " + weeksC.get(0).week) ;
 
         return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
 
             try {
 
-                NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRef();
+                NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRefChartB();
+
+                ContentReader contentReader = contentService.getReader(spreadSheetNodeRef, ContentModel.PROP_CONTENT);
+                SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.loadDocument(contentReader.getContentInputStream());
+
+                NewCasesXY newCasesXY = new NewCasesXY();
+                newCasesXY.next(spreadSheetNodeRef);
+
+                ClosedCasesXY closedCasesXY = new ClosedCasesXY();
+                closedCasesXY.next(spreadSheetNodeRef);
+
+                table = spreadsheetDocument.getSheetByIndex(0);
+
+                for (int i=0; i<=weeksC.size()-1; i++) {
+
+                    WeekNode weekNode = weeksC.get(i);
+                    WeekNode weekNodeM1 = weeksM1.get(i);
+                    WeekNode weekNodeM2 = weeksM2.get(i);
+
+                    // current
+                    Cell week = table.getCellByPosition(newCasesXY.getX(), newCasesXY.getY());
+                    week.setDoubleValue(Double.valueOf(weekNode.week));
+
+                    // current -1
+                    Cell weekM1 = table.getCellByPosition(newCasesXY.getX()+1, newCasesXY.getY());
+                    weekM1.setDoubleValue(Double.valueOf(weekNodeM1.sent));
+
+                    // current -2
+                    Cell weekM2 = table.getCellByPosition(newCasesXY.getX()+2, newCasesXY.getY());
+                    weekM2.setDoubleValue(Double.valueOf(weekNodeM2.sent));
+
+                    newCasesXY.y = newCasesXY.y+1;
+                }
+
+                // write timestamp and user
+
+                String timestamp = "Rapport pr. " + new Date() + " af " + AuthenticationUtil.getFullyAuthenticatedUser();
+                Cell e1 = table.getCellByPosition(newCasesXY.getX(), newCasesXY.getY()+5);
+                e1.setStringValue(timestamp);
+
+                ContentWriter writer = contentService.getWriter(spreadSheetNodeRef, ContentModel.PROP_CONTENT, true);
+
+                File f = new File("tmp");
+
+                spreadsheetDocument.save(f);
+                writer.putContent(f);
+
+            } catch (Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+
+            return true;
+        });
+    }
+
+    public boolean writeToDocument(List<WeekNode> weeks) {
+
+        System.out.println("writing " + weeks.size() + " of weeks" + "staring with [0] " + weeks.get(0).week) ;
+
+        return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
+
+            try {
+
+                NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRefChartA();
 
                 ContentReader contentReader = contentService.getReader(spreadSheetNodeRef, ContentModel.PROP_CONTENT);
                 SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.loadDocument(contentReader.getContentInputStream());
@@ -464,25 +617,13 @@ public class WeeklyStatBean {
                     Cell received = table.getCellByPosition(newCasesXY.getX()+2, newCasesXY.getY());
                     received.setDoubleValue(Double.valueOf(weekNode.received));
 
-                    Cell received_akk = table.getCellByPosition(newCasesXY.getX()+3, newCasesXY.getY());
+                    Cell sent_akk_cell = table.getCellByPosition(newCasesXY.getX()+3, newCasesXY.getY());
+                    int sent_akk = this.last4weeksTotal(weekNode, weeks, "sent");
+                    sent_akk_cell.setDoubleValue(Double.valueOf(sent_akk));
 
-                    // 4 ugers received
-                    // current - weekNode
-                    // weeks.get(weekNode.week-1);
-                    System.out.println("weeks.get(weekNode.week-1).week");
-                    System.out.println(weeks.get(weekNode.week-1).week);
-
-                    // weeks.get(weekNode.week-2);
-                    // weeks.get(weekNode.week-3);
-                    // weeks.get(weekNode.week-4);
-
-
-
-                    received_akk.setDoubleValue(Double.valueOf(weekNode.received));
-
-
-
-
+                    Cell received_akk_cell = table.getCellByPosition(newCasesXY.getX()+4, newCasesXY.getY());
+                    int received_akk = this.last4weeksTotal(weekNode, weeks, "received");
+                    received_akk_cell.setDoubleValue(Double.valueOf(received_akk));
 
                     newCasesXY.y = newCasesXY.y+1;
                 }
@@ -490,60 +631,15 @@ public class WeeklyStatBean {
                 // write timestamp and user
 
                 String timestamp = "Rapport pr. " + new Date() + " af " + AuthenticationUtil.getFullyAuthenticatedUser();
-                Cell e1 = table.getCellByPosition(newCasesXY.getX(), newCasesXY.getY());
+                Cell e1 = table.getCellByPosition(newCasesXY.getX(), newCasesXY.getY()+5);
                 e1.setStringValue(timestamp);
-
-
-
-
-//                if (override) {
-//
-//                    Date referenceDate = new Date();
-//                    Calendar c = Calendar.getInstance();
-//                    c.setTime(referenceDate);
-//                    c.add(Calendar.MONTH, override_months);
-//
-//                    e.setDateValue(c);
-//                }
-//                else {
-//                    e.setDateValue(Calendar.getInstance());
-//                }
-//
-//                e.setFormatString("MM-yyyy");
-//
-//                Cell e2 = table.getCellByPosition(newCasesXY.getX()+1, newCasesXY.getY());
-//                e2.setDoubleValue(this.query("creationDate", override, override_months));
-//
-//                Cell e3 = table.getCellByPosition(closedCasesXY.getX(), closedCasesXY.getY());
-//
-//                if (override) {
-//                    Date referenceDate = new Date();
-//                    Calendar c = Calendar.getInstance();
-//                    c.setTime(referenceDate);
-//                    c.add(Calendar.MONTH, override_months);
-//
-//                    e3.setDateValue(c);
-//                }
-//                else {
-//                    e3.setDateValue(Calendar.getInstance());
-//                }
-//
-//
-//                e3.setFormatString("MM-yyyy");
-//
-//                Cell e4 = table.getCellByPosition(closedCasesXY.getX()+1, closedCasesXY.getY());
-//                e4.setDoubleValue(this.query("closedDate", override, override_months));
-
-
 
                 ContentWriter writer = contentService.getWriter(spreadSheetNodeRef, ContentModel.PROP_CONTENT, true);
 
                 File f = new File("tmp");
 
-
                 spreadsheetDocument.save(f);
                 writer.putContent(f);
-
 
             } catch (Exception e) {
                 System.out.println(e);

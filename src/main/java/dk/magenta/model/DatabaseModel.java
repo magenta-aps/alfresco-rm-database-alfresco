@@ -182,6 +182,7 @@ public interface DatabaseModel {
     String GROUP_SITEENTRYLOCKMANAGER = "GROUP_site_retspsyk_SiteEntryLockManager";
 
     String MONTHLY_REPORT_SPREADSHEET_NAME = "rapport.ods";
+    String WEEKLY_REPORT_SPREADSHEET_A_NAME = "graf.ods";
     String DEFAULT_MAIL_TEXT_NAME = "standardtext.odt";
 
 
