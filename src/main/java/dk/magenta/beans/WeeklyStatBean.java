@@ -229,23 +229,37 @@ public class WeeklyStatBean {
     }
 
 
-    public void createChartB(String year) {
-
+    public NodeRef createChartB(String year) {
 
         String yearM1 = String.valueOf(Integer.valueOf(year)-1);
         String yearM2 = String.valueOf(Integer.valueOf(year)-2);
 
         List<WeekNode> yearWeekNodes = this.getWeekNodesForYear(year);
-        List<WeekNode> yearWeekNodesM1 = this.getWeekNodesForYear(Integer.valueOf(year)-1));
-        List<WeekNode> yearWeekNodesM"" = this.getWeekNodesForYear(Integer.valueOf(year)-2);
+        List<WeekNode> yearWeekNodesM1 = this.getWeekNodesForYear(yearM1);
+        List<WeekNode> yearWeekNodesM2 = this.getWeekNodesForYear(yearM2);
+
+        if ( (yearWeekNodes.size() > 0) && (yearWeekNodesM1.size() > 0) && (yearWeekNodesM2.size() > 0)) {
+            return this.writeToDocumentChartB(year, yearWeekNodes, yearWeekNodesM1, yearWeekNodesM2);
+        }
+        else {
+            return null;
+        }
 
 
-        this.writeToDocument(yearWeekNodes);
     }
 
-    public void createChartA(String year) {
+    public NodeRef createChartA(String year) {
         List<WeekNode> yearWeekNodes = this.getWeekNodesForYear(year);
-        this.writeToDocument(yearWeekNodes);
+
+        System.out.println("hvad er yearWeekNodes");
+        System.out.println(yearWeekNodes);
+
+        if (yearWeekNodes.size() > 0) {
+            return this.writeToDocument(year, yearWeekNodes);
+        }
+        else {
+            return null;
+        }
     }
 
     public List<WeekNode> getWeekNodesForYear(String year) {
@@ -289,7 +303,7 @@ public class WeeklyStatBean {
         return weeks;
     }
 
-    private NodeRef getSpreadSheetNodeRefChartA() {
+    private NodeRef getSpreadSheetNodeRefChartA(String year) {
 
         return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
 
@@ -333,7 +347,7 @@ public class WeeklyStatBean {
                     table = document.getSheetByIndex(0);
 
                     Cell newcases_date = table.getCellByPosition(INIT_NEXT_NEWCASES_X, INIT_NEXT_NEWCASES_Y);
-                    newcases_date.setStringValue("Uge");
+                    newcases_date.setStringValue("Uge" + "for år " + year);
                     Font fn = newcases_date.getFont();
                     fn.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
@@ -386,7 +400,7 @@ public class WeeklyStatBean {
     }
 
 
-    private NodeRef getSpreadSheetNodeRefChartB() {
+    private NodeRef getSpreadSheetNodeRefChartB(String year) {
 
         return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
 
@@ -403,7 +417,7 @@ public class WeeklyStatBean {
                 }
                 sharedNodeRef = rs.getNodeRef(0);
 
-                childRef = nodeService.getChildByName(sharedNodeRef, ContentModel.ASSOC_CONTAINS, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_A_NAME);
+                childRef = nodeService.getChildByName(sharedNodeRef, ContentModel.ASSOC_CONTAINS, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_B_NAME);
 
                 if(childRef != null) {
                     nodeService.deleteNode(childRef);
@@ -411,8 +425,8 @@ public class WeeklyStatBean {
 
 
                 Map<QName, Serializable> properties = new HashMap<>();
-                properties.put(ContentModel.PROP_NAME, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_A_NAME);
-                QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_A_NAME);
+                properties.put(ContentModel.PROP_NAME, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_B_NAME);
+                QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, DatabaseModel.WEEKLY_REPORT_SPREADSHEET_B_NAME);
                 ChildAssociationRef childAssociationRef = nodeService.createNode(sharedNodeRef, ContentModel.ASSOC_CONTAINS, qName, ContentModel.TYPE_CONTENT, properties);
 
 
@@ -436,24 +450,19 @@ public class WeeklyStatBean {
 
 
                 Cell newcases_title = table.getCellByPosition(INIT_NEXT_NEWCASES_X+1, INIT_NEXT_NEWCASES_Y);
-                newcases_title.setStringValue("Sendt");
+                newcases_title.setStringValue(year);
                 Font fnt = newcases_title.getFont();
                 fnt.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
                 Cell closedcases_date = table.getCellByPosition(INIT_NEXT_NEWCASES_X+2, INIT_NEXT_NEWCASES_Y);
-                closedcases_date.setStringValue("Modtaget");
+                closedcases_date.setStringValue(year + "-1");
                 Font fc = newcases_date.getFont();
                 fc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
 
                 Cell closedcases_title = table.getCellByPosition(INIT_NEXT_NEWCASES_X+3, INIT_NEXT_NEWCASES_Y);
-                closedcases_title.setStringValue("Sendt akk.");
+                closedcases_title.setStringValue(year +  "-2");
                 Font fnc = newcases_title.getFont();
-                fnc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
-
-                Cell ReceivedAkk_title = table.getCellByPosition(INIT_NEXT_NEWCASES_X+4, INIT_NEXT_NEWCASES_Y);
-                ReceivedAkk_title.setStringValue("Modtaget akk.");
-                fnc = ReceivedAkk_title.getFont();
                 fnc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
                 ContentWriter writer = contentService.getWriter(childRef, ContentModel.PROP_CONTENT, true);
@@ -518,17 +527,14 @@ public class WeeklyStatBean {
 
 //
 
-    public boolean writeToDocumentChartB (List<WeekNode> weeksC, List<WeekNode> weeksM1, List<WeekNode> weeksM2) {
-
+    public NodeRef writeToDocumentChartB (String year, List<WeekNode> weeksC, List<WeekNode> weeksM1, List<WeekNode> weeksM2) {
 
         System.out.println("writing " + weeksC.size() + " of weeks" + "staring with [0] " + weeksC.get(0).week) ;
+        NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRefChartB(year);
 
         return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
 
             try {
-
-                NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRefChartB();
-
                 ContentReader contentReader = contentService.getReader(spreadSheetNodeRef, ContentModel.PROP_CONTENT);
                 SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.loadDocument(contentReader.getContentInputStream());
 
@@ -546,16 +552,20 @@ public class WeeklyStatBean {
                     WeekNode weekNodeM1 = weeksM1.get(i);
                     WeekNode weekNodeM2 = weeksM2.get(i);
 
-                    // current
+                    // week
                     Cell week = table.getCellByPosition(newCasesXY.getX(), newCasesXY.getY());
                     week.setDoubleValue(Double.valueOf(weekNode.week));
 
+                    // current
+                    Cell current = table.getCellByPosition(newCasesXY.getX()+1, newCasesXY.getY());
+                    current.setDoubleValue(Double.valueOf(weekNode.sent));
+
                     // current -1
-                    Cell weekM1 = table.getCellByPosition(newCasesXY.getX()+1, newCasesXY.getY());
+                    Cell weekM1 = table.getCellByPosition(newCasesXY.getX()+2, newCasesXY.getY());
                     weekM1.setDoubleValue(Double.valueOf(weekNodeM1.sent));
 
                     // current -2
-                    Cell weekM2 = table.getCellByPosition(newCasesXY.getX()+2, newCasesXY.getY());
+                    Cell weekM2 = table.getCellByPosition(newCasesXY.getX()+3, newCasesXY.getY());
                     weekM2.setDoubleValue(Double.valueOf(weekNodeM2.sent));
 
                     newCasesXY.y = newCasesXY.y+1;
@@ -579,19 +589,19 @@ public class WeeklyStatBean {
                 e.printStackTrace();
             }
 
-            return true;
+            return spreadSheetNodeRef;
         });
     }
 
-    public boolean writeToDocument(List<WeekNode> weeks) {
+    public NodeRef writeToDocument(String year, List<WeekNode> weeks) {
 
         System.out.println("writing " + weeks.size() + " of weeks" + "staring with [0] " + weeks.get(0).week) ;
+
+        NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRefChartA(year);
 
         return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
 
             try {
-
-                NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRefChartA();
 
                 ContentReader contentReader = contentService.getReader(spreadSheetNodeRef, ContentModel.PROP_CONTENT);
                 SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.loadDocument(contentReader.getContentInputStream());
@@ -646,7 +656,7 @@ public class WeeklyStatBean {
                 e.printStackTrace();
             }
 
-            return true;
+            return spreadSheetNodeRef;
         });
     }
 

@@ -41,14 +41,36 @@ public class WeeklyStat extends AbstractWebScript {
             String method = JSONUtils.getString(json, "method");
 
             if (method.equals("spreadsheetA")) {
-
                 System.out.println("method: spreadSheetA");
 
                 String year = JSONUtils.getString(json, "year");
-                String startweek = JSONUtils.getString(json, "startweek");
-                String weeksback = JSONUtils.getString(json, "weeksback");
+                NodeRef nodeRef = this.weeklyStatBean.createChartA(year);
 
-                this.weeklyStatBean.getWeekNodesForYear(year);
+
+                if (nodeRef != null) {
+                    result.put("NodeRef", nodeRef.getId());
+                }
+                else {
+                    result.put("NodeRef", "");
+                }
+
+
+
+
+            }
+            else if (method.equals("spreadsheetB")) {
+                System.out.println("method: spreadSheetB");
+
+                String year = JSONUtils.getString(json, "year");
+                NodeRef nodeRef = this.weeklyStatBean.createChartB(year);
+
+                if (nodeRef != null) {
+                    result.put("NodeRef", nodeRef.getId());
+                }
+                else {
+                    result.put("NodeRef", "");
+                }
+
             }
             else if (method.equals("initYear")) {
                 String year = JSONUtils.getString(json, "year");
@@ -66,7 +88,7 @@ public class WeeklyStat extends AbstractWebScript {
 
 //            NodeRef nodeRef = entryBean.addEntry(siteShortName, type, properties, bua);
 //            result = entryBean.toJSON(nodeRef);
-            result.put("bua", "true");
+
 
         } catch (Exception e) {
             e.printStackTrace();
