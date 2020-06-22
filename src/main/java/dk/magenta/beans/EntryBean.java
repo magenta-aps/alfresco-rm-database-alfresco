@@ -316,6 +316,20 @@ public class EntryBean {
 
         }
 
+        // recalculate data for the two graphs if either the creationdate og declarationdata has been changed.
+        System.out.println("nodeService.getProperty(entryRef, DatabaseModel.PROP_CREATION_DATE)");
+        System.out.println(nodeService.getProperty(entryRef, DatabaseModel.PROP_CREATION_DATE));
+        System.out.println("nodeService.getProperty(entryRef, DatabaseModel.PROP_CREATION_DATE)");
+
+        System.out.println("(properties.get(DatabaseModel.PROP_CREATION_DATE))");
+        System.out.println((properties.get(DatabaseModel.PROP_CREATION_DATE)));
+        System.out.println("(properties.get(DatabaseModel.PROP_CREATION_DATE))");
+
+
+
+
+
+
 
 
 

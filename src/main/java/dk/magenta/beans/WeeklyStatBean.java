@@ -298,8 +298,6 @@ public class WeeklyStatBean {
             }
         });
 
-//        this.writeToDocument(weeks);
-
         return weeks;
     }
 
@@ -455,13 +453,17 @@ public class WeeklyStatBean {
                 fnt.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
                 Cell closedcases_date = table.getCellByPosition(INIT_NEXT_NEWCASES_X+2, INIT_NEXT_NEWCASES_Y);
-                closedcases_date.setStringValue(year + "-1");
+
+                int y = Integer.valueOf(year) -1;
+                closedcases_date.setStringValue(String.valueOf(y));
                 Font fc = newcases_date.getFont();
                 fc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
 
                 Cell closedcases_title = table.getCellByPosition(INIT_NEXT_NEWCASES_X+3, INIT_NEXT_NEWCASES_Y);
-                closedcases_title.setStringValue(year +  "-2");
+
+                y = Integer.valueOf(year) -2;
+                closedcases_title.setStringValue(String.valueOf(y));
                 Font fnc = newcases_title.getFont();
                 fnc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
@@ -497,7 +499,7 @@ public class WeeklyStatBean {
 
             int possibleStepsBack = 0;
 
-            if (weekNode.week > 4) {
+            if (weekNode.week >= 4) {
                 possibleStepsBack = 3;
             }
             else if (weekNode.week == 3) {

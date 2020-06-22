@@ -44,6 +44,7 @@ public class WeeklyStat extends AbstractWebScript {
                 System.out.println("method: spreadSheetA");
 
                 String year = JSONUtils.getString(json, "year");
+
                 NodeRef nodeRef = this.weeklyStatBean.createChartA(year);
 
 
@@ -53,10 +54,6 @@ public class WeeklyStat extends AbstractWebScript {
                 else {
                     result.put("NodeRef", "");
                 }
-
-
-
-
             }
             else if (method.equals("spreadsheetB")) {
                 System.out.println("method: spreadSheetB");
@@ -83,12 +80,6 @@ public class WeeklyStat extends AbstractWebScript {
                 weeklyStatBean.calculate(week,year);
 
             }
-
-
-
-//            NodeRef nodeRef = entryBean.addEntry(siteShortName, type, properties, bua);
-//            result = entryBean.toJSON(nodeRef);
-
 
         } catch (Exception e) {
             e.printStackTrace();
