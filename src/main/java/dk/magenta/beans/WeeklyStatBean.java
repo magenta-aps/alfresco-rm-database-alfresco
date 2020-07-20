@@ -164,8 +164,12 @@ public class WeeklyStatBean {
 
         NodeRef childRef = nodeService.getChildByName(this.getYearFolderForWeeklyStat(year), ContentModel.ASSOC_CONTAINS, week);
 
+        System.out.println("hvad er childRef");
+        System.out.println(childRef);
+
         // recalculation - delete the old node
         if(childRef != null) {
+            System.out.println("deleting node");
             nodeService.deleteNode(childRef);
         }
 

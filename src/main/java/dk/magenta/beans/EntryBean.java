@@ -5,6 +5,7 @@ import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.TypeUtils;
 import net.sf.acegisecurity.Authentication;
+import net.sf.cglib.core.Local;
 import org.activiti.engine.impl.util.json.JSONArray;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.impl.solr.facet.FacetQueryProvider;
@@ -284,8 +285,13 @@ public class EntryBean {
 
 
         boolean erklaringdate = false;
+
+
+        // updating the properties
         for (Map.Entry<QName, Serializable> property : properties.entrySet()) {
 
+            System.out.println("key: " + property.getKey());
+            System.out.println("property:" + property.getValue());
             nodeService.setProperty(entryRef, property.getKey(), property.getValue());
             if (property.getKey().equals(DatabaseModel.PROP_DECLARATION_DATE)) {
                 erklaringdate = true;
@@ -315,20 +321,6 @@ public class EntryBean {
 
 
         }
-
-        // recalculate data for the two graphs if either the creationdate og declarationdata has been changed.
-        System.out.println("nodeService.getProperty(entryRef, DatabaseModel.PROP_CREATION_DATE)");
-        System.out.println(nodeService.getProperty(entryRef, DatabaseModel.PROP_CREATION_DATE));
-        System.out.println("nodeService.getProperty(entryRef, DatabaseModel.PROP_CREATION_DATE)");
-
-        System.out.println("(properties.get(DatabaseModel.PROP_CREATION_DATE))");
-        System.out.println((properties.get(DatabaseModel.PROP_CREATION_DATE)));
-        System.out.println("(properties.get(DatabaseModel.PROP_CREATION_DATE))");
-
-
-
-
-
 
 
 

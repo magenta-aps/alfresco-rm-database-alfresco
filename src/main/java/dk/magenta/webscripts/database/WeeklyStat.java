@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class WeeklyStat extends AbstractWebScript {
 
@@ -71,6 +72,8 @@ public class WeeklyStat extends AbstractWebScript {
             }
             else if (method.equals("initYear")) {
                 String year = JSONUtils.getString(json, "year");
+
+                TimeUnit.SECONDS.sleep(25); // sleep 25 sec to be sure that solr has caught up with the update of the date
                 this.weeklyStatBean.initYear(year);
             }
             else {
