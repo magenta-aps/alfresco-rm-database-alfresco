@@ -289,17 +289,11 @@ public class EntryBean {
 
         // updating the properties
         for (Map.Entry<QName, Serializable> property : properties.entrySet()) {
-
-            System.out.println("key: " + property.getKey());
-            System.out.println("property:" + property.getValue());
             nodeService.setProperty(entryRef, property.getKey(), property.getValue());
             if (property.getKey().equals(DatabaseModel.PROP_DECLARATION_DATE)) {
                 erklaringdate = true;
             }
         }
-
-
-
 
         String uri = DatabaseModel.RM_MODEL_URI;
         QName closed = QName.createQName(uri, "closed");
