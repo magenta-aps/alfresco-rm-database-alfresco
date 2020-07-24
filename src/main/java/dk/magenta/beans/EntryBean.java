@@ -5,6 +5,7 @@ import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.TypeUtils;
 import net.sf.acegisecurity.Authentication;
+import net.sf.cglib.core.Local;
 import org.activiti.engine.impl.util.json.JSONArray;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.impl.solr.facet.FacetQueryProvider;
@@ -284,16 +285,15 @@ public class EntryBean {
 
 
         boolean erklaringdate = false;
-        for (Map.Entry<QName, Serializable> property : properties.entrySet()) {
 
+
+        // updating the properties
+        for (Map.Entry<QName, Serializable> property : properties.entrySet()) {
             nodeService.setProperty(entryRef, property.getKey(), property.getValue());
             if (property.getKey().equals(DatabaseModel.PROP_DECLARATION_DATE)) {
                 erklaringdate = true;
             }
         }
-
-
-
 
         String uri = DatabaseModel.RM_MODEL_URI;
         QName closed = QName.createQName(uri, "closed");

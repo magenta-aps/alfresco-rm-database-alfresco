@@ -123,6 +123,7 @@ public interface DatabaseModel {
     String PROP_VALUES = "propertyValues";
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
     String PROP_SHAREDFOLDER_BUA = "sharedFolderBua";
+    String PROP_WEEKLYSTAT = "weeklyStat";
 
     String PROP_TMP = "tmp";
 
@@ -181,6 +182,8 @@ public interface DatabaseModel {
     String GROUP_SITEENTRYLOCKMANAGER = "GROUP_site_retspsyk_SiteEntryLockManager";
 
     String MONTHLY_REPORT_SPREADSHEET_NAME = "rapport.ods";
+    String WEEKLY_REPORT_SPREADSHEET_A_NAME = "uge.ods";
+    String WEEKLY_REPORT_SPREADSHEET_B_NAME = "aar.ods";
     String DEFAULT_MAIL_TEXT_NAME = "standardtext.odt";
 
 
@@ -190,4 +193,12 @@ public interface DatabaseModel {
     String PROP_SKIPFLOW = "skipflow";
 
 
+    // weeklystat
+
+    QName PROP_WEEKLY_TYPE = QName.createQName(RM_MODEL_URI, "weeklystat");
+
+    QName PROP_WEEK = QName.createQName(RM_MODEL_URI, "week");
+    QName PROP_YEAR = QName.createQName(RM_MODEL_URI, "year");
+    QName PROP_RECEIVED = QName.createQName(RM_MODEL_URI, "received");
+    QName PROP_SENT = QName.createQName(RM_MODEL_URI, "sent");
 }

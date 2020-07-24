@@ -223,22 +223,12 @@ public class StatBean {
                     nodeService.addAspect(childRef, DatabaseModel.ASPECT_STAT, aspectProps);
 
                 }
-
-
-
-
-
-
             }
             finally {
                 rs.close();
             }
             return childRef;
         });
-
-
-//        FileInfo newFile = fileFolderService.create(declaration, "erklaering.odt", ContentModel.TYPE_CONTENT);
-
     }
 
 
