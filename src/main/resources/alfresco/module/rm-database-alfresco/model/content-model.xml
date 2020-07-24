@@ -293,6 +293,11 @@
                 </property>
 
 
+                <property name="rm:visitator">
+                    <title>notes in json from the visitator</title>
+                    <type>d:text</type>
+                </property>
+
 
                 <!-- generic -->
 

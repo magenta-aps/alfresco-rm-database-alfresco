@@ -58,6 +58,12 @@ public class FlowChartBean {
 
     private EntryBean entryBean;
 
+    public void setNodeService(NodeService nodeService) {
+        this.nodeService = nodeService;
+    }
+
+    private NodeService nodeService;
+
 
     public List<NodeRef> getEntriesbyUser(String user, String siteShortName, String default_query) throws JSONException {
 
@@ -483,6 +489,10 @@ public class FlowChartBean {
                 e.put("psychologist", tmp.get("psychologist"));
             }
 
+            if (tmp.has("visitator")) {
+                e.put("visitator", tmp.get("visitator"));
+            }
+
             e.put("show","false");
 
             entries.put(e);
@@ -512,8 +522,10 @@ public class FlowChartBean {
         result.put("ventendegr",this.getEntriesByStateVentedeGR(siteShortName,default_query, "@rm:creationDate", true).size());
 
         return result;
+    }
 
-
+    public void updateVisitatorData(JSONObject o, NodeRef declaration) {
+        nodeService.setProperty(declaration,DatabaseModel.PROP_VISITATOR_DATA,o.toString());
     }
 
     public JSONObject getAlle(String siteShortName, String default_query, String user) throws JSONException {

@@ -52,6 +52,7 @@
         <property name="searchService" ref="searchService"/>
         <property name="databaseBean" ref="databaseBean"/>
         <property name="entryBean" ref="entryBean"/>
+        <property name="nodeService" ref="nodeService"/>
     </bean>
 
     <bean id="documentTemplateBean" class="dk.magenta.beans.DocumentTemplateBean">

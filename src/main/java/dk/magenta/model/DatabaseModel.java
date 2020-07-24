@@ -74,6 +74,9 @@ public interface DatabaseModel {
     QName PROP_WAITING_ACTIVE = QName.createQName(RM_MODEL_URI, "waiting_active");
     QName PROP_WAITING_TOTAL = QName.createQName(RM_MODEL_URI, "waiting_total");
 
+    QName PROP_VISITATOR_DATA = QName.createQName(RM_MODEL_URI, "visitator");
+
+
 
     QName PROP_MARKEDBY = QName.createQName(RM_MODEL_URI, "markedBy");
 
