@@ -90,9 +90,6 @@ public class FlowChart extends AbstractWebScript {
         JSONObject json = null;
         try {
 
-            //System.out.println("hvad er c content");
-            //System.out.println(c.getContent());
-
             json = new JSONObject(c.getContent());
             jsonProperties = JSONUtils.getObject(json, "properties");
             String method = jsonProperties.getString("method");
@@ -108,29 +105,14 @@ public class FlowChart extends AbstractWebScript {
                 case "redflag":
                     boolean flag = jsonProperties.getBoolean("flag");
                     String nodeRef = jsonProperties.getString("nodeRef");
-
-                    System.out.println("flag");
-                    System.out.println(flag);
-
-                    System.out.println("nodeRef");
-                    System.out.println(nodeRef);
-
                     flowChartBean.toggleFlag(flag,new NodeRef("workspace://SpacesStore/" + nodeRef));
                     break;
                 case "visitator":
                     String visitatorData = jsonProperties.getString("visitatorData");
                     nodeRef = jsonProperties.getString("nodeRef");
-
-                    System.out.println("visitator");
-                    System.out.println(visitatorData);
-
-                    System.out.println("nodeRef");
-                    System.out.println(nodeRef);
-
-
                     flowChartBean.updateVisitatorData(visitatorData,new NodeRef("workspace://SpacesStore/" + nodeRef));
                     JSONObject o = new JSONObject(visitatorData);
-                    System.out.println(o);
+
                     break;
                 case "arrestanter":
                     sort = jsonProperties.getString("sort");

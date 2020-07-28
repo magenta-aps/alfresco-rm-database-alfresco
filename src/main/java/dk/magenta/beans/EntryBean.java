@@ -174,14 +174,7 @@ public class EntryBean {
             nodeService.addAspect(nodeRef, DatabaseModel.ASPECT_BUA,null);
         }
 
-        System.out.println("hvad er dine properties");
-        System.out.println(properties.keySet());
-
-        System.out.println("DatabaseModel.PROP_FLOWCHART_FLAG.getLocalName()");
-        System.out.println(DatabaseModel.PROP_FLOWCHART_FLAG.getLocalName());
-
         if (properties.containsKey(DatabaseModel.PROP_FLOWCHART_FLAG)) {
-            System.out.println("duff");
             nodeService.addAspect(nodeRef, DatabaseModel.ASPECT_REDFLAG, null);
         }
 
@@ -344,12 +337,11 @@ public class EntryBean {
 
     private void addMetaData(NodeRef entry) {
 
-        System.out.println("inside addMetaData");
+
 
         // if closedWithoutDeclaration - check if need to add ASPECT_RETURNDATEFORDECLARATION
         boolean  reason = (boolean)nodeService.getProperty(entry, DatabaseModel.PROP_CLOSED_WITHOUT_DECLARATION);
-        System.out.println("reason");
-        System.out.println(reason);
+
 
         if (reason) {
             Date returnDate = (Date)nodeService.getProperty(entry, DatabaseModel.PROP_RETURNOFDECLARATIONDATE);
@@ -459,8 +451,7 @@ public class EntryBean {
         Date creation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
         Date observation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
 
-        System.out.println(creation);
-        System.out.println(observation);
+
 
 
         if (creation == null || observation == null) {
