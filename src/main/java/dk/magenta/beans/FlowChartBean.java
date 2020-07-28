@@ -490,11 +490,32 @@ public class FlowChartBean {
             }
 
             if (tmp.has("visitator")) {
-                e.put("visitator", tmp.get("visitator"));
+                JSONObject o = new JSONObject((tmp.getString("visitator")));
+                e.put("box1", o.get("box1"));
+                e.put("box2", o.get("box2"));
+                e.put("box3", o.get("box3"));
+                e.put("box4", o.get("box4"));
+                e.put("box5", o.get("box5"));
+                e.put("box6", o.get("box6"));
+            }
+            else {
+                JSONObject o = new JSONObject();
+                e.put("box1", false);
+                e.put("box2", false);
+                e.put("box3", false);
+                e.put("box4", false);
+                e.put("box5", false);
+                e.put("box6", false);
             }
 
             e.put("show","false");
 
+            if (nodeService.hasAspect(nodeRef, DatabaseModel.ASPECT_REDFLAG)) {
+                e.put("redflag", true);
+            }
+            else {
+                e.put("redflag", false);
+            }
             entries.put(e);
         }
 
@@ -524,8 +545,18 @@ public class FlowChartBean {
         return result;
     }
 
-    public void updateVisitatorData(JSONObject o, NodeRef declaration) {
-        nodeService.setProperty(declaration,DatabaseModel.PROP_VISITATOR_DATA,o.toString());
+    public void updateVisitatorData(String o, NodeRef declaration) {
+        nodeService.setProperty(declaration,DatabaseModel.PROP_VISITATOR_DATA,o);
+    }
+
+    public void toggleFlag(boolean flag, NodeRef declaration) {
+
+        if (flag) {
+            nodeService.addAspect(declaration, DatabaseModel.ASPECT_REDFLAG, null);
+        }
+        else {
+            nodeService.removeAspect(declaration, DatabaseModel.ASPECT_REDFLAG);
+        }
     }
 
     public JSONObject getAlle(String siteShortName, String default_query, String user) throws JSONException {

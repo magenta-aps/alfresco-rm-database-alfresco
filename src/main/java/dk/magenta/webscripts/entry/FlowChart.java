@@ -105,10 +105,30 @@ public class FlowChart extends AbstractWebScript {
             String userName;
 
             switch (method) {
+                case "redflag":
+                    boolean flag = jsonProperties.getBoolean("flag");
+                    String nodeRef = jsonProperties.getString("nodeRef");
+
+                    System.out.println("flag");
+                    System.out.println(flag);
+
+                    System.out.println("nodeRef");
+                    System.out.println(nodeRef);
+
+                    flowChartBean.toggleFlag(flag,new NodeRef("workspace://SpacesStore/" + nodeRef));
+                    break;
                 case "visitator":
                     String visitatorData = jsonProperties.getString("visitatorData");
+                    nodeRef = jsonProperties.getString("nodeRef");
+
                     System.out.println("visitator");
                     System.out.println(visitatorData);
+
+                    System.out.println("nodeRef");
+                    System.out.println(nodeRef);
+
+
+                    flowChartBean.updateVisitatorData(visitatorData,new NodeRef("workspace://SpacesStore/" + nodeRef));
                     JSONObject o = new JSONObject(visitatorData);
                     System.out.println(o);
                     break;

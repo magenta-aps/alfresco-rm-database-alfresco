@@ -473,6 +473,10 @@
             <title>marks a user as a bua user</title>
         </aspect>
 
+        <aspect name="rm:redFlag">
+            <title>marks a declaration as need to be paid specialattention #36539 </title>
+        </aspect>
+
         <aspect name="rm:returnDateForDeclaration">
             <title>The date a declaration has been returned</title>
             <properties>
