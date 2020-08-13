@@ -164,12 +164,12 @@ public class WeeklyStatBean {
 
         NodeRef childRef = nodeService.getChildByName(this.getYearFolderForWeeklyStat(year), ContentModel.ASSOC_CONTAINS, week);
 
-        System.out.println("hvad er childRef");
-        System.out.println(childRef);
+//        System.out.println("hvad er childRef");
+//        System.out.println(childRef);
 
         // recalculation - delete the old node
         if(childRef != null) {
-            System.out.println("deleting node");
+//            System.out.println("deleting node");
             nodeService.deleteNode(childRef);
         }
 
@@ -216,8 +216,8 @@ public class WeeklyStatBean {
                 query = query + " AND +ASPECT:\"rm:bua\"";
             }
 
-            System.out.println("the query");
-            System.out.println(query);
+//            System.out.println("the query");
+//            System.out.println(query);
 
             List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(query);
 
@@ -255,8 +255,8 @@ public class WeeklyStatBean {
     public NodeRef createChartA(String year) {
         List<WeekNode> yearWeekNodes = this.getWeekNodesForYear(year);
 
-        System.out.println("hvad er yearWeekNodes");
-        System.out.println(yearWeekNodes);
+//        System.out.println("hvad er yearWeekNodes");
+//        System.out.println(yearWeekNodes);
 
         if (yearWeekNodes.size() > 0) {
             return this.writeToDocument(year, yearWeekNodes);
@@ -518,7 +518,7 @@ public class WeeklyStatBean {
 
 
             for (int i=0; i<=possibleStepsBack; i++) {
-                System.out.println("hvad er i" + i);;
+//                System.out.println("hvad er i" + i);;
                 WeekNode w = weeks.get((weekNode.week-1) - i);  // (weekNode.week-1) as the array is indexed from 0
 
                 if (property.equals("received")) {
@@ -535,7 +535,7 @@ public class WeeklyStatBean {
 
     public NodeRef writeToDocumentChartB (String year, List<WeekNode> weeksC, List<WeekNode> weeksM1, List<WeekNode> weeksM2) {
 
-        System.out.println("writing " + weeksC.size() + " of weeks" + "staring with [0] " + weeksC.get(0).week) ;
+//        System.out.println("writing " + weeksC.size() + " of weeks" + "staring with [0] " + weeksC.get(0).week) ;
         NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRefChartB(year);
 
         return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
@@ -591,7 +591,7 @@ public class WeeklyStatBean {
                 writer.putContent(f);
 
             } catch (Exception e) {
-                System.out.println(e);
+//                System.out.println(e);
                 e.printStackTrace();
             }
 
@@ -601,7 +601,7 @@ public class WeeklyStatBean {
 
     public NodeRef writeToDocument(String year, List<WeekNode> weeks) {
 
-        System.out.println("writing " + weeks.size() + " of weeks" + "staring with [0] " + weeks.get(0).week) ;
+//        System.out.println("writing " + weeks.size() + " of weeks" + "staring with [0] " + weeks.get(0).week) ;
 
         NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRefChartA(year);
 
