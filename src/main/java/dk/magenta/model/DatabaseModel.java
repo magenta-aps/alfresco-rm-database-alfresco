@@ -74,6 +74,9 @@ public interface DatabaseModel {
     QName PROP_WAITING_ACTIVE = QName.createQName(RM_MODEL_URI, "waiting_active");
     QName PROP_WAITING_TOTAL = QName.createQName(RM_MODEL_URI, "waiting_total");
 
+    QName PROP_VISITATOR_DATA = QName.createQName(RM_MODEL_URI, "visitator");
+
+
 
     QName PROP_MARKEDBY = QName.createQName(RM_MODEL_URI, "markedBy");
 
@@ -96,6 +99,8 @@ public interface DatabaseModel {
     /* Generic */
     QName PROP_LOCKED_FOR_EDIT = QName.createQName(RM_MODEL_URI, "locked4edit");
     QName PROP_LOCKED_FOR_EDIT_BY = QName.createQName(RM_MODEL_URI, "locked4editBy");
+
+    QName PROP_FLOWCHART_FLAG = QName.createQName(RM_MODEL_URI, "flowflag");
 
 
     public static QName PROP_ENTRIES = QName.createQName(RM_MODEL_URI, "maillog_entries");
@@ -170,6 +175,7 @@ public interface DatabaseModel {
     QName ASPECT_SKIPFLOW = QName.createQName(RM_MODEL_URI, "skip_flowchart");
     QName ASPECT_BUA_USER = QName.createQName(RM_MODEL_URI, "bua_user");
     QName ASPECT_DECLARATIONMARKEDFOREDIT = QName.createQName(RM_MODEL_URI, "documentMarkedForEdit");
+    QName ASPECT_REDFLAG = QName.createQName(RM_MODEL_URI, "redFlag");
 
     String USER_ALL = "Alle";
     String USER_ONLY_BUA = "BUA";

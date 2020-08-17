@@ -30,6 +30,7 @@ import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.omg.CORBA.DATA_CONVERSION;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -101,6 +102,9 @@ public class EntryBean {
         String entryKey = TypeUtils.getEntryKey(type);
         QName entryKeyQName = QName.createQName(DatabaseModel.RM_MODEL_URI, entryKey);
 
+
+
+
         //Remove value if set
         if (properties.containsKey(entryKeyQName))
             properties.remove(entryKeyQName);
@@ -168,6 +172,10 @@ public class EntryBean {
 
         if (bua) {
             nodeService.addAspect(nodeRef, DatabaseModel.ASPECT_BUA,null);
+        }
+
+        if (properties.containsKey(DatabaseModel.PROP_FLOWCHART_FLAG)) {
+            nodeService.addAspect(nodeRef, DatabaseModel.ASPECT_REDFLAG, null);
         }
 
         return nodeRef;
@@ -293,6 +301,16 @@ public class EntryBean {
             if (property.getKey().equals(DatabaseModel.PROP_DECLARATION_DATE)) {
                 erklaringdate = true;
             }
+
+            if (property.getKey().equals(DatabaseModel.PROP_FLOWCHART_FLAG)) {
+
+                if (property.getValue().equals("true")) {
+                    nodeService.addAspect(entryRef, DatabaseModel.ASPECT_REDFLAG, null);
+                }
+                else {
+                    nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_REDFLAG);
+                }
+            }
         }
 
         String uri = DatabaseModel.RM_MODEL_URI;
@@ -315,24 +333,15 @@ public class EntryBean {
 
 
         }
-
-
-
-
-
-
-
-
     }
 
     private void addMetaData(NodeRef entry) {
 
-        System.out.println("inside addMetaData");
+
 
         // if closedWithoutDeclaration - check if need to add ASPECT_RETURNDATEFORDECLARATION
         boolean  reason = (boolean)nodeService.getProperty(entry, DatabaseModel.PROP_CLOSED_WITHOUT_DECLARATION);
-        System.out.println("reason");
-        System.out.println(reason);
+
 
         if (reason) {
             Date returnDate = (Date)nodeService.getProperty(entry, DatabaseModel.PROP_RETURNOFDECLARATIONDATE);
@@ -442,8 +451,7 @@ public class EntryBean {
         Date creation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_CREATION_DATE);
         Date observation = (Date) nodeService.getProperty(entryKey, DatabaseModel.PROP_OBSERVATION_DATE);
 
-        System.out.println(creation);
-        System.out.println(observation);
+
 
 
         if (creation == null || observation == null) {
