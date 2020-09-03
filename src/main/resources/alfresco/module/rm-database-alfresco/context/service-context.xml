@@ -48,6 +48,14 @@
         <property name="siteService" ref="siteService"/>
     </bean>
 
+    <bean id="scriptBean" class="dk.magenta.beans.ScriptBean">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="contentService" ref="contentService"/>
+        <property name="personService" ref="PersonService"/>
+        <property name="siteService" ref="siteService"/>
+        <property name="permissonService" ref="PermissionService"/>
+    </bean>
+
     <bean id="flowChartBean" class="dk.magenta.beans.FlowChartBean">
         <property name="searchService" ref="searchService"/>
         <property name="databaseBean" ref="databaseBean"/>

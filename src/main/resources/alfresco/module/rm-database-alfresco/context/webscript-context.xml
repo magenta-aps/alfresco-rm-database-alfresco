@@ -163,6 +163,8 @@
 		<property name="nodeService" ref="nodeService"/>
 		<property name="fileFolderService" ref="fileFolderService"/>
 		<property name="contentService" ref="contentService"/>
+		<property name="scriptBean" ref="scriptBean"/>
+		<property name="permissionService" ref="permissionService"/>
 	</bean>
 
 	<bean id="webscript.contents.movecontent.post" class="dk.magenta.webscripts.contents.MoveContent" parent="webscript">
