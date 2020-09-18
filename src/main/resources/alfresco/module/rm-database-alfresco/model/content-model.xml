@@ -233,6 +233,11 @@
                     <type>d:text</type>
                 </property>
 
+                <property name="rm:supervisingDoctor">
+                    <title>Superviserede læge</title>
+                    <type>d:text</type>
+                </property>
+
                 <property name="rm:psychologist">
                     <title>Psykolog</title>
                     <type>d:text</type>
