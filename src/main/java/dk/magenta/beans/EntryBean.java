@@ -400,7 +400,12 @@ public class EntryBean {
 
     //TODO: Make this generic. Atm this only work with forensicDeclarations
     public void unlockEntry (NodeRef entryRef, String mode) {
-        lockService.unlock(entryRef);
+
+        // bugfix for #37857
+        if (lockService.isLocked(entryRef)) {
+            lockService.unlock(entryRef);
+        }
+
         String uri = DatabaseModel.RM_MODEL_URI;
         QName closed = QName.createQName(uri, "closed");
         QName closedWithoutDeclaration = QName.createQName(uri, "closedWithoutDeclaration");
