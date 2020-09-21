@@ -63,6 +63,7 @@ public interface DatabaseModel {
 
     /* Declaration made by */
     QName PROP_DOCTOR = QName.createQName(RM_MODEL_URI, "doctor");
+    QName PROP_SUPERVISINGDOCTOR = QName.createQName(RM_MODEL_URI, "supervisingDoctor");
     QName PROP_PSYCHOLOGIST = QName.createQName(RM_MODEL_URI, "psychologist");
 
     /* ICD-10 diagnosis */

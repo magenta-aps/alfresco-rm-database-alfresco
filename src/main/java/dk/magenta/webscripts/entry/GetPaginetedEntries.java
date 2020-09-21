@@ -256,6 +256,14 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 queryArray.put(o);
             }
 
+            if (input.has("supervisingDoctor")) {
+                JSONObject o = new JSONObject();
+                o.put("key", "supervisingDoctor");
+                o.put("value", input.get("supervisingDoctor"));
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
             if (input.has("noDeclaration")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "closedWithoutDeclaration");
@@ -385,6 +393,10 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
                 if (tmp.has("doctor") && !tmp.get("doctor").equals("null")) {
                     e.put("doctor", tmp.get("doctor"));
+                }
+
+                if (tmp.has("supervisingDoctor") && !tmp.get("supervisingDoctor").equals("null")) {
+                    e.put("supervisingDoctor", tmp.get("supervisingDoctor"));
                 }
 
                 if (tmp.has("closed")) {
