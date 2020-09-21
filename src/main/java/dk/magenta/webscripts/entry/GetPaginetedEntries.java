@@ -181,9 +181,21 @@ public class GetPaginetedEntries extends AbstractWebScript {
             }
 
             if (input.has("mainCharge")) {
+                JSONArray jsonArray = input.getJSONArray("mainCharge");
+                String queryStringMainCharge = "";
+
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+                    if (i == 0) {
+                        queryStringMainCharge = queryStringMainCharge + "\"" + (String) jsonArray.get(i) + "\"";
+                    }
+                    else {
+                        queryStringMainCharge = queryStringMainCharge + " "  + "\"" +(String) jsonArray.get(i) + "\"";
+                    }
+                }
+
                 JSONObject o = new JSONObject();
                 o.put("key", "mainCharge");
-                o.put("value", input.get("mainCharge"));
+                o.put("value", "(" + queryStringMainCharge + ")");
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -344,8 +356,8 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 }
             }
 
-            System.out.println("the query");
-            System.out.println(query);
+//            System.out.println("the query");
+//            System.out.println(query);
 
 
             List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
@@ -415,3 +427,5 @@ public class GetPaginetedEntries extends AbstractWebScript {
 // F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/database/retspsyk/entry/445644-4545-4564-8848-1849155'
 
 //http://localhost:8080/alfresco/service/database/retspsyk/page_entries?skip=0&maxItems=10&keyValue=[{"key":"cprNumber","value" : "220111571234", "include" : "true"}]
+
+

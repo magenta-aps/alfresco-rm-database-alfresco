@@ -48,7 +48,7 @@ public class QueryUtils {
             }
         }
         else {
-            if (paramValue.contains("[")) {
+            if (paramValue.contains("[") || paramValue.contains("(")) {
                 return "@" + DatabaseModel.RM_MODEL_PREFIX + "\\:" + paramKey + ":" + paramValue;
             }
             else {
