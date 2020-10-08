@@ -77,7 +77,6 @@ public class Script extends AbstractWebScript {
             JSONObject json = new JSONObject(c.getContent());
             jsonProperties = JSONUtils.getObject(json, "properties");
 
-
             uuid = jsonProperties.getString("uuid");
             method = jsonProperties.getString("method");
 
