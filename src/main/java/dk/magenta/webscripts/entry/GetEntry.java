@@ -73,6 +73,13 @@ public class GetEntry extends AbstractWebScript {
                 result.put("bua", false);
             }
 
+            if (nodeService.hasAspect(nodeRef, DatabaseModel.ASPECT_REDFLAG)) {
+                result.put("flowflag", true);
+            }
+            else {
+                result.put("flowflag", false);
+            }
+
 
             // check if declaration exists
             String info = (String)result.get("cprNumber");

@@ -92,19 +92,20 @@
                 <property name="rm:firstName">
                     <title>Fornavn</title>
                     <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
                 </property>
 
                 <property name="rm:lastName">
                     <title>Efternavn</title>
                     <type>d:text</type>
                     <index enabled="true">
-
                         <atomic>true</atomic>
-
                         <stored>false</stored>
-
                         <tokenised>both</tokenised>
-
                     </index>
                 </property>
 
@@ -233,6 +234,11 @@
                     <type>d:text</type>
                 </property>
 
+                <property name="rm:supervisingDoctor">
+                    <title>Superviserede læge</title>
+                    <type>d:text</type>
+                </property>
+
                 <property name="rm:psychologist">
                     <title>Psykolog</title>
                     <type>d:text</type>
@@ -292,6 +298,11 @@
                     <type>d:date</type>
                 </property>
 
+
+                <property name="rm:visitator">
+                    <title>notes in json from the visitator</title>
+                    <type>d:text</type>
+                </property>
 
 
                 <!-- generic -->
@@ -466,6 +477,10 @@
 
         <aspect name="rm:bua_user">
             <title>marks a user as a bua user</title>
+        </aspect>
+
+        <aspect name="rm:redFlag">
+            <title>marks a declaration as need to be paid specialattention #36539 </title>
         </aspect>
 
         <aspect name="rm:returnDateForDeclaration">

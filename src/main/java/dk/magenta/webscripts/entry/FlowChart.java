@@ -90,9 +90,6 @@ public class FlowChart extends AbstractWebScript {
         JSONObject json = null;
         try {
 
-            //System.out.println("hvad er c content");
-            //System.out.println(c.getContent());
-
             json = new JSONObject(c.getContent());
             jsonProperties = JSONUtils.getObject(json, "properties");
             String method = jsonProperties.getString("method");
@@ -105,12 +102,22 @@ public class FlowChart extends AbstractWebScript {
             String userName;
 
             switch (method) {
-                case "arrestanter":
+                case "redflag":
+                    boolean flag = jsonProperties.getBoolean("flag");
+                    String nodeRef = jsonProperties.getString("nodeRef");
+                    flowChartBean.toggleFlag(flag,new NodeRef("workspace://SpacesStore/" + nodeRef));
+                    break;
+                case "visitator":
+                    String visitatorData = jsonProperties.getString("visitatorData");
+                    nodeRef = jsonProperties.getString("nodeRef");
+                    flowChartBean.updateVisitatorData(visitatorData,new NodeRef("workspace://SpacesStore/" + nodeRef));
+                    JSONObject o = new JSONObject(visitatorData);
 
+                    break;
+                case "arrestanter":
                     sort = jsonProperties.getString("sort");
                     desc = jsonProperties.getBoolean("desc");
                     entries = flowChartBean.getEntriesByStateArrestanter(siteShortName, defaultQuery, sort, desc);
-
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
@@ -178,52 +185,7 @@ public class FlowChart extends AbstractWebScript {
 
         Writer webScriptWriter = res.getWriter();
 
-//        try {
-//
-//            String currentUserLogin = authenticationService.getCurrentUserName();
-//
-//            String userName = propertyValuesBean.getUserByUserName(currentUserLogin);
-//
-//            if (userName != null) {
-////                flowChartBean.getEntriesbyUser(userName, siteShortName, "");
-////                flowChartBean.getWaitingList(siteShortName);
-//
-//                String[] states = new String[2];
-//                states[0] = "Ambulant/arrestant";
-//                states[1] = "Ambulant/surrogatanbragt";
-//
-////                flowChartBean.getEntriesByStatus(siteShortName,states);
-//                flowChartBean.getEntriesByOngoing(siteShortName);
-//            }
-//
-//
-//
-////            result.put("entries", entries);
-////            result.put("back", skip);
-////            result.put("next", skip + maxItems);
-////            result.put("total", entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true).size());
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            result = JSONUtils.getError(e);
-//            res.setStatus(400);
-//                }
-
         JSONUtils.write(webScriptWriter, result);
 
     }
 }
-
-// F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/database/retspsyk/entry/445644-4545-4564-8848-1849155'
-
-//http://localhost:8080/alfresco/service/database/retspsyk/page_entries?skip=0&maxItems=10&keyValue=[{"key":"cprNumber","value" : "220111571234", "include" : "true"}]
-
-
-
-//{
-//        "properties": {
-//        "method": "ongoing",
-//        "value": "121212-1212"
-//        }
-//
-//        }
