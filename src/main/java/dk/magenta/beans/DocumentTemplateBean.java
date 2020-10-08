@@ -162,7 +162,12 @@ public class DocumentTemplateBean {
         year = cal.get(Calendar.YEAR);
         day = cal.get(Calendar.DATE);
         month = (cal.get(Calendar.MONTH)+1);
-        info.oprettetdato  = day + "." + month + "." + year;
+
+        String strindDay = (day <= 9) ? "0" + day : String.valueOf(day);
+        String strindMonth = (month <= 9) ? "0" + month : String.valueOf(month);
+
+        info.oprettetdato  = strindDay + "." + strindMonth + "." + year;
+//        info.oprettetdato  = (day <= 9) ? "0" + day : String.valueOf(day) + "." + (month <= 9) ? ("0" + String.valueOf(month) ? month + "." + year;
 
 
 

@@ -92,19 +92,20 @@
                 <property name="rm:firstName">
                     <title>Fornavn</title>
                     <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
                 </property>
 
                 <property name="rm:lastName">
                     <title>Efternavn</title>
                     <type>d:text</type>
                     <index enabled="true">
-
                         <atomic>true</atomic>
-
                         <stored>false</stored>
-
                         <tokenised>both</tokenised>
-
                     </index>
                 </property>
 
@@ -230,6 +231,11 @@
 
                 <property name="rm:doctor">
                     <title>Læge</title>
+                    <type>d:text</type>
+                </property>
+
+                <property name="rm:supervisingDoctor">
+                    <title>Superviserede læge</title>
                     <type>d:text</type>
                 </property>
 
