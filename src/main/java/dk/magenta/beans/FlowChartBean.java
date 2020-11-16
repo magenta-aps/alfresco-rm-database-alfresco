@@ -78,7 +78,9 @@ public class FlowChartBean {
         query += " AND " + default_query;
 
         //System.out.println("getEntriesbyUser query");
-        //System.out.println(query);
+    *0
+    0
+    //System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
 
@@ -125,6 +127,10 @@ public class FlowChartBean {
 
         return nodeRefs;
     }
+
+
+
+
 
     public List<NodeRef> getEntriesbyUserStateNOTArrestanter(String user, String siteShortName, String default_query, String sort, boolean desc) throws JSONException {
 
