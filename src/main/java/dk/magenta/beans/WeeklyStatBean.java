@@ -207,6 +207,13 @@ public class WeeklyStatBean {
             o.put("include", true);
             queryArray.put(o);
 
+            // return only closed cases
+            o = new JSONObject();
+            o.put("key", "closed");
+            o.put("value", true);
+            o.put("include", true);
+            queryArray.put(o);
+
             query = QueryUtils.getKeyValueQuery(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.TYPE_PSYC_DEC, queryArray);
 
             if (!bua) {
