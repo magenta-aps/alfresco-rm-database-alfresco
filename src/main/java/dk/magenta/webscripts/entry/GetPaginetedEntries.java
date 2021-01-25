@@ -276,7 +276,6 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 JSONObject o = new JSONObject();
                 o.put("key", "closed");
 
-
                 String theValue = input.getString("closed");
 
                 if (theValue.equals("OPEN")) {

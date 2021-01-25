@@ -143,15 +143,15 @@ public class WeeklyStatBean {
         NodeRef yearFolder = this.getYearFolderForWeeklyStat(year);
 
         int weekInYear = Integer.valueOf(week);
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        WeekFields weekFields = WeekFields.of(Locale.FRANCE);
 
         LocalDate dateStart = LocalDate.ofYearDay(Integer.valueOf(year), 1)
                 .with(weekFields.weekOfYear(), weekInYear)
                 .with(weekFields.dayOfWeek(), 1);
 
-        LocalDate dateEnd = dateStart.plusDays(7);
-//        System.out.println(dateStart);
-//        System.out.println(dateEnd);
+        LocalDate dateEnd = dateStart.plusDays(6);
+        System.out.println(dateStart);
+        System.out.println(dateEnd);
 
         // afsendte
         int receivedCount = this.query("creationDate", dateStart, dateEnd, false);
@@ -207,6 +207,13 @@ public class WeeklyStatBean {
             o.put("include", true);
             queryArray.put(o);
 
+            // return only closed cases
+            o = new JSONObject();
+            o.put("key", "closed");
+            o.put("value", true);
+            o.put("include", true);
+            queryArray.put(o);
+
             query = QueryUtils.getKeyValueQuery(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.TYPE_PSYC_DEC, queryArray);
 
             if (!bua) {
@@ -216,13 +223,13 @@ public class WeeklyStatBean {
                 query = query + " AND +ASPECT:\"rm:bua\"";
             }
 
-//            System.out.println("the query");
-//            System.out.println(query);
+            System.out.println("the query");
+            System.out.println(query);
 
             List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(query);
 
-//            System.out.println("nodeRefs");
-//            System.out.println(nodeRefs.size());
+            System.out.println("nodeRefs");
+            System.out.println(nodeRefs.size());
 
             return nodeRefs.size();
 
