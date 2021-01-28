@@ -94,6 +94,7 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
             result.put("next", skip + maxItems);
             result.put("total", entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true).size());
 
+
         } catch (Exception e) {
             e.printStackTrace();
             result = JSONUtils.getError(e);
