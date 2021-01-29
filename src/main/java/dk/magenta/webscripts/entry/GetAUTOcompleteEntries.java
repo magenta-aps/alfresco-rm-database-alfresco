@@ -44,6 +44,10 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
             int maxItems = Integer.valueOf(req.getParameter("maxItems"));
             String input = req.getParameter("input");
 
+            String onlyFlow = req.getParameter("onlyflow");
+            System.out.println("hvad er onlyflow");
+            System.out.println(onlyFlow);
+
             String keyValue = "";
 
 
@@ -66,6 +70,16 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
             String type = databaseBean.getType(siteShortName);
             String query = QueryUtils.getKeyValueQuery(siteShortName, type, new org.json.JSONArray(keyValue));
 
+            if (onlyFlow != null && onlyFlow.equals("true")) {
+                query += " AND -ASPECT:\"rm:skip_flowchart\"";
+                query += " AND ISUNSET:\"rm:closed\"";
+            }
+
+            System.out.println("hvad er query");
+            System.out.println(query);
+
+
+
             List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
 
 
@@ -85,6 +99,7 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
                 e.put("caseNumber", tmp.get("caseNumber"));
                 e.put("firstName", tmp.get("firstName"));
                 e.put("lastName", tmp.get("lastName"));
+                e.put("node-uuid", tmp.get("node-uuid"));
 
                 entries.put(e);
             }
