@@ -45,8 +45,6 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
             String input = req.getParameter("input");
 
             String onlyFlow = req.getParameter("onlyflow");
-            System.out.println("hvad er onlyflow");
-            System.out.println(onlyFlow);
 
             String keyValue = "";
 
@@ -74,11 +72,6 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
                 query += " AND -ASPECT:\"rm:skip_flowchart\"";
                 query += " AND ISUNSET:\"rm:closed\"";
             }
-
-            System.out.println("hvad er query");
-            System.out.println(query);
-
-
 
             List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
 

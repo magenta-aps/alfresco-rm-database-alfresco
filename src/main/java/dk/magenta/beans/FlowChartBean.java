@@ -393,9 +393,6 @@ public class FlowChartBean {
 
         query += statusQuery;
 
-        System.out.println("getEntriesByStateArrestanter query");
-        System.out.println(query);
-
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
         return nodeRefs;
