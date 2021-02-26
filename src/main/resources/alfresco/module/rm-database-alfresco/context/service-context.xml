@@ -61,6 +61,8 @@
         <property name="databaseBean" ref="databaseBean"/>
         <property name="entryBean" ref="entryBean"/>
         <property name="nodeService" ref="nodeService"/>
+        <property name="authenticationService" ref="authenticationService"/>
+        <property name="personService" ref="personService"/>
     </bean>
 
     <bean id="documentTemplateBean" class="dk.magenta.beans.DocumentTemplateBean">
