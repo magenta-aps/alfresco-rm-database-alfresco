@@ -37,6 +37,10 @@ import java.util.*;
 public class FlowChartBean {
 
 
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
+
     private PersonService personService;
 
     public void setSearchService(SearchService searchService) {
@@ -50,6 +54,12 @@ public class FlowChartBean {
     }
 
     private DatabaseBean databaseBean;
+
+    public void setAuthenticationService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+
+    private AuthenticationService authenticationService;
 
 
     public void setEntryBean(EntryBean entryBean) {
@@ -84,6 +94,8 @@ public class FlowChartBean {
 
         return nodeRefs;
     }
+
+
 
     public List<NodeRef> getEntriesbyUserStateArrestanter(String user, String siteShortName, String default_query, String sort, boolean desc) throws JSONException {
 
@@ -281,6 +293,77 @@ public class FlowChartBean {
         return nodeRefs;
     }
 
+    public String getStateOfDeclaration(String casenumber) {
+
+        String defaultQuery = "ISUNSET:\"rm:closed\" AND ";
+        defaultQuery += "@rm\\:caseNumber:" + "\"" + casenumber + "\"";
+
+        String userNameForbuaCheck = "";
+
+        userNameForbuaCheck = authenticationService.getCurrentUserName();
+
+        if (nodeService.hasAspect(personService.getPerson(userNameForbuaCheck), DatabaseModel.ASPECT_BUA_USER)) {
+            defaultQuery += " AND ASPECT:\"rm:bua\"";
+        }
+        else {
+            defaultQuery += " AND -ASPECT:\"rm:bua\"";
+        }
+
+        defaultQuery += " AND -ASPECT:\"rm:skip_flowchart\"";
+
+
+
+        // check all the five categories - return error string if not found and then hide the shortcut button in the ui
+
+        //todo reqrite this - perhaps save the state as an aspect on the node. updating it everytime the node has han update. this will keep the logic of determining the state in one place.
+
+        boolean found = false;
+        String returnValue = "nostate";
+        List<NodeRef> list;
+
+        if (!found) {
+            list = this.getEntriesByStateArrestanter("retspsyk", defaultQuery,"@rm:creationDate", true);
+            if (list.size() == 1) {
+                found = true;
+                returnValue = "arrestanter";
+            }
+        }
+
+        if (!found) {
+            list = this.getEntriesByIgangvaerende("retspsyk", defaultQuery,"@rm:creationDate", true);
+            if (list.size() == 1) {
+                found = true;
+                returnValue = "ongoing";
+            }
+        }
+
+        if (!found) {
+            list = this.getWaitingList("retspsyk", defaultQuery,"@rm:creationDate", true);
+            if (list.size() == 1) {
+                found = true;
+                returnValue = "waitinglist";
+            }
+        }
+
+        if (!found) {
+            list = this.getEntriesByStateObservation("retspsyk", defaultQuery,"@rm:creationDate", true);
+            if (list.size() == 1) {
+                found = true;
+                returnValue = "observation";
+            }
+        }
+
+        if (!found) {
+            list = this.getEntriesByStateVentedeGR("retspsyk", defaultQuery,"@rm:creationDate", true);
+            if (list.size() == 1) {
+                found = true;
+                returnValue = "ventendegr";
+            }
+        }
+            return returnValue;
+
+    }
+
     public List<NodeRef> getEntriesByStateArrestanter(String siteShortName, String default_query, String sort, boolean desc) {
 
         JSONObject o = new JSONObject();
@@ -309,9 +392,6 @@ public class FlowChartBean {
         statusQuery += ") ";
 
         query += statusQuery;
-
-        //System.out.println("getEntriesByStateArrestanter query");
-        //System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 

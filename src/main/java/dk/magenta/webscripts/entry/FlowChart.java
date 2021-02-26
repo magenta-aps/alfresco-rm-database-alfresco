@@ -122,6 +122,11 @@ public class FlowChart extends AbstractWebScript {
             String userName;
 
             switch (method) {
+                case "getStateOfDeclaration":
+                    String casenumber = jsonProperties.getString("casenumber");
+                    result.put("state", flowChartBean.getStateOfDeclaration(casenumber));
+                    break;
+
                 case "redflag":
                     boolean flag = jsonProperties.getBoolean("flag");
                     String nodeRef = jsonProperties.getString("nodeRef");
