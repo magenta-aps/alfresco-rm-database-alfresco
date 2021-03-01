@@ -350,6 +350,18 @@
             </properties>
         </type>
 
+
+        <type name="rm:signature">
+            <title>Signature info - the jpg/png is stored in the contant field</title>
+            <parent>cm:content</parent>
+            <properties>
+                <property name="rm:signatureText">
+                    <title>signature text</title>
+                    <type>d:text</type>
+                </property>
+            </properties>
+        </type>
+
     </types>
 
     <!-- Aspects -->
@@ -482,6 +494,7 @@
         <aspect name="rm:redFlag">
             <title>marks a declaration as need to be paid specialattention #36539 </title>
         </aspect>
+
 
         <aspect name="rm:returnDateForDeclaration">
             <title>The date a declaration has been returned</title>
