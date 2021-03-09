@@ -137,17 +137,21 @@ public class MailContent extends AbstractWebScript {
 
             String caseid = (String)json.get("caseid");
 
+            //TODO setup option for signitures
 
-            mailBean.sendEmail(nodeRefs, authority, body, subject);
+            String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+            declaration = entryBean.getEntry(query);
+
+            mailBean.sendEmail(nodeRefs, authority, body, subject, true, declaration);
 
 
              // pak dette væk i en bean senere
 
 
-            String query = "@rm\\:caseNumber:\"" + caseid + "\"";
 
 
-            declaration = entryBean.getEntry(query);
+
+
 
 
             // unlock if the case is locked and lock after email has been sent

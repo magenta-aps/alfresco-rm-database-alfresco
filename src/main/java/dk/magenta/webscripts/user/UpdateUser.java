@@ -126,21 +126,14 @@ public class UpdateUser extends AbstractWebScript {
 
 
                 if (isMember() || currentUserName.equals("admin")) {
-                    System.out.println("hey");
 
                     userName = params.get("userName");
                     p = personService.getPerson(userName);
 
                     String signature = params.get("signature");
-                    System.out.println("userName" + userName);
-                    System.out.println("signature" + signature);
+
                     NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
                     if (signature != null) {
-
-
-                        System.out.println("signature library nodeRef");
-                        System.out.println(templateLibrary);
-
 
                         NodeRef nodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, userName);
 

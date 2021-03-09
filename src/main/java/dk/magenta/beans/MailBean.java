@@ -1,62 +1,54 @@
 package dk.magenta.beans;
 
+
+
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.action.executer.MailActionExecuter;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.content.transform.ContentTransformer;
-import org.alfresco.repo.model.Repository;
-import org.alfresco.service.cmr.action.Action;
-import org.alfresco.service.cmr.action.ActionService;
-import org.alfresco.service.cmr.download.DownloadService;
-import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.*;
-import org.alfresco.service.cmr.search.SearchService;
-import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.AuthenticationService;
-import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
-import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
-import org.apache.solr.common.util.Hash;
-import org.json.JSONArray;
+
+
+import org.apache.commons.io.FileUtils;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.exceptions.COSVisitorException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.graphics.xobject.PDJpeg;
+import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObject;
+import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
+import org.apache.pdfbox.persistence.util.COSObjectKey;
+//import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.HWPFDocument;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.odftoolkit.simple.TextDocument;
 
+
+import javax.activation.DataHandler;
 import javax.activation.DataSource;
-
-import javax.activation.DataHandler;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.*;
-
-
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
+import javax.activation.MimeType;
+import javax.imageio.ImageIO;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import java.util.Date;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
+
+import static dk.magenta.model.DatabaseModel.ASPECT_ADDSIGNATURE;
 
 public class MailBean {
+
+    public static final int DEFAULT_BUFFER_SIZE = 8192;
 
     private NodeService nodeService;
 
@@ -65,6 +57,12 @@ public class MailBean {
     }
 
     private SiteService siteService;
+
+    public void setPropertyValuesBean(PropertyValuesBean propertyValuesBean) {
+        this.propertyValuesBean = propertyValuesBean;
+    }
+
+    private PropertyValuesBean propertyValuesBean;
 
     private String siteShortName = "Retspsyk";
 
@@ -104,7 +102,7 @@ public class MailBean {
     }
 
 
-    public void sendEmail(NodeRef[] attachmentNodeRefs, String authority, String body, String subject) {
+    public void sendEmail(NodeRef[] attachmentNodeRefs, String authority, String body, String subject, boolean addSignature, NodeRef declaration) throws Exception {
 
 
         logEvent(attachmentNodeRefs, authority);
@@ -153,17 +151,33 @@ public class MailBean {
 
             for (int i=0; i <= attachmentNodeRefs.length-1;i++) {
 
-                 NodeRef attachmentNodeRef = attachmentNodeRefs[i];
+                NodeRef attachmentNodeRef = attachmentNodeRefs[i];
+                NodeRef transformed = null;
 
-                 NodeRef transformed = this.transform(attachmentNodeRef);
+                if (addSignature) {
+                    if (nodeService.hasAspect(attachmentNodeRef, ASPECT_ADDSIGNATURE)) {
+                        // return the nodeRef and  replace this with the one without the signature in the list of attachments
+                        NodeRef documentWithSignature = this.addSignature(attachmentNodeRef, declaration);
+                        pds_to_be_deleted.add(documentWithSignature);
+                        System.out.println(documentWithSignature);
+                        transformed = this.transform(documentWithSignature);
+                    }
+                }
+                else {
+                    transformed = this.transform(attachmentNodeRef);
 
+                }
                 pds_to_be_deleted.add(transformed);
 
+
+
+
                 final MimeBodyPart attachment = new MimeBodyPart();
+                NodeRef finalTransformed = transformed;
                 attachment.setDataHandler(new DataHandler(new DataSource() {
 
                     public InputStream getInputStream() throws IOException {
-                        ContentReader reader = contentService.getReader(transformed, ContentModel.PROP_CONTENT);
+                        ContentReader reader = contentService.getReader(finalTransformed, ContentModel.PROP_CONTENT);
                         return reader.getContentInputStream();
                     }
 
@@ -172,11 +186,11 @@ public class MailBean {
                     }
 
                     public String getContentType() {
-                        return contentService.getReader(transformed, ContentModel.PROP_CONTENT).getMimetype();
+                        return contentService.getReader(finalTransformed, ContentModel.PROP_CONTENT).getMimetype();
                     }
 
                     public String getName() {
-                        return nodeService.getProperty(transformed, ContentModel.PROP_NAME).toString();
+                        return nodeService.getProperty(finalTransformed, ContentModel.PROP_NAME).toString();
                     }
 
 
@@ -193,10 +207,10 @@ public class MailBean {
 
             // cleanup the genereted pdfs
 
-            for (int i = 0; i <= pds_to_be_deleted.size()-1; i++) {
-                NodeRef n = pds_to_be_deleted.get(i);
-                nodeService.deleteNode(n);
-            }
+//            for (int i = 0; i <= pds_to_be_deleted.size()-1; i++) {
+//                NodeRef n = pds_to_be_deleted.get(i);
+//                nodeService.deleteNode(n);
+//            }
 
 
 
@@ -286,6 +300,86 @@ public class MailBean {
         j.put("entries", jsonArray);
 
         nodeService.setProperty(user, DatabaseModel.PROP_ENTRIES, j.toString());
+    }
+
+    public NodeRef addSignature(NodeRef attachment, NodeRef declaration) throws Exception {
+
+
+        InputStream primarySignature = this.getSignature(declaration);
+
+        ContentReader contentReader = contentService.getReader(attachment, ContentModel.PROP_CONTENT);
+        OdfDocument odt = OdfDocument.loadDocument(contentReader.getContentInputStream());
+
+        File file = new File("tmp.jpg");
+        File backFile = new File("back");
+        copyInputStreamToFile(primarySignature, file);
+        odt.newImage(file.toURI());
+        odt.save(backFile);
+
+        NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
+        QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, "test");
+        Map<QName, Serializable> properties = new HashMap<>();
+        properties.put(ContentModel.PROP_NAME, "name");
+        ChildAssociationRef childAssociationRef = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS, qName, ContentModel.TYPE_CONTENT, properties);
+
+        ContentWriter writer = contentService.getWriter(childAssociationRef.getChildRef(), ContentModel.PROP_CONTENT, true);
+        writer.setMimetype("application/vnd.oasis.opendocument.text");
+        writer.putContent(backFile);
+
+        return childAssociationRef.getChildRef();
+
+    }
+
+
+    public InputStream getSignature(NodeRef declaration) throws JSONException {
+
+
+        // hent læge
+
+        String doctor = (String) nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
+        String docUserName = propertyValuesBean.getUserNameByUser(doctor);
+//        System.out.println("doctor" + doctor);
+        System.out.println("doctorNameIncLogin" + docUserName);
+
+        NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
+        NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, docUserName);
+
+        ContentReader contentReader = contentService.getReader(signatureNodeRef, ContentModel.PROP_CONTENT);
+        return contentReader.getContentInputStream();
+
+        // hent supervisor
+
+//        NodeRef n = new NodeRef("");
+//
+//        System.out.println("hvad er n");
+//        System.out.println(n);
+//        NodeRef primarySignature = (NodeRef) nodeService.getProperty(n, DatabaseModel.PROP_PRIMARYSIGNATURE);
+//
+//
+//
+//        System.out.println("billede noderef");
+//        System.out.println(primarySignature);
+//
+//        ContentReader contentReader = contentService.getReader(primarySignature, ContentModel.PROP_CONTENT);
+//        contentReader.setMimetype(MimetypeMap.MIMETYPE_IMAGE_JPEG);
+//
+//        System.out.println("image navn");
+//        System.out.println(contentReader.getContentData().getMimetype());
+//
+//        InputStream input = contentReader.getContentInputStream();
+    }
+
+    private static void copyInputStreamToFile(InputStream inputStream, File file)
+            throws IOException {
+
+        // append = false
+        try (FileOutputStream outputStream = new FileOutputStream(file, false)) {
+            int read;
+            byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        }
 
     }
 }

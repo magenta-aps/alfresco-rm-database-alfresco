@@ -125,6 +125,12 @@ public interface DatabaseModel {
     QName ASPECT_STAT = QName.createQName(RM_MODEL_URI, "stat");
     QName ASPECT_FLOWCHART = QName.createQName(RM_MODEL_URI, "flowchart");
 
+    QName ASPECT_ADDSIGNATURE = QName.createQName(RM_MODEL_URI, "addSignature");
+    QName PROP_PRIMARYSIGNATURE = QName.createQName(RM_MODEL_URI, "primarySignature");
+    QName PROP_SECONDARYSIGNATURE = QName.createQName(RM_MODEL_URI, "secondarySignature");
+
+
+
     // Prop Strings
     String NAME = "name";
     String ENTRY_KEY = "entryKey";

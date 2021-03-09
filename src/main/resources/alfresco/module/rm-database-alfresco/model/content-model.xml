@@ -506,5 +506,24 @@
             </properties>
         </aspect>
 
+        <aspect name="rm:addSignature">
+            <title>Specifies that this node has content that needs a signture to be added</title>
+            <properties>
+                <property name="rm:primarySignature">
+                    <title>noderef for primary signature</title>
+                    <type>d:noderef</type>
+                </property>
+
+                <property name="rm:secondarySignature">
+                    <title>noderef for  secondary signature</title>
+                    <type>d:noderef</type>
+                </property>
+
+
+            </properties>
+        </aspect>
+
+
+
     </aspects>
 </model>

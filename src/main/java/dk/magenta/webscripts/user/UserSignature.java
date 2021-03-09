@@ -18,6 +18,7 @@ import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
@@ -114,8 +115,43 @@ public class UserSignature extends AbstractWebScript {
                     e.printStackTrace();
                 }
                 break;
+            case "getSignatureText":
+                templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
+                NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, userName);
+
+                if (signatureNodeRef != null) {
+                    try {
+                        result.put("text", nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    try {
+                        result.put("text", "");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                break;
             case "exists":
                 NodeRef nodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, userName);
+                if (nodeRef == null) {
+                    try {
+                        result.put("exists", false);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    try {
+                        result.put("exists", true);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
         }
 
         JSONUtils.write(webScriptWriter, result);
