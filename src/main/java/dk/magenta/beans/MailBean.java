@@ -207,10 +207,10 @@ public class MailBean {
 
             // cleanup the genereted pdfs
 
-//            for (int i = 0; i <= pds_to_be_deleted.size()-1; i++) {
-//                NodeRef n = pds_to_be_deleted.get(i);
-//                nodeService.deleteNode(n);
-//            }
+            for (int i = 0; i <= pds_to_be_deleted.size()-1; i++) {
+                NodeRef n = pds_to_be_deleted.get(i);
+                nodeService.deleteNode(n);
+            }
 
 
 
@@ -319,8 +319,8 @@ public class MailBean {
         NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
         QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, "test");
         Map<QName, Serializable> properties = new HashMap<>();
-        properties.put(ContentModel.PROP_NAME, "name");
         ChildAssociationRef childAssociationRef = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS, qName, ContentModel.TYPE_CONTENT, properties);
+        nodeService.setProperty(childAssociationRef.getChildRef(), ContentModel.PROP_NAME, childAssociationRef.getChildRef().getId());
 
         ContentWriter writer = contentService.getWriter(childAssociationRef.getChildRef(), ContentModel.PROP_CONTENT, true);
         writer.setMimetype("application/vnd.oasis.opendocument.text");
@@ -380,6 +380,59 @@ public class MailBean {
                 outputStream.write(bytes, 0, read);
             }
         }
-
     }
+
+    public NodeRef getPreviewOfPdfWithSignature(NodeRef[] nodeRefs, NodeRef declaration) throws Exception {
+
+
+        boolean found = false;
+        int i = 0;
+        NodeRef attachmentNodeRef = null;
+
+        System.out.println("length");
+
+        while (!found && i < nodeRefs.length) {
+            NodeRef n = nodeRefs[i];
+            if (nodeService.hasAspect(n, ASPECT_ADDSIGNATURE)) {
+                attachmentNodeRef = n;
+                found = true;
+            }
+            else {
+                i = i +1;
+            }
+        }
+
+        System.out.println("attachmentNodeRef" + attachmentNodeRef);
+
+        if (attachmentNodeRef != null) {
+            NodeRef documentWithSignature = this.addSignature(attachmentNodeRef, declaration);
+            System.out.println(documentWithSignature);
+            return this.transform(documentWithSignature);
+        }
+        else {
+            return null;
+        }
+    }
+
+
+    public NodeRef getAttachmentToSign(NodeRef declaration) {
+        List<ChildAssociationRef> childAssociationRef = nodeService.getChildAssocs(declaration);
+
+
+        Iterator iterator = childAssociationRef.iterator();
+
+        while (iterator.hasNext()) {
+
+            NodeRef nodeRef = (NodeRef) iterator.next();
+
+            if (nodeService.hasAspect(nodeRef, ASPECT_ADDSIGNATURE)) {
+                return nodeRef;
+            }
+            else {
+                iterator.next();
+            }
+        }
+        return null;
+    }
+
 }
