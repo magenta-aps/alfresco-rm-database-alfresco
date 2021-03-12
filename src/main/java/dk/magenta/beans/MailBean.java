@@ -45,6 +45,7 @@ import java.io.*;
 import java.util.*;
 
 import static dk.magenta.model.DatabaseModel.ASPECT_ADDSIGNATURE;
+import static dk.magenta.model.DatabaseModel.PROP_SUPERVISINGDOCTOR;
 
 public class MailBean {
 
@@ -305,15 +306,24 @@ public class MailBean {
     public NodeRef addSignature(NodeRef attachment, NodeRef declaration) throws Exception {
 
 
-        InputStream primarySignature = this.getSignature(declaration);
+        InputStream primarySignature = this.getPrimarySignature(declaration);
+        InputStream secondarySignature = this.getSecondaryignature(declaration);
 
         ContentReader contentReader = contentService.getReader(attachment, ContentModel.PROP_CONTENT);
         OdfDocument odt = OdfDocument.loadDocument(contentReader.getContentInputStream());
 
-        File file = new File("tmp.jpg");
+        File filePrimary = new File("primary.jpg");
+        File fileSecondary = new File("secondary.jpg");
+
         File backFile = new File("back");
-        copyInputStreamToFile(primarySignature, file);
-        odt.newImage(file.toURI());
+        copyInputStreamToFile(primarySignature, filePrimary);
+        odt.newImage(filePrimary.toURI());
+
+        if (secondarySignature != null) {
+            copyInputStreamToFile(secondarySignature, fileSecondary);
+            odt.newImage(fileSecondary.toURI());
+        }
+
         odt.save(backFile);
 
         NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
@@ -331,7 +341,7 @@ public class MailBean {
     }
 
 
-    public InputStream getSignature(NodeRef declaration) throws JSONException {
+    public InputStream getPrimarySignature(NodeRef declaration) throws JSONException {
 
 
         // hent læge
@@ -347,26 +357,32 @@ public class MailBean {
         ContentReader contentReader = contentService.getReader(signatureNodeRef, ContentModel.PROP_CONTENT);
         return contentReader.getContentInputStream();
 
-        // hent supervisor
+    }
 
-//        NodeRef n = new NodeRef("");
-//
-//        System.out.println("hvad er n");
-//        System.out.println(n);
-//        NodeRef primarySignature = (NodeRef) nodeService.getProperty(n, DatabaseModel.PROP_PRIMARYSIGNATURE);
-//
-//
-//
-//        System.out.println("billede noderef");
-//        System.out.println(primarySignature);
-//
-//        ContentReader contentReader = contentService.getReader(primarySignature, ContentModel.PROP_CONTENT);
-//        contentReader.setMimetype(MimetypeMap.MIMETYPE_IMAGE_JPEG);
-//
-//        System.out.println("image navn");
-//        System.out.println(contentReader.getContentData().getMimetype());
-//
-//        InputStream input = contentReader.getContentInputStream();
+    public InputStream getSecondaryignature(NodeRef declaration) throws JSONException {
+
+
+        // hent tiltrædes af læge
+
+        String doctor = (String) nodeService.getProperty(declaration, PROP_SUPERVISINGDOCTOR);
+        System.out.println("hvad er doctor på supervisor");
+        System.out.println(doctor);
+
+        if (doctor != null) {
+            String superVisorUserName = propertyValuesBean.getUserNameByUser(doctor);
+
+            System.out.println("superVisorUserName" + superVisorUserName);
+
+            NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
+            NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, superVisorUserName);
+
+            ContentReader contentReader = contentService.getReader(signatureNodeRef, ContentModel.PROP_CONTENT);
+            return contentReader.getContentInputStream();
+        }
+        else {
+            return null;
+        }
+
     }
 
     private static void copyInputStreamToFile(InputStream inputStream, File file)

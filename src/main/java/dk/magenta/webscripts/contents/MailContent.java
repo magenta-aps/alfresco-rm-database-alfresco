@@ -156,11 +156,14 @@ public class MailContent extends AbstractWebScript {
 
                 break;
 
-            case "getStateOfDeclaration":
+            case "send":
+
+
 
                 try {
 
                     json = new JSONObject(c.getContent());
+                    Boolean useSignature = (Boolean) json.get("useSignature");
 
                     JSONArray jsonNodeRefs = JSONUtils.getArray(json, "nodeRefs");
                     NodeRef[] nodeRefs = new NodeRef[jsonNodeRefs.length()];
@@ -186,7 +189,9 @@ public class MailContent extends AbstractWebScript {
                     String query = "@rm\\:caseNumber:\"" + caseid + "\"";
                     declaration = entryBean.getEntry(query);
 
-                    mailBean.sendEmail(nodeRefs, authority, body, subject, true, declaration);
+
+
+                    mailBean.sendEmail(nodeRefs, authority, body, subject, useSignature, declaration);
 
 
                     // pak dette væk i en bean senere
