@@ -16,6 +16,7 @@ import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.extensions.surf.util.Content;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
@@ -96,7 +97,21 @@ public class UpdateUser extends AbstractWebScript {
         Writer webScriptWriter = webScriptResponse.getWriter();
         JSONObject result = new JSONObject();
 
+        System.out.println("webScriptRequest.getParameter(");
+        System.out.println("webScriptRequest.getParameter(");
+        System.out.println("webScriptRequest.getParameter(");
+        System.out.println(webScriptRequest.getParameter("signature"));;
+
+
+
+
+
         Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
+
+        String signature2 = params.get("signature");
+        System.out.println("hvad er signature: linebreak?");
+        System.out.println(signature2);
+
 
         String method = params.get("method");
 
@@ -130,7 +145,11 @@ public class UpdateUser extends AbstractWebScript {
                     userName = params.get("userName");
                     p = personService.getPerson(userName);
 
-                    String signature = params.get("signature");
+                    String signature = webScriptRequest.getParameter("signature");
+                    System.out.println("hvad er signature: linebreak?");
+                    System.out.println(signature);
+
+                    // den bliver ikke gemt med korrekt encoding - mellemrum forsvinder
 
                     NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
                     if (signature != null) {

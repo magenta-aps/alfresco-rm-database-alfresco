@@ -1,7 +1,6 @@
 package dk.magenta.beans;
 
 
-
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
@@ -11,31 +10,23 @@ import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
-
-
-import org.apache.commons.io.FileUtils;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSObject;
-import org.apache.pdfbox.cos.COSStream;
-import org.apache.pdfbox.exceptions.COSVisitorException;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.graphics.xobject.PDJpeg;
-import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObject;
-import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
-import org.apache.pdfbox.persistence.util.COSObjectKey;
-//import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.HWPFDocument;
 import org.json.JSONException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.odftoolkit.odfdom.doc.table.OdfTable;
+import org.odftoolkit.odfdom.pkg.OdfElement;
+import org.odftoolkit.odfdom.type.Color;
 import org.odftoolkit.simple.TextDocument;
-
+import org.odftoolkit.simple.style.Border;
+import org.odftoolkit.simple.style.StyleTypeDefinitions;
+import org.odftoolkit.simple.table.Cell;
+import org.odftoolkit.simple.table.Row;
+import org.odftoolkit.simple.table.Table;
+import org.odftoolkit.simple.table.TableTemplate;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.activation.MimeType;
-import javax.imageio.ImageIO;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -46,6 +37,9 @@ import java.util.*;
 
 import static dk.magenta.model.DatabaseModel.ASPECT_ADDSIGNATURE;
 import static dk.magenta.model.DatabaseModel.PROP_SUPERVISINGDOCTOR;
+import static org.odftoolkit.simple.style.StyleTypeDefinitions.CellBordersType.NONE;
+
+//import org.apache.poi.hwpf.HWPFDocument;
 
 public class MailBean {
 
@@ -306,25 +300,71 @@ public class MailBean {
     public NodeRef addSignature(NodeRef attachment, NodeRef declaration) throws Exception {
 
 
-        InputStream primarySignature = this.getPrimarySignature(declaration);
-        InputStream secondarySignature = this.getSecondaryignature(declaration);
+        Signiture primarySignature = this.getPrimarySignature(declaration);
+        Signiture secondarySignature = this.getSecondaryignature(declaration);
+
+        System.out.println("primarySignature.text");
+
+        System.out.println(primarySignature.text);
+
+        System.out.println("secondarySignature.text");
+        System.out.println(secondarySignature.text);
 
         ContentReader contentReader = contentService.getReader(attachment, ContentModel.PROP_CONTENT);
-        OdfDocument odt = OdfDocument.loadDocument(contentReader.getContentInputStream());
+//        OdfDocument odt = OdfDocument.loadDocument(contentReader.getContentInputStream());
+
+        TextDocument log_entires = TextDocument.loadDocument(contentReader.getContentInputStream());
+
 
         File filePrimary = new File("primary.jpg");
         File fileSecondary = new File("secondary.jpg");
 
         File backFile = new File("back");
-        copyInputStreamToFile(primarySignature, filePrimary);
-        odt.newImage(filePrimary.toURI());
+        copyInputStreamToFile(primarySignature.image, filePrimary);
 
+//        log_entires.newImage(filePrimary.toURI());
+
+
+
+        Table table;
         if (secondarySignature != null) {
-            copyInputStreamToFile(secondarySignature, fileSecondary);
-            odt.newImage(fileSecondary.toURI());
+            table = log_entires.addTable(2,2);
+        }
+        else {
+            table = log_entires.addTable(2,1);
         }
 
-        odt.save(backFile);
+
+
+
+//        TableTemplate tableTemplate = TableTemplate
+
+
+        Row row1 = table.getRowByIndex(0);
+        Row row2 = table.getRowByIndex(1);
+
+        Cell cRow1A = row1.getCellByIndex(0);
+
+
+        cRow1A.setCellBackgroundColor(new Color("#f7f7f8"));
+        Border border = new Border(Color.WHITE, 1.0, StyleTypeDefinitions.SupportedLinearMeasure.PT);
+        cRow1A.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+
+
+        cRow1A.setImage(filePrimary.toURI());
+        Cell cRow2A = row2.getCellByIndex(0);
+        cRow2A.addParagraph(primarySignature.text);
+
+        if (secondarySignature != null) {
+            copyInputStreamToFile(secondarySignature.image, fileSecondary);
+            Cell cRow1B = row1.getCellByIndex(1);
+            cRow1B.setImage(fileSecondary.toURI());
+
+            Cell cRow2B = row2.getCellByIndex(1);
+            cRow2B.addParagraph(secondarySignature.text);
+        }
+
+        log_entires.save(backFile);
 
         NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
         QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, "test");
@@ -341,8 +381,10 @@ public class MailBean {
     }
 
 
-    public InputStream getPrimarySignature(NodeRef declaration) throws JSONException {
+    public Signiture getPrimarySignature(NodeRef declaration) throws JSONException {
 
+
+        Signiture signiture = new Signiture();
 
         // hent læge
 
@@ -355,14 +397,21 @@ public class MailBean {
         NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, docUserName);
 
         ContentReader contentReader = contentService.getReader(signatureNodeRef, ContentModel.PROP_CONTENT);
-        return contentReader.getContentInputStream();
+        String text = (String) nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE);
+
+        signiture.image = contentReader.getContentInputStream();
+        signiture.text = text;
+
+        return signiture;
 
     }
 
-    public InputStream getSecondaryignature(NodeRef declaration) throws JSONException {
+    public Signiture getSecondaryignature(NodeRef declaration) throws JSONException {
 
 
         // hent tiltrædes af læge
+
+        Signiture signiture = new Signiture();
 
         String doctor = (String) nodeService.getProperty(declaration, PROP_SUPERVISINGDOCTOR);
         System.out.println("hvad er doctor på supervisor");
@@ -375,9 +424,14 @@ public class MailBean {
 
             NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
             NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, superVisorUserName);
+            String text = (String) nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE);
 
             ContentReader contentReader = contentService.getReader(signatureNodeRef, ContentModel.PROP_CONTENT);
-            return contentReader.getContentInputStream();
+
+            signiture.image = contentReader.getContentInputStream();
+            signiture.text = text;
+
+            return signiture;
         }
         else {
             return null;
@@ -449,6 +503,11 @@ public class MailBean {
             }
         }
         return null;
+    }
+
+    class Signiture {
+        public InputStream image;
+        public String text;
     }
 
 }
