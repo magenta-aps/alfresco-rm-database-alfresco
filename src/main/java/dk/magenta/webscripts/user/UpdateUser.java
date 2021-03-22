@@ -166,6 +166,7 @@ public class UpdateUser extends AbstractWebScript {
                             QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, userName);
                             ChildAssociationRef childAssociationRef = nodeService.createNode(templateLibrary, ContentModel.ASSOC_CONTAINS, qName, DatabaseModel.TYPE_SIGNATURE, properties);
                             nodeService.setProperty(childAssociationRef.getChildRef(), DatabaseModel.PROP_SIGNATURE, signature);
+                            nodeService.addAspect(childAssociationRef.getChildRef(), ContentModel.ASPECT_VERSIONABLE, null);
                         }
                     }
 

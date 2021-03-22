@@ -13,9 +13,6 @@ import org.alfresco.service.namespace.QName;
 import org.json.JSONException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.odftoolkit.odfdom.doc.table.OdfTable;
-import org.odftoolkit.odfdom.pkg.OdfElement;
 import org.odftoolkit.odfdom.type.Color;
 import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.style.Border;
@@ -23,7 +20,6 @@ import org.odftoolkit.simple.style.StyleTypeDefinitions;
 import org.odftoolkit.simple.table.Cell;
 import org.odftoolkit.simple.table.Row;
 import org.odftoolkit.simple.table.Table;
-import org.odftoolkit.simple.table.TableTemplate;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -37,7 +33,6 @@ import java.util.*;
 
 import static dk.magenta.model.DatabaseModel.ASPECT_ADDSIGNATURE;
 import static dk.magenta.model.DatabaseModel.PROP_SUPERVISINGDOCTOR;
-import static org.odftoolkit.simple.style.StyleTypeDefinitions.CellBordersType.NONE;
 
 //import org.apache.poi.hwpf.HWPFDocument;
 
@@ -303,12 +298,7 @@ public class MailBean {
         Signiture primarySignature = this.getPrimarySignature(declaration);
         Signiture secondarySignature = this.getSecondaryignature(declaration);
 
-        System.out.println("primarySignature.text");
 
-        System.out.println(primarySignature.text);
-
-        System.out.println("secondarySignature.text");
-        System.out.println(secondarySignature.text);
 
         ContentReader contentReader = contentService.getReader(attachment, ContentModel.PROP_CONTENT);
 //        OdfDocument odt = OdfDocument.loadDocument(contentReader.getContentInputStream());
@@ -325,17 +315,17 @@ public class MailBean {
 //        log_entires.newImage(filePrimary.toURI());
 
 
+        System.out.println("hvad er secondarySignature" + secondarySignature);
 
         Table table;
         if (secondarySignature != null) {
+            System.out.println("making table 2,2");
             table = log_entires.addTable(2,2);
         }
         else {
-            table = log_entires.addTable(2,1);
+            System.out.println("making table 2,1");
+            table = log_entires.addTable(2,2);
         }
-
-
-
 
 //        TableTemplate tableTemplate = TableTemplate
 
@@ -347,21 +337,34 @@ public class MailBean {
 
 
         cRow1A.setCellBackgroundColor(new Color("#f7f7f8"));
+        cRow1A.setHorizontalAlignment(StyleTypeDefinitions.HorizontalAlignmentType.CENTER);
+
         Border border = new Border(Color.WHITE, 1.0, StyleTypeDefinitions.SupportedLinearMeasure.PT);
         cRow1A.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
 
 
         cRow1A.setImage(filePrimary.toURI());
         Cell cRow2A = row2.getCellByIndex(0);
+        cRow2A.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
         cRow2A.addParagraph(primarySignature.text);
+        cRow2A.setHorizontalAlignment(StyleTypeDefinitions.HorizontalAlignmentType.CENTER);
 
         if (secondarySignature != null) {
+            System.out.println("it should not go here");
             copyInputStreamToFile(secondarySignature.image, fileSecondary);
             Cell cRow1B = row1.getCellByIndex(1);
+            cRow1B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
             cRow1B.setImage(fileSecondary.toURI());
 
             Cell cRow2B = row2.getCellByIndex(1);
+            cRow2B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
             cRow2B.addParagraph(secondarySignature.text);
+        }
+        else {
+            Cell cRow1B = row1.getCellByIndex(1);
+            cRow1B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            Cell cRow2B = row2.getCellByIndex(1);
+            cRow2B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
         }
 
         log_entires.save(backFile);
@@ -396,13 +399,20 @@ public class MailBean {
         NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
         NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, docUserName);
 
-        ContentReader contentReader = contentService.getReader(signatureNodeRef, ContentModel.PROP_CONTENT);
-        String text = (String) nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE);
+        if (signatureNodeRef != null) {
+            ContentReader contentReader = contentService.getReader(signatureNodeRef, ContentModel.PROP_CONTENT);
+            String text = (String) nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE);
 
-        signiture.image = contentReader.getContentInputStream();
-        signiture.text = text;
+            signiture.image = contentReader.getContentInputStream();
+            signiture.text = text;
 
-        return signiture;
+            return signiture;
+        }
+        else {
+            return null;
+        }
+
+
 
     }
 
@@ -416,8 +426,11 @@ public class MailBean {
         String doctor = (String) nodeService.getProperty(declaration, PROP_SUPERVISINGDOCTOR);
         System.out.println("hvad er doctor på supervisor");
         System.out.println(doctor);
+        System.out.println("hvad er doctor på supervisor");
+        System.out.println(doctor.equals("null"));
 
-        if (doctor != null) {
+
+        if (!doctor.equals("null")) {
             String superVisorUserName = propertyValuesBean.getUserNameByUser(doctor);
 
             System.out.println("superVisorUserName" + superVisorUserName);
@@ -508,6 +521,35 @@ public class MailBean {
     class Signiture {
         public InputStream image;
         public String text;
+    }
+
+    public boolean signituresAvailable(NodeRef nodeRef) throws JSONException {
+
+        String docUserName = "";
+        String doctor = (String) nodeService.getProperty(nodeRef, DatabaseModel.PROP_DOCTOR);
+        docUserName = propertyValuesBean.getUserNameByUser(doctor);
+
+        String secondaryDoctorUserName = "";
+        secondaryDoctorUserName = (String) nodeService.getProperty(nodeRef, PROP_SUPERVISINGDOCTOR);
+
+        System.out.println("hvad er doctor på supervisor");
+        System.out.println(secondaryDoctorUserName);
+
+        if (docUserName != null) {
+            NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
+            NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, docUserName);
+
+            if (!secondaryDoctorUserName.equals("null")) {
+                NodeRef secondarySignatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, docUserName);
+                return ((signatureNodeRef != null) && (secondarySignatureNodeRef != null));
+            }
+            else {
+                return (signatureNodeRef != null);
+            }
+        }
+        else {
+            return false;
+        }
     }
 
 }

@@ -119,7 +119,27 @@ public class MailContent extends AbstractWebScript {
         }
 
         switch (method) {
+            case "signitureAvailability":
+                try {
 
+                    String caseid = (String) json.get("caseid");
+                    String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+                    declaration = entryBean.getEntry(query);
+
+                    boolean avail = mailBean.signituresAvailable(declaration);
+                    System.out.println("hvad er avail");
+                    System.out.println(avail);
+
+                    result.put("available", avail);
+                    JSONUtils.write(webScriptWriter, result);
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
             case "preview":
 
                 try {
@@ -157,8 +177,6 @@ public class MailContent extends AbstractWebScript {
                 break;
 
             case "send":
-
-
 
                 try {
 

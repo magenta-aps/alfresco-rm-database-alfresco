@@ -99,6 +99,11 @@ public class DocumentTemplateBean {
             NodeRef template_doc = children.get(0).getChildRef();
 
             documentNodeRef = this.generateOfferLetterDocumentKendelse(template_doc, declaration, retten, dato);
+
+            // add signiture aspect
+            NodeRef newDoc = new NodeRef("workspace://SpacesStore/" + documentNodeRef);
+            Map<QName, Serializable> aspectProps = new HashMap<>();
+            nodeService.addAspect(newDoc, ASPECT_ADDSIGNATURE, aspectProps);
         }
 
         else if (type.equals(DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE)) {
@@ -111,45 +116,38 @@ public class DocumentTemplateBean {
             NodeRef template_doc = children.get(0).getChildRef();
 
             documentNodeRef = this.generateOfferLetterDocumentSamtykke(template_doc, declaration);
+
+            // add signiture aspect
+            NodeRef newDoc = new NodeRef("workspace://SpacesStore/" + documentNodeRef);
+            Map<QName, Serializable> aspectProps = new HashMap<>();
+            nodeService.addAspect(newDoc, ASPECT_ADDSIGNATURE, aspectProps);
         }
 
-//TODO fjern udkommentering
 
 
-//        if (nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) {
-//            NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
-//            List<String> list = Arrays.asList((nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) ? DatabaseModel.PROP_PSYCOLOGICALDOCUMENT_BUA : DatabaseModel.PROP_PSYCOLOGICALDOCUMENT);
-//            List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
-//
-//            NodeRef template_doc = children.get(0).getChildRef();
-//
-//            NodeRef psycologicalDocument = this.generatePsycologicalDocumen(template_doc, declaration);
-//
-//            permissionService.setPermission(psycologicalDocument, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
-//        }
-//        else {
-//            NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
-//            List<String> list = Arrays.asList(DatabaseModel.PROP_SAMTYKKE_TDL_KONTAKT);
-//            List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
-//
-//            NodeRef template_doc = children.get(0).getChildRef();
-//
-//            NodeRef samtykkeTidlKontaktDocument = this.generateSamtykkeDocument(template_doc, declaration);
-//            permissionService.setPermission(samtykkeTidlKontaktDocument, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
-//        }
+        if (nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) {
+            NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+            List<String> list = Arrays.asList((nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) ? DatabaseModel.PROP_PSYCOLOGICALDOCUMENT_BUA : DatabaseModel.PROP_PSYCOLOGICALDOCUMENT);
+            List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
+
+            NodeRef template_doc = children.get(0).getChildRef();
+
+            NodeRef psycologicalDocument = this.generatePsycologicalDocumen(template_doc, declaration);
+
+            permissionService.setPermission(psycologicalDocument, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
+        }
+        else {
+            NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+            List<String> list = Arrays.asList(DatabaseModel.PROP_SAMTYKKE_TDL_KONTAKT);
+            List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
+
+            NodeRef template_doc = children.get(0).getChildRef();
+
+            NodeRef samtykkeTidlKontaktDocument = this.generateSamtykkeDocument(template_doc, declaration);
+            permissionService.setPermission(samtykkeTidlKontaktDocument, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
+        }
 
         permissionService.setPermission(new NodeRef("workspace://SpacesStore/" + documentNodeRef), DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
-
-        // add signiture aspect
-
-        NodeRef newDoc = new NodeRef("workspace://SpacesStore/" + documentNodeRef);
-
-
-        Map<QName, Serializable> aspectProps = new HashMap<>();
-
-        System.out.println("signature added");
-        System.out.println(newDoc);
-
 
 //        ContentReader contentReaderODT = contentService.getReader(newDoc, ContentModel.PROP_CONTENT);
 //        OdfDocument odt = OdfDocument.loadDocument(contentReaderODT.getContentInputStream());
@@ -163,7 +161,7 @@ public class DocumentTemplateBean {
 //
 //        ContentWriter contentWriter = contentService.getWriter(newDoc, ContentModel.PROP_CONTENT, true);
 //        contentWriter.putContent(backFile);
-        nodeService.addAspect(newDoc, ASPECT_ADDSIGNATURE, aspectProps);
+
 
         return documentNodeRef;
     }
