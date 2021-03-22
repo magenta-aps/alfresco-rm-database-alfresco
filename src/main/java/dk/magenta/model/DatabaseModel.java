@@ -194,6 +194,10 @@ public interface DatabaseModel {
     String WEEKLY_REPORT_SPREADSHEET_A_NAME = "uge.ods";
     String WEEKLY_REPORT_SPREADSHEET_B_NAME = "aar.ods";
     String DEFAULT_MAIL_TEXT_NAME = "standardtext.odt";
+    String DEFAULT_MAIL_TEXT_RETURN = "standardtextReturnering.odt";
+
+    String DEFAULT_MAIL_TEXT_SEND_VALUE = "send";
+    String DEFAULT_MAIL_TEXT_RETURN_VALUE  = "returnering";
 
 
     QName ASSOC_VERSION_PREVIEW = QName.createQName(RM_MODEL_URI, "version_preview");

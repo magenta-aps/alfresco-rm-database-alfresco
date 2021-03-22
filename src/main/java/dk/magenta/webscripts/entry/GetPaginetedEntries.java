@@ -363,8 +363,8 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 }
             }
 
-//            System.out.println("the query");
-//            System.out.println(query);
+            System.out.println("the query");
+            System.out.println(query);
 
 
             List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
