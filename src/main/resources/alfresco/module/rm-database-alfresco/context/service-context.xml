@@ -138,6 +138,16 @@
         <property name="override_months" value="${magenta.custom.override_months}"/>
     </bean>
 
+    <bean id="reportBean" class="dk.magenta.beans.ReportBean">
+        <property name="databaseBean" ref="databaseBean"/>
+        <property name="entryBean" ref="entryBean"/>
+        <property name="fileFolderService" ref="fileFolderService"/>
+        <property name="searchService" ref="searchService"/>
+        <property name="nodeService" ref="nodeService"/>
+        <property name="transactionService" ref="transactionService"/>
+        <property name="contentService" ref="contentService"/>
+    </bean>
+
     <bean id="weeklyStatBean" class="dk.magenta.beans.WeeklyStatBean">
         <property name="databaseBean" ref="databaseBean"/>
         <property name="entryBean" ref="entryBean"/>
