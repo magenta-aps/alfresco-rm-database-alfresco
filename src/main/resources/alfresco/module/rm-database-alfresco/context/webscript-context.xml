@@ -26,6 +26,10 @@
 		<property name="WeeklyStatBean" ref="weeklyStatBean"/>
 	</bean>
 
+	<bean id="webscript.database.reports.post" class="dk.magenta.webscripts.database.Reports" parent="webscript">
+		<property name="ReportWaitingTimeBean" ref="reportWaitingTimeBean"/>
+	</bean>
+
 	<bean id="webscript.database.entry_import.post" class="dk.magenta.webscripts.database.AddEntry_import" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>

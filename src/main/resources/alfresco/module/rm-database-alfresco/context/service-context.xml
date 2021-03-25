@@ -138,7 +138,7 @@
         <property name="override_months" value="${magenta.custom.override_months}"/>
     </bean>
 
-    <bean id="reportBean" class="dk.magenta.beans.ReportBean">
+    <bean id="reportWaitingTimeBean" class="dk.magenta.beans.ReportWaitingTimeBean">
         <property name="databaseBean" ref="databaseBean"/>
         <property name="entryBean" ref="entryBean"/>
         <property name="fileFolderService" ref="fileFolderService"/>

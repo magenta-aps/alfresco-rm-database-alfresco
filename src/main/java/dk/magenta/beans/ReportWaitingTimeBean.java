@@ -22,13 +22,14 @@ import org.odftoolkit.simple.table.TableContainer;
 
 import java.io.File;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static dk.magenta.model.DatabaseModel.*;
 
-public class ReportBean {
+public class ReportWaitingTimeBean {
 
     public void setOverride(boolean override) {
         this.override = override;
@@ -91,6 +92,10 @@ public class ReportBean {
     //
     public void getReport(String from, String to) {
 
+        int receivedCount = this.query("declarationDate", from, to, false);
+        System.out.println("receivedCount");
+        System.out.println(receivedCount);
+
     }
 
     private void getNodesForReport(String f_formattedDate, String t_formattedDate) throws JSONException {
@@ -113,6 +118,52 @@ public class ReportBean {
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 300, "@rm:creationDate", true);
 
+    }
+
+    private int query(String field, String startDate, String endDate, boolean bua) {
+
+        String query = "";
+        JSONArray queryArray = new JSONArray();
+
+        try {
+
+            JSONObject o = new JSONObject();
+
+            o.put("key", field);
+            o.put("value", QueryUtils.dateRangeQuery(startDate , endDate));
+            o.put("include", true);
+            queryArray.put(o);
+
+            // return only closed cases
+            o = new JSONObject();
+            o.put("key", "closed");
+            o.put("value", true);
+            o.put("include", true);
+            queryArray.put(o);
+
+            query = QueryUtils.getKeyValueQuery(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.TYPE_PSYC_DEC, queryArray);
+
+            if (!bua) {
+                query = query + " AND -ASPECT:\"rm:bua\"";
+            }
+            else {
+                query = query + " AND +ASPECT:\"rm:bua\"";
+            }
+
+            System.out.println("the query");
+            System.out.println(query);
+
+            List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(query);
+
+            System.out.println("nodeRefs");
+            System.out.println(nodeRefs.size());
+
+            return nodeRefs.size();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
 }
