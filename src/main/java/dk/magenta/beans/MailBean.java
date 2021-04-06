@@ -5,6 +5,7 @@ import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.content.transform.ContentTransformer;
+import org.alfresco.repo.jscript.ScriptLogger;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
@@ -13,6 +14,7 @@ import org.alfresco.service.namespace.QName;
 import org.json.JSONException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;
 import org.odftoolkit.odfdom.type.Color;
 import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.style.Border;
@@ -20,6 +22,7 @@ import org.odftoolkit.simple.style.StyleTypeDefinitions;
 import org.odftoolkit.simple.table.Cell;
 import org.odftoolkit.simple.table.Row;
 import org.odftoolkit.simple.table.Table;
+import org.odftoolkit.simple.text.Paragraph;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -33,6 +36,7 @@ import java.util.*;
 
 import static dk.magenta.model.DatabaseModel.ASPECT_ADDSIGNATURE;
 import static dk.magenta.model.DatabaseModel.PROP_SUPERVISINGDOCTOR;
+import static org.odftoolkit.simple.style.StyleTypeDefinitions.HorizontalAlignmentType.LEFT;
 
 //import org.apache.poi.hwpf.HWPFDocument;
 
@@ -149,8 +153,10 @@ public class MailBean {
                         // return the nodeRef and  replace this with the one without the signature in the list of attachments
                         NodeRef documentWithSignature = this.addSignature(attachmentNodeRef, declaration);
                         pds_to_be_deleted.add(documentWithSignature);
-                        System.out.println(documentWithSignature);
                         transformed = this.transform(documentWithSignature);
+                    }
+                    else {
+                        transformed = this.transform(attachmentNodeRef);
                     }
                 }
                 else {
@@ -158,9 +164,6 @@ public class MailBean {
 
                 }
                 pds_to_be_deleted.add(transformed);
-
-
-
 
                 final MimeBodyPart attachment = new MimeBodyPart();
                 NodeRef finalTransformed = transformed;
@@ -192,8 +195,8 @@ public class MailBean {
             }
 
             msg.setContent(multipart);
-
             Transport.send(msg);
+
 
             // cleanup the genereted pdfs
 
@@ -237,6 +240,9 @@ public class MailBean {
         ContentTransformer pptToPdfTransformer = contentService.getTransformer(originalMimeType, MimetypeMap.MIMETYPE_PDF);
 
         pptToPdfTransformer.transform(pptReader, pdfWriter);
+
+
+
 
         return pdf.getChildRef();
     }
@@ -312,12 +318,8 @@ public class MailBean {
         File backFile = new File("back");
         copyInputStreamToFile(primarySignature.image, filePrimary);
 
-//        log_entires.newImage(filePrimary.toURI());
-
-
-        System.out.println("hvad er secondarySignature" + secondarySignature);
-
         Table table;
+
         if (secondarySignature != null) {
             System.out.println("making table 2,2");
             table = log_entires.addTable(2,2);
@@ -327,34 +329,33 @@ public class MailBean {
             table = log_entires.addTable(2,2);
         }
 
-//        TableTemplate tableTemplate = TableTemplate
-
-
         Row row1 = table.getRowByIndex(0);
         Row row2 = table.getRowByIndex(1);
+
 
         Cell cRow1A = row1.getCellByIndex(0);
 
 
-        cRow1A.setCellBackgroundColor(new Color("#f7f7f8"));
-        cRow1A.setHorizontalAlignment(StyleTypeDefinitions.HorizontalAlignmentType.CENTER);
 
         Border border = new Border(Color.WHITE, 1.0, StyleTypeDefinitions.SupportedLinearMeasure.PT);
         cRow1A.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
 
+        cRow1A.setVerticalAlignment(StyleTypeDefinitions.VerticalAlignmentType.MIDDLE);
 
-        cRow1A.setImage(filePrimary.toURI());
+
+        cRow1A.setImage(filePrimary.toURI()).setHorizontalPosition(StyleTypeDefinitions.FrameHorizontalPosition.LEFT);
+
+
+
         Cell cRow2A = row2.getCellByIndex(0);
         cRow2A.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
         cRow2A.addParagraph(primarySignature.text);
-        cRow2A.setHorizontalAlignment(StyleTypeDefinitions.HorizontalAlignmentType.CENTER);
 
         if (secondarySignature != null) {
-            System.out.println("it should not go here");
             copyInputStreamToFile(secondarySignature.image, fileSecondary);
             Cell cRow1B = row1.getCellByIndex(1);
             cRow1B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
-            cRow1B.setImage(fileSecondary.toURI());
+            cRow1B.setImage(fileSecondary.toURI()).setHorizontalPosition(StyleTypeDefinitions.FrameHorizontalPosition.LEFT);
 
             Cell cRow2B = row2.getCellByIndex(1);
             cRow2B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
@@ -389,11 +390,11 @@ public class MailBean {
 
         Signiture signiture = new Signiture();
 
-        // hent læge
+
 
         String doctor = (String) nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
         String docUserName = propertyValuesBean.getUserNameByUser(doctor);
-//        System.out.println("doctor" + doctor);
+        System.out.println("doctor" + doctor);
         System.out.println("doctorNameIncLogin" + docUserName);
 
         NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
@@ -427,29 +428,32 @@ public class MailBean {
         System.out.println("hvad er doctor på supervisor");
         System.out.println(doctor);
         System.out.println("hvad er doctor på supervisor");
-        System.out.println(doctor.equals("null"));
 
 
-        if (!doctor.equals("null")) {
+
+        if ( (doctor != null) && !doctor.equals("null") )  {
             String superVisorUserName = propertyValuesBean.getUserNameByUser(doctor);
 
             System.out.println("superVisorUserName" + superVisorUserName);
 
             NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
             NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, superVisorUserName);
-            String text = (String) nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE);
 
-            ContentReader contentReader = contentService.getReader(signatureNodeRef, ContentModel.PROP_CONTENT);
+            if (signatureNodeRef != null) {
+                String text = (String) nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE);
 
-            signiture.image = contentReader.getContentInputStream();
-            signiture.text = text;
+                ContentReader contentReader = contentService.getReader(signatureNodeRef, ContentModel.PROP_CONTENT);
 
-            return signiture;
+                signiture.image = contentReader.getContentInputStream();
+                signiture.text = text;
+
+                return signiture;
+            }
         }
         else {
             return null;
         }
-
+        return null;
     }
 
     private static void copyInputStreamToFile(InputStream inputStream, File file)
@@ -539,7 +543,7 @@ public class MailBean {
             NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
             NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, docUserName);
 
-            if (!secondaryDoctorUserName.equals("null")) {
+            if ( (secondaryDoctorUserName != null) && (!secondaryDoctorUserName.equals("null")) ) {
                 NodeRef secondarySignatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, docUserName);
                 return ((signatureNodeRef != null) && (secondarySignatureNodeRef != null));
             }
