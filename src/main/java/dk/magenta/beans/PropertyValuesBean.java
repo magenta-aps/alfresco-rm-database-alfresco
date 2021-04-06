@@ -159,5 +159,75 @@ public class PropertyValuesBean {
         return null;
     }
 
+    public String getUserNameByUser (String userName) throws JSONException {
+
+        System.out.println("getusernamebyuser");
+
+        // secretaries
+
+        JSONObject values = propertyValuesMap.get("retspsyk");
+
+
+
+        JSONArray secretaries = values.getJSONArray("secretary");
+        System.out.println("sec check");
+        for (int i=0; i<= secretaries.length()-1; i++) {
+
+            String s = secretaries.getString(i);
+
+            if (s.contains(userName)) {
+                s = s.replace(userName,"").trim();
+                s= s.replace("(","").trim();
+                s= s.replace(")","").trim();
+                return s;
+            }
+        }
+
+        JSONArray socialworker = values.getJSONArray("socialworker");
+        System.out.println("soc check");
+        for (int i=0; i<= socialworker.length()-1; i++) {
+
+            String s = socialworker.getString(i);
+
+            if (s.contains(userName)) {
+                s = s.replace(userName,"").trim();
+                s= s.replace("(","").trim();
+                s= s.replace(")","").trim();
+                return s;
+            }
+        }
+
+        JSONArray psychologist = values.getJSONArray("psychologist");
+        System.out.println("socia check");
+        for (int i=0; i<= psychologist.length()-1; i++) {
+
+            String s = psychologist.getString(i);
+
+            if (s.contains(userName)) {
+                s = s.replace(userName,"").trim();
+                s= s.replace("(","").trim();
+                s= s.replace(")","").trim();
+                return s;
+            }
+        }
+
+        JSONArray doctor = values.getJSONArray("doctor");
+        System.out.println("doctor check");
+
+        for (int i=0; i<= doctor.length()-1; i++) {
+
+            String s = doctor.getString(i);
+
+            if (s.contains(userName)) {
+                s = s.replace(userName,"").trim();
+                s= s.replace("(","").trim();
+                s= s.replace(")","").trim();
+                return s;
+            }
+        }
+
+        return null;
+    }
+
 }
 

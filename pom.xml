@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>dk.magenta</groupId>
     <artifactId>rm-database-alfresco</artifactId>
-    <version>1.2.10</version>
+    <version>1.2.12</version>
     <name>rm-database-alfresco Platform Jar Module - SDK 3</name>
     <description>Platform JAR Module (to be included in the alfresco.war) - SDK 3</description>
     <packaging>jar</packaging>
@@ -102,6 +102,41 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.itextpdf/layout -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>7.0.4</version>
+        </dependency>
+
+
+
+        <!-- https://mvnrepository.com/artifact/org.odftoolkit/odfdom-java -->
+<!--        <dependency>-->
+<!--            <groupId>org.odftoolkit</groupId>-->
+<!--            <artifactId>odfdom-java</artifactId>-->
+<!--            <version>0.9.0-RC1</version>-->
+<!--        </dependency>-->
+
+
+
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-scratchpad -->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi-scratchpad</artifactId>-->
+<!--            <version>3.15</version>-->
+<!--        </dependency>-->
+
+
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.apache.poi/poi &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi-ooxml</artifactId>-->
+<!--            <version>3.15</version>-->
+<!--        </dependency>-->
+
+
 
         <!--<dependency>-->
             <!--<groupId>org.springframework.extensions.surf</groupId>-->
@@ -153,6 +188,22 @@
             <artifactId>simple-odf</artifactId>
             <version>0.8.2-incubating</version>
         </dependency>
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/com.itextpdf/itextpdf &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>itextpdf</artifactId>-->
+<!--            <version>5.5.10</version>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/com.itextpdf/kernel -->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>kernel</artifactId>-->
+<!--            <version>7.0.1</version>-->
+<!--        </dependency>-->
+
+
 
 
     </dependencies>

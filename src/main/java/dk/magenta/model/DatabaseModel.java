@@ -78,6 +78,12 @@ public interface DatabaseModel {
     QName PROP_VISITATOR_DATA = QName.createQName(RM_MODEL_URI, "visitator");
 
 
+    /* signature */
+
+    QName TYPE_SIGNATURE = QName.createQName(RM_MODEL_URI, "signature");
+    QName PROP_SIGNATURE = QName.createQName(RM_MODEL_URI, "signatureText");
+
+
 
     QName PROP_MARKEDBY = QName.createQName(RM_MODEL_URI, "markedBy");
 
@@ -119,6 +125,12 @@ public interface DatabaseModel {
     QName ASPECT_STAT = QName.createQName(RM_MODEL_URI, "stat");
     QName ASPECT_FLOWCHART = QName.createQName(RM_MODEL_URI, "flowchart");
 
+    QName ASPECT_ADDSIGNATURE = QName.createQName(RM_MODEL_URI, "addSignature");
+    QName PROP_PRIMARYSIGNATURE = QName.createQName(RM_MODEL_URI, "primarySignature");
+    QName PROP_SECONDARYSIGNATURE = QName.createQName(RM_MODEL_URI, "secondarySignature");
+
+
+
     // Prop Strings
     String NAME = "name";
     String ENTRY_KEY = "entryKey";
@@ -128,6 +140,7 @@ public interface DatabaseModel {
     // Containers
     String PROP_VALUES = "propertyValues";
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
+    String PROP_SIGNATURE_LIBRARY = "signatureLibrary";
     String PROP_SHAREDFOLDER_BUA = "sharedFolderBua";
     String PROP_WEEKLYSTAT = "weeklyStat";
 
@@ -211,3 +224,5 @@ public interface DatabaseModel {
     QName PROP_RECEIVED = QName.createQName(RM_MODEL_URI, "received");
     QName PROP_SENT = QName.createQName(RM_MODEL_URI, "sent");
 }
+
+

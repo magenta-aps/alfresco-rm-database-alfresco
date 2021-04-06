@@ -97,12 +97,10 @@ public class MailContent extends AbstractWebScript {
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
 
 
-
-
         webScriptResponse.setContentEncoding("UTF-8");
         Content c = webScriptRequest.getContent();
         Writer webScriptWriter = webScriptResponse.getWriter();
-        JSONObject result;
+        JSONObject result = new JSONObject();
 
         Map<String, String> params = JSONUtils.parseParameters(webScriptRequest.getURL());
 
@@ -112,157 +110,223 @@ public class MailContent extends AbstractWebScript {
         boolean temporaryUnlocked = false;
         NodeRef declaration = null;
 
+        String method = "";
         try {
-
-
             json = new JSONObject(c.getContent());
-
-            JSONArray jsonNodeRefs = JSONUtils.getArray(json, "nodeRefs");
-            NodeRef[] nodeRefs = new NodeRef[jsonNodeRefs.length()];
-            for (int i=0; i<jsonNodeRefs.length(); i++) {
-                String nodeRefStr = jsonNodeRefs.getString(i);
-                NodeRef nodeRef = new NodeRef(nodeRefStr);
-                nodeRefs[i] = nodeRef;
-            }
-
-            String subject = (String)json.get("subject");
-
-
-            String body = (String)json.get("body");
-
-
-
-            String authority = (String)json.get("authority");
-
-
-            String caseid = (String)json.get("caseid");
-
-
-            mailBean.sendEmail(nodeRefs, authority, body, subject);
-
-
-             // pak dette væk i en bean senere
-
-
-            String query = "@rm\\:caseNumber:\"" + caseid + "\"";
-
-
-            declaration = entryBean.getEntry(query);
-
-
-            // unlock if the case is locked and lock after email has been sent
-
-            if (lockService.isLocked(declaration)) {
-                lockService.unlock(declaration);
-                temporaryUnlocked = true;
-            }
-
-
-
-
-
-            String currentUser = authenticationService.getCurrentUserName();
-            NodeRef personNode = personService.getPerson(currentUser);
-            PersonService.PersonInfo info = personService.getPerson(personNode);
-
-            Calendar cal = Calendar.getInstance();
-
-            int year = cal.get(Calendar.YEAR);
-            int day = cal.get(Calendar.DATE);
-            int month = (cal.get(Calendar.MONTH)+1);
-
-
-            String line = "";
-            line +=  "Nedenstående filer er afsendt af " + info.getFirstName() + " " + info.getLastName();
-            line += " til " + authority;
-            line += " den " + day + "/" + month + " " + year + "\n";
-            line += "------------------------------------------";
-            line += "\n";
-
-
-            for (int i=0;i <= nodeRefs.length-1; i++) {
-                NodeRef n = nodeRefs[i];
-                line += nodeService.getProperty(n, org.alfresco.model.ContentModel.PROP_NAME) + "\n";
-            }
-
-
-            List<String> criteria = Arrays.asList(DatabaseModel.PROP_DEFAULTFOLDER_MAILRECEIPTS);
-            List<ChildAssociationRef> mailFolder = nodeService.getChildrenByName(declaration, org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
-
-
-            if (mailFolder.size() == 0) {
-
-                FileInfo mailFolderInfo = fileFolderService.create(declaration, DatabaseModel.PROP_DEFAULTFOLDER_MAILRECEIPTS, ContentModel.TYPE_FOLDER);
-
-                NodeRef mail_folder = mailFolderInfo.getNodeRef();
-
-                FileInfo newNode = fileFolderService.create(mail_folder, DatabaseModel.PROP_LOGFORMAILS, org.alfresco.model.ContentModel.TYPE_CONTENT);
-
-                nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_VERSIONABLE, null);
-
-                TextDocument log_entires = TextDocument.newTextDocument();
-                log_entires.addParagraph(line);
-                File f = new File("tmp");
-
-                log_entires.save(f);
-
-                ContentWriter contentWriter = contentService.getWriter(newNode.getNodeRef(), org.alfresco.model.ContentModel.PROP_CONTENT, true);
-
-                contentWriter.setMimetype("application/vnd.oasis.opendocument.text");
-
-                contentWriter.putContent(f);
-
-                nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_UNDELETABLE, null);
-
-            }
-            else {
-
-                criteria = Arrays.asList(DatabaseModel.PROP_LOGFORMAILS);
-                List<ChildAssociationRef> log = nodeService.getChildrenByName(mailFolder.get(0).getChildRef(), org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
-
-                NodeRef log_node = log.get(0).getChildRef();
-
-                ContentReader contentReader = contentService.getReader(log_node, org.alfresco.model.ContentModel.PROP_CONTENT);
-
-                TextDocument log_entires = TextDocument.loadDocument(contentReader.getContentInputStream());
-
-                log_entires.addParagraph(line);
-
-                File f = new File("tmp");
-
-                log_entires.save(f);
-
-                Map<String, Serializable> properties = new HashMap<>();
-                properties.put("modifier", currentUser);
-
-                versionService.createVersion(log_node, properties);
-
-                ContentWriter contentWriter = contentService.getWriter(log_node, org.alfresco.model.ContentModel.PROP_CONTENT, true);
-
-                contentWriter.putContent(f);
-
-            }
-
-
-            result = JSONUtils.getSuccess();
-            JSONUtils.write(webScriptWriter, result);
-
-            if (temporaryUnlocked) {
-                lockService.lock(declaration, LockType.READ_ONLY_LOCK);
-            }
-
-
-        } catch (Exception e) {
-
-            if (temporaryUnlocked) {
-                lockService.lock(declaration, LockType.READ_ONLY_LOCK);
-            }
-
+            method = (String) json.get("method");
+        } catch (JSONException e) {
             e.printStackTrace();
-            result = JSONUtils.getError(e);
-            webScriptResponse.setStatus(400);
-            JSONUtils.write(webScriptWriter, result);
         }
+
+        switch (method) {
+            case "signitureAvailability":
+                try {
+
+                    String caseid = (String) json.get("caseid");
+                    String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+                    declaration = entryBean.getEntry(query);
+
+                    boolean avail = mailBean.signituresAvailable(declaration);
+                    System.out.println("hvad er avail");
+                    System.out.println(avail);
+
+                    result.put("available", avail);
+                    JSONUtils.write(webScriptWriter, result);
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "preview":
+
+                try {
+
+                    String caseid = (String) json.get("caseid");
+
+                    JSONArray jsonNodeRefs = JSONUtils.getArray(json, "nodeRefs");
+                    NodeRef[] nodeRefs = new NodeRef[jsonNodeRefs.length()];
+                    for (int i = 0; i < jsonNodeRefs.length(); i++) {
+                        String nodeRefStr = jsonNodeRefs.getString(i);
+                        NodeRef nodeRef = new NodeRef(nodeRefStr);
+                        nodeRefs[i] = nodeRef;
+                    }
+
+                    //TODO setup option for signitures
+
+                    String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+                    declaration = entryBean.getEntry(query);
+
+                    NodeRef preview = mailBean.getPreviewOfPdfWithSignature(nodeRefs, declaration);
+
+
+                    result.put("previewNode", preview.getId());
+
+                    JSONUtils.write(webScriptWriter, result);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                break;
+
+            case "send":
+
+                try {
+
+                    json = new JSONObject(c.getContent());
+                    Boolean useSignature = (Boolean) json.get("useSignature");
+
+                    JSONArray jsonNodeRefs = JSONUtils.getArray(json, "nodeRefs");
+                    NodeRef[] nodeRefs = new NodeRef[jsonNodeRefs.length()];
+                    for (int i = 0; i < jsonNodeRefs.length(); i++) {
+                        String nodeRefStr = jsonNodeRefs.getString(i);
+                        NodeRef nodeRef = new NodeRef(nodeRefStr);
+                        nodeRefs[i] = nodeRef;
+                    }
+
+                    String subject = (String) json.get("subject");
+
+
+                    String body = (String) json.get("body");
+
+
+                    String authority = (String) json.get("authority");
+
+
+                    String caseid = (String) json.get("caseid");
+
+                    //TODO setup option for signitures
+
+                    String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+                    declaration = entryBean.getEntry(query);
+
+
+
+                    mailBean.sendEmail(nodeRefs, authority, body, subject, useSignature, declaration);
+
+
+                    // pak dette væk i en bean senere
+
+
+                    // unlock if the case is locked and lock after email has been sent
+
+                    if (lockService.isLocked(declaration)) {
+                        lockService.unlock(declaration);
+                        temporaryUnlocked = true;
+                    }
+
+
+                    String currentUser = authenticationService.getCurrentUserName();
+                    NodeRef personNode = personService.getPerson(currentUser);
+                    PersonService.PersonInfo info = personService.getPerson(personNode);
+
+                    Calendar cal = Calendar.getInstance();
+
+                    int year = cal.get(Calendar.YEAR);
+                    int day = cal.get(Calendar.DATE);
+                    int month = (cal.get(Calendar.MONTH) + 1);
+
+
+                    String line = "";
+                    line += "Nedenstående filer er afsendt af " + info.getFirstName() + " " + info.getLastName();
+                    line += " til " + authority;
+                    line += " den " + day + "/" + month + " " + year + "\n";
+                    line += "------------------------------------------";
+                    line += "\n";
+
+
+                    for (int i = 0; i <= nodeRefs.length - 1; i++) {
+                        NodeRef n = nodeRefs[i];
+                        line += nodeService.getProperty(n, org.alfresco.model.ContentModel.PROP_NAME) + "\n";
+                    }
+
+
+                    List<String> criteria = Arrays.asList(DatabaseModel.PROP_DEFAULTFOLDER_MAILRECEIPTS);
+                    List<ChildAssociationRef> mailFolder = nodeService.getChildrenByName(declaration, org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
+
+
+                    if (mailFolder.size() == 0) {
+
+                        FileInfo mailFolderInfo = fileFolderService.create(declaration, DatabaseModel.PROP_DEFAULTFOLDER_MAILRECEIPTS, ContentModel.TYPE_FOLDER);
+
+                        NodeRef mail_folder = mailFolderInfo.getNodeRef();
+
+                        FileInfo newNode = fileFolderService.create(mail_folder, DatabaseModel.PROP_LOGFORMAILS, org.alfresco.model.ContentModel.TYPE_CONTENT);
+
+                        nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_VERSIONABLE, null);
+
+                        TextDocument log_entires = TextDocument.newTextDocument();
+                        log_entires.addParagraph(line);
+                        File f = new File("tmp");
+
+                        log_entires.save(f);
+
+                        ContentWriter contentWriter = contentService.getWriter(newNode.getNodeRef(), org.alfresco.model.ContentModel.PROP_CONTENT, true);
+
+                        contentWriter.setMimetype("application/vnd.oasis.opendocument.text");
+
+                        contentWriter.putContent(f);
+
+                        nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_UNDELETABLE, null);
+
+                    } else {
+
+                        criteria = Arrays.asList(DatabaseModel.PROP_LOGFORMAILS);
+                        List<ChildAssociationRef> log = nodeService.getChildrenByName(mailFolder.get(0).getChildRef(), org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
+
+                        NodeRef log_node = log.get(0).getChildRef();
+
+                        ContentReader contentReader = contentService.getReader(log_node, org.alfresco.model.ContentModel.PROP_CONTENT);
+
+                        TextDocument log_entires = TextDocument.loadDocument(contentReader.getContentInputStream());
+
+                        log_entires.addParagraph(line);
+
+                        File f = new File("tmp");
+
+                        log_entires.save(f);
+
+                        Map<String, Serializable> properties = new HashMap<>();
+                        properties.put("modifier", currentUser);
+
+                        versionService.createVersion(log_node, properties);
+
+                        ContentWriter contentWriter = contentService.getWriter(log_node, org.alfresco.model.ContentModel.PROP_CONTENT, true);
+
+                        contentWriter.putContent(f);
+
+                    }
+
+
+                    result = JSONUtils.getSuccess();
+                    JSONUtils.write(webScriptWriter, result);
+
+                    if (temporaryUnlocked) {
+                        lockService.lock(declaration, LockType.READ_ONLY_LOCK);
+                    }
+
+
+                } catch (Exception e) {
+
+                    if (temporaryUnlocked) {
+                        lockService.lock(declaration, LockType.READ_ONLY_LOCK);
+                    }
+
+                    e.printStackTrace();
+                    result = JSONUtils.getError(e);
+                    webScriptResponse.setStatus(400);
+                    JSONUtils.write(webScriptWriter, result);
+                }
+                break;
+        }
+
     }
 
     private NodeRef makeFolderForMailReceipts(NodeRef dec) {
