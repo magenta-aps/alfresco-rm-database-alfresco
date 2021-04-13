@@ -55,10 +55,10 @@ public class Reports extends AbstractWebScript {
                     String fromDate = JSONUtils.getString(json, "createdFrom");
                     String toDate = JSONUtils.getString(json, "createdTo");
 
-                    reportWaitingTimeBean.getReport(fromDate, toDate);
+                    NodeRef report = reportWaitingTimeBean.getReport(fromDate, toDate);
 
 
-                    result.put("result", "duff");
+                    result.put("spreadsheet", report);
                     break;
             }
 
@@ -66,6 +66,8 @@ public class Reports extends AbstractWebScript {
 //            this.reportWaitingTimeBean.getReport();
 
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

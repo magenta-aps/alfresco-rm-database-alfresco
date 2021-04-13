@@ -475,6 +475,16 @@
             <title>dont show in flowchar</title>
         </aspect>
 
+        <aspect name="rm:aktivventetidBruger">
+            <title>marks a file as the tmp for making a report to show aktiv ventetid</title>
+            <properties>
+            <property name="rm:userName">
+                <title>username</title>
+                <type>d:text</type>
+            </property>
+            </properties>
+        </aspect>
+
         <aspect name="rm:bua_user">
             <title>marks a user as a bua user</title>
         </aspect>

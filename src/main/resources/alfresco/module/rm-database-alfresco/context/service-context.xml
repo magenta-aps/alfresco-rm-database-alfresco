@@ -146,6 +146,11 @@
         <property name="nodeService" ref="nodeService"/>
         <property name="transactionService" ref="transactionService"/>
         <property name="contentService" ref="contentService"/>
+        <property name="siteService" ref="siteService"/>
+        <property name="authenticationService" ref="authenticationService"/>
+
+        <property name="properties"><ref bean="global-properties"/></property>
+
     </bean>
 
     <bean id="weeklyStatBean" class="dk.magenta.beans.WeeklyStatBean">
@@ -164,5 +169,7 @@
         <property name="nodeService" ref="nodeService"/>
         <property name="contentService" ref="contentService"/>
     </bean>
+
+
 
 </beans>
