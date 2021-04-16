@@ -527,7 +527,7 @@ public class MailBean {
         public String text;
     }
 
-    public boolean signituresAvailable(NodeRef nodeRef) throws JSONException {
+    public boolean signituresAvailable(NodeRef nodeRef, NodeRef[] attachedFiles) throws JSONException {
 
         String docUserName = "";
         String doctor = (String) nodeService.getProperty(nodeRef, DatabaseModel.PROP_DOCTOR);
@@ -539,17 +539,38 @@ public class MailBean {
         System.out.println("hvad er doctor på supervisor");
         System.out.println(secondaryDoctorUserName);
 
+        boolean userCheck = false;
+
         if (docUserName != null) {
             NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
             NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, docUserName);
 
             if ( (secondaryDoctorUserName != null) && (!secondaryDoctorUserName.equals("null")) ) {
                 NodeRef secondarySignatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, docUserName);
-                return ((signatureNodeRef != null) && (secondarySignatureNodeRef != null));
+                userCheck =  ((signatureNodeRef != null) && (secondarySignatureNodeRef != null));
             }
             else {
-                return (signatureNodeRef != null);
+                userCheck = (signatureNodeRef != null);
             }
+
+            // check if the selected files to send contains a nodeRef with the aspect
+
+            boolean found = false;
+            int i = 0;
+
+            while (!found && i <= attachedFiles.length-1) {
+
+                System.out.println("attachedFiles[i];" + attachedFiles[i]);
+
+                NodeRef attachmentNodeRef = attachedFiles[i];
+                if (nodeService.hasAspect(attachmentNodeRef, ASPECT_ADDSIGNATURE)) {
+                    found = true;
+                }
+                else {
+                    i = i+1;
+                }
+            }
+            return (userCheck && found);
         }
         else {
             return false;

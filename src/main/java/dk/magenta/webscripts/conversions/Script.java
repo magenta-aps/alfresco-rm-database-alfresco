@@ -77,10 +77,11 @@ public class Script extends AbstractWebScript {
             JSONObject json = new JSONObject(c.getContent());
             jsonProperties = JSONUtils.getObject(json, "properties");
 
-            uuid = jsonProperties.getString("uuid");
+
             method = jsonProperties.getString("method");
 
             if (method.equals("view")) {
+                uuid = jsonProperties.getString("uuid");
                 scriptBean.traverse(new NodeRef("workspace://SpacesStore/" + uuid));
                 System.out.println("hvad er listen: " + scriptBean.getList().size());
 
@@ -91,6 +92,7 @@ public class Script extends AbstractWebScript {
                 }
             }
             else if (method.equals("convert")) {
+                uuid = jsonProperties.getString("uuid");
                 scriptBean.traverse(new NodeRef("workspace://SpacesStore/" + uuid));
                 System.out.println("size of list: " + scriptBean.getList().size());
 
@@ -101,6 +103,9 @@ public class Script extends AbstractWebScript {
                     permissionService.setPermission(n, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
                     System.out.println("name" + nodeService.getProperty(n, ContentModel.PROP_NAME) + " " + "nodeRef" + n);
                 }
+            }
+            else if (method.equals("addSignatureAspect")) {
+                scriptBean.addNewAspectToAllDeclarations();
             }
 
            result.put("result", "done");

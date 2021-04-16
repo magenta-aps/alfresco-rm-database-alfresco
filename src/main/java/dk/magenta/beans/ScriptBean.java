@@ -6,6 +6,9 @@ import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.content.transform.ContentTransformer;
 import org.alfresco.service.cmr.repository.*;
 
+import org.alfresco.service.cmr.search.ResultSet;
+import org.alfresco.service.cmr.search.ResultSetRow;
+import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AccessPermission;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.PermissionService;
@@ -39,6 +42,12 @@ public class ScriptBean {
     }
 
     private SiteService siteService;
+
+    public void setSearchService(SearchService searchService) {
+        this.searchService = searchService;
+    }
+
+    private SearchService searchService;
 
     private AuthorityService authorityService;
 
@@ -106,6 +115,24 @@ public class ScriptBean {
                 this.traverse(c.getChildRef());
             }
         }
-
     }
+
+    public void addNewAspectToAllDeclarations() {
+        ResultSet resultSet = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, "lucene", "@cm\\:name:\"*erklaering.odt\"");
+
+        List<NodeRef> nodes = resultSet.getNodeRefs();
+        for (int i=0; i<= nodes.size()-1; i++) {
+
+            NodeRef nodeRef = nodes.get(i);
+            System.out.println(nodeService.hasAspect(nodeRef, DatabaseModel.ASPECT_ADDSIGNATURE));
+
+            if (!nodeService.hasAspect(nodeRef, DatabaseModel.ASPECT_ADDSIGNATURE)) {
+                nodeService.addAspect(nodeRef, DatabaseModel.ASPECT_ADDSIGNATURE, null);
+            }
+        }
+    }
+
+
+
+
 }

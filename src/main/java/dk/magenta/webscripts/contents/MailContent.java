@@ -122,11 +122,19 @@ public class MailContent extends AbstractWebScript {
             case "signitureAvailability":
                 try {
 
+                    JSONArray jsonNodeRefs = JSONUtils.getArray(json, "nodeRefs");
+                    NodeRef[] nodeRefs = new NodeRef[jsonNodeRefs.length()];
+                    for (int i = 0; i < jsonNodeRefs.length(); i++) {
+                        JSONObject nodeRefStr = (JSONObject) jsonNodeRefs.get(i);
+                        NodeRef nodeRef = new NodeRef(nodeRefStr.getString("nodeRef"));
+                        nodeRefs[i] = nodeRef;
+                    }
+
                     String caseid = (String) json.get("caseid");
                     String query = "@rm\\:caseNumber:\"" + caseid + "\"";
                     declaration = entryBean.getEntry(query);
 
-                    boolean avail = mailBean.signituresAvailable(declaration);
+                    boolean avail = mailBean.signituresAvailable(declaration, nodeRefs);
                     System.out.println("hvad er avail");
                     System.out.println(avail);
 
