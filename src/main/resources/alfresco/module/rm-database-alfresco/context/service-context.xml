@@ -75,6 +75,8 @@
         <property name="PermissionService" ref="PermissionService"/>
     </bean>
 
+    <!--    job for weekly report-->
+
     <bean id="org.alfresco.tutorial.scheduledjob.actions.ScheduledJobExecuter"
           class="dk.magenta.scheduledjob.ScheduledJobExecuter">
         <property name="serviceRegistry">
@@ -117,6 +119,55 @@
         <property name="scheduler" ref="schedulerFactory" />
 
     </bean>
+
+
+
+    <!--    job for waitingReport to send out on email report-->
+
+    <bean id="org.alfresco.tutorial.WaitReportscheduledjob.actions.ScheduledJobExecuter"
+          class="dk.magenta.scheduledjob.WaitReportScheduledJobExecuter">
+        <property name="serviceRegistry">
+            <ref bean="ServiceRegistry" />
+        </property>
+
+        <property name="reportWaitingTimeBean">
+            <ref bean="reportWaitingTimeBean" />
+        </property>
+
+    </bean>
+
+    <bean id="org.alfresco.tutorial.WaitReportscheduledjob.jobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>dk.magenta.scheduledjob.WaitReportScheduledJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="jobExecuter">
+                    <ref bean="org.alfresco.tutorial.WaitReportscheduledjob.actions.ScheduledJobExecuter" />
+                </entry>
+                <entry key="jobLockService">
+                    <ref bean="jobLockService" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="org.alfresco.tutorial.WaitReportscheduledjob.trigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="org.alfresco.tutorial.WaitReportscheduledjob.jobDetail" />
+        </property>
+        <property name="cronExpression">
+            <value>${org.alfresco.tutorial.WaitReportscheduledjob.cronexpression}</value>
+        </property>
+        <property name="startDelay">
+            <value>${org.alfresco.tutorial.WaitReportscheduledjob.cronstartdelay}</value>
+        </property>
+
+        <property name="scheduler" ref="schedulerFactory" />
+
+    </bean>
+
+
 
     <!--<bean id="org.alfresco.tutorial.scheduledjob.SchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">-->
         <!--<property name="triggers">-->
