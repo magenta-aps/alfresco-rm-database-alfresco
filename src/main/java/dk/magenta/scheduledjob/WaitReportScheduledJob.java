@@ -15,12 +15,13 @@ public class WaitReportScheduledJob extends AbstractScheduledLockedJob implement
 
         // Extract the Job executer to use
         Object executerObj = jobData.get("jobExecuter");
-        if (executerObj == null || !(executerObj instanceof ScheduledJobExecuter)) {
+
+        if (executerObj == null || !(executerObj instanceof WaitReportScheduledJobExecuter)) {
             throw new AlfrescoRuntimeException(
                     "ScheduledJob data must contain valid 'Executer' reference");
         }
 
-        final ScheduledJobExecuter jobExecuter = (ScheduledJobExecuter) executerObj;
+        final WaitReportScheduledJobExecuter jobExecuter = (WaitReportScheduledJobExecuter) executerObj;
 
         AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<Object>() {
             public Object doWork() throws Exception {

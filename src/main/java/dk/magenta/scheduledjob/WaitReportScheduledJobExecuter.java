@@ -1,7 +1,6 @@
 package dk.magenta.scheduledjob;
 
 import dk.magenta.beans.ReportWaitingTimeBean;
-import dk.magenta.beans.StatBean;
 import org.alfresco.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +29,8 @@ public class WaitReportScheduledJobExecuter {
      */
     public void execute() {
         LOG.info("Running the scheduled job");
+
+        System.out.println("godow fra waitreport");
 
 
 

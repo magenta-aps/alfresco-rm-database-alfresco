@@ -62,6 +62,12 @@ public class ReportWaitingTimeBean {
 
     private DatabaseBean databaseBean;
 
+    public void setMailBean(MailBean mailBean) {
+        this.mailBean = mailBean;
+    }
+
+    private MailBean mailBean;
+
     private Properties properties;
 
     public void setProperties(Properties properties)
@@ -112,6 +118,24 @@ public class ReportWaitingTimeBean {
     private EntryBean entryBean;
 
 
+
+    public void sendMail() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nowMinus14 = LocalDateTime.now().minusDays(14);
+
+
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+        String to_formattedDate = outputFormatter.format(now);
+        String from_formattedDate = outputFormatter.format(nowMinus14);
+
+        NodeRef report = this.getReport(from_formattedDate, to_formattedDate);
+
+        NodeRef[] attachmentList = new NodeRef[1];
+        attachmentList[0] = report;
+
+        mailBean.sendEmailNoTransform(attachmentList,"Lone.Poulsen1@ps.rm.dk", "rapport", "");
+    }
 
 
     public NodeRef getReport(String from, String to) throws Exception {
@@ -257,7 +281,15 @@ public class ReportWaitingTimeBean {
             entryBean.calculateActive(nodeRef);
 
 
-            int aktivVentetid = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_ACTIVE);
+
+
+            int aktivVentetid = 99999;
+
+            // check if it was possible to calculate the active waiting time
+            if (nodeService.getProperty(nodeRef, PROP_WAITING_ACTIVE) != null) {
+                aktivVentetid = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_ACTIVE);
+            }
+
 
             nextRow = nextRow+1;
 
@@ -269,10 +301,18 @@ public class ReportWaitingTimeBean {
             cprValue.setStringValue(String.valueOf(cprNummer));
 
             Cell aktivventetidValue = table.getCellByPosition(2, nextRow);
-            aktivventetidValue.setStringValue(String.valueOf(aktivVentetid));
+
+            if (aktivVentetid != 99999) {
+                aktivventetidValue.setStringValue(String.valueOf(aktivVentetid));
+            }
+            else {
+                aktivventetidValue.setStringValue("kunne ikke beregnes");
+            }
+
 
             Cell urlValue = table.getCellByPosition(3, nextRow);
-            URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
+//            URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
+            URI uri = new URI("https://oda-test.rm.dk/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
             urlValue.addParagraph("").appendHyperlink("klik for at åbne sagen", uri);
 
         }
