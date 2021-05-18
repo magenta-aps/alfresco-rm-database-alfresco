@@ -53,7 +53,7 @@ public class MailBean {
     private SiteService siteService;
 
     public void setPropertyValuesBean(PropertyValuesBean propertyValuesBean) {
-        this.propertyValuesBean = propertyValuesBean;
+        this.propertyValuesBean = propertyVal uesBean;
     }
 
     private PropertyValuesBean propertyValuesBean;
