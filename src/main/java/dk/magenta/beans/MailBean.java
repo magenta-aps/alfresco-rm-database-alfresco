@@ -322,11 +322,11 @@ public class MailBean {
 
         if (secondarySignature != null) {
             System.out.println("making table 2,2");
-            table = log_entires.addTable(2,2);
+            table = log_entires.addTable(2,5);
         }
         else {
             System.out.println("making table 2,1");
-            table = log_entires.addTable(2,2);
+            table = log_entires.addTable(2,3);
         }
 
         Row row1 = table.getRowByIndex(0);
