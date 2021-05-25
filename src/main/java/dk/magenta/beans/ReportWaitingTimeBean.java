@@ -184,7 +184,7 @@ public class ReportWaitingTimeBean {
             System.out.println(query);
 
 //            List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(query);
-            List<NodeRef> nodeRefs = entryBean.getEntries(query,0,1000,"@rm:waiting_active", true);
+            List<NodeRef> nodeRefs = entryBean.getEntries(query,0,1000,"@rm:caseNumber", true);
 
             System.out.println("nodeRefs");
             System.out.println(nodeRefs.size());
@@ -224,15 +224,25 @@ public class ReportWaitingTimeBean {
         fnt.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
 
+        Cell passivventetid = table.getCellByPosition(2, 0);
+        Font fncp = passivventetid.getFont();
+        fncp.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
+        passivventetid.addParagraph("Passiv ventetid").setFont(fncp);
 
 
-        Cell aktivventetid = table.getCellByPosition(2, 0);
-//        aktivventetid.setStringValue("Aktiv ventetid");
+        Cell aktivventetid = table.getCellByPosition(3, 0);
         Font fnc = cpr.getFont();
         fnc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
         aktivventetid.addParagraph("Aktiv ventetid").setFont(fnc);
 
-        Cell link = table.getCellByPosition(3, 0);
+
+
+        Cell samletventetid = table.getCellByPosition(4, 0);
+        Font fncps = samletventetid.getFont();
+        fncps.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
+        samletventetid.addParagraph("Samlet ventetid").setFont(fncps);
+
+        Cell link = table.getCellByPosition(5, 0);
         link.setStringValue("Links til sagen");
 
         Font fc = cpr.getFont();
@@ -244,6 +254,12 @@ public class ReportWaitingTimeBean {
 
 
         int nextRow = 0;
+
+
+        int sumAktiv = 0;
+        int sumPassiv = 0;
+        int sumSamlet = 0;
+
         for (int i =0; i <= nodeRefs.size()-1; i++) {
 
             NodeRef nodeRef = nodeRefs.get(i);
@@ -255,12 +271,20 @@ public class ReportWaitingTimeBean {
 
 
             entryBean.calculateActive(nodeRef);
+            entryBean.calculatePassive(nodeRef);
+            entryBean.calculateTotal(nodeRef);
 
 
-            int aktivVentetid = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_ACTIVE);
+            int aktivVentetidInt = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_ACTIVE);
+            sumAktiv = sumAktiv + aktivVentetidInt;
+
+            int passivVentetidInt = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_PASSIVE);
+            sumPassiv = sumPassiv + passivVentetidInt;
+
+            int samletVentetidInt = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_TOTAL);
+            sumSamlet = sumSamlet + samletVentetidInt;
 
             nextRow = nextRow+1;
-
 
             Cell sagsnrValue = table.getCellByPosition(0, nextRow);
             sagsnrValue.setStringValue(String.valueOf(sagsNummer));
@@ -268,23 +292,38 @@ public class ReportWaitingTimeBean {
             Cell cprValue = table.getCellByPosition(1, nextRow);
             cprValue.setStringValue(String.valueOf(cprNummer));
 
-            Cell aktivventetidValue = table.getCellByPosition(2, nextRow);
-            aktivventetidValue.setStringValue(String.valueOf(aktivVentetid));
+            Cell passivventetidCell = table.getCellByPosition(2, nextRow);
+            passivventetidCell.setStringValue(String.valueOf(passivVentetidInt));
 
-            Cell urlValue = table.getCellByPosition(3, nextRow);
+            Cell aktivventetidCell = table.getCellByPosition(3, nextRow);
+            aktivventetidCell.setStringValue(String.valueOf(aktivVentetidInt));
+
+            Cell samletVentetidCell = table.getCellByPosition(4, nextRow);
+            samletVentetidCell.setStringValue(String.valueOf(samletVentetidInt));
+
+            Cell urlValue = table.getCellByPosition(5, nextRow);
             URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
             urlValue.addParagraph("").appendHyperlink("klik for at åbne sagen", uri);
-
         }
+
+        Cell tekstGennemsnit = table.getCellByPosition(0, nextRow+2);
+        tekstGennemsnit.setStringValue("Gennemsnit");
+
+        Cell passivGennemsnit = table.getCellByPosition(2, nextRow+2);
+        passivGennemsnit.setStringValue(String.valueOf((sumPassiv / nodeRefs.size())));
+
+        Cell aktivGennemsnit = table.getCellByPosition(3, nextRow+2);
+        aktivGennemsnit.setStringValue(String.valueOf((sumAktiv / nodeRefs.size())));
+
+        Cell totalGennemsnit = table.getCellByPosition(4, nextRow+2);
+        totalGennemsnit.setStringValue(String.valueOf((sumSamlet / nodeRefs.size())));
 
         table.getColumnList().get(0).setWidth(20);
         table.getColumnList().get(1).setWidth(40);
         table.getColumnList().get(2).setWidth(40);
         table.getColumnList().get(3).setWidth(40);
-
-
-
-
+        table.getColumnList().get(4).setWidth(40);
+        table.getColumnList().get(5).setWidth(70);
 
         NodeRef tmpFolder = siteService.getContainer("retspsyk", DatabaseModel.PROP_TMP);
 
@@ -329,3 +368,5 @@ public class ReportWaitingTimeBean {
     }
 
 }
+
+
