@@ -131,3 +131,5 @@ public class WaitingTime extends AbstractWebScript {
 }
 
 // F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/database/retspsyk/entry/445644-4545-4564-8848-1849155'
+
+

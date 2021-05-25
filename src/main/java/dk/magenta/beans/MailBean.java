@@ -206,6 +206,80 @@ public class MailBean {
         }
     }
 
+    public void sendEmailNoTransform(NodeRef[] attachmentNodeRefs, String authority, String body, String subject) {
+
+        String to = authority;
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "mail1.rm.dk");
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.port", "25");
+
+        Session session = Session.getInstance(props);
+
+
+
+        try {
+            InternetAddress fromAddress = new InternetAddress("ps.o.faelles.post@rm.dk");
+            InternetAddress toAddress = new InternetAddress(to);
+
+            MimeMessage msg = new MimeMessage(session);
+            msg.setFrom(fromAddress);
+            msg.setRecipient(Message.RecipientType.TO, toAddress);
+            msg.setSubject(subject);
+            msg.setSentDate(new Date());
+
+            MimeBodyPart messagePart = new MimeBodyPart();
+            messagePart.setText(body);
+
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messagePart);
+
+
+
+            for (int i=0; i <= attachmentNodeRefs.length-1;i++) {
+
+                NodeRef attachmentNodeRef = attachmentNodeRefs[i];
+
+                final MimeBodyPart attachment = new MimeBodyPart();
+                attachment.setDataHandler(new DataHandler(new DataSource() {
+
+                    public InputStream getInputStream() throws IOException {
+                        ContentReader reader = contentService.getReader(attachmentNodeRef, ContentModel.PROP_CONTENT);
+                        return reader.getContentInputStream();
+                    }
+
+                    public OutputStream getOutputStream() throws IOException {
+                        throw new IOException("Read-only data");
+                    }
+
+                    public String getContentType() {
+                        return contentService.getReader(attachmentNodeRef, ContentModel.PROP_CONTENT).getMimetype();
+                    }
+
+                    public String getName() {
+                        return nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString();
+                    }
+
+
+                }));
+
+                attachment.setFileName(nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString());
+                multipart.addBodyPart(attachment);
+            }
+
+            msg.setContent(multipart);
+
+            Transport.send(msg);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private NodeRef transform(NodeRef source) {
 
         String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);

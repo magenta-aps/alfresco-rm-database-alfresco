@@ -62,6 +62,12 @@ public class ReportWaitingTimeBean {
 
     private DatabaseBean databaseBean;
 
+    public void setMailBean(MailBean mailBean) {
+        this.mailBean = mailBean;
+    }
+
+    private MailBean mailBean;
+
     private Properties properties;
 
     public void setProperties(Properties properties)
@@ -112,6 +118,24 @@ public class ReportWaitingTimeBean {
     private EntryBean entryBean;
 
 
+
+    public void sendMail() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nowMinus14 = LocalDateTime.now().minusDays(14);
+
+
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+        String to_formattedDate = outputFormatter.format(now);
+        String from_formattedDate = outputFormatter.format(nowMinus14);
+
+        NodeRef report = this.getReport(from_formattedDate, to_formattedDate);
+
+        NodeRef[] attachmentList = new NodeRef[1];
+        attachmentList[0] = report;
+
+        mailBean.sendEmailNoTransform(attachmentList,"Lone.Poulsen1@ps.rm.dk", "rapport", "");
+    }
 
 
     public NodeRef getReport(String from, String to) throws Exception {
@@ -260,7 +284,13 @@ public class ReportWaitingTimeBean {
         int sumPassiv = 0;
         int sumSamlet = 0;
 
+        int aktivAverageCount = 0;
+        int passivAverageCount = 0;
+        int totalAverageCount = 0;
+
         for (int i =0; i <= nodeRefs.size()-1; i++) {
+
+
 
             NodeRef nodeRef = nodeRefs.get(i);
 
@@ -269,20 +299,31 @@ public class ReportWaitingTimeBean {
 
             cprNummer = cprNummer.substring(0,6) + "-" + cprNummer.substring(6,10);
 
-
             entryBean.calculateActive(nodeRef);
             entryBean.calculatePassive(nodeRef);
             entryBean.calculateTotal(nodeRef);
 
+            // check if it was possible to calculate the waiting times
+            int aktivVentetidInt = 99999;
+            if (nodeService.getProperty(nodeRef, PROP_WAITING_ACTIVE) != null) {
+                aktivVentetidInt = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_ACTIVE);
+                sumAktiv = sumAktiv + aktivVentetidInt;
+                aktivAverageCount = aktivAverageCount +1;
+            }
 
-            int aktivVentetidInt = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_ACTIVE);
-            sumAktiv = sumAktiv + aktivVentetidInt;
+            int passivVentetidInt = 99999;
+            if (nodeService.getProperty(nodeRef, PROP_WAITING_PASSIVE) != null) {
+                passivVentetidInt = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_PASSIVE);
+                sumPassiv = sumPassiv + passivVentetidInt;
+                passivAverageCount = passivAverageCount +1;
+            }
 
-            int passivVentetidInt = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_PASSIVE);
-            sumPassiv = sumPassiv + passivVentetidInt;
-
-            int samletVentetidInt = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_TOTAL);
-            sumSamlet = sumSamlet + samletVentetidInt;
+            int samletVentetidInt = 99999;
+            if (nodeService.getProperty(nodeRef, PROP_WAITING_TOTAL) != null) {
+                samletVentetidInt = (Integer) nodeService.getProperty(nodeRef, PROP_WAITING_TOTAL);
+                sumSamlet = sumSamlet + samletVentetidInt;
+                totalAverageCount = totalAverageCount +1;
+            }
 
             nextRow = nextRow+1;
 
@@ -293,30 +334,53 @@ public class ReportWaitingTimeBean {
             cprValue.setStringValue(String.valueOf(cprNummer));
 
             Cell passivventetidCell = table.getCellByPosition(2, nextRow);
-            passivventetidCell.setStringValue(String.valueOf(passivVentetidInt));
+            if (passivVentetidInt != 99999) {
+                passivventetidCell.setStringValue(String.valueOf(passivVentetidInt));
+            }
+            else {
+                passivventetidCell.setStringValue("kunne ikke beregnes");
+            }
 
             Cell aktivventetidCell = table.getCellByPosition(3, nextRow);
-            aktivventetidCell.setStringValue(String.valueOf(aktivVentetidInt));
+            if (aktivVentetidInt != 99999) {
+                aktivventetidCell.setStringValue(String.valueOf(aktivVentetidInt));
+            }
+            else {
+                aktivventetidCell.setStringValue("kunne ikke beregnes");
+            }
+
 
             Cell samletVentetidCell = table.getCellByPosition(4, nextRow);
-            samletVentetidCell.setStringValue(String.valueOf(samletVentetidInt));
+            if (samletVentetidInt != 99999) {
+                samletVentetidCell.setStringValue(String.valueOf(samletVentetidInt));
+            }
+            else {
+                samletVentetidCell.setStringValue("kunne ikke beregnes");
+            }
+
 
             Cell urlValue = table.getCellByPosition(5, nextRow);
-            URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
+            //            URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
+            //            URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
+            URI uri = new URI("https://oda-test.rm.dk/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
+
             urlValue.addParagraph("").appendHyperlink("klik for at åbne sagen", uri);
+
+
+
         }
 
         Cell tekstGennemsnit = table.getCellByPosition(0, nextRow+2);
         tekstGennemsnit.setStringValue("Gennemsnit");
 
         Cell passivGennemsnit = table.getCellByPosition(2, nextRow+2);
-        passivGennemsnit.setStringValue(String.valueOf((sumPassiv / nodeRefs.size())));
+        passivGennemsnit.setStringValue(String.valueOf((sumPassiv / passivAverageCount)));
 
         Cell aktivGennemsnit = table.getCellByPosition(3, nextRow+2);
-        aktivGennemsnit.setStringValue(String.valueOf((sumAktiv / nodeRefs.size())));
+        aktivGennemsnit.setStringValue(String.valueOf((sumAktiv / aktivAverageCount)));
 
         Cell totalGennemsnit = table.getCellByPosition(4, nextRow+2);
-        totalGennemsnit.setStringValue(String.valueOf((sumSamlet / nodeRefs.size())));
+        totalGennemsnit.setStringValue(String.valueOf((sumSamlet / totalAverageCount)));
 
         table.getColumnList().get(0).setWidth(20);
         table.getColumnList().get(1).setWidth(40);

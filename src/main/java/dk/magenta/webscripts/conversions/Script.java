@@ -1,6 +1,8 @@
 package dk.magenta.webscripts.conversions;
 
 import dk.magenta.beans.EntryBean;
+import dk.magenta.beans.MailBean;
+import dk.magenta.beans.ReportWaitingTimeBean;
 import dk.magenta.beans.ScriptBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
@@ -53,6 +55,14 @@ public class Script extends AbstractWebScript {
     }
 
     private NodeService nodeService;
+
+
+    public void setReportWaitingTimeBean(ReportWaitingTimeBean reportWaitingTimeBean) {
+        this.reportWaitingTimeBean = reportWaitingTimeBean;
+    }
+
+    private ReportWaitingTimeBean reportWaitingTimeBean;
+
     private ContentService contentService;
 
     public void setContentService(ContentService contentService) {
@@ -101,6 +111,14 @@ public class Script extends AbstractWebScript {
                     permissionService.setPermission(n, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
                     System.out.println("name" + nodeService.getProperty(n, ContentModel.PROP_NAME) + " " + "nodeRef" + n);
                 }
+            }
+            else if (method.equals("testmail")) {
+                try {
+                    reportWaitingTimeBean.sendMail();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
 
            result.put("result", "done");
