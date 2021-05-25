@@ -78,6 +78,12 @@ public interface DatabaseModel {
     QName PROP_VISITATOR_DATA = QName.createQName(RM_MODEL_URI, "visitator");
 
 
+    /* signature */
+
+    QName TYPE_SIGNATURE = QName.createQName(RM_MODEL_URI, "signature");
+    QName PROP_SIGNATURE = QName.createQName(RM_MODEL_URI, "signatureText");
+
+
 
     QName PROP_MARKEDBY = QName.createQName(RM_MODEL_URI, "markedBy");
 
@@ -120,6 +126,12 @@ public interface DatabaseModel {
     QName ASPECT_FLOWCHART = QName.createQName(RM_MODEL_URI, "flowchart");
     QName ASPECT_AKTIVVENTETID = QName.createQName(RM_MODEL_URI, "aktivventetidBruger");
 
+    QName ASPECT_ADDSIGNATURE = QName.createQName(RM_MODEL_URI, "addSignature");
+    QName PROP_PRIMARYSIGNATURE = QName.createQName(RM_MODEL_URI, "primarySignature");
+    QName PROP_SECONDARYSIGNATURE = QName.createQName(RM_MODEL_URI, "secondarySignature");
+
+
+
     // Prop Strings
     String NAME = "name";
     String ENTRY_KEY = "entryKey";
@@ -129,6 +141,7 @@ public interface DatabaseModel {
     // Containers
     String PROP_VALUES = "propertyValues";
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
+    String PROP_SIGNATURE_LIBRARY = "signatureLibrary";
     String PROP_SHAREDFOLDER_BUA = "sharedFolderBua";
     String PROP_WEEKLYSTAT = "weeklyStat";
 
@@ -198,6 +211,11 @@ public interface DatabaseModel {
     String DEFAULT_MAIL_TEXT_NAME = "standardtext.odt";
     String DEFAULT_POST_ACTIVE_REPORT_TEXT = "_aktivventetid.ods";
 
+    String DEFAULT_MAIL_TEXT_RETURN = "standardtextReturnering.odt";
+
+    String DEFAULT_MAIL_TEXT_SEND_VALUE = "send";
+    String DEFAULT_MAIL_TEXT_RETURN_VALUE  = "returnering";
+
 
     QName ASSOC_VERSION_PREVIEW = QName.createQName(RM_MODEL_URI, "version_preview");
 
@@ -214,3 +232,5 @@ public interface DatabaseModel {
     QName PROP_RECEIVED = QName.createQName(RM_MODEL_URI, "received");
     QName PROP_SENT = QName.createQName(RM_MODEL_URI, "sent");
 }
+
+

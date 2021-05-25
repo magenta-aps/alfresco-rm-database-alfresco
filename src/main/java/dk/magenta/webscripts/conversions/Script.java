@@ -87,10 +87,11 @@ public class Script extends AbstractWebScript {
             JSONObject json = new JSONObject(c.getContent());
             jsonProperties = JSONUtils.getObject(json, "properties");
 
-            uuid = jsonProperties.getString("uuid");
+
             method = jsonProperties.getString("method");
 
             if (method.equals("view")) {
+                uuid = jsonProperties.getString("uuid");
                 scriptBean.traverse(new NodeRef("workspace://SpacesStore/" + uuid));
                 System.out.println("hvad er listen: " + scriptBean.getList().size());
 
@@ -101,6 +102,7 @@ public class Script extends AbstractWebScript {
                 }
             }
             else if (method.equals("convert")) {
+                uuid = jsonProperties.getString("uuid");
                 scriptBean.traverse(new NodeRef("workspace://SpacesStore/" + uuid));
                 System.out.println("size of list: " + scriptBean.getList().size());
 
@@ -118,6 +120,9 @@ public class Script extends AbstractWebScript {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+            else if (method.equals("addSignatureAspect")) {
+                scriptBean.addNewAspectToAllDeclarations();
 
             }
 

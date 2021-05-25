@@ -350,6 +350,18 @@
             </properties>
         </type>
 
+
+        <type name="rm:signature">
+            <title>Signature info - the jpg/png is stored in the contant field</title>
+            <parent>cm:content</parent>
+            <properties>
+                <property name="rm:signatureText">
+                    <title>signature text</title>
+                    <type>d:text</type>
+                </property>
+            </properties>
+        </type>
+
     </types>
 
     <!-- Aspects -->
@@ -493,6 +505,7 @@
             <title>marks a declaration as need to be paid specialattention #36539 </title>
         </aspect>
 
+
         <aspect name="rm:returnDateForDeclaration">
             <title>The date a declaration has been returned</title>
             <properties>
@@ -502,6 +515,25 @@
             </property>
             </properties>
         </aspect>
+
+        <aspect name="rm:addSignature">
+            <title>Specifies that this node has content that needs a signture to be added</title>
+            <properties>
+                <property name="rm:primarySignature">
+                    <title>noderef for primary signature</title>
+                    <type>d:noderef</type>
+                </property>
+
+                <property name="rm:secondarySignature">
+                    <title>noderef for  secondary signature</title>
+                    <type>d:noderef</type>
+                </property>
+
+
+            </properties>
+        </aspect>
+
+
 
     </aspects>
 </model>
