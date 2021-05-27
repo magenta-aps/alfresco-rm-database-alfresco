@@ -116,7 +116,7 @@ public class Script extends AbstractWebScript {
             }
             else if (method.equals("testmail")) {
                 try {
-                    reportWaitingTimeBean.sendMail();
+//                    reportWaitingTimeBean.sendMail();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -32,10 +32,10 @@ public class WaitReportScheduledJobExecuter {
 
         System.out.println("godow fra waitreport");
 
-
-
-
-//        statBean.writeToDocument();
-
+        try {
+            reportWaitingTimeBean.sendMail();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

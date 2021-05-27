@@ -241,7 +241,6 @@ public class StatBean {
 
             try {
 
-
                 NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRef();
 
                 ContentReader contentReader = contentService.getReader(spreadSheetNodeRef, ContentModel.PROP_CONTENT);

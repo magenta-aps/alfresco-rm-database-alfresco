@@ -119,22 +119,25 @@ public class ReportWaitingTimeBean {
 
 
 
-    public void sendMail() throws Exception {
+    public boolean sendMail() throws Exception {
+        return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime nowMinus14 = LocalDateTime.now().minusDays(14);
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime nowMinus14 = LocalDateTime.now().minusDays(14);
 
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+            String to_formattedDate = outputFormatter.format(now);
+            String from_formattedDate = outputFormatter.format(nowMinus14);
 
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
-        String to_formattedDate = outputFormatter.format(now);
-        String from_formattedDate = outputFormatter.format(nowMinus14);
+            NodeRef report = this.getReport(from_formattedDate, to_formattedDate);
 
-        NodeRef report = this.getReport(from_formattedDate, to_formattedDate);
+            NodeRef[] attachmentList = new NodeRef[1];
+            attachmentList[0] = report;
 
-        NodeRef[] attachmentList = new NodeRef[1];
-        attachmentList[0] = report;
-
-        mailBean.sendEmailNoTransform(attachmentList,"Lone.Poulsen1@ps.rm.dk", "rapport", "");
+//            mailBean.sendEmailNoTransform(attachmentList,"ps.o.faelles.post@rm.dk", "rapport", "");
+            mailBean.sendEmailNoTransform(attachmentList,"fhp@magenta.dk", "rapport", "");
+            return true;
+        });
     }
 
 
