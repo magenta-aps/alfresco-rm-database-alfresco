@@ -134,8 +134,7 @@ public class ReportWaitingTimeBean {
             NodeRef[] attachmentList = new NodeRef[1];
             attachmentList[0] = report;
 
-//            mailBean.sendEmailNoTransform(attachmentList,"ps.o.faelles.post@rm.dk", "rapport", "");
-            mailBean.sendEmailNoTransform(attachmentList,"fhp@magenta.dk", "rapport", "");
+            mailBean.sendEmailNoTransform(attachmentList,"ps.o.faelles.post@rm.dk", "rapport", "");
             return true;
         });
     }
