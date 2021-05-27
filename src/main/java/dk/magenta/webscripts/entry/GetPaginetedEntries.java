@@ -8,6 +8,7 @@ import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
 
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.namespace.QName;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +23,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static dk.magenta.model.DatabaseModel.RM_MODEL_URI;
 
 public class GetPaginetedEntries extends AbstractWebScript {
 
@@ -420,10 +423,40 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 entries.put(e);
             }
 
+
+
             result.put("entries", entries);
             result.put("back", skip);
             result.put("next", skip + maxItems);
-            result.put("total", entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true).size());
+
+
+            List<NodeRef> nodes = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
+
+
+
+
+
+            result.put("total", nodes.size());
+
+            String searchValue = QueryUtils.mapWaitingType(input.getJSONObject("waitingTime").getString("time"));
+            if (input.has("waitingTime")) {
+                // calculate the average waitingtime for the chosen key: passiv, aktiv, samlet
+
+                Iterator nodes_i = nodes.iterator();
+
+                int total = 0;
+                while (nodes_i.hasNext()) {
+                    NodeRef nodeRef = (NodeRef) nodes_i.next();
+                    int value = (int) nodeService.getProperty(nodeRef, QName.createQName(RM_MODEL_URI, searchValue));
+                    total = total + value;
+                }
+                result.put("average", total / nodes.size());
+            }
+
+            System.out.println("query");
+            System.out.println(QueryUtils.mapWaitingType(input.getJSONObject("waitingTime").getString("time")));
+            System.out.println(query);
+
 
         } catch (Exception e) {
             e.printStackTrace();
