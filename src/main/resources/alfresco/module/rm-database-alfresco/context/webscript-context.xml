@@ -26,6 +26,10 @@
 		<property name="WeeklyStatBean" ref="weeklyStatBean"/>
 	</bean>
 
+	<bean id="webscript.database.reports.post" class="dk.magenta.webscripts.database.Reports" parent="webscript">
+		<property name="ReportWaitingTimeBean" ref="reportWaitingTimeBean"/>
+	</bean>
+
 	<bean id="webscript.database.entry_import.post" class="dk.magenta.webscripts.database.AddEntry_import" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
@@ -117,6 +121,14 @@
 		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 
+	<bean id="webscript.user.userSignature.get" class="dk.magenta.webscripts.user.UserSignature" parent="webscript">
+		<property name="siteService" ref="SiteService"/>
+		<property name="authorityService" ref="AuthorityService"/>
+		<property name="authenticationService" ref="authenticationService"/>
+		<property name="personService" ref="personService"/>
+		<property name="nodeService" ref="nodeService"/>
+	</bean>
+
 	<bean id="webscript.user.updateUser.get" class="dk.magenta.webscripts.user.UpdateUser" parent="webscript">
 		<property name="siteService" ref="SiteService"/>
 		<property name="authorityService" ref="AuthorityService"/>
@@ -166,6 +178,7 @@
 		<property name="contentService" ref="contentService"/>
 		<property name="scriptBean" ref="scriptBean"/>
 		<property name="permissionService" ref="permissionService"/>
+		<property name="reportWaitingTimeBean" ref="reportWaitingTimeBean"/>
 	</bean>
 
 	<bean id="webscript.contents.movecontent.post" class="dk.magenta.webscripts.contents.MoveContent" parent="webscript">

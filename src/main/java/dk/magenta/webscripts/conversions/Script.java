@@ -1,6 +1,8 @@
 package dk.magenta.webscripts.conversions;
 
 import dk.magenta.beans.EntryBean;
+import dk.magenta.beans.MailBean;
+import dk.magenta.beans.ReportWaitingTimeBean;
 import dk.magenta.beans.ScriptBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
@@ -53,6 +55,14 @@ public class Script extends AbstractWebScript {
     }
 
     private NodeService nodeService;
+
+
+    public void setReportWaitingTimeBean(ReportWaitingTimeBean reportWaitingTimeBean) {
+        this.reportWaitingTimeBean = reportWaitingTimeBean;
+    }
+
+    private ReportWaitingTimeBean reportWaitingTimeBean;
+
     private ContentService contentService;
 
     public void setContentService(ContentService contentService) {
@@ -77,30 +87,43 @@ public class Script extends AbstractWebScript {
             JSONObject json = new JSONObject(c.getContent());
             jsonProperties = JSONUtils.getObject(json, "properties");
 
-            uuid = jsonProperties.getString("uuid");
+
             method = jsonProperties.getString("method");
 
             if (method.equals("view")) {
+                uuid = jsonProperties.getString("uuid");
                 scriptBean.traverse(new NodeRef("workspace://SpacesStore/" + uuid));
-                System.out.println("hvad er listen: " + scriptBean.getList().size());
+
 
                 List<NodeRef> nodeRefs = scriptBean.getList();
                 for (int i=0;i<=nodeRefs.size()-1;i++) {
                     NodeRef n = nodeRefs.get(i);
-                    System.out.println("name" + nodeService.getProperty(n, ContentModel.PROP_NAME) + " " + "nodeRef" + n);
+
                 }
             }
             else if (method.equals("convert")) {
+                uuid = jsonProperties.getString("uuid");
                 scriptBean.traverse(new NodeRef("workspace://SpacesStore/" + uuid));
-                System.out.println("size of list: " + scriptBean.getList().size());
+
 
                 List<NodeRef> nodeRefs = scriptBean.getList();
 
                 for (int i=0;i<=nodeRefs.size()-1;i++) {
                     NodeRef n = nodeRefs.get(i);
                     permissionService.setPermission(n, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
-                    System.out.println("name" + nodeService.getProperty(n, ContentModel.PROP_NAME) + " " + "nodeRef" + n);
+
                 }
+            }
+            else if (method.equals("testmail")) {
+                try {
+//                    reportWaitingTimeBean.sendMail();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            else if (method.equals("addSignatureAspect")) {
+                scriptBean.addNewAspectToAllDeclarations();
+
             }
 
            result.put("result", "done");

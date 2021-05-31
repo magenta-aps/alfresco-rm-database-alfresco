@@ -39,11 +39,12 @@ public class Settings extends AbstractWebScript {
         try {
 
             String caseid = webScriptRequest.getParameter("node");
+            String dropdown = webScriptRequest.getParameter("dropdown");
 
             String query = "@rm\\:caseNumber:\"" + caseid + "\"";
             NodeRef declaration = entryBean.getEntry(query);
 
-            String defaultText = settingsBean.getDefaultMailText(declaration);
+            String defaultText = settingsBean.getDefaultMailText(declaration, dropdown);
 
             result.put("text", defaultText);
 
