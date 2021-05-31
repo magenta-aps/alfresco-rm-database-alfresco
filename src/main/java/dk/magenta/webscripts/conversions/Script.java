@@ -93,25 +93,25 @@ public class Script extends AbstractWebScript {
             if (method.equals("view")) {
                 uuid = jsonProperties.getString("uuid");
                 scriptBean.traverse(new NodeRef("workspace://SpacesStore/" + uuid));
-                System.out.println("hvad er listen: " + scriptBean.getList().size());
+
 
                 List<NodeRef> nodeRefs = scriptBean.getList();
                 for (int i=0;i<=nodeRefs.size()-1;i++) {
                     NodeRef n = nodeRefs.get(i);
-                    System.out.println("name" + nodeService.getProperty(n, ContentModel.PROP_NAME) + " " + "nodeRef" + n);
+
                 }
             }
             else if (method.equals("convert")) {
                 uuid = jsonProperties.getString("uuid");
                 scriptBean.traverse(new NodeRef("workspace://SpacesStore/" + uuid));
-                System.out.println("size of list: " + scriptBean.getList().size());
+
 
                 List<NodeRef> nodeRefs = scriptBean.getList();
 
                 for (int i=0;i<=nodeRefs.size()-1;i++) {
                     NodeRef n = nodeRefs.get(i);
                     permissionService.setPermission(n, DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
-                    System.out.println("name" + nodeService.getProperty(n, ContentModel.PROP_NAME) + " " + "nodeRef" + n);
+
                 }
             }
             else if (method.equals("testmail")) {

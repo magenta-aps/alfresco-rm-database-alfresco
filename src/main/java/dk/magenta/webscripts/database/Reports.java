@@ -39,16 +39,6 @@ public class Reports extends AbstractWebScript {
             JSONObject json = new JSONObject(c.getContent());
             String method = JSONUtils.getString(json, "method");
 
-
-            System.out.println("json");
-            System.out.println(json);
-
-            System.out.println("method");
-            System.out.println(method);
-
-            System.out.println(JSONUtils.getString(json, "fromDate"));
-            System.out.println(JSONUtils.getString(json, "toDate"));
-
             switch (method) {
                 case "waitingtime":
 

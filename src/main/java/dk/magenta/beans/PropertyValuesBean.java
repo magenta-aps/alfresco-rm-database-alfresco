@@ -161,16 +161,13 @@ public class PropertyValuesBean {
 
     public String getUserNameByUser (String userName) throws JSONException {
 
-        System.out.println("getusernamebyuser");
+
 
         // secretaries
 
         JSONObject values = propertyValuesMap.get("retspsyk");
-
-
-
         JSONArray secretaries = values.getJSONArray("secretary");
-        System.out.println("sec check");
+
         for (int i=0; i<= secretaries.length()-1; i++) {
 
             String s = secretaries.getString(i);
@@ -184,7 +181,6 @@ public class PropertyValuesBean {
         }
 
         JSONArray socialworker = values.getJSONArray("socialworker");
-        System.out.println("soc check");
         for (int i=0; i<= socialworker.length()-1; i++) {
 
             String s = socialworker.getString(i);
@@ -198,7 +194,6 @@ public class PropertyValuesBean {
         }
 
         JSONArray psychologist = values.getJSONArray("psychologist");
-        System.out.println("socia check");
         for (int i=0; i<= psychologist.length()-1; i++) {
 
             String s = psychologist.getString(i);
@@ -212,7 +207,6 @@ public class PropertyValuesBean {
         }
 
         JSONArray doctor = values.getJSONArray("doctor");
-        System.out.println("doctor check");
 
         for (int i=0; i<= doctor.length()-1; i++) {
 

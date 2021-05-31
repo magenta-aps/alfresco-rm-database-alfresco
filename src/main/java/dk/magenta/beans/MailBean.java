@@ -395,11 +395,9 @@ public class MailBean {
         Table table;
 
         if (secondarySignature != null) {
-            System.out.println("making table 2,2");
             table = log_entires.addTable(2,5);
         }
         else {
-            System.out.println("making table 2,1");
             table = log_entires.addTable(2,3);
         }
 
@@ -468,9 +466,6 @@ public class MailBean {
 
         String doctor = (String) nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
         String docUserName = propertyValuesBean.getUserNameByUser(doctor);
-        System.out.println("doctor" + doctor);
-        System.out.println("doctorNameIncLogin" + docUserName);
-
         NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
         NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, docUserName);
 
@@ -499,16 +494,9 @@ public class MailBean {
         Signiture signiture = new Signiture();
 
         String doctor = (String) nodeService.getProperty(declaration, PROP_SUPERVISINGDOCTOR);
-        System.out.println("hvad er doctor på supervisor");
-        System.out.println(doctor);
-        System.out.println("hvad er doctor på supervisor");
-
-
 
         if ( (doctor != null) && !doctor.equals("null") )  {
             String superVisorUserName = propertyValuesBean.getUserNameByUser(doctor);
-
-            System.out.println("superVisorUserName" + superVisorUserName);
 
             NodeRef templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
             NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, superVisorUserName);
@@ -550,8 +538,6 @@ public class MailBean {
         int i = 0;
         NodeRef attachmentNodeRef = null;
 
-        System.out.println("length");
-
         while (!found && i < nodeRefs.length) {
             NodeRef n = nodeRefs[i];
             if (nodeService.hasAspect(n, ASPECT_ADDSIGNATURE)) {
@@ -563,11 +549,8 @@ public class MailBean {
             }
         }
 
-        System.out.println("attachmentNodeRef" + attachmentNodeRef);
-
         if (attachmentNodeRef != null) {
             NodeRef documentWithSignature = this.addSignature(attachmentNodeRef, declaration);
-            System.out.println(documentWithSignature);
             return this.transform(documentWithSignature);
         }
         else {
@@ -610,9 +593,6 @@ public class MailBean {
         String secondaryDoctorUserName = "";
         secondaryDoctorUserName = (String) nodeService.getProperty(nodeRef, PROP_SUPERVISINGDOCTOR);
 
-        System.out.println("hvad er doctor på supervisor");
-        System.out.println(secondaryDoctorUserName);
-
         boolean userCheck = false;
 
         if (docUserName != null) {
@@ -633,8 +613,6 @@ public class MailBean {
             int i = 0;
 
             while (!found && i <= attachedFiles.length-1) {
-
-                System.out.println("attachedFiles[i];" + attachedFiles[i]);
 
                 NodeRef attachmentNodeRef = attachedFiles[i];
                 if (nodeService.hasAspect(attachmentNodeRef, ASPECT_ADDSIGNATURE)) {

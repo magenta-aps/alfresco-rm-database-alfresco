@@ -143,9 +143,6 @@ public class ReportWaitingTimeBean {
     public NodeRef getReport(String from, String to) throws Exception {
 
         List<NodeRef> nodeRefs = this.query("declarationDate", from, to, false);
-        System.out.println("nodeRefs");
-        System.out.println(nodeRefs);
-
         NodeRef spreadSheet = setupSpreadSheet(nodeRefs);
 
 
@@ -205,16 +202,7 @@ public class ReportWaitingTimeBean {
             else {
                 query = query + " AND +ASPECT:\"rm:bua\"";
             }
-
-            System.out.println("the query");
-            System.out.println(query);
-
-//            List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(query);
             List<NodeRef> nodeRefs = entryBean.getEntries(query,0,1000,"@rm:caseNumber", true);
-
-            System.out.println("nodeRefs");
-            System.out.println(nodeRefs.size());
-
             return nodeRefs;
 
         } catch (Exception e) {
@@ -224,15 +212,6 @@ public class ReportWaitingTimeBean {
     }
 
     private NodeRef setupSpreadSheet(List<NodeRef> nodeRefs) throws Exception {
-
-
-        System.out.println(properties.getProperty("magenta.custom.override"));
-        System.out.println(properties.getProperty("magenta.custom.override"));
-        System.out.println(properties.getProperty("magenta.custom.override"));
-        System.out.println(properties.getProperty("magenta.custom.override"));
-        System.out.println(properties.getProperty("magenta.custom.override"));
-
-
 
         SpreadsheetDocument document = SpreadsheetDocument.newSpreadsheetDocument();
         table = document.getSheetByIndex(0);
@@ -274,13 +253,7 @@ public class ReportWaitingTimeBean {
         Font fc = cpr.getFont();
         fc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
-        System.out.println("aktivventetid.getFont().getFontStyle()");
-        System.out.println(aktivventetid.getFont().getFontStyle());
-
-
-
         int nextRow = 0;
-
 
         int sumAktiv = 0;
         int sumPassiv = 0;
@@ -291,9 +264,6 @@ public class ReportWaitingTimeBean {
         int totalAverageCount = 0;
 
         for (int i =0; i <= nodeRefs.size()-1; i++) {
-
-
-
             NodeRef nodeRef = nodeRefs.get(i);
 
             int sagsNummer = (Integer) nodeService.getProperty(nodeRef, PROP_CASE_NUMBER);
@@ -395,18 +365,7 @@ public class ReportWaitingTimeBean {
 
         Map<QName, Serializable> properties = new HashMap<>();
 
-//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-//        LocalDateTime now = LocalDateTime.now();
-//        System.out.println(dtf.format(now));
-//
-//        String stamp = dtf.format(now);
-//
-//        stamp = stamp.replace("/","_");
-
-
-
         // check if there is already a tmp node for this user
-
         // get user
         String username = authenticationService.getCurrentUserName();
 
@@ -434,5 +393,7 @@ public class ReportWaitingTimeBean {
     }
 
 }
+
+
 
 
