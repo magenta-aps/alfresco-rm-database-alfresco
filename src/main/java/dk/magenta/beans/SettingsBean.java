@@ -60,7 +60,7 @@ public class SettingsBean {
 
 
     // # 361807
-    public String getDefaultMailText(NodeRef decl) throws Exception {
+    public String getDefaultMailText(NodeRef decl, String dropdown) throws Exception {
 
         // get node - if not exists, create
 
@@ -75,16 +75,30 @@ public class SettingsBean {
         }
         sharedNodeRef = rs.getNodeRef(0);
 
-        childRef = nodeService.getChildByName(sharedNodeRef, ContentModel.ASSOC_CONTAINS, DatabaseModel.DEFAULT_MAIL_TEXT_NAME);
+        String nodeName = "";
+
+
+        if (dropdown.equals(DEFAULT_MAIL_TEXT_SEND_VALUE)) {
+            System.out.println("default");
+            nodeName = DatabaseModel.DEFAULT_MAIL_TEXT_NAME;
+            childRef = nodeService.getChildByName(sharedNodeRef, ContentModel.ASSOC_CONTAINS, DatabaseModel.DEFAULT_MAIL_TEXT_NAME);
+        }
+        else {
+            System.out.println("returnering");
+            childRef = nodeService.getChildByName(sharedNodeRef, ContentModel.ASSOC_CONTAINS, DEFAULT_MAIL_TEXT_RETURN);
+            nodeName = DEFAULT_MAIL_TEXT_RETURN;
+        }
+
+        System.out.println("childRef" + childRef);
+
 
         // create node
         if(childRef == null) {
 
-
             // create the node
             Map<QName, Serializable> properties = new HashMap<>();
-            properties.put(ContentModel.PROP_NAME, DatabaseModel.DEFAULT_MAIL_TEXT_NAME);
-            QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, DatabaseModel.DEFAULT_MAIL_TEXT_NAME);
+            properties.put(ContentModel.PROP_NAME, nodeName);
+            QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, nodeName);
             ChildAssociationRef childAssociationRef = nodeService.createNode(sharedNodeRef, ContentModel.ASSOC_CONTAINS, qName, ContentModel.TYPE_CONTENT, properties);
 
 
