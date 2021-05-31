@@ -1,0 +1,7 @@
+<webscript>
+<shortname>Report module</shortname>
+    <description>report module</description>
+    <url>/database/{siteShortName}/reports</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

@@ -12,8 +12,15 @@ import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+import org.apache.poi.POITextExtractor;
+import org.apache.poi.extractor.ExtractorFactory;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.common.field.VariableField;
 
@@ -25,9 +32,14 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.*;
+import java.net.URI;
 import java.util.*;
 
+import static dk.magenta.model.DatabaseModel.*;
+
 public class DocumentTemplateBean {
+
+    public static final int DEFAULT_BUFFER_SIZE = 8192;
 
     private NodeService nodeService;
 
@@ -87,6 +99,11 @@ public class DocumentTemplateBean {
             NodeRef template_doc = children.get(0).getChildRef();
 
             documentNodeRef = this.generateOfferLetterDocumentKendelse(template_doc, declaration, retten, dato);
+
+            // add signiture aspect
+            NodeRef newDoc = new NodeRef("workspace://SpacesStore/" + documentNodeRef);
+            Map<QName, Serializable> aspectProps = new HashMap<>();
+            nodeService.addAspect(newDoc, ASPECT_ADDSIGNATURE, aspectProps);
         }
 
         else if (type.equals(DatabaseModel.PROP_TEMPLATE_DOC_SAMTYKKE)) {
@@ -99,7 +116,13 @@ public class DocumentTemplateBean {
             NodeRef template_doc = children.get(0).getChildRef();
 
             documentNodeRef = this.generateOfferLetterDocumentSamtykke(template_doc, declaration);
+
+            // add signiture aspect
+            NodeRef newDoc = new NodeRef("workspace://SpacesStore/" + documentNodeRef);
+            Map<QName, Serializable> aspectProps = new HashMap<>();
+            nodeService.addAspect(newDoc, ASPECT_ADDSIGNATURE, aspectProps);
         }
+
 
 
         if (nodeService.hasAspect(declaration, DatabaseModel.ASPECT_BUA)) {
@@ -125,6 +148,20 @@ public class DocumentTemplateBean {
         }
 
         permissionService.setPermission(new NodeRef("workspace://SpacesStore/" + documentNodeRef), DatabaseModel.GROUP_ALLOWEDTODELETE, PermissionService.DELETE_NODE, true);
+
+//        ContentReader contentReaderODT = contentService.getReader(newDoc, ContentModel.PROP_CONTENT);
+//        OdfDocument odt = OdfDocument.loadDocument(contentReaderODT.getContentInputStream());
+//
+//        File file = new File("tmp.jpg");
+//        File backFile = new File("back");
+//        ContentReader imageReader = contentService.getReader(new NodeRef("workspace://SpacesStore/1d3eda73-5075-4c65-9e46-30c30b881d5e"), ContentModel.PROP_CONTENT);
+//        copyInputStreamToFile(imageReader.getContentInputStream(), file);
+//        odt.newImage(file.toURI());
+//        odt.save(backFile);
+//
+//        ContentWriter contentWriter = contentService.getWriter(newDoc, ContentModel.PROP_CONTENT, true);
+//        contentWriter.putContent(backFile);
+
 
         return documentNodeRef;
     }
@@ -222,6 +259,8 @@ public class DocumentTemplateBean {
 
         VariableField modtagetdato = templateDocument.getVariableFieldByName("modtagetdato");
         modtagetdato.updateField(info.oprettetdato, null);
+
+
 
 
         // make the new document below the case
@@ -394,4 +433,18 @@ public class DocumentTemplateBean {
         public String oprettetdato;
         public String journalnummer;
     }
+
+//    private static void copyInputStreamToFile(InputStream inputStream, File file)
+//            throws IOException {
+//
+//        // append = false
+//        try (FileOutputStream outputStream = new FileOutputStream(file, false)) {
+//            int read;
+//            byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
+//            while ((read = inputStream.read(bytes)) != -1) {
+//                outputStream.write(bytes, 0, read);
+//            }
+//        }
+//
+//    }
 }

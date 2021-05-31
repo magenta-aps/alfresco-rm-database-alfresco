@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><presets> 
+<preset id="test123skab"> 
+<components> 
+<component> 
+<scope>page</scope> 
+<region-id>title</region-id> 
+<source-id>site/${siteid}/dashboard</source-id> 
+<url>/components/title/collaboration-title</url> 
+</component> 
+<component> 
+<scope>page</scope> 
+<region-id>navigation</region-id> 
+<source-id>site/${siteid}/dashboard</source-id> 
+<url>/components/navigation/collaboration-navigation</url> 
+</component> 
+<component> 
+<scope>page</scope> 
+<region-id>component-2-1</region-id> 
+<source-id>site/${siteid}/dashboard</source-id> 
+<url>/components/dashlets/docsummary</url> 
+</component> 
+<component> 
+<scope>page</scope> 
+<region-id>component-2-2</region-id> 
+<source-id>site/${siteid}/dashboard</source-id> 
+<url>/components/dashlets/activityfeed</url> 
+</component> 
+<component> 
+<scope>page</scope> 
+<region-id>component-1-3</region-id> 
+<source-id>site/${siteid}/dashboard</source-id> 
+<url>/components/dashlets/site-search</url> 
+</component> 
+<component> 
+<scope>page</scope> 
+<region-id>component-3-1</region-id> 
+<source-id>site/${siteid}/dashboard</source-id> 
+<url>/components/dashlets/site-links</url> 
+</component> 
+<component> 
+<scope>page</scope> 
+<region-id>component-1-1</region-id> 
+<source-id>site/${siteid}/dashboard</source-id> 
+<url>/components/dashlets/site-notice</url> 
+<properties> 
+<height>237</height> 
+<text>&lt;p&gt;Her kan der inds&amp;aelig;ttes eventuelle bem&amp;aelig;rkninger om projektet til site 
+medlemmerne.&lt;/p&gt;</text> 
+</properties> 
+<title>Site bemærkninger</title> 
+</component> 
+</components> 
+<pages> 
+<page id="site/${siteid}/dashboard"> 
+<title>Collaboration Site Dashboard</title> 
+<title-id>page.siteDashboard.title</title-id> 
+<description>Collaboration site's dashboard page</description> 
+<description-id>page.siteDashboard.description</description-id> 
+<authentication>user</authentication> 
+<template-instance>dashboard-3-columns</template-instance> 
+<properties> 
+<sitePages>[{"pageId":"dashboard"}, {"pageId":"documentlibrary"}]</sitePages> 
+<dashboardSitePage>true</dashboardSitePage> 
+</properties> 
+</page> 
+</pages> 
+<authorities> 
+<authority type="SiteConsumer"> 
+<memberGroup>GROUP_Projekter og Metode</memberGroup> 
+</authority> 
+</authorities> 
+</preset> 
+</presets> 
