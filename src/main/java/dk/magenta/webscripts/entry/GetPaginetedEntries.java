@@ -438,9 +438,10 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             result.put("total", nodes.size());
 
-            String searchValue = QueryUtils.mapWaitingType(input.getJSONObject("waitingTime").getString("time"));
+
             if (input.has("waitingTime")) {
                 // calculate the average waitingtime for the chosen key: passiv, aktiv, samlet
+                String searchValue = QueryUtils.mapWaitingType(input.getJSONObject("waitingTime").getString("time"));
 
                 Iterator nodes_i = nodes.iterator();
 
