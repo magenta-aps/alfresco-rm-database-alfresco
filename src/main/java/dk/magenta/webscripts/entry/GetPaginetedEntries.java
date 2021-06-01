@@ -454,9 +454,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 result.put("average", total / nodes.size());
             }
 
-            System.out.println("query");
-            System.out.println(QueryUtils.mapWaitingType(input.getJSONObject("waitingTime").getString("time")));
-            System.out.println(query);
+
 
 
         } catch (Exception e) {
