@@ -471,4 +471,3 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
 //http://localhost:8080/alfresco/service/database/retspsyk/page_entries?skip=0&maxItems=10&keyValue=[{"key":"cprNumber","value" : "220111571234", "include" : "true"}]
 
-
