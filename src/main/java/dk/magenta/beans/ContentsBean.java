@@ -2,17 +2,14 @@ package dk.magenta.beans;
 
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.version.VersionModel;
 import org.alfresco.service.cmr.download.DownloadService;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
-import org.alfresco.service.cmr.repository.ContentData;
-import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
@@ -23,10 +20,18 @@ import org.alfresco.service.cmr.version.VersionHistory;
 import org.alfresco.service.cmr.version.VersionService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -39,6 +44,12 @@ public class ContentsBean {
     private SiteService siteService;
     private DownloadService downloadService;
     private Repository repository;
+
+    public void setContentService(ContentService contentService) {
+        this.contentService = contentService;
+    }
+
+    private ContentService contentService;
 
     public void setVersionService(VersionService versionService) {
         this.versionService = versionService;
@@ -168,6 +179,78 @@ public class ContentsBean {
             result.put(contentTypeMap.get(contentType));
 
         return result;
+    }
+
+    public void transformPDFtoJPG(NodeRef nodeRef) throws IOException {
+
+        ContentReader reader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
+
+        // Create new preview node of earlier version
+        Map<QName,  Serializable> properties = new HashMap<>();
+        properties.put(ContentModel.PROP_NAME, "duff");
+
+
+        QName cmName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "duff.jpg");
+        ChildAssociationRef childAssocRef = nodeService.createNode(
+                nodeService.getPrimaryParent(nodeRef).getChildRef(),
+                DatabaseModel.ASSOC_VERSION_PREVIEW,
+                cmName,
+                ContentModel.TYPE_CONTENT,
+                properties);
+
+
+
+        ContentWriter jpgWriter = contentService.getWriter(childAssocRef.getChildRef(), ContentModel.PROP_CONTENT, true);
+
+
+        PDDocument document = PDDocument.load (reader.getContentInputStream());
+
+        PDPage firstPage = (PDPage) document.getDocumentCatalog().getAllPages().get(0);
+
+        // tjek indhold.
+        Map<String, PDXObjectImage>  images = firstPage.findResources().getImages();
+        System.out.println("images");
+        System.out.println(images);
+
+
+        System.out.println(images.get("Im4"));
+        System.out.println(images.get(0));
+        System.out.println(images.get(1));
+
+
+//        BufferedImage image = document.
+
+        File f = new File("tmp");
+
+
+
+
+        System.out.println("Converting...");
+
+
+
+        ImageIO.write(images.get("Im4").getRGBImage(), "JPEG", f);
+
+        jpgWriter.setMimetype(MimetypeMap.MIMETYPE_IMAGE_JPEG);
+        jpgWriter.putContent(f);
+        System.out.println("ny nodeRef");
+        System.out.println(childAssocRef.getChildRef());
+
+        document.close();
+
+        System.out.println("Done");
+
+
+
+
+
+
+//        ContentTransformer transform = contentService.getTransformer(MimetypeMap.MIMETYPE_IMAGE_JPEG, MimetypeMap.MIMETYPE_PDF);
+//
+//        System.out.println("hvad er transform? ");
+//        System.out.println(transform);
+//
+//        transform.transform(reader, jpgWriter);
     }
 
 
