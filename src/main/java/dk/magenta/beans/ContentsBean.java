@@ -191,16 +191,16 @@ public class ContentsBean {
 
 
         QName cmName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "duff.jpg");
-        ChildAssociationRef childAssocRef = nodeService.createNode(
-                nodeService.getPrimaryParent(nodeRef).getChildRef(),
-                DatabaseModel.ASSOC_VERSION_PREVIEW,
-                cmName,
-                ContentModel.TYPE_CONTENT,
-                properties);
+//        ChildAssociationRef childAssocRef = nodeService.createNode(
+//                nodeService.getPrimaryParent(nodeRef).getChildRef(),
+//                DatabaseModel.ASSOC_VERSION_PREVIEW,
+//                cmName,
+//                ContentModel.TYPE_CONTENT,
+//                properties);
 
 
 
-        ContentWriter jpgWriter = contentService.getWriter(childAssocRef.getChildRef(), ContentModel.PROP_CONTENT, true);
+        ContentWriter jpgWriter = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
 
 
         PDDocument document = PDDocument.load (reader.getContentInputStream());
@@ -229,12 +229,12 @@ public class ContentsBean {
 
 
 
-        ImageIO.write(images.get("Im4").getRGBImage(), "JPEG", f);
+        ImageIO.write(images.get("Im0").getRGBImage(), "JPEG", f);
 
         jpgWriter.setMimetype(MimetypeMap.MIMETYPE_IMAGE_JPEG);
         jpgWriter.putContent(f);
-        System.out.println("ny nodeRef");
-        System.out.println(childAssocRef.getChildRef());
+//        System.out.println("ny nodeRef");
+//        System.out.println(childAssocRef.getChildRef());
 
         document.close();
 
@@ -461,3 +461,5 @@ public class ContentsBean {
             return null;
     }
 }
+
+fe1f0b5e-9c16-40f0-88a4-b2d7a47a5964

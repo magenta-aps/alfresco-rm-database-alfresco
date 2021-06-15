@@ -126,6 +126,7 @@ public class UserSignature extends AbstractWebScript {
                         System.out.println(signatureNodeRef);
                         System.out.println(nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE));
                         result.put("text", nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE));
+                        result.put("nodeRef", signatureNodeRef.getId());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
