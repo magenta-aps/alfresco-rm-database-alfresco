@@ -189,17 +189,6 @@ public class ContentsBean {
         Map<QName,  Serializable> properties = new HashMap<>();
         properties.put(ContentModel.PROP_NAME, "duff");
 
-
-        QName cmName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "duff.jpg");
-//        ChildAssociationRef childAssocRef = nodeService.createNode(
-//                nodeService.getPrimaryParent(nodeRef).getChildRef(),
-//                DatabaseModel.ASSOC_VERSION_PREVIEW,
-//                cmName,
-//                ContentModel.TYPE_CONTENT,
-//                properties);
-
-
-
         ContentWriter jpgWriter = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
 
 
@@ -217,40 +206,14 @@ public class ContentsBean {
         System.out.println(images.get(0));
         System.out.println(images.get(1));
 
-
-//        BufferedImage image = document.
-
         File f = new File("tmp");
-
-
-
-
-        System.out.println("Converting...");
-
-
 
         ImageIO.write(images.get("Im0").getRGBImage(), "JPEG", f);
 
         jpgWriter.setMimetype(MimetypeMap.MIMETYPE_IMAGE_JPEG);
         jpgWriter.putContent(f);
-//        System.out.println("ny nodeRef");
-//        System.out.println(childAssocRef.getChildRef());
 
         document.close();
-
-        System.out.println("Done");
-
-
-
-
-
-
-//        ContentTransformer transform = contentService.getTransformer(MimetypeMap.MIMETYPE_IMAGE_JPEG, MimetypeMap.MIMETYPE_PDF);
-//
-//        System.out.println("hvad er transform? ");
-//        System.out.println(transform);
-//
-//        transform.transform(reader, jpgWriter);
     }
 
 

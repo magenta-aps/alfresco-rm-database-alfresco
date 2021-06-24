@@ -38,26 +38,8 @@ public class TransformPDFtoJPG extends AbstractWebScript {
         try {
             json = new JSONObject(c.getContent());
 
-
             NodeRef n = new NodeRef(( String)json.get("nodeRef"));
-            System.out.println("hvad er n");
-            System.out.println(n);
-
-
-//            The code is something like this:
-//
-//            ContentReader reader = contentService.getReader(node, ContentModel.PROP_CONTENT);
-//
-//            ContentWriter tiffWriter = contentService.getWriter(nodeTiff, ContentModel.PROP_CONTENT, true);
-//
-//            ContentTransformer transform = contentService.getTransformer(MimetypeMap.MIMETYPE_PDF, MimetypeMap.MIMETYPE_IMAGE_TIFF);
-//
-//            transform.transform(reader, tiffWriter);
-
-
             contentsBean.transformPDFtoJPG(n);
-
-
 
             result = JSONUtils.getSuccess();
             JSONUtils.write(webScriptWriter, result);
