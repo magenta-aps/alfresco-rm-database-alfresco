@@ -202,6 +202,13 @@ public class ReportWaitingTimeBean {
             else {
                 query = query + " AND +ASPECT:\"rm:bua\"";
             }
+
+            // https://redmine.magenta-aps.dk/issues/37799 - filter out closed without a declaration
+            query = query + "AND NOT @rm\\:closedWithoutDeclaration:\"true\"";
+
+            System.out.println("the query");
+            System.out.println(query);
+
             List<NodeRef> nodeRefs = entryBean.getEntries(query,0,1000,"@rm:caseNumber", true);
             return nodeRefs;
 
