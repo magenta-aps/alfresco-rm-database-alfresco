@@ -29,12 +29,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 public class ContentsBean {
 
@@ -208,9 +211,18 @@ public class ContentsBean {
 
         File f = new File("tmp");
 
-        ImageIO.write(images.get("Im0").getRGBImage(), "JPEG", f);
+//        PDXObjectImage test =  images.get("Im0");
+//        BufferedImage pdfImage = ImageIO.read(test.getRGBImage().get);
 
-        jpgWriter.setMimetype(MimetypeMap.MIMETYPE_IMAGE_JPEG);
+
+
+//        test.getWidth()
+
+
+
+        ImageIO.write(images.get("Im0").getRGBImage(), "png", f);
+
+        jpgWriter.setMimetype(MimetypeMap.MIMETYPE_IMAGE_PNG);
         jpgWriter.putContent(f);
 
         document.close();
