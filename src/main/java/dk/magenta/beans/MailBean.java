@@ -437,15 +437,19 @@ public class MailBean {
         Table table;
 
         if (secondarySignature != null) {
-            table = log_entires.addTable(2,2);
+            table = log_entires.addTable(6,1);
         }
         else {
-            table = log_entires.addTable(2,2);
+            table = log_entires.addTable(2,1);
         }
 
         Row row1 = table.getRowByIndex(0);
         Row row2 = table.getRowByIndex(1);
-
+        Row row3 = table.getRowByIndex(2);
+        Row row4 = table.getRowByIndex(3);
+        Row row5 = table.getRowByIndex(4);
+        Row row6 = table.getRowByIndex(5);
+        Row row7 = table.getRowByIndex(6);
 
         Cell cRow1A = row1.getCellByIndex(0);
 
@@ -472,29 +476,51 @@ public class MailBean {
             e.printStackTrace();
         }
 
-
-
         Cell cRow2A = row2.getCellByIndex(0);
         cRow2A.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
         cRow2A.addParagraph(primarySignature.text);
+
 
         if (secondarySignature != null) {
             copyInputStreamToFile(secondarySignature.image, fileSecondary);
             Thumbnails.of(fileSecondary).scale(0.25).toFile(fileSecondary);
 
-            Cell cRow1B = row1.getCellByIndex(1);
-            cRow1B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
-            cRow1B.setImage(fileSecondary.toURI()).setHorizontalPosition(StyleTypeDefinitions.FrameHorizontalPosition.LEFT);
+            // add text, "Tiltrædes af"
 
-            Cell cRow2B = row2.getCellByIndex(1);
-            cRow2B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
-            cRow2B.addParagraph(secondarySignature.text);
+            Cell cRow3B = row3.getCellByIndex(0);
+            cRow3B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+
+            Cell cRow4B = row4.getCellByIndex(0);
+            cRow4B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+
+
+            Cell cRow5B = row5.getCellByIndex(0);
+            cRow5B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            cRow5B.addParagraph("Tiltrædes af: ");
+
+            Cell cRow6B = row6.getCellByIndex(0);
+            cRow6B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            cRow6B.setImage(fileSecondary.toURI()).setHorizontalPosition(StyleTypeDefinitions.FrameHorizontalPosition.LEFT);
+
+            Cell cRow7B = row7.getCellByIndex(0);
+            cRow7B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            cRow7B.addParagraph(secondarySignature.text);
         }
         else {
-            Cell cRow1B = row1.getCellByIndex(1);
+            Cell cRow1B = row1.getCellByIndex(0);
             cRow1B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
-            Cell cRow2B = row2.getCellByIndex(1);
+            Cell cRow2B = row2.getCellByIndex(0);
             cRow2B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            Cell cRow3B = row3.getCellByIndex(0);
+            cRow3B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            Cell cRow4B = row4.getCellByIndex(0);
+            cRow4B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            Cell cRow5B = row5.getCellByIndex(0);
+            cRow5B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            Cell cRow6B = row6.getCellByIndex(0);
+            cRow6B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            Cell cRow7B = row7.getCellByIndex(0);
+            cRow7B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
         }
 
         log_entires.save(backFile);
