@@ -74,7 +74,6 @@ public class FlowChartBean {
 
     private NodeService nodeService;
 
-
     public List<NodeRef> getEntriesbyUser(String user, String siteShortName, String default_query) throws JSONException {
 
         String type = databaseBean.getType(siteShortName);
@@ -293,6 +292,24 @@ public class FlowChartBean {
         return nodeRefs;
     }
 
+
+    public boolean isDeclarationMarkedForTemporaryEditing(String casenumber) {
+
+        String defaultQuery = "@rm\\:caseNumber:" + "\"" + casenumber + "\"";
+
+        List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(defaultQuery);
+
+        System.out.println("whats inside");
+        System.out.println(nodeRefs);
+
+        System.out.println("nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_SUPOPL)");
+        System.out.println("nodeRef");
+        System.out.println(nodeRefs.get(0));
+        System.out.println(nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_SUPOPL));
+
+        return (nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_SUPOPL) || (nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_OPENEDIT)) ) ;
+    }
+
     public String getStateOfDeclaration(String casenumber) {
 
         String defaultQuery = "ISUNSET:\"rm:closed\" AND ";
@@ -448,6 +465,26 @@ public class FlowChartBean {
 
         //System.out.println("getEntriesByStateventedegr query");
         //System.out.println(query);
+
+        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
+
+        return nodeRefs;
+    }
+
+    public List<NodeRef> getEntriesByStateSUPOPL(String siteShortName, String default_query, String sort, boolean desc) {
+
+        System.out.println("doing supopl");
+
+        JSONObject o = new JSONObject();
+
+        String type = databaseBean.getType(siteShortName);
+        String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
+
+        query += " AND " + default_query;
+
+        query = query + " AND ASPECT:\"rm:supopl\"";
+
+        System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 

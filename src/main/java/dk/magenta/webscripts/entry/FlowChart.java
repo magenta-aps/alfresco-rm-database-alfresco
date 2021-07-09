@@ -89,6 +89,7 @@ public class FlowChart extends AbstractWebScript {
         JSONObject jsonProperties = null;
 
         String defaultQuery = "ISUNSET:\"rm:closed\"";
+        String defaultQueryForTemporaryEditedDeclaration = "";
 
         String userNameForbuaCheck = "";
 
@@ -98,13 +99,16 @@ public class FlowChart extends AbstractWebScript {
 
             if (nodeService.hasAspect(personService.getPerson(userNameForbuaCheck), DatabaseModel.ASPECT_BUA_USER)) {
                 defaultQuery += " AND ASPECT:\"rm:bua\"";
+                defaultQueryForTemporaryEditedDeclaration += "ASPECT:\"rm:bua\"";
             }
             else {
                 defaultQuery += " AND -ASPECT:\"rm:bua\"";
+                defaultQueryForTemporaryEditedDeclaration += "-ASPECT:\"rm:bua\"";
             }
 
         defaultQuery += " AND -ASPECT:\"rm:skip_flowchart\"";
-
+        defaultQueryForTemporaryEditedDeclaration += " AND -ASPECT:\"rm:skip_flowchart\"";
+        defaultQueryForTemporaryEditedDeclaration += " AND ASPECT:\"rm:supopl\"";
 
 
         JSONObject json = null;
@@ -125,6 +129,7 @@ public class FlowChart extends AbstractWebScript {
                 case "getStateOfDeclaration":
                     String casenumber = jsonProperties.getString("casenumber");
                     result.put("state", flowChartBean.getStateOfDeclaration(casenumber));
+                    result.put("temporaryEdit", flowChartBean.isDeclarationMarkedForTemporaryEditing(casenumber));
                     break;
 
                 case "redflag":
@@ -158,6 +163,14 @@ public class FlowChart extends AbstractWebScript {
                     desc = jsonProperties.getBoolean("desc");
 
                     entries = flowChartBean.getEntriesByStateVentedeGR(siteShortName, defaultQuery, sort, desc);
+                    result.put("entries", flowChartBean.nodeRefsTOData(entries));
+                    result.put("total", entries.size());
+                    break;
+                case "supopl":
+                    sort = jsonProperties.getString("sort");
+                    desc = jsonProperties.getBoolean("desc");
+
+                    entries = flowChartBean.getEntriesByStateSUPOPL(siteShortName, defaultQueryForTemporaryEditedDeclaration, sort, desc);
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
