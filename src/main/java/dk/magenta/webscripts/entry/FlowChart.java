@@ -130,6 +130,7 @@ public class FlowChart extends AbstractWebScript {
                     String casenumber = jsonProperties.getString("casenumber");
                     result.put("state", flowChartBean.getStateOfDeclaration(casenumber));
                     result.put("temporaryEdit", flowChartBean.isDeclarationMarkedForTemporaryEditing(casenumber));
+                    result.put("hasAspectSupopl", flowChartBean.hasAspectSupopl(casenumber));
                     break;
 
                 case "redflag":

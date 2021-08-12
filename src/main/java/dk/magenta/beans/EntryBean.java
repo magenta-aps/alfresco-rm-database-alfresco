@@ -283,16 +283,6 @@ public class EntryBean {
             locked_for_edit = false;
         }
 
-        System.out.println("boolean)locked_for_edit");
-        System.out.println(locked_for_edit);
-        System.out.println("locked_for_edit_by");
-        System.out.println(locked_for_edit_by);
-
-        System.out.println("currentUser");
-        System.out.println(currentUser);
-
-        System.out.println(lockService.isLocked(entryRef));
-
         if ((boolean)locked_for_edit) {
             // check if its the same user that edits that holds the lock
             if (!((String)locked_for_edit_by).equals(currentUser)) {
@@ -344,11 +334,6 @@ public class EntryBean {
 
             AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
             this.addMetaData(entryRef);
-            
-            // tjek her om der kører lås
-            System.out.println("are we doing the lock");
-            System.out.println("closedAfterTempEditing");
-            System.out.println(closedAfterTempEditing);
 
             if (!nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SUPOPL) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT) || closedAfterTempEditing) {
                 lockEntry(entryRef);
@@ -360,7 +345,7 @@ public class EntryBean {
             nodeService.setProperty(entryRef, DatabaseModel.PROP_CLOSED, true);
             AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
             this.addMetaData(entryRef);
-            System.out.println("wanna dance locks");
+
             if (!nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SUPOPL) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT ) ) {
                 lockEntry(entryRef);
             }
@@ -419,11 +404,11 @@ public class EntryBean {
 
     private void lockEntry (NodeRef entryRef) {
 
-        System.out.println("do the lock.....");
+
 
 
         if (!lockService.getLockStatus(entryRef).equals(LockStatus.LOCKED)) {
-            System.out.println("do the lock, ohhh no");
+
             if (!nodeService.hasAspect(entryRef, ContentModel.ASPECT_LOCKABLE)) {
                 Map<QName, Serializable> prop = new HashMap<>();
                 prop.put(DatabaseModel.PROP_CLOSED_DATE, new Date());
@@ -431,15 +416,13 @@ public class EntryBean {
             }
             // cleanup after a possible temporary editing of the case (#34257, 40320)
             if (nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW)) {
-                System.out.println("cleaning up...");
                 nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW);
             }
             if (nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SUPOPL)) {
-                System.out.println("cleaning up...");
                 nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_SUPOPL);
             }
             if (nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT)) {
-                System.out.println("cleaning up...");
+
                 nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT);
             }
 
@@ -475,7 +458,6 @@ public class EntryBean {
 
         if (mode.equals(DatabaseModel.PROP_UNLOCK_FOR_EDIT)) {
             nodeService.addAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT,null);
-
         }
         else  if (mode.equals(DatabaseModel.PROP_UNLOCK_FOR_SUPPOPL)) {
             nodeService.addAspect(entryRef, DatabaseModel.ASPECT_SUPOPL, null);

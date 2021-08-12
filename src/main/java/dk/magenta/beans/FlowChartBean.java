@@ -86,9 +86,6 @@ public class FlowChartBean {
 
         query += " AND " + default_query;
 
-        //System.out.println("getEntriesbyUser query");
-        //System.out.println(query);
-
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
 
         return nodeRefs;
@@ -128,10 +125,6 @@ public class FlowChartBean {
 
         query += statusQuery;
 
-
-        //System.out.println("getEntriesbyUserStateArrestanter query");
-        //System.out.println(query);
-
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
         return nodeRefs;
@@ -168,10 +161,6 @@ public class FlowChartBean {
         statusQuery += ") ";
 
         query += statusQuery;
-
-
-        //System.out.println("getEntriesbyUserStateNOTArrestanter query");
-        //System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
@@ -230,10 +219,6 @@ public class FlowChartBean {
 
         query += " AND " + default_query;
 
-
-        //System.out.println("getWaitingList query");
-        //System.out.println(query);
-
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
         return nodeRefs;
@@ -284,28 +269,24 @@ public class FlowChartBean {
 
         query += statusQuery;
 
-        //System.out.println("getEntriesByOngoing query");
-        //System.out.println(query);
-
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
         return nodeRefs;
     }
 
 
+    public boolean hasAspectSupopl(String casenumber) {
+        String defaultQuery = "@rm\\:caseNumber:" + "\"" + casenumber + "\"";
+
+        List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(defaultQuery);
+        return (nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_SUPOPL)) ;
+    }
+
     public boolean isDeclarationMarkedForTemporaryEditing(String casenumber) {
 
         String defaultQuery = "@rm\\:caseNumber:" + "\"" + casenumber + "\"";
 
         List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(defaultQuery);
-
-        System.out.println("whats inside");
-        System.out.println(nodeRefs);
-
-        System.out.println("nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_SUPOPL)");
-        System.out.println("nodeRef");
-        System.out.println(nodeRefs.get(0));
-        System.out.println(nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_SUPOPL));
 
         return (nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_SUPOPL) || (nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_OPENEDIT)) ) ;
     }
@@ -377,6 +358,21 @@ public class FlowChartBean {
                 returnValue = "ventendegr";
             }
         }
+
+        if (!found) {
+
+            String defaultQueryForTemporaryEditedDeclaration = "-ASPECT:\"rm:skip_flowchart\"";
+            defaultQueryForTemporaryEditedDeclaration += " AND ASPECT:\"rm:supopl\"";
+
+            list = this.getEntriesByStateSUPOPL("retspsyk", defaultQueryForTemporaryEditedDeclaration,"@rm:creationDate", true);
+            if (list.size() == 1) {
+                found = true;
+                returnValue = "supopl";
+            }
+        }
+
+
+
             return returnValue;
 
     }
@@ -417,12 +413,12 @@ public class FlowChartBean {
 
     public List<NodeRef> getEntriesByStateObservation(String siteShortName, String default_query, String sort, boolean desc) {
 
-        //System.out.println("doing getEntriesByStateObservation");
+
 
         JSONObject o = new JSONObject();
 
         String type = databaseBean.getType(siteShortName);
-        //System.out.println("done type");
+
         String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
 
         query += " AND " + default_query;
@@ -436,9 +432,6 @@ public class FlowChartBean {
 
         query += statusQuery;
 
-        System.out.println("getEntriesByStateObservation query");
-        System.out.println(query);
-
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
         return nodeRefs;
@@ -446,7 +439,7 @@ public class FlowChartBean {
 
     public List<NodeRef> getEntriesByStateVentedeGR(String siteShortName, String default_query, String sort, boolean desc) {
 
-        //System.out.println("doing ventedegr");
+
 
         JSONObject o = new JSONObject();
 
@@ -463,8 +456,7 @@ public class FlowChartBean {
 
         query += statusQuery;
 
-        //System.out.println("getEntriesByStateventedegr query");
-        //System.out.println(query);
+
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
@@ -473,7 +465,7 @@ public class FlowChartBean {
 
     public List<NodeRef> getEntriesByStateSUPOPL(String siteShortName, String default_query, String sort, boolean desc) {
 
-        System.out.println("doing supopl");
+
 
         JSONObject o = new JSONObject();
 
@@ -483,8 +475,6 @@ public class FlowChartBean {
         query += " AND " + default_query;
 
         query = query + " AND ASPECT:\"rm:supopl\"";
-
-        System.out.println(query);
 
         List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
 
@@ -659,6 +649,12 @@ public class FlowChartBean {
 
         result.put("waitinglist",this.getWaitingList(siteShortName, default_query, "@rm:creationDate", true).size());
         result.put("ventendegr",this.getEntriesByStateVentedeGR(siteShortName,default_query, "@rm:creationDate", true).size());
+
+
+        String defaultQueryForTemporaryEditedDeclaration = "-ASPECT:\"rm:skip_flowchart\"";
+        defaultQueryForTemporaryEditedDeclaration += " AND ASPECT:\"rm:supopl\"";
+
+        result.put("supopl",this.getEntriesByStateSUPOPL(siteShortName,defaultQueryForTemporaryEditedDeclaration, "@rm:creationDate", true).size());
 
         return result;
     }
