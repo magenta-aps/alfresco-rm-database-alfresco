@@ -370,6 +370,18 @@
             <title>Attributes to mark a declartion as bua</title>
         </aspect>
 
+        <aspect name="rm:supopl">
+            <title>Marks a declaration as needing more additional information</title>
+        </aspect>
+
+        <aspect name="rm:openedit">
+            <title>Marks a declaration as needing more additional information</title>
+        </aspect>
+
+
+
+
+
         <aspect name="rm:sendMaillogs">
             <title>Attributes related to a template</title>
             <properties>

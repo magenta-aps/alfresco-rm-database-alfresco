@@ -67,9 +67,6 @@ public class MarkForEdit extends AbstractWebScript {
             String method = (String)json.get("method");
             String nodeRef = (String)json.get("nodeRef");
 
-            System.out.println("the method");
-            System.out.println(method);
-
             if (method.equals("add")) {
 
                 String username = authenticationService.getCurrentUserName();
@@ -84,15 +81,7 @@ public class MarkForEdit extends AbstractWebScript {
             }
             else if (method.equals("forceUnlock")) {
 
-
-                System.out.println("noderef");
-                System.out.println(nodeRef);
-
-
                 // check if user is a member of
-
-                System.out.println("this.isMember()");
-                System.out.println(this.isMember());
 
                 if (this.isMember()) {
                     nodeService.removeAspect(new NodeRef(nodeRef), DatabaseModel.ASPECT_DECLARATIONMARKEDFOREDIT);
