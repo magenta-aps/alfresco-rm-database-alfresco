@@ -100,6 +100,11 @@ public class UserSignature extends AbstractWebScript {
             String method = params.get("method");
             NodeRef templateLibrary = null;
 
+        System.out.println("whats the method");
+        System.out.println(userName);
+        System.out.println(method);
+
+
         switch (method) {
             case "getTemplateLibrary":
 
@@ -121,11 +126,8 @@ public class UserSignature extends AbstractWebScript {
 
                 if (signatureNodeRef != null) {
                     try {
-
-                        System.out.println("hvad er signaturetext");
-                        System.out.println(signatureNodeRef);
-                        System.out.println(nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE));
                         result.put("text", nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE));
+                        result.put("nodeRef", signatureNodeRef.getId());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
