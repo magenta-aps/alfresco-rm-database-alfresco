@@ -130,6 +130,11 @@ public interface DatabaseModel {
     QName ASPECT_AKTIVVENTETID = QName.createQName(RM_MODEL_URI, "aktivventetidBruger");
 
     QName ASPECT_ADDSIGNATURE = QName.createQName(RM_MODEL_URI, "addSignature");
+
+    QName ASPECT_SIGNATUREADDEDTOUSER = QName.createQName(RM_MODEL_URI, "signatureAdded");
+
+
+
     QName PROP_PRIMARYSIGNATURE = QName.createQName(RM_MODEL_URI, "primarySignature");
     QName PROP_SECONDARYSIGNATURE = QName.createQName(RM_MODEL_URI, "secondarySignature");
 

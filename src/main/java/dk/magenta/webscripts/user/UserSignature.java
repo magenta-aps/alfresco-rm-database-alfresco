@@ -142,6 +142,10 @@ public class UserSignature extends AbstractWebScript {
 
 
                 break;
+            case "mark":
+                NodeRef userNodeRef = personService.getPerson(userName);
+                nodeService.addAspect(userNodeRef, DatabaseModel.ASPECT_SIGNATUREADDEDTOUSER, null);
+                break;
             case "exists":
                 NodeRef nodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, userName);
                 if (nodeRef == null) {
