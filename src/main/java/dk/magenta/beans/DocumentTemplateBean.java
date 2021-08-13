@@ -265,7 +265,24 @@ public class DocumentTemplateBean {
 
         // make the new document below the case
 
-        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "_erklaering.odt", ContentModel.TYPE_CONTENT);
+
+        // #43832 - declarations should be saved in the new folder, Erklæring og Psykologisk rapport
+
+
+        NodeRef nodeRef_foldersTemplatesFolder = siteService.getContainer("retspsyk", DatabaseModel.PROP_FOLDER_TEMPLATE_LIBRARY);
+
+
+
+        NodeRef folder = fileFolderService.searchSimple(nodeRef_foldersTemplatesFolder, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
+
+//        NodeRef template_doc = children.get(0).getChildRef();
+
+        System.out.println("hvad er folder? ");
+        System.out.println(folder);
+
+
+
+        FileInfo newFile = fileFolderService.create(folder, info.cpr.substring(0,7) + "_erklaering.odt", ContentModel.TYPE_CONTENT);
 
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
