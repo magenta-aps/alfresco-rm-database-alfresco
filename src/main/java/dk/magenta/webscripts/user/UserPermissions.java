@@ -149,7 +149,7 @@ public class UserPermissions extends AbstractWebScript {
                     o.put("firstName", (String) nodeService.getProperty(n, ContentModel.PROP_FIRSTNAME));
                     o.put("lastName", (String) nodeService.getProperty(n, ContentModel.PROP_LASTNAME));
                     o.put("active", member);
-                    o.put("signatureAdded", nodeService.hasAspect(n, ASPECT_SIGNATUREADDEDTOUSER));
+                    o.put("signatureAdded", nodeService.hasAspect(n, ASPECT_SIGNATUREADDEDTOUSER) ? "(Signatur)" : "");
 
 
 
