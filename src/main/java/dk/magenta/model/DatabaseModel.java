@@ -146,7 +146,7 @@ public interface DatabaseModel {
     String PROP_SHAREDFOLDER_BUA = "sharedFolderBua";
     String PROP_WEEKLYSTAT = "weeklyStat";
 
-    String ATTR_DEFAULT_DECLARATION_FOLDER = "Erklæring og psykologisk rapport";
+    String ATTR_DEFAULT_DECLARATION_FOLDER = "Erklaering og psykologisk rapport";
 
     String PROP_TMP = "tmp";
 
