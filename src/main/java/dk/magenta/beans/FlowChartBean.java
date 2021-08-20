@@ -485,6 +485,10 @@ public class FlowChartBean {
                 e.put("doctor", tmp.get("doctor"));
             }
 
+            if (tmp.has("supervisingDoctor") && !tmp.get("supervisingDoctor").equals("null")) {
+                e.put("supervisingDoctor", tmp.get("supervisingDoctor"));
+            }
+
             if (tmp.has("psychologist") && !tmp.get("psychologist").equals("null")) {
                 e.put("psychologist", tmp.get("psychologist"));
             }
