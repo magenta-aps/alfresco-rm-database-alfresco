@@ -194,6 +194,15 @@ public class ReportWaitingTimeBean {
             o.put("include", true);
             queryArray.put(o);
 
+            // #43836 exclude closed cases without a declaration
+            o = new JSONObject();
+            o.put("key", "closedWithoutDeclaration");
+            o.put("value", true);
+            o.put("include", false);
+            queryArray.put(o);
+
+
+
             query = QueryUtils.getKeyValueQuery(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.TYPE_PSYC_DEC, queryArray);
 
             if (!bua) {
@@ -202,6 +211,11 @@ public class ReportWaitingTimeBean {
             else {
                 query = query + " AND +ASPECT:\"rm:bua\"";
             }
+
+
+            System.out.println("hvad er the query: ");
+            System.out.println(query);
+
             List<NodeRef> nodeRefs = entryBean.getEntries(query,0,1000,"@rm:caseNumber", true);
             return nodeRefs;
 
