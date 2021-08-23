@@ -62,6 +62,7 @@
 		<property name="propertyValuesBean" ref="propertyValuesBean"/>
 		<property name="authenticationService" ref="authenticationService"/>
 		<property name="personService" ref="personService"/>
+		<property name="mailBean" ref="mailBean"/>
 	</bean>
 
 	<bean id="webscript.entries.waitinglist.get" class="dk.magenta.webscripts.entry.GetWaitingList" parent="webscript">
