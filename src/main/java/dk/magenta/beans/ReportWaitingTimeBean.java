@@ -352,14 +352,21 @@ public class ReportWaitingTimeBean {
         Cell tekstGennemsnit = table.getCellByPosition(0, nextRow+2);
         tekstGennemsnit.setStringValue("Gennemsnit");
 
-        Cell passivGennemsnit = table.getCellByPosition(2, nextRow+2);
-        passivGennemsnit.setStringValue(String.valueOf((sumPassiv / passivAverageCount)));
 
-        Cell aktivGennemsnit = table.getCellByPosition(3, nextRow+2);
-        aktivGennemsnit.setStringValue(String.valueOf((sumAktiv / aktivAverageCount)));
+        if (passivAverageCount > 0) {
+            Cell passivGennemsnit = table.getCellByPosition(2, nextRow + 2);
+            passivGennemsnit.setStringValue(String.valueOf((sumPassiv / passivAverageCount)));
+        }
 
-        Cell totalGennemsnit = table.getCellByPosition(4, nextRow+2);
-        totalGennemsnit.setStringValue(String.valueOf((sumSamlet / totalAverageCount)));
+        if (aktivAverageCount > 0) {
+            Cell aktivGennemsnit = table.getCellByPosition(3, nextRow + 2);
+            aktivGennemsnit.setStringValue(String.valueOf((sumAktiv / aktivAverageCount)));
+        }
+
+        if (totalAverageCount > 0) {
+            Cell totalGennemsnit = table.getCellByPosition(4, nextRow + 2);
+            totalGennemsnit.setStringValue(String.valueOf((sumSamlet / totalAverageCount)));
+        }
 
         table.getColumnList().get(0).setWidth(20);
         table.getColumnList().get(1).setWidth(40);
