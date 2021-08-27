@@ -359,17 +359,19 @@ public class EntryBean {
 
 
 
-        // if closedWithoutDeclaration - check if need to add ASPECT_RETURNDATEFORDECLARATION
-        boolean  reason = (boolean)nodeService.getProperty(entry, DatabaseModel.PROP_CLOSED_WITHOUT_DECLARATION);
+        if (nodeService.getProperty(entry, DatabaseModel.PROP_CLOSED_WITHOUT_DECLARATION) != null) {
+            // if closedWithoutDeclaration - check if need to add ASPECT_RETURNDATEFORDECLARATION
+            boolean  reason = (boolean)nodeService.getProperty(entry, DatabaseModel.PROP_CLOSED_WITHOUT_DECLARATION);
+            if (reason) {
+                Date returnDate = (Date)nodeService.getProperty(entry, DatabaseModel.PROP_RETURNOFDECLARATIONDATE);
 
-
-        if (reason) {
-            Date returnDate = (Date)nodeService.getProperty(entry, DatabaseModel.PROP_RETURNOFDECLARATIONDATE);
-
-            Map<QName, Serializable> prop = new HashMap<>();
-            prop.put(DatabaseModel.PROP_RETURNOFDECLARATIONDATE, returnDate);
-            nodeService.addAspect(entry, DatabaseModel.ASPECT_RETURNDATEFORDECLARATION,prop);
+                Map<QName, Serializable> prop = new HashMap<>();
+                prop.put(DatabaseModel.PROP_RETURNOFDECLARATIONDATE, returnDate);
+                nodeService.addAspect(entry, DatabaseModel.ASPECT_RETURNDATEFORDECLARATION,prop);
+            }
         }
+
+
     }
 
     // used for converting data from the old system
