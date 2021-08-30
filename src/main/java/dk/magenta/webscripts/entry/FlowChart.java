@@ -196,9 +196,6 @@ public class FlowChart extends AbstractWebScript {
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
                     result = flowChartBean.getTotals(siteShortName, defaultQuery, userName);
                     break;
-                case "chart":
-                    this.mailBean.doChart();
-                    break;
             }
         } catch (JSONException e) {
             System.out.println("json exception");

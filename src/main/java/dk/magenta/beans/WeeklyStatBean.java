@@ -13,6 +13,7 @@ import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
+import org.jfree.data.xy.XYSeries;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -273,6 +274,121 @@ public class WeeklyStatBean {
         }
     }
 
+    public XYSeries getWeekNodesForYearChartReceived(String year) {
+
+        XYSeries series = new XYSeries("Modtaget");
+
+        NodeRef yearFolder = this.getYearFolderForWeeklyStat(year);
+
+        List<ChildAssociationRef> weekNodeRef = nodeService.getChildAssocs(yearFolder);
+
+        Iterator i = weekNodeRef.iterator();
+
+        while (i.hasNext()) {
+            NodeRef week = ((ChildAssociationRef) i.next()).getChildRef();
+
+            String weekString = (String)nodeService.getProperty(week, PROP_WEEK);
+//            String sent = (String)nodeService.getProperty(week, PROP_SENT);
+            String received = (String)nodeService.getProperty(week, PROP_RECEIVED);
+            System.out.println("sent");
+            System.out.println(received);
+            System.out.println("Double.valueOf(weekString), Double.valueOf(sent)");
+            System.out.println(Double.valueOf(weekString));
+            System.out.println(Double.valueOf(received));
+
+            series.add(Double.valueOf(weekString), Double.valueOf(received));
+        }
+        return series;
+    }
+
+    public XYSeries getWeekNodesForYearChartReceivedAkk(String year) {
+
+        XYSeries series = new XYSeries("Modtaget Akk");
+
+        NodeRef yearFolder = this.getYearFolderForWeeklyStat(year);
+
+        List<ChildAssociationRef> weekNodeRef = nodeService.getChildAssocs(yearFolder);
+
+        Iterator i = weekNodeRef.iterator();
+
+        int receivedAkk = 0;
+        while (i.hasNext()) {
+            NodeRef week = ((ChildAssociationRef) i.next()).getChildRef();
+
+            String weekString = (String)nodeService.getProperty(week, PROP_WEEK);
+//            String sent = (String)nodeService.getProperty(week, PROP_SENT);
+            String received = (String)nodeService.getProperty(week, PROP_RECEIVED);
+
+            receivedAkk = receivedAkk + Integer.valueOf(received);
+
+            System.out.println("sent");
+            System.out.println(received);
+            System.out.println("Double.valueOf(weekString), Double.valueOf(sent)");
+            System.out.println(Double.valueOf(weekString));
+            System.out.println(Double.valueOf(received));
+
+            series.add(Double.valueOf(weekString), Double.valueOf(receivedAkk));
+        }
+        return series;
+    }
+
+    public XYSeries getWeekNodesForYearChartSent(String year) {
+
+        XYSeries series = new XYSeries("Sendt");
+
+        NodeRef yearFolder = this.getYearFolderForWeeklyStat(year);
+
+        List<ChildAssociationRef> weekNodeRef = nodeService.getChildAssocs(yearFolder);
+
+        Iterator i = weekNodeRef.iterator();
+
+        while (i.hasNext()) {
+            NodeRef week = ((ChildAssociationRef) i.next()).getChildRef();
+
+            String weekString = (String)nodeService.getProperty(week, PROP_WEEK);
+            String sent = (String)nodeService.getProperty(week, PROP_SENT);
+
+            System.out.println("sent");
+            System.out.println(sent);
+            System.out.println("Double.valueOf(weekString), Double.valueOf(sent)");
+            System.out.println(Double.valueOf(weekString));
+            System.out.println(Double.valueOf(sent));
+
+            series.add(Double.valueOf(weekString), Double.valueOf(sent));
+        }
+        return series;
+    }
+
+    public XYSeries getWeekNodesForYearChartSentAkk(String year) {
+
+        XYSeries series = new XYSeries("Sendt Akk.");
+
+        NodeRef yearFolder = this.getYearFolderForWeeklyStat(year);
+
+        List<ChildAssociationRef> weekNodeRef = nodeService.getChildAssocs(yearFolder);
+
+        Iterator i = weekNodeRef.iterator();
+
+        int sentAkk = 0;
+        while (i.hasNext()) {
+            NodeRef week = ((ChildAssociationRef) i.next()).getChildRef();
+
+            String weekString = (String)nodeService.getProperty(week, PROP_WEEK);
+            String sent = (String)nodeService.getProperty(week, PROP_SENT);
+
+            sentAkk = sentAkk + Integer.valueOf(sent);
+
+            System.out.println("sent");
+            System.out.println(sent);
+            System.out.println("Double.valueOf(weekString), Double.valueOf(sent)");
+            System.out.println(Double.valueOf(weekString));
+            System.out.println(Double.valueOf(sent));
+
+            series.add(Double.valueOf(weekString), Double.valueOf(sentAkk));
+        }
+        return series;
+    }
+
     public List<WeekNode> getWeekNodesForYear(String year) {
 
         NodeRef yearFolder = this.getYearFolderForWeeklyStat(year);
@@ -310,6 +426,16 @@ public class WeeklyStatBean {
         });
 
         return weeks;
+    }
+
+    public boolean deleteTmpChartFile(NodeRef nodeRef) {
+        try {
+            nodeService.deleteNode(nodeRef);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 
     private NodeRef getSpreadSheetNodeRefChartA(String year) {

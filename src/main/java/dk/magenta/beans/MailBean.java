@@ -84,6 +84,12 @@ public class MailBean {
 
     private PersonService personService;
 
+    public void setWeeklyStatBean(WeeklyStatBean weeklyStatBean) {
+        this.weeklyStatBean = weeklyStatBean;
+    }
+
+    private WeeklyStatBean weeklyStatBean;
+
     public void setAuthenticationService(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
@@ -647,7 +653,7 @@ public class MailBean {
         }
     }
 
-    public void doChart()  {
+    public NodeRef doChart(String requestedYear)  {
 
         XYSeries series = new XYSeries("2016");
         series.add(18, 567);
@@ -657,14 +663,40 @@ public class MailBean {
         series.add(40, 1410);
         series.add(50, 2350);
 
+        System.out.println("series.getItems().size()");
+        System.out.println(series.getItems().size());
+
+        System.out.println("series.getItems().get(0)");
+        System.out.println(series.getItems().get(0));
+
+
+        String requestYear = "2007";
+
+        XYSeries sent = weeklyStatBean.getWeekNodesForYearChartSent(requestedYear);
+        XYSeries sentAkk = weeklyStatBean.getWeekNodesForYearChartSentAkk(requestedYear);
+
+
+        XYSeries received = weeklyStatBean.getWeekNodesForYearChartReceived(requestedYear);
+        XYSeries receivedAkk = weeklyStatBean.getWeekNodesForYearChartReceivedAkk(requestedYear);
+
+        System.out.println("chartA.getItems().size()");
+        System.out.println(sent.getItems().size());
+        System.out.println(received.getItems().size());
+
+
+
         XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(series);
+        dataset.addSeries(sent);
+        dataset.addSeries(sentAkk);
+
+        dataset.addSeries(received);
+        dataset.addSeries(receivedAkk);
 
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Average salary per age",
-                "Age",
-                "Salary (€)",
+                "----",
+                "Uge",
+                "Antal",
                 dataset,
                 PlotOrientation.VERTICAL,
                 true,
@@ -677,6 +709,13 @@ public class MailBean {
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         renderer.setSeriesPaint(0, java.awt.Color.RED);
         renderer.setSeriesStroke(0, new BasicStroke(2.0f));
+        renderer.setSeriesPaint(1, java.awt.Color.BLUE);
+        renderer.setSeriesStroke(1, new BasicStroke(2.0f));
+
+        renderer.setSeriesPaint(2, java.awt.Color.GREEN);
+        renderer.setSeriesStroke(2, new BasicStroke(2.0f));
+        renderer.setSeriesPaint(3, java.awt.Color.BLACK);
+        renderer.setSeriesStroke(3, new BasicStroke(2.0f));
 
         plot.setRenderer(renderer);
         plot.setBackgroundPaint((Paint) java.awt.Color.WHITE);
@@ -689,25 +728,25 @@ public class MailBean {
 
         chart.getLegend().setFrame(BlockBorder.NONE);
 
-        chart.setTitle(new TextTitle("Average Salary per Age",
+        chart.setTitle(new TextTitle("Rapport pr uge for " + requestedYear,
                         new Font("Serif", java.awt.Font.BOLD, 18)
                 )
         );
 
         OutputStream out = null;
-        File f = new File("testchart.png");
+        File f = new File("uge.png");
         try {
             out = new FileOutputStream(f);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            ChartUtilities.writeChartAsPNG(out, chart,400,600);
+            ChartUtilities.writeChartAsPNG(out, chart,800,1000);
 
             NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
             QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, "test");
             Map<QName, Serializable> properties = new HashMap<>();
-            properties.put(ContentModel.PROP_NAME, "test.png");
+            properties.put(ContentModel.PROP_NAME, "tmpchart.png");
             ChildAssociationRef childAssociationRef = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS, qName, ContentModel.TYPE_CONTENT, properties);
             nodeService.setProperty(childAssociationRef.getChildRef(), ContentModel.PROP_NAME, childAssociationRef.getChildRef().getId());
 
@@ -716,11 +755,12 @@ public class MailBean {
             writer.setMimetype("image/png");
             writer.putContent(f);
 
+            return childAssociationRef.getChildRef();
+
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-
-
     }
 
 

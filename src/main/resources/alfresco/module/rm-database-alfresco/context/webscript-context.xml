@@ -24,6 +24,7 @@
 
 	<bean id="webscript.database.weeklystat.post" class="dk.magenta.webscripts.database.WeeklyStat" parent="webscript">
 		<property name="WeeklyStatBean" ref="weeklyStatBean"/>
+		<property name="mailBean" ref="mailBean"/>
 	</bean>
 
 	<bean id="webscript.database.reports.post" class="dk.magenta.webscripts.database.Reports" parent="webscript">
@@ -62,7 +63,6 @@
 		<property name="propertyValuesBean" ref="propertyValuesBean"/>
 		<property name="authenticationService" ref="authenticationService"/>
 		<property name="personService" ref="personService"/>
-		<property name="mailBean" ref="mailBean"/>
 	</bean>
 
 	<bean id="webscript.entries.waitinglist.get" class="dk.magenta.webscripts.entry.GetWaitingList" parent="webscript">
