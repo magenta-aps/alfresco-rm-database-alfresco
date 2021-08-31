@@ -13,7 +13,16 @@ import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,13 +34,14 @@ import org.odftoolkit.simple.table.Table;
 import org.odftoolkit.simple.table.TableContainer;
 
 import javax.faces.model.DataModel;
-import java.io.File;
-import java.io.Serializable;
+import java.awt.*;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.*;
+import java.util.List;
 
 import static dk.magenta.model.DatabaseModel.*;
 
@@ -241,6 +251,93 @@ public class WeeklyStatBean {
     }
 
 
+    public NodeRef getChartB(String year) {
+        String yearM1 = String.valueOf(Integer.valueOf(year)-1);
+        String yearM2 = String.valueOf(Integer.valueOf(year)-2);
+
+        List<WeekNode> yearWeekNodes = this.getWeekNodesForYear(year);
+        List<WeekNode> yearWeekNodesM1 = this.getWeekNodesForYear(yearM1);
+        List<WeekNode> yearWeekNodesM2 = this.getWeekNodesForYear(yearM2);
+
+        if ( (yearWeekNodes.size() > 0) && (yearWeekNodesM1.size() > 0) && (yearWeekNodesM2.size() > 0)) {
+
+            XYSeriesCollection dataset = new XYSeriesCollection();
+            dataset = this.getDataSetForYearChart(year, yearWeekNodes, yearWeekNodesM1, yearWeekNodesM2);
+
+
+            JFreeChart chart = ChartFactory.createXYLineChart(
+                    "----",
+                    "Uge",
+                    "Antal",
+                    dataset,
+                    PlotOrientation.VERTICAL,
+                    true,
+                    true,
+                    false
+            );
+
+            XYPlot plot = chart.getXYPlot();
+
+            XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+            renderer.setSeriesPaint(0, java.awt.Color.RED);
+            renderer.setSeriesStroke(0, new BasicStroke(2.0f));
+
+            renderer.setSeriesPaint(1, java.awt.Color.BLUE);
+            renderer.setSeriesStroke(1, new BasicStroke(2.0f));
+
+            renderer.setSeriesPaint(2, java.awt.Color.GREEN);
+            renderer.setSeriesStroke(2, new BasicStroke(2.0f));
+
+            plot.setRenderer(renderer);
+            plot.setBackgroundPaint((Paint) java.awt.Color.WHITE);
+
+            plot.setRangeGridlinesVisible(true);
+            plot.setRangeGridlinePaint((Paint) java.awt.Color.BLACK);
+
+            plot.setDomainGridlinesVisible(true);
+            plot.setDomainGridlinePaint((Paint) java.awt.Color.BLACK);
+
+            chart.getLegend().setFrame(BlockBorder.NONE);
+
+            chart.setTitle(new TextTitle("Rapport pr år for " + year,
+                            new java.awt.Font("Serif", java.awt.Font.BOLD, 18)
+                    )
+            );
+
+            OutputStream out = null;
+            File f = new File("aar.png");
+            try {
+                out = new FileOutputStream(f);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                ChartUtilities.writeChartAsPNG(out, chart,800,1000);
+
+                NodeRef tmpFolder = siteService.getContainer("retspsyk", DatabaseModel.PROP_TMP);
+                QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, "test");
+                Map<QName, Serializable> properties = new HashMap<>();
+                properties.put(ContentModel.PROP_NAME, "tmpchart.png");
+                ChildAssociationRef childAssociationRef = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS, qName, ContentModel.TYPE_CONTENT, properties);
+                nodeService.setProperty(childAssociationRef.getChildRef(), ContentModel.PROP_NAME, childAssociationRef.getChildRef().getId());
+
+                ContentWriter writer = contentService.getWriter(childAssociationRef.getChildRef(), ContentModel.PROP_CONTENT, true);
+
+                writer.setMimetype("image/png");
+                writer.putContent(f);
+
+                return childAssociationRef.getChildRef();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
     public NodeRef createChartB(String year) {
 
         String yearM1 = String.valueOf(Integer.valueOf(year)-1);
@@ -411,7 +508,6 @@ public class WeeklyStatBean {
             weekNode.received = (String)nodeService.getProperty(week, PROP_RECEIVED);
 
             weeks.add(weekNode);
-
         }
 
 
@@ -664,7 +760,31 @@ public class WeeklyStatBean {
             return total;
     }
 
-//
+
+    public XYSeriesCollection getDataSetForYearChart (String year, List<WeekNode> weeksC, List<WeekNode> weeksM1, List<WeekNode> weeksM2) {
+
+        XYSeries a = new XYSeries(year);
+        XYSeries b = new XYSeries(Integer.valueOf(year)-1);
+        XYSeries c = new XYSeries(Integer.valueOf(year)-2);
+
+        for (int i=0; i<=weeksC.size()-1; i++) {
+
+            WeekNode weekNode = weeksC.get(i);
+            WeekNode weekNodeM1 = weeksM1.get(i);
+            WeekNode weekNodeM2 = weeksM2.get(i);
+
+            a.add(Double.valueOf(weekNode.week), Double.valueOf(weekNode.sent));
+            b.add(Double.valueOf(weekNode.week), Double.valueOf(weekNodeM1.sent));
+            c.add(Double.valueOf(weekNode.week), Double.valueOf(weekNodeM2.sent));
+        }
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(a);
+        dataset.addSeries(b);
+        dataset.addSeries(c);
+
+        return dataset;
+    }
 
     public NodeRef writeToDocumentChartB (String year, List<WeekNode> weeksC, List<WeekNode> weeksM1, List<WeekNode> weeksM2) {
 

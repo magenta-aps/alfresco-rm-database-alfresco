@@ -683,8 +683,6 @@ public class MailBean {
         System.out.println(sent.getItems().size());
         System.out.println(received.getItems().size());
 
-
-
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(sent);
         dataset.addSeries(sentAkk);

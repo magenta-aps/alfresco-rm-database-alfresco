@@ -73,7 +73,8 @@ public class WeeklyStat extends AbstractWebScript {
                 System.out.println("method: spreadSheetB");
 
                 String year = JSONUtils.getString(json, "year");
-                NodeRef nodeRef = this.weeklyStatBean.createChartB(year);
+//                NodeRef nodeRef = this.weeklyStatBean.createChartB(year);
+                NodeRef nodeRef = this.weeklyStatBean.getChartB(year);
 
                 if (nodeRef != null) {
                     result.put("NodeRef", nodeRef.getId());
