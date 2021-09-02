@@ -158,7 +158,7 @@ public interface DatabaseModel {
     String PROP_PSYCOLOGICALDOCUMENT = "Psyk test.odt";
     String PROP_PSYCOLOGICALDOCUMENT_BUA = "Psyk test_bua.odt";
 
-    String PROP_SAMTYKKE_TDL_KONTAKT = "samtykketidkontakt.odt";
+    String PROP_SAMTYKKE_TDL_KONTAKT = " ";
 
     // template docs
     String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke";

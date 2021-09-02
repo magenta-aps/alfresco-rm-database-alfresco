@@ -24,6 +24,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
+import org.apache.pdfbox.util.ImageIOUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -200,14 +201,16 @@ public class ContentsBean {
         PDPage firstPage = (PDPage) document.getDocumentCatalog().getAllPages().get(0);
 
         // tjek indhold.
-        Map<String, PDXObjectImage>  images = firstPage.findResources().getImages();
-        System.out.println("images");
-        System.out.println(images);
+//        Map<String, PDXObjectImage>  images = firstPage.findResources().getImages();
+//        System.out.println("images");
+//        System.out.println(images);
+//        System.out.println(images.size());
 
 
-        System.out.println(images.get("Im4"));
-        System.out.println(images.get(0));
-        System.out.println(images.get(1));
+
+//        System.out.println(images.get("Im4"));
+//        System.out.println(images.get(0));
+//        System.out.println(images.get(1));
 
         File f = new File("tmp");
 
@@ -219,8 +222,11 @@ public class ContentsBean {
 //        test.getWidth()
 
 
+        BufferedImage bim = firstPage.convertToImage(BufferedImage.TYPE_INT_RGB, 300);
+        ImageIOUtil.writeImage(bim, "duff" + ".png", 300);
 
-        ImageIO.write(images.get("Im0").getRGBImage(), "png", f);
+//        ImageIO.write(images.get("TI1Obj2").getRGBImage(), "png", f);
+        ImageIO.write(bim, "png", f);
 
         jpgWriter.setMimetype(MimetypeMap.MIMETYPE_IMAGE_PNG);
         jpgWriter.putContent(f);
