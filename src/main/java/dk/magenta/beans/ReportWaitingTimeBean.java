@@ -254,9 +254,6 @@ public class ReportWaitingTimeBean {
         fncps.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
         samletventetid.addParagraph("Samlet ventetid").setFont(fncps);
 
-        Cell link = table.getCellByPosition(5, 0);
-        link.setStringValue("Links til sagen");
-
         Font fc = cpr.getFont();
         fc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
 
@@ -309,8 +306,8 @@ public class ReportWaitingTimeBean {
             Cell sagsnrValue = table.getCellByPosition(0, nextRow);
             sagsnrValue.setStringValue(String.valueOf(sagsNummer));
 
-            Cell cprValue = table.getCellByPosition(1, nextRow);
-            cprValue.setStringValue(String.valueOf(cprNummer));
+//            Cell cprValue = table.getCellByPosition(1, nextRow);
+//            cprValue.setStringValue(String.valueOf(cprNummer));
 
             Cell passivventetidCell = table.getCellByPosition(2, nextRow);
             if (passivVentetidInt != 99999) {
@@ -338,12 +335,12 @@ public class ReportWaitingTimeBean {
             }
 
 
-            Cell urlValue = table.getCellByPosition(5, nextRow);
+            Cell urlValue = table.getCellByPosition(1, nextRow);
             //            URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
             //            URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
             URI uri = new URI("https://oda-test.rm.dk/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
 
-            urlValue.addParagraph("").appendHyperlink("klik for at åbne sagen", uri);
+            urlValue.addParagraph("").appendHyperlink(cprNummer, uri);
 
 
 
@@ -373,7 +370,7 @@ public class ReportWaitingTimeBean {
         table.getColumnList().get(2).setWidth(40);
         table.getColumnList().get(3).setWidth(40);
         table.getColumnList().get(4).setWidth(40);
-        table.getColumnList().get(5).setWidth(70);
+
 
         NodeRef tmpFolder = siteService.getContainer("retspsyk", DatabaseModel.PROP_TMP);
 
