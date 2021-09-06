@@ -102,6 +102,10 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
 
             if (onlyFlow != null && onlyFlow.equals("true")) {
 
+                System.out.println("query2 to get supopl");
+
+                input = req.getParameter("input"); // need to do this to preserve any replaced chars in the previous search
+
                 if (input.contains("!")) {
                     input = input.replace("!","");
                     keyValue = "[{\"key\" :\"caseNumber\" , \"value\" : \"" + input +  "\"" + " , \"include\" :\"true\"}]";
