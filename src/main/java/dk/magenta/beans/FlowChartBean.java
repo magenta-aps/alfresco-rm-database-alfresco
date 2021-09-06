@@ -377,9 +377,7 @@ public class FlowChartBean {
             }
         }
 
-
-
-            return returnValue;
+        return returnValue;
 
     }
 
