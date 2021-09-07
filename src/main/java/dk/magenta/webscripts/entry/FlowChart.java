@@ -167,6 +167,14 @@ public class FlowChart extends AbstractWebScript {
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
+                case "igangvaerendegr":
+                    sort = jsonProperties.getString("sort");
+                    desc = jsonProperties.getBoolean("desc");
+
+                    entries = flowChartBean.getEntriesByStateIgangvaerendeGR(siteShortName, defaultQuery, sort, desc);
+                    result.put("entries", flowChartBean.nodeRefsTOData(entries));
+                    result.put("total", entries.size());
+                    break;
                 case "supopl":
                     sort = jsonProperties.getString("sort");
                     desc = jsonProperties.getBoolean("desc");
