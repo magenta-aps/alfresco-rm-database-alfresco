@@ -26,9 +26,6 @@ public class UnlockEntry extends AbstractWebScript {
         Map<String, String> params = JSONUtils.parseParameters(req.getURL());
 
         String mode = params.get("mode");
-        System.out.println("hvad er mode");
-        System.out.println(mode);
-
 
         res.setContentEncoding("UTF-8");
         Writer webScriptWriter = res.getWriter();

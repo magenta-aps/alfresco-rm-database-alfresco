@@ -2,6 +2,7 @@ package dk.magenta.beans;
 
 
 import dk.magenta.model.DatabaseModel;
+import net.coobird.thumbnailator.Thumbnails;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.content.transform.ContentTransformer;
@@ -11,6 +12,7 @@ import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+
 import org.json.JSONException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -26,11 +28,13 @@ import org.odftoolkit.simple.text.Paragraph;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.imageio.ImageIO;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
@@ -392,18 +396,60 @@ public class MailBean {
         File backFile = new File("back");
         copyInputStreamToFile(primarySignature.image, filePrimary);
 
+        // reseize image
+
+
+
+        File newTestFile = new File("test.jpg");
+        try {
+            BufferedImage test = ImageIO.read(filePrimary);
+            System.out.println("hvad er test");
+            System.out.println(test);
+
+
+
+//            test = Scalr.resize(test, 250);
+
+            Thumbnails.of(filePrimary).scale(0.25).toFile(filePrimary);
+
+            System.out.println("hvad er test nu efter scale");
+            System.out.println(test);
+
+
+            ImageIO.write(test, "jpg", newTestFile);
+
+//            newTestFile = copyInputStreamToFile(newTestFile, newTestFile);
+
+            System.out.println("hvad er newTestFile");
+            System.out.println(newTestFile.toURI());
+        }
+        catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+        }
+
+
+
+
+
+
+
         Table table;
 
         if (secondarySignature != null) {
-            table = log_entires.addTable(2,5);
+            table = log_entires.addTable(6,1);
         }
         else {
-            table = log_entires.addTable(2,3);
+            table = log_entires.addTable(2,1);
         }
 
         Row row1 = table.getRowByIndex(0);
         Row row2 = table.getRowByIndex(1);
-
+        Row row3 = table.getRowByIndex(2);
+        Row row4 = table.getRowByIndex(3);
+        Row row5 = table.getRowByIndex(4);
+        Row row6 = table.getRowByIndex(5);
+        Row row7 = table.getRowByIndex(6);
 
         Cell cRow1A = row1.getCellByIndex(0);
 
@@ -415,29 +461,66 @@ public class MailBean {
         cRow1A.setVerticalAlignment(StyleTypeDefinitions.VerticalAlignmentType.MIDDLE);
 
 
-        cRow1A.setImage(filePrimary.toURI()).setHorizontalPosition(StyleTypeDefinitions.FrameHorizontalPosition.LEFT);
+        System.out.println("hvad er cRow1a");
+        System.out.println(cRow1A);
 
+        System.out.println("hvad er newTestFile");
+        System.out.println(newTestFile);
+        System.out.println(newTestFile.toURI());
 
+        try {
+            cRow1A.setImage(filePrimary.toURI()).setHorizontalPosition(StyleTypeDefinitions.FrameHorizontalPosition.LEFT);
+        }
+        catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+        }
 
         Cell cRow2A = row2.getCellByIndex(0);
         cRow2A.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
         cRow2A.addParagraph(primarySignature.text);
 
+
         if (secondarySignature != null) {
             copyInputStreamToFile(secondarySignature.image, fileSecondary);
-            Cell cRow1B = row1.getCellByIndex(1);
-            cRow1B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
-            cRow1B.setImage(fileSecondary.toURI()).setHorizontalPosition(StyleTypeDefinitions.FrameHorizontalPosition.LEFT);
+            Thumbnails.of(fileSecondary).scale(0.25).toFile(fileSecondary);
 
-            Cell cRow2B = row2.getCellByIndex(1);
-            cRow2B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
-            cRow2B.addParagraph(secondarySignature.text);
+            // add text, "Tiltrædes af"
+
+            Cell cRow3B = row3.getCellByIndex(0);
+            cRow3B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+
+            Cell cRow4B = row4.getCellByIndex(0);
+            cRow4B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+
+
+            Cell cRow5B = row5.getCellByIndex(0);
+            cRow5B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            cRow5B.addParagraph("Tiltrædes af: ");
+
+            Cell cRow6B = row6.getCellByIndex(0);
+            cRow6B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            cRow6B.setImage(fileSecondary.toURI()).setHorizontalPosition(StyleTypeDefinitions.FrameHorizontalPosition.LEFT);
+
+            Cell cRow7B = row7.getCellByIndex(0);
+            cRow7B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            cRow7B.addParagraph(secondarySignature.text);
         }
         else {
-            Cell cRow1B = row1.getCellByIndex(1);
+            Cell cRow1B = row1.getCellByIndex(0);
             cRow1B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
-            Cell cRow2B = row2.getCellByIndex(1);
+            Cell cRow2B = row2.getCellByIndex(0);
             cRow2B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            Cell cRow3B = row3.getCellByIndex(0);
+            cRow3B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            Cell cRow4B = row4.getCellByIndex(0);
+            cRow4B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            Cell cRow5B = row5.getCellByIndex(0);
+            cRow5B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            Cell cRow6B = row6.getCellByIndex(0);
+            cRow6B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
+            Cell cRow7B = row7.getCellByIndex(0);
+            cRow7B.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
         }
 
         log_entires.save(backFile);

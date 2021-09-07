@@ -30,6 +30,7 @@
         <property name="repository" ref="repositoryHelper"/>
         <property name="fileFolderService" ref="fileFolderService"/>
         <property name="versionService" ref="versionService"/>
+        <property name="contentService" ref="contentService"/>
     </bean>
 
     <bean id="databaseBean" class="dk.magenta.beans.DatabaseBean">

@@ -100,6 +100,11 @@ public class UserSignature extends AbstractWebScript {
             String method = params.get("method");
             NodeRef templateLibrary = null;
 
+        System.out.println("whats the method");
+        System.out.println(userName);
+        System.out.println(method);
+
+
         switch (method) {
             case "getTemplateLibrary":
 
@@ -119,13 +124,13 @@ public class UserSignature extends AbstractWebScript {
                 templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
                 NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, userName);
 
+                System.out.println("hvad er signatureNodeRef");
+                System.out.println(signatureNodeRef);
+
                 if (signatureNodeRef != null) {
                     try {
-
-                        System.out.println("hvad er signaturetext");
-                        System.out.println(signatureNodeRef);
-                        System.out.println(nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE));
                         result.put("text", nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE));
+                        result.put("nodeRef", signatureNodeRef.getId());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -139,6 +144,10 @@ public class UserSignature extends AbstractWebScript {
                 }
 
 
+                break;
+            case "mark":
+                NodeRef userNodeRef = personService.getPerson(userName);
+                nodeService.addAspect(userNodeRef, DatabaseModel.ASPECT_SIGNATUREADDEDTOUSER, null);
                 break;
             case "exists":
                 NodeRef nodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, userName);
