@@ -41,6 +41,14 @@
         <property name="authorityService" ref="AuthorityService"/>
     </bean>
 
+
+
+    <bean id="printBean" class="dk.magenta.beans.PrintBean">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="contentService" ref="contentService"/>
+        <property name="siteService" ref="siteService"/>
+    </bean>
+
     <bean id="mailBean" class="dk.magenta.beans.MailBean">
         <property name="nodeService" ref="NodeService"/>
         <property name="contentService" ref="contentService"/>

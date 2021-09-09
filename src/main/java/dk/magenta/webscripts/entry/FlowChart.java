@@ -1,9 +1,6 @@
 package dk.magenta.webscripts.entry;
 
-import dk.magenta.beans.DatabaseBean;
-import dk.magenta.beans.EntryBean;
-import dk.magenta.beans.FlowChartBean;
-import dk.magenta.beans.PropertyValuesBean;
+import dk.magenta.beans.*;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
@@ -33,6 +30,12 @@ public class FlowChart extends AbstractWebScript {
 
     private EntryBean entryBean;
     private DatabaseBean databaseBean;
+
+    public void setPrintBean(PrintBean printBean) {
+        this.printBean = printBean;
+    }
+
+    private PrintBean printBean;
 
     public void setPropertyValuesBean(PropertyValuesBean propertyValuesBean) {
         this.propertyValuesBean = propertyValuesBean;
@@ -206,6 +209,9 @@ public class FlowChart extends AbstractWebScript {
                 case "total":
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
                     result = flowChartBean.getTotals(siteShortName, defaultQuery, userName);
+                    break;
+                case "testPrintBean":
+                    printBean.printEntriesToPDF();
                     break;
             }
 

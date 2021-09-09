@@ -56,6 +56,7 @@
 
 	<bean id="webscript.entries.flowchart.post" class="dk.magenta.webscripts.entry.FlowChart" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
+		<property name="printBean" ref="printBean"/>
 		<property name="databaseBean" ref="databaseBean"/>
 		<property name="nodeService" ref="NodeService"/>
 		<property name="flowChartBean" ref="flowChartBean"/>
