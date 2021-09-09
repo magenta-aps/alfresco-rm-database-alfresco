@@ -338,7 +338,7 @@ public class ReportWaitingTimeBean {
             Cell urlValue = table.getCellByPosition(1, nextRow);
             //            URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
             //            URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
-            URI uri = new URI("https://oda-test.rm.dk/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
+            URI uri = new URI("https://oda.rm.dk/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
 
             urlValue.addParagraph("").appendHyperlink(cprNummer, uri);
 
