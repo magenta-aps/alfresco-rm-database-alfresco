@@ -32,7 +32,6 @@ public class AddEntry_import extends AbstractWebScript {
         Writer webScriptWriter = res.getWriter();
         JSONObject result;
 
-
         try {
             JSONObject json = new JSONObject(c.getContent());
             String siteShortName = templateArgs.get("siteShortName");

@@ -79,17 +79,15 @@ public class SettingsBean {
 
 
         if (dropdown.equals(DEFAULT_MAIL_TEXT_SEND_VALUE)) {
-            System.out.println("default");
             nodeName = DatabaseModel.DEFAULT_MAIL_TEXT_NAME;
             childRef = nodeService.getChildByName(sharedNodeRef, ContentModel.ASSOC_CONTAINS, DatabaseModel.DEFAULT_MAIL_TEXT_NAME);
         }
         else {
-            System.out.println("returnering");
             childRef = nodeService.getChildByName(sharedNodeRef, ContentModel.ASSOC_CONTAINS, DEFAULT_MAIL_TEXT_RETURN);
             nodeName = DEFAULT_MAIL_TEXT_RETURN;
         }
 
-        System.out.println("childRef" + childRef);
+
 
 
         // create node

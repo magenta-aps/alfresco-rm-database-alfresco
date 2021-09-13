@@ -108,6 +108,7 @@ public interface DatabaseModel {
     QName PROP_LOCKED_FOR_EDIT_BY = QName.createQName(RM_MODEL_URI, "locked4editBy");
 
     QName PROP_FLOWCHART_FLAG = QName.createQName(RM_MODEL_URI, "flowflag");
+    QName PROP_CLOSECASEBUTTONPRESSED = QName.createQName(RM_MODEL_URI, "closeCaseButtonPressed");
 
 
     public static QName PROP_ENTRIES = QName.createQName(RM_MODEL_URI, "maillog_entries");
@@ -118,6 +119,8 @@ public interface DatabaseModel {
 
     /* Aspects */
     QName ASPECT_BUA = QName.createQName(RM_MODEL_URI, "bua");
+    QName ASPECT_SUPOPL = QName.createQName(RM_MODEL_URI, "supopl");
+    QName ASPECT_OPENEDIT = QName.createQName(RM_MODEL_URI, "openedit");
 
     QName ASPECT_RETURNDATEFORDECLARATION = QName.createQName(RM_MODEL_URI, "returnDateForDeclaration");
     QName PROP_RETURNOFDECLARATIONDATE = QName.createQName(RM_MODEL_URI, "returnOfDeclarationDate");
@@ -127,6 +130,11 @@ public interface DatabaseModel {
     QName ASPECT_AKTIVVENTETID = QName.createQName(RM_MODEL_URI, "aktivventetidBruger");
 
     QName ASPECT_ADDSIGNATURE = QName.createQName(RM_MODEL_URI, "addSignature");
+
+    QName ASPECT_SIGNATUREADDEDTOUSER = QName.createQName(RM_MODEL_URI, "signatureAdded");
+
+
+
     QName PROP_PRIMARYSIGNATURE = QName.createQName(RM_MODEL_URI, "primarySignature");
     QName PROP_SECONDARYSIGNATURE = QName.createQName(RM_MODEL_URI, "secondarySignature");
 
@@ -150,7 +158,7 @@ public interface DatabaseModel {
     String PROP_PSYCOLOGICALDOCUMENT = "Psyk test.odt";
     String PROP_PSYCOLOGICALDOCUMENT_BUA = "Psyk test_bua.odt";
 
-    String PROP_SAMTYKKE_TDL_KONTAKT = "samtykketidkontakt.odt";
+    String PROP_SAMTYKKE_TDL_KONTAKT = " ";
 
     // template docs
     String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke";
@@ -220,7 +228,8 @@ public interface DatabaseModel {
     QName ASSOC_VERSION_PREVIEW = QName.createQName(RM_MODEL_URI, "version_preview");
 
     // unlock modes
-    String PROP_SKIPFLOW = "skipflow";
+    String PROP_UNLOCK_FOR_SUPPOPL = "reopenSupopl"; // include in flowchart, add the new aspect
+    String PROP_UNLOCK_FOR_EDIT = "reopenEdit"; // skip in flowchart
 
 
     // weeklystat
