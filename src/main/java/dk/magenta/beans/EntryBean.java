@@ -13,6 +13,7 @@ import org.alfresco.repo.audit.AuditComponent;
 import org.alfresco.repo.audit.AuditComponentImpl;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.lock.LockService;
+import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -30,7 +31,9 @@ import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.orm.jpa.vendor.Database;
 
+import javax.xml.crypto.Data;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -296,6 +299,9 @@ public class EntryBean {
         boolean erklaringdate = false;
 
 
+
+        boolean closedAfterTempEditing = false;
+
         // updating the properties
         for (Map.Entry<QName, Serializable> property : properties.entrySet()) {
             nodeService.setProperty(entryRef, property.getKey(), property.getValue());
@@ -312,6 +318,12 @@ public class EntryBean {
                     nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_REDFLAG);
                 }
             }
+
+            if (property.getKey().equals(DatabaseModel.PROP_CLOSECASEBUTTONPRESSED)) {
+                if (property.getValue().equals("true")) {
+                    closedAfterTempEditing = true;
+                }
+            }
         }
 
         String uri = DatabaseModel.RM_MODEL_URI;
@@ -322,14 +334,21 @@ public class EntryBean {
 
             AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
             this.addMetaData(entryRef);
-            lockEntry(entryRef);
+
+            if (!nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SUPOPL) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT) || closedAfterTempEditing) {
+                lockEntry(entryRef);
+            }
+
         }
         // check if datefield "erklæaring afgivet is set - then close the case # 31284
         else if (closedProp == null && erklaringdate) {
             nodeService.setProperty(entryRef, DatabaseModel.PROP_CLOSED, true);
             AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
             this.addMetaData(entryRef);
-            lockEntry(entryRef);
+
+            if (!nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SUPOPL) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT ) ) {
+                lockEntry(entryRef);
+            }
 
 
 
@@ -340,17 +359,19 @@ public class EntryBean {
 
 
 
-        // if closedWithoutDeclaration - check if need to add ASPECT_RETURNDATEFORDECLARATION
-        boolean  reason = (boolean)nodeService.getProperty(entry, DatabaseModel.PROP_CLOSED_WITHOUT_DECLARATION);
+        if (nodeService.getProperty(entry, DatabaseModel.PROP_CLOSED_WITHOUT_DECLARATION) != null) {
+            // if closedWithoutDeclaration - check if need to add ASPECT_RETURNDATEFORDECLARATION
+            boolean  reason = (boolean)nodeService.getProperty(entry, DatabaseModel.PROP_CLOSED_WITHOUT_DECLARATION);
+            if (reason) {
+                Date returnDate = (Date)nodeService.getProperty(entry, DatabaseModel.PROP_RETURNOFDECLARATIONDATE);
 
-
-        if (reason) {
-            Date returnDate = (Date)nodeService.getProperty(entry, DatabaseModel.PROP_RETURNOFDECLARATIONDATE);
-
-            Map<QName, Serializable> prop = new HashMap<>();
-            prop.put(DatabaseModel.PROP_RETURNOFDECLARATIONDATE, returnDate);
-            nodeService.addAspect(entry, DatabaseModel.ASPECT_RETURNDATEFORDECLARATION,prop);
+                Map<QName, Serializable> prop = new HashMap<>();
+                prop.put(DatabaseModel.PROP_RETURNOFDECLARATIONDATE, returnDate);
+                nodeService.addAspect(entry, DatabaseModel.ASPECT_RETURNDATEFORDECLARATION,prop);
+            }
         }
+
+
     }
 
     // used for converting data from the old system
@@ -384,18 +405,32 @@ public class EntryBean {
     public void deleteEntry (NodeRef entryRef) { nodeService.deleteNode(entryRef); }
 
     private void lockEntry (NodeRef entryRef) {
-        if (!nodeService.hasAspect(entryRef, ContentModel.ASPECT_LOCKABLE)) {
-            Map<QName, Serializable> prop = new HashMap<>();
-            prop.put(DatabaseModel.PROP_CLOSED_DATE, new Date());
-            nodeService.addAspect(entryRef, ContentModel.ASPECT_LOCKABLE, prop);
+
+
+
+
+        if (!lockService.getLockStatus(entryRef).equals(LockStatus.LOCKED)) {
+
+            if (!nodeService.hasAspect(entryRef, ContentModel.ASPECT_LOCKABLE)) {
+                Map<QName, Serializable> prop = new HashMap<>();
+                prop.put(DatabaseModel.PROP_CLOSED_DATE, new Date());
+                nodeService.addAspect(entryRef, ContentModel.ASPECT_LOCKABLE, prop);
+            }
+            // cleanup after a possible temporary editing of the case (#34257, 40320)
+            if (nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW)) {
+                nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW);
+            }
+            if (nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SUPOPL)) {
+                nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_SUPOPL);
+            }
+            if (nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT)) {
+
+                nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT);
+            }
+
+            lockService.lock(entryRef, LockType.READ_ONLY_LOCK);
         }
 
-        // cleanup after a possible temporary editing of the case (#34257)
-        if (nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW)) {
-            nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW);
-        }
-
-        lockService.lock(entryRef, LockType.READ_ONLY_LOCK);
 
 
     }
@@ -408,22 +443,27 @@ public class EntryBean {
             lockService.unlock(entryRef);
         }
 
-        String uri = DatabaseModel.RM_MODEL_URI;
-        QName closed = QName.createQName(uri, "closed");
-        QName closedWithoutDeclaration = QName.createQName(uri, "closedWithoutDeclaration");
-        QName closedWithoutDeclarationReason = QName.createQName(uri, "closedWithoutDeclarationReason");
-        QName closedWithoutDeclarationSentTo = QName.createQName(uri, "closedWithoutDeclarationSentTo");
+//        String uri = DatabaseModel.RM_MODEL_URI;
+//        QName closed = QName.createQName(uri, "closed");
+//        QName closedWithoutDeclaration = QName.createQName(uri, "closedWithoutDeclaration");
+//        QName closedWithoutDeclarationReason = QName.createQName(uri, "closedWithoutDeclarationReason");
+//        QName closedWithoutDeclarationSentTo = QName.createQName(uri, "closedWithoutDeclarationSentTo");
 
         // 34111 - removing the property makes the declaration reappear in the flowchart
-        nodeService.removeProperty(entryRef, closed);
-        // nodeService.setProperty(entryRef, closed, false);
+        // 40320 - they decided to change the behaviour when reopening a decl. Never change close status as it messes up with the statistics
+        //         this is the reason why the next line has been commented out again.
+        // nodeService.removeProperty(entryRef, closed);
 
-        nodeService.setProperty(entryRef, closedWithoutDeclaration, null);
-        nodeService.setProperty(entryRef, closedWithoutDeclarationReason, null);
-        nodeService.setProperty(entryRef, closedWithoutDeclarationSentTo, null);
+//        nodeService.setProperty(entryRef, closedWithoutDeclaration, null);
+//        nodeService.setProperty(entryRef, closedWithoutDeclarationReason, null);
+//        nodeService.setProperty(entryRef, closedWithoutDeclarationSentTo, null);
 
-        if (mode.equals(DatabaseModel.PROP_SKIPFLOW)) {
-            nodeService.addAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW,null);
+        if (mode.equals(DatabaseModel.PROP_UNLOCK_FOR_EDIT)) {
+            nodeService.addAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT,null);
+        }
+        else  if (mode.equals(DatabaseModel.PROP_UNLOCK_FOR_SUPPOPL)) {
+            nodeService.addAspect(entryRef, DatabaseModel.ASPECT_SUPOPL, null);
+
         }
     }
 

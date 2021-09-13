@@ -73,8 +73,9 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
                 query += " AND ISUNSET:\"rm:closed\"";
             }
 
+            System.out.println("hvad er query");
+            System.out.println(query);
             List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
-
 
             Iterator<NodeRef> i = nodeRefs.iterator();
 
@@ -96,6 +97,53 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
 
                 entries.put(e);
             }
+
+            // if onlyflow - make another query to fetch any closed cases that has been opened for sup.edit - ie has the aspect - rm:supopl
+
+            if (onlyFlow != null && onlyFlow.equals("true")) {
+
+                System.out.println("query2 to get supopl");
+
+                input = req.getParameter("input"); // need to do this to preserve any replaced chars in the previous search
+
+                if (input.contains("!")) {
+                    input = input.replace("!","");
+                    keyValue = "[{\"key\" :\"caseNumber\" , \"value\" : \"" + input +  "\"" + " , \"include\" :\"true\"}]";
+                }
+                else if (input.matches(".*\\d+.*")) {
+                    keyValue = "[{\"key\" :\"cprNumber\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
+                }
+                else {
+                    keyValue = "[{\"key\" :\"fullName\" , \"value\" : \"" + input +  "*\"" + " , \"include\" :\"true\"}]";
+                }
+
+                query = QueryUtils.getKeyValueQuery(siteShortName, type, new org.json.JSONArray(keyValue));
+                query += " AND ASPECT:\"rm:supopl\"";
+
+                nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
+
+                i = nodeRefs.iterator();
+
+                while (i.hasNext()) {
+                    NodeRef nodeRef = i.next();
+
+
+                    JSONObject tmp = entryBean.toJSON(nodeRef);
+                    JSONObject e = new JSONObject();
+
+                    if (tmp.has("cprNumber")) {
+                        e.put("cprNumber", tmp.get("cprNumber"));
+                    }
+
+                    e.put("caseNumber", tmp.get("caseNumber"));
+                    e.put("firstName", tmp.get("firstName"));
+                    e.put("lastName", tmp.get("lastName"));
+                    e.put("node-uuid", tmp.get("node-uuid"));
+
+                    entries.put(e);
+                }
+            }
+
 
             result.put("entries", entries);
             result.put("back", skip);

@@ -202,6 +202,13 @@ public class ReportWaitingTimeBean {
             else {
                 query = query + " AND +ASPECT:\"rm:bua\"";
             }
+
+            // https://redmine.magenta-aps.dk/issues/37799 - filter out closed without a declaration
+            query = query + "AND NOT @rm\\:closedWithoutDeclaration:\"true\"";
+
+            System.out.println("the query");
+            System.out.println(query);
+
             List<NodeRef> nodeRefs = entryBean.getEntries(query,0,1000,"@rm:caseNumber", true);
             return nodeRefs;
 
@@ -246,9 +253,6 @@ public class ReportWaitingTimeBean {
         Font fncps = samletventetid.getFont();
         fncps.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
         samletventetid.addParagraph("Samlet ventetid").setFont(fncps);
-
-        Cell link = table.getCellByPosition(5, 0);
-        link.setStringValue("Links til sagen");
 
         Font fc = cpr.getFont();
         fc.setFontStyle(StyleTypeDefinitions.FontStyle.BOLD);
@@ -302,8 +306,8 @@ public class ReportWaitingTimeBean {
             Cell sagsnrValue = table.getCellByPosition(0, nextRow);
             sagsnrValue.setStringValue(String.valueOf(sagsNummer));
 
-            Cell cprValue = table.getCellByPosition(1, nextRow);
-            cprValue.setStringValue(String.valueOf(cprNummer));
+//            Cell cprValue = table.getCellByPosition(1, nextRow);
+//            cprValue.setStringValue(String.valueOf(cprNummer));
 
             Cell passivventetidCell = table.getCellByPosition(2, nextRow);
             if (passivVentetidInt != 99999) {
@@ -331,12 +335,12 @@ public class ReportWaitingTimeBean {
             }
 
 
-            Cell urlValue = table.getCellByPosition(5, nextRow);
+            Cell urlValue = table.getCellByPosition(1, nextRow);
             //            URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
             //            URI uri = new URI("http://0.0.0.0:7674/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
-            URI uri = new URI("https://oda-test.rm.dk/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
+            URI uri = new URI("https://oda.rm.dk/#!/erklaeringer/sag/" + sagsNummer + "/patientdata");
 
-            urlValue.addParagraph("").appendHyperlink("klik for at åbne sagen", uri);
+            urlValue.addParagraph("").appendHyperlink(cprNummer, uri);
 
 
 
@@ -345,21 +349,28 @@ public class ReportWaitingTimeBean {
         Cell tekstGennemsnit = table.getCellByPosition(0, nextRow+2);
         tekstGennemsnit.setStringValue("Gennemsnit");
 
-        Cell passivGennemsnit = table.getCellByPosition(2, nextRow+2);
-        passivGennemsnit.setStringValue(String.valueOf((sumPassiv / passivAverageCount)));
 
-        Cell aktivGennemsnit = table.getCellByPosition(3, nextRow+2);
-        aktivGennemsnit.setStringValue(String.valueOf((sumAktiv / aktivAverageCount)));
+        if (passivAverageCount > 0) {
+            Cell passivGennemsnit = table.getCellByPosition(2, nextRow + 2);
+            passivGennemsnit.setStringValue(String.valueOf((sumPassiv / passivAverageCount)));
+        }
 
-        Cell totalGennemsnit = table.getCellByPosition(4, nextRow+2);
-        totalGennemsnit.setStringValue(String.valueOf((sumSamlet / totalAverageCount)));
+        if (aktivAverageCount > 0) {
+            Cell aktivGennemsnit = table.getCellByPosition(3, nextRow + 2);
+            aktivGennemsnit.setStringValue(String.valueOf((sumAktiv / aktivAverageCount)));
+        }
+
+        if (totalAverageCount > 0) {
+            Cell totalGennemsnit = table.getCellByPosition(4, nextRow + 2);
+            totalGennemsnit.setStringValue(String.valueOf((sumSamlet / totalAverageCount)));
+        }
 
         table.getColumnList().get(0).setWidth(20);
         table.getColumnList().get(1).setWidth(40);
         table.getColumnList().get(2).setWidth(40);
         table.getColumnList().get(3).setWidth(40);
         table.getColumnList().get(4).setWidth(40);
-        table.getColumnList().get(5).setWidth(70);
+
 
         NodeRef tmpFolder = siteService.getContainer("retspsyk", DatabaseModel.PROP_TMP);
 

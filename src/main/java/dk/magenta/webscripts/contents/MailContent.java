@@ -135,8 +135,6 @@ public class MailContent extends AbstractWebScript {
                     declaration = entryBean.getEntry(query);
 
                     boolean avail = mailBean.signituresAvailable(declaration, nodeRefs);
-                    System.out.println("hvad er avail");
-                    System.out.println(avail);
 
                     result.put("available", avail);
                     JSONUtils.write(webScriptWriter, result);

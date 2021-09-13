@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>add permission</shortname>
+    <description>transforms the usersignature from pdf to jpg</description>
+    <url>/contents/transformpdftojpg</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

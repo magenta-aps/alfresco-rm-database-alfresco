@@ -370,6 +370,18 @@
             <title>Attributes to mark a declartion as bua</title>
         </aspect>
 
+        <aspect name="rm:supopl">
+            <title>Marks a declaration as needing more additional information</title>
+        </aspect>
+
+        <aspect name="rm:openedit">
+            <title>Marks a declaration as needing more additional information</title>
+        </aspect>
+
+
+
+
+
         <aspect name="rm:sendMaillogs">
             <title>Attributes related to a template</title>
             <properties>
@@ -528,12 +540,13 @@
                     <title>noderef for  secondary signature</title>
                     <type>d:noderef</type>
                 </property>
-
-
             </properties>
         </aspect>
 
 
+        <aspect name="rm:signatureAdded">
+            <title>marks that a signature has been added for this user</title>
+        </aspect>
 
     </aspects>
 </model>

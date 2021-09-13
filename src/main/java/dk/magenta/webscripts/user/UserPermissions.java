@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static dk.magenta.model.DatabaseModel.ASPECT_SIGNATUREADDEDTOUSER;
+
 
 public class UserPermissions extends AbstractWebScript {
 
@@ -147,6 +149,9 @@ public class UserPermissions extends AbstractWebScript {
                     o.put("firstName", (String) nodeService.getProperty(n, ContentModel.PROP_FIRSTNAME));
                     o.put("lastName", (String) nodeService.getProperty(n, ContentModel.PROP_LASTNAME));
                     o.put("active", member);
+                    o.put("signatureAdded", nodeService.hasAspect(n, ASPECT_SIGNATUREADDEDTOUSER) ? "(Signatur)" : "");
+
+
 
                     if (nodeService.hasAspect(n, DatabaseModel.ASPECT_BUA_USER)) {
                         o.put("bua", "(BUA)");

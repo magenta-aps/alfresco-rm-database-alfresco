@@ -200,6 +200,10 @@
 		<property name="nodeService" ref="nodeService"/>
 	</bean>
 
+	<bean id="webscript.contents.transformpdftojpg.post" class="dk.magenta.webscripts.contents.TransformPDFtoJPG" parent="webscript">
+		<property name="contentsBean" ref="contentsBean"/>
+	</bean>
+
 	<bean id="webscript.contents.revert.post" class="dk.magenta.webscripts.contents.Revert" parent="webscript">
 		<property name="permissionService" ref="permissionService"/>
 		<property name="searchService" ref="searchService"/>
