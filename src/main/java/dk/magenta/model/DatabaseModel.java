@@ -149,9 +149,12 @@ public interface DatabaseModel {
     // Containers
     String PROP_VALUES = "propertyValues";
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
+    String PROP_FOLDER_TEMPLATE_LIBRARY = "folderTemplates";
     String PROP_SIGNATURE_LIBRARY = "signatureLibrary";
     String PROP_SHAREDFOLDER_BUA = "sharedFolderBua";
     String PROP_WEEKLYSTAT = "weeklyStat";
+
+    String ATTR_DEFAULT_DECLARATION_FOLDER = "Erklaering og psykologisk rapport";
 
     String PROP_TMP = "tmp";
 

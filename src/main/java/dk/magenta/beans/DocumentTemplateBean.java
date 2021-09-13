@@ -260,12 +260,9 @@ public class DocumentTemplateBean {
         VariableField modtagetdato = templateDocument.getVariableFieldByName("modtagetdato");
         modtagetdato.updateField(info.oprettetdato, null);
 
-
-
-
-        // make the new document below the case
-
-        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,7) + "_erklaering.odt", ContentModel.TYPE_CONTENT);
+        // #43832 - declarations should be saved in the new folder, Erklaering og Psykologisk rapport
+        NodeRef folder = fileFolderService.searchSimple(declaration, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
+        FileInfo newFile = fileFolderService.create(folder, info.cpr.substring(0,7) + "_erklaering.odt", ContentModel.TYPE_CONTENT);
 
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
@@ -275,7 +272,6 @@ public class DocumentTemplateBean {
 
         templateDocument.save(f);
         writer.putContent(f);
-
 
         return newFile.getNodeRef().getId();
     }
