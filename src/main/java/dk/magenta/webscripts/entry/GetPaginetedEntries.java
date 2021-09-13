@@ -2,6 +2,7 @@ package dk.magenta.webscripts.entry;
 
 import dk.magenta.beans.DatabaseBean;
 import dk.magenta.beans.EntryBean;
+import dk.magenta.beans.PrintBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
@@ -27,6 +28,12 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
     private EntryBean entryBean;
     private DatabaseBean databaseBean;
+
+    public void setPrintBean(PrintBean printBean) {
+        this.printBean = printBean;
+    }
+
+    private PrintBean printBean;
 
     public NodeService getNodeService() {
         return nodeService;
@@ -420,18 +427,28 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 entries.put(e);
             }
 
-            result.put("entries", entries);
-            result.put("back", skip);
-            result.put("next", skip + maxItems);
-            result.put("total", entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true).size());
+            if (input.has("print")) {
+                String nodeRef = printBean.printEntriesToPDF(entries);
+                result.put("nodeRef", nodeRef);
+            }
+            else {
+                result.put("entries", entries);
+                result.put("back", skip);
+                result.put("next", skip + maxItems);
+                result.put("total", entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true).size());
+            }
+
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
             result = JSONUtils.getError(e);
             res.setStatus(400);
-                }
+        }
 
-                    JSONUtils.write(webScriptWriter, result);
+        JSONUtils.write(webScriptWriter, result);
     }
 }
 
