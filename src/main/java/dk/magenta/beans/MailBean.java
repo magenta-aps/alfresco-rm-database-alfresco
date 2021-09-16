@@ -8,6 +8,7 @@ import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.content.transform.ContentTransformer;
 import org.alfresco.repo.jscript.ScriptLogger;
 import org.alfresco.service.cmr.model.FileFolderService;
+import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
@@ -163,11 +164,12 @@ public class MailBean {
                     if (nodeService.hasAspect(attachmentNodeRef, ASPECT_ADDSIGNATURE)) {
                         // return the nodeRef and  replace this with the one without the signature in the list of attachments
                         NodeRef documentWithSignature = this.addSignature(attachmentNodeRef, declaration);
-
-                        // keep the pdf #45544
-//                        pds_to_be_deleted.add(documentWithSignature);
-
+                        pds_to_be_deleted.add(documentWithSignature);
                         transformed = this.transform(documentWithSignature);
+
+                        // copy the pdf to the folder, erklæring og test #45554
+                        NodeRef folder = fileFolderService.searchSimple(declaration, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
+                        FileInfo newFile = fileFolderService.copy(transformed, folder, "erklæring_underskrevet.pdf");
                     }
                     else {
                         transformed = this.transform(attachmentNodeRef);
@@ -521,13 +523,6 @@ public class MailBean {
         ContentWriter writer = contentService.getWriter(childAssociationRef.getChildRef(), ContentModel.PROP_CONTENT, true);
         writer.setMimetype("application/vnd.oasis.opendocument.text");
         writer.putContent(backFile);
-
-        // move the pdf to the folder, erklæring og test #45554
-
-
-        NodeRef folder = fileFolderService.searchSimple(declaration, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
-
-        fileFolderService.move(declaration, folder, "erklæring_underskrevet.pdf");
 
         return childAssociationRef.getChildRef();
 
