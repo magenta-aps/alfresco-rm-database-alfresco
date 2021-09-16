@@ -233,7 +233,6 @@ public class FlowChartBean {
         String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
 
         // atleast one assigned
-
         query += " AND (" + " (" + QueryUtils.getParametersQuery("socialworker", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("socialworker", true) + ") ";
         query += " OR " + " (" + QueryUtils.getParametersQuery("doctor", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("doctor", true) + ") ";;
         query += " OR " + " (" + QueryUtils.getParametersQuery("psychologist", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("psychologist", true) + ") ";;
@@ -363,6 +362,14 @@ public class FlowChartBean {
         }
 
         if (!found) {
+            list = this.getEntriesByStateIgangvaerendeGR("retspsyk", defaultQuery,"@rm:creationDate", true);
+            if (list.size() == 1) {
+                found = true;
+                returnValue = "igangvaerendegr";
+            }
+        }
+
+        if (!found) {
 
             String defaultQueryForTemporaryEditedDeclaration = "-ASPECT:\"rm:skip_flowchart\"";
             defaultQueryForTemporaryEditedDeclaration += " AND ASPECT:\"rm:supopl\"";
@@ -451,6 +458,44 @@ public class FlowChartBean {
         String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
 
         query += " AND " + default_query;
+
+        // atleast one assigned
+        query += " AND !(" + " (" + QueryUtils.getParametersQuery("socialworker", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("socialworker", true) + ") ";
+        query += " OR " + " (" + QueryUtils.getParametersQuery("doctor", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("doctor", true) + ") ";;
+        query += " OR " + " (" + QueryUtils.getParametersQuery("psychologist", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("psychologist", true) + ") ";;
+        query += ")";
+
+
+        String state = "Gr-*";
+
+        String statusQuery = " AND ( ";
+        statusQuery += QueryUtils.getParameterQuery("status", state, false);
+        statusQuery += ") ";
+
+        query += statusQuery;
+
+
+
+        List<NodeRef> nodeRefs = entryBean.getEntries(query, 0, 1000, sort, desc);
+
+        return nodeRefs;
+    }
+
+    public List<NodeRef> getEntriesByStateIgangvaerendeGR(String siteShortName, String default_query, String sort, boolean desc) {
+
+        JSONObject o = new JSONObject();
+
+        String type = databaseBean.getType(siteShortName);
+        String query = QueryUtils.getSiteQuery(siteShortName) + " AND " + QueryUtils.getTypeQuery(type);
+
+        query += " AND " + default_query;
+
+        // atleast one assigned
+        query += " AND (" + " (" + QueryUtils.getParametersQuery("socialworker", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("socialworker", true) + ") ";
+        query += " OR " + " (" + QueryUtils.getParametersQuery("doctor", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("doctor", true) + ") ";;
+        query += " OR " + " (" + QueryUtils.getParametersQuery("psychologist", "*", false) + " AND " + QueryUtils.getParametersQueryNullValue("psychologist", true) + ") ";;
+        query += ")";
+
 
         String state = "Gr-*";
 
@@ -653,6 +698,7 @@ public class FlowChartBean {
 
         result.put("waitinglist",this.getWaitingList(siteShortName, default_query, "@rm:creationDate", true).size());
         result.put("ventendegr",this.getEntriesByStateVentedeGR(siteShortName,default_query, "@rm:creationDate", true).size());
+        result.put("igangvaerendegr",this.getEntriesByStateIgangvaerendeGR(siteShortName,default_query, "@rm:creationDate", true).size());
 
 
         String defaultQueryForTemporaryEditedDeclaration = "-ASPECT:\"rm:skip_flowchart\"";
