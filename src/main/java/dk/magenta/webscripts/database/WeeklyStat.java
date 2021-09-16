@@ -1,6 +1,7 @@
 package dk.magenta.webscripts.database;
 
 import dk.magenta.beans.EntryBean;
+import dk.magenta.beans.MailBean;
 import dk.magenta.beans.WeeklyStatBean;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -23,6 +24,12 @@ public class WeeklyStat extends AbstractWebScript {
 
     private WeeklyStatBean weeklyStatBean;
 
+    public void setMailBean(MailBean mailBean) {
+        this.mailBean = mailBean;
+    }
+
+    private MailBean mailBean;
+
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
 
@@ -33,22 +40,30 @@ public class WeeklyStat extends AbstractWebScript {
         Writer webScriptWriter = res.getWriter();
         JSONObject result = new JSONObject();
 
+        System.out.println("c.getContent()");
+        System.out.println(c.getContent());
+
 
         try {
             JSONObject json = new JSONObject(c.getContent());
 
             String method = JSONUtils.getString(json, "method");
+            System.out.println("method");
+            System.out.println(method);
 
             if (method.equals("spreadsheetA")) {
                 System.out.println("method: spreadSheetA");
 
                 String year = JSONUtils.getString(json, "year");
 
-                NodeRef nodeRef = this.weeklyStatBean.createChartA(year);
+//                NodeRef nodeRef = this.weeklyStatBean.createChartA(year);
+
+                NodeRef chartNodeRef = this.mailBean.doChart(year);
 
 
-                if (nodeRef != null) {
-                    result.put("NodeRef", nodeRef.getId());
+
+                if (chartNodeRef != null) {
+                    result.put("NodeRef", chartNodeRef.getId());
                 }
                 else {
                     result.put("NodeRef", "");
@@ -58,7 +73,8 @@ public class WeeklyStat extends AbstractWebScript {
                 System.out.println("method: spreadSheetB");
 
                 String year = JSONUtils.getString(json, "year");
-                NodeRef nodeRef = this.weeklyStatBean.createChartB(year);
+//                NodeRef nodeRef = this.weeklyStatBean.createChartB(year);
+                NodeRef nodeRef = this.weeklyStatBean.getChartB(year);
 
                 if (nodeRef != null) {
                     result.put("NodeRef", nodeRef.getId());
@@ -68,6 +84,12 @@ public class WeeklyStat extends AbstractWebScript {
                 }
 
             }
+            else if (method.equals("deleteTmpChartFile")) {
+                String nodeRef = JSONUtils.getString(json, "tmpNodeRef");
+                boolean r = this.weeklyStatBean.deleteTmpChartFile(new NodeRef("workspace://SpacesStore/" + nodeRef));
+                result.put("result", r);
+            }
+
             else if (method.equals("initYear")) {
                 String year = JSONUtils.getString(json, "year");
 

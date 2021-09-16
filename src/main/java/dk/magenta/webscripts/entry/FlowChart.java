@@ -31,6 +31,12 @@ public class FlowChart extends AbstractWebScript {
     private EntryBean entryBean;
     private DatabaseBean databaseBean;
 
+    public void setMailBean(MailBean mailBean) {
+        this.mailBean = mailBean;
+    }
+
+    private MailBean mailBean;
+
     public void setPropertyValuesBean(PropertyValuesBean propertyValuesBean) {
         this.propertyValuesBean = propertyValuesBean;
     }
@@ -213,10 +219,6 @@ public class FlowChart extends AbstractWebScript {
                     result = flowChartBean.getTotals(siteShortName, defaultQuery, userName);
                     break;
             }
-
-
-
-
         } catch (JSONException e) {
             System.out.println("json exception");
             e.printStackTrace();

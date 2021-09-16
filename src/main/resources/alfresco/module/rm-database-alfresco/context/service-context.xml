@@ -57,6 +57,7 @@
         <property name="siteService" ref="siteService"/>
         <property name="propertyValuesBean" ref="propertyValuesBean"/>
         <property name="fileFolderService" ref="fileFolderService"/>
+        <property name="weeklyStatBean" ref="weeklyStatBean"/>
     </bean>
 
     <bean id="scriptBean" class="dk.magenta.beans.ScriptBean">

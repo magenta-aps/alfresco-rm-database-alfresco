@@ -14,11 +14,11 @@ import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
-
+import org.jfree.chart.ChartUtilities;
 import org.json.JSONException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;
+
 import org.odftoolkit.odfdom.type.Color;
 import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.style.Border;
@@ -26,7 +26,6 @@ import org.odftoolkit.simple.style.StyleTypeDefinitions;
 import org.odftoolkit.simple.table.Cell;
 import org.odftoolkit.simple.table.Row;
 import org.odftoolkit.simple.table.Table;
-import org.odftoolkit.simple.text.Paragraph;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -37,12 +36,28 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.awt.image.BufferedImage;
+import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 import static dk.magenta.model.DatabaseModel.ASPECT_ADDSIGNATURE;
 import static dk.magenta.model.DatabaseModel.PROP_SUPERVISINGDOCTOR;
 import static org.odftoolkit.simple.style.StyleTypeDefinitions.HorizontalAlignmentType.LEFT;
+
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.title.TextTitle;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
 
 //import org.apache.poi.hwpf.HWPFDocument;
 
@@ -77,6 +92,12 @@ public class MailBean {
     }
 
     private PersonService personService;
+
+    public void setWeeklyStatBean(WeeklyStatBean weeklyStatBean) {
+        this.weeklyStatBean = weeklyStatBean;
+    }
+
+    private WeeklyStatBean weeklyStatBean;
 
     public void setAuthenticationService(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
@@ -699,4 +720,116 @@ public class MailBean {
             return false;
         }
     }
+
+    public NodeRef doChart(String requestedYear)  {
+
+        XYSeries series = new XYSeries("2016");
+        series.add(18, 567);
+        series.add(20, 612);
+        series.add(25, 800);
+        series.add(30, 980);
+        series.add(40, 1410);
+        series.add(50, 2350);
+
+        System.out.println("series.getItems().size()");
+        System.out.println(series.getItems().size());
+
+        System.out.println("series.getItems().get(0)");
+        System.out.println(series.getItems().get(0));
+
+
+        String requestYear = "2007";
+
+        XYSeries sent = weeklyStatBean.getWeekNodesForYearChartSent(requestedYear);
+        XYSeries sentAkk = weeklyStatBean.getWeekNodesForYearChartSentAkk(requestedYear);
+
+
+        XYSeries received = weeklyStatBean.getWeekNodesForYearChartReceived(requestedYear);
+        XYSeries receivedAkk = weeklyStatBean.getWeekNodesForYearChartReceivedAkk(requestedYear);
+
+        System.out.println("chartA.getItems().size()");
+        System.out.println(sent.getItems().size());
+        System.out.println(received.getItems().size());
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(sent);
+        dataset.addSeries(sentAkk);
+
+        dataset.addSeries(received);
+        dataset.addSeries(receivedAkk);
+
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "----",
+                "Uge",
+                "Antal",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
+        );
+
+        XYPlot plot = chart.getXYPlot();
+
+        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        renderer.setSeriesPaint(0, java.awt.Color.RED);
+        renderer.setSeriesStroke(0, new BasicStroke(2.0f));
+        renderer.setSeriesPaint(1, java.awt.Color.BLUE);
+        renderer.setSeriesStroke(1, new BasicStroke(2.0f));
+
+        renderer.setSeriesPaint(2, java.awt.Color.GREEN);
+        renderer.setSeriesStroke(2, new BasicStroke(2.0f));
+        renderer.setSeriesPaint(3, java.awt.Color.BLACK);
+        renderer.setSeriesStroke(3, new BasicStroke(2.0f));
+
+        plot.setRenderer(renderer);
+        plot.setBackgroundPaint((Paint) java.awt.Color.WHITE);
+
+        plot.setRangeGridlinesVisible(true);
+        plot.setRangeGridlinePaint((Paint) java.awt.Color.BLACK);
+
+        plot.setDomainGridlinesVisible(true);
+        plot.setDomainGridlinePaint((Paint) java.awt.Color.BLACK);
+
+        chart.getLegend().setFrame(BlockBorder.NONE);
+
+        chart.setTitle(new TextTitle("Rapport pr uge for " + requestedYear,
+                        new Font("Serif", java.awt.Font.BOLD, 18)
+                )
+        );
+
+        OutputStream out = null;
+        File f = new File("uge.png");
+        try {
+            out = new FileOutputStream(f);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            ChartUtilities.writeChartAsPNG(out, chart,800,1000);
+
+            NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
+            QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, "test");
+            Map<QName, Serializable> properties = new HashMap<>();
+            properties.put(ContentModel.PROP_NAME, "tmpchart.png");
+            ChildAssociationRef childAssociationRef = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS, qName, ContentModel.TYPE_CONTENT, properties);
+            nodeService.setProperty(childAssociationRef.getChildRef(), ContentModel.PROP_NAME, childAssociationRef.getChildRef().getId());
+
+            ContentWriter writer = contentService.getWriter(childAssociationRef.getChildRef(), ContentModel.PROP_CONTENT, true);
+
+            writer.setMimetype("image/png");
+            writer.putContent(f);
+
+            return childAssociationRef.getChildRef();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+
 }
