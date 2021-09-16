@@ -1,9 +1,6 @@
 package dk.magenta.webscripts.entry;
 
-import dk.magenta.beans.DatabaseBean;
-import dk.magenta.beans.EntryBean;
-import dk.magenta.beans.FlowChartBean;
-import dk.magenta.beans.PropertyValuesBean;
+import dk.magenta.beans.*;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
