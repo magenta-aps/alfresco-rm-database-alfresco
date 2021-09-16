@@ -149,13 +149,13 @@ public class EntryBean {
 
 
 
-        // add the contents of the template library
+        // add the contents of the documenttemplate library
 
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
 
-        NodeRef nodeRef_templateFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+        NodeRef nodeRef_documentsTemplateFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
-        List<ChildAssociationRef> children = nodeService.getChildAssocs(nodeRef_templateFolder);
+        List<ChildAssociationRef> children = nodeService.getChildAssocs(nodeRef_documentsTemplateFolder);
 
         Iterator i = children.iterator();
 
@@ -167,6 +167,27 @@ public class EntryBean {
                 nodeService.addAspect(newNode.getNodeRef(),ContentModel.ASPECT_HIDDEN,null);
 
 
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // add the contents of the documenttemplate library
+
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+
+        NodeRef nodeRef_foldersTemplatesFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_FOLDER_TEMPLATE_LIBRARY);
+
+        children = nodeService.getChildAssocs(nodeRef_foldersTemplatesFolder);
+
+        i = children.iterator();
+        System.out.println("antal i" + children.size());
+
+        while (i.hasNext()) {
+
+            ChildAssociationRef child = (ChildAssociationRef)i.next();
+            try {
+                FileInfo newNode = fileFolderService.copy(child.getChildRef(), nodeRef, (String)nodeService.getProperty(child.getChildRef(), ContentModel.PROP_NAME));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }

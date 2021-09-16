@@ -7,6 +7,8 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.content.transform.ContentTransformer;
 import org.alfresco.repo.jscript.ScriptLogger;
+import org.alfresco.service.cmr.model.FileFolderService;
+import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
@@ -49,6 +51,12 @@ public class MailBean {
     public static final int DEFAULT_BUFFER_SIZE = 8192;
 
     private NodeService nodeService;
+
+    public void setFileFolderService(FileFolderService fileFolderService) {
+        this.fileFolderService = fileFolderService;
+    }
+
+    private FileFolderService fileFolderService;
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
@@ -158,6 +166,10 @@ public class MailBean {
                         NodeRef documentWithSignature = this.addSignature(attachmentNodeRef, declaration);
                         pds_to_be_deleted.add(documentWithSignature);
                         transformed = this.transform(documentWithSignature);
+
+                        // copy the pdf to the folder, erklæring og test #45554
+                        NodeRef folder = fileFolderService.searchSimple(declaration, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
+                        FileInfo newFile = fileFolderService.copy(transformed, folder, "erklæring_underskrevet.pdf");
                     }
                     else {
                         transformed = this.transform(attachmentNodeRef);
@@ -385,8 +397,6 @@ public class MailBean {
 
 
         ContentReader contentReader = contentService.getReader(attachment, ContentModel.PROP_CONTENT);
-//        OdfDocument odt = OdfDocument.loadDocument(contentReader.getContentInputStream());
-
         TextDocument log_entires = TextDocument.loadDocument(contentReader.getContentInputStream());
 
 
@@ -396,32 +406,13 @@ public class MailBean {
         File backFile = new File("back");
         copyInputStreamToFile(primarySignature.image, filePrimary);
 
-        // reseize image
-
-
-
-        File newTestFile = new File("test.jpg");
+//        File newTestFile = new File("test.jpg");
         try {
             BufferedImage test = ImageIO.read(filePrimary);
-            System.out.println("hvad er test");
-            System.out.println(test);
-
-
-
-//            test = Scalr.resize(test, 250);
 
             Thumbnails.of(filePrimary).scale(0.25).toFile(filePrimary);
 
-            System.out.println("hvad er test nu efter scale");
-            System.out.println(test);
-
-
-            ImageIO.write(test, "jpg", newTestFile);
-
-//            newTestFile = copyInputStreamToFile(newTestFile, newTestFile);
-
-            System.out.println("hvad er newTestFile");
-            System.out.println(newTestFile.toURI());
+//            ImageIO.write(test, "jpg", newTestFile);
         }
         catch (Exception e) {
             System.out.println(e);
@@ -453,8 +444,6 @@ public class MailBean {
 
         Cell cRow1A = row1.getCellByIndex(0);
 
-
-
         Border border = new Border(Color.WHITE, 1.0, StyleTypeDefinitions.SupportedLinearMeasure.PT);
         cRow1A.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
 
@@ -465,8 +454,8 @@ public class MailBean {
         System.out.println(cRow1A);
 
         System.out.println("hvad er newTestFile");
-        System.out.println(newTestFile);
-        System.out.println(newTestFile.toURI());
+//        System.out.println(newTestFile);
+//        System.out.println(newTestFile.toURI());
 
         try {
             cRow1A.setImage(filePrimary.toURI()).setHorizontalPosition(StyleTypeDefinitions.FrameHorizontalPosition.LEFT);
@@ -644,7 +633,6 @@ public class MailBean {
 
     public NodeRef getAttachmentToSign(NodeRef declaration) {
         List<ChildAssociationRef> childAssociationRef = nodeService.getChildAssocs(declaration);
-
 
         Iterator iterator = childAssociationRef.iterator();
 
