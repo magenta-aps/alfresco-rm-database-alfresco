@@ -737,9 +737,6 @@ public class MailBean {
         System.out.println("series.getItems().get(0)");
         System.out.println(series.getItems().get(0));
 
-
-        String requestYear = "2007";
-
         XYSeries sent = weeklyStatBean.getWeekNodesForYearChartSent(requestedYear);
         XYSeries sentAkk = weeklyStatBean.getWeekNodesForYearChartSentAkk(requestedYear);
 
@@ -820,6 +817,9 @@ public class MailBean {
 
             writer.setMimetype("image/png");
             writer.putContent(f);
+
+            System.out.println("havd er nodeRef på billede?");
+            System.out.println(childAssociationRef.getChildRef());
 
             return childAssociationRef.getChildRef();
 

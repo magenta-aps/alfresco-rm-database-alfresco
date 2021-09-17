@@ -40,24 +40,16 @@ public class WeeklyStat extends AbstractWebScript {
         Writer webScriptWriter = res.getWriter();
         JSONObject result = new JSONObject();
 
-        System.out.println("c.getContent()");
-        System.out.println(c.getContent());
-
-
         try {
             JSONObject json = new JSONObject(c.getContent());
 
             String method = JSONUtils.getString(json, "method");
-            System.out.println("method");
-            System.out.println(method);
-
             if (method.equals("spreadsheetA")) {
-                System.out.println("method: spreadSheetA");
+
 
                 String year = JSONUtils.getString(json, "year");
 
 //                NodeRef nodeRef = this.weeklyStatBean.createChartA(year);
-
                 NodeRef chartNodeRef = this.mailBean.doChart(year);
 
 
