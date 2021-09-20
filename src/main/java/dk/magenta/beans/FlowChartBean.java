@@ -287,9 +287,6 @@ public class FlowChartBean {
 
         List<NodeRef> nodeRefs = entryBean.getEntriesbyQuery(defaultQuery);
 
-        System.out.println(nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_SUPOPL));
-        System.out.println((nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_OPENEDIT)));
-
         return (nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_SUPOPL) || (nodeService.hasAspect(nodeRefs.get(0), DatabaseModel.ASPECT_OPENEDIT)) ) ;
     }
 
@@ -376,8 +373,6 @@ public class FlowChartBean {
             defaultQueryForTemporaryEditedDeclaration += "@rm\\:caseNumber:" + "\"" + casenumber + "\"";
 
             list = this.getEntriesByStateSUPOPL("retspsyk", defaultQueryForTemporaryEditedDeclaration,"@rm:creationDate", true);
-            System.out.println("hvad er list");
-            System.out.println(list.size());
             if (list.size() == 1) {
                 found = true;
                 returnValue = "supopl";

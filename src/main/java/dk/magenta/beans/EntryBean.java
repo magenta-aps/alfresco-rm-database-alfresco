@@ -181,7 +181,6 @@ public class EntryBean {
         children = nodeService.getChildAssocs(nodeRef_foldersTemplatesFolder);
 
         i = children.iterator();
-        System.out.println("antal i" + children.size());
 
         while (i.hasNext()) {
 
