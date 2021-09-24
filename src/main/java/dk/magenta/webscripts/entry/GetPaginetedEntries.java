@@ -373,8 +373,15 @@ public class GetPaginetedEntries extends AbstractWebScript {
             System.out.println("the query");
             System.out.println(query);
 
+            List<NodeRef> nodeRefs;
+            if (input.has("preview")) {
+                // make a printable list of all the entries, not just whats to be shown on the screen
+                nodeRefs = entryBean.getEntries(query, 0, 1000, "@rm:creationDate", true);
+            }
+            else {
+                nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
+            }
 
-            List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
 
             Iterator<NodeRef> i = nodeRefs.iterator();
 
@@ -427,7 +434,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 entries.put(e);
             }
 
-            if (input.has("print")) {
+            if (input.has("preview")) {
                 String nodeRef = printBean.printEntriesToPDF(entries);
                 result.put("nodeRef", nodeRef);
             }
