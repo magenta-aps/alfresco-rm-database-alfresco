@@ -651,6 +651,8 @@ public class EntryBean {
 
 
         sp.setLanguage("lucene");
+        System.out.println("hvad er skip");
+        System.out.println(skip);
         sp.setQuery(query);
 
         sp.setMaxItems(maxItems);
