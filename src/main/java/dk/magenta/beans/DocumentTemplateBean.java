@@ -403,10 +403,7 @@ public class DocumentTemplateBean {
         VariableField navn = templateDocument.getVariableFieldByName("navnxxx");
         navn.updateField(info.fornavn + " " + info.efternavn, null);
 
-        // #43832 - declarations should be saved in the new folder, Erklaering og Psykologisk rapport
-        NodeRef folder = fileFolderService.searchSimple(declaration, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
-
-        FileInfo newFile = fileFolderService.create(folder, info.cpr.substring(0,6) + "_samtykke.odt", ContentModel.TYPE_CONTENT);
+        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,6) + "_samtykke.odt", ContentModel.TYPE_CONTENT);
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
         writer.setMimetype("application/vnd.oasis.opendocument.text");
