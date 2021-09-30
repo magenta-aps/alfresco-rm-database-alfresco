@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>dk.magenta</groupId>
     <artifactId>rm-database-alfresco</artifactId>
-    <version>1.2.15</version>
+    <version>1.2.161</version>
     <name>rm-database-alfresco Platform Jar Module - SDK 3</name>
     <description>Platform JAR Module (to be included in the alfresco.war) - SDK 3</description>
     <packaging>jar</packaging>
@@ -208,7 +208,15 @@
             <version>0.8.2-incubating</version>
         </dependency>
 
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/com.itextpdf/itextpdf &ndash;&gt;-->
+        <!-- https://mvnrepository.com/artifact/org.jfree/jfreechart -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.19</version>
+        </dependency>
+
+
+        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/com.itextpdf/itextpdf &ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>com.itextpdf</groupId>-->
 <!--            <artifactId>itextpdf</artifactId>-->

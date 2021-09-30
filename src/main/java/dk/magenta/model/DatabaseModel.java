@@ -149,16 +149,19 @@ public interface DatabaseModel {
     // Containers
     String PROP_VALUES = "propertyValues";
     String PROP_TEMPLATE_LIBRARY = "documentTemplates";
+    String PROP_FOLDER_TEMPLATE_LIBRARY = "folderTemplates";
     String PROP_SIGNATURE_LIBRARY = "signatureLibrary";
     String PROP_SHAREDFOLDER_BUA = "sharedFolderBua";
     String PROP_WEEKLYSTAT = "weeklyStat";
+
+    String ATTR_DEFAULT_DECLARATION_FOLDER = "Erklæring og psykologisk undersøgelse";
 
     String PROP_TMP = "tmp";
 
     String PROP_PSYCOLOGICALDOCUMENT = "Psyk test.odt";
     String PROP_PSYCOLOGICALDOCUMENT_BUA = "Psyk test_bua.odt";
 
-    String PROP_SAMTYKKE_TDL_KONTAKT = " ";
+    String PROP_SAMTYKKE_TDL_KONTAKT = "samtykketidkontakt.odt";
 
     // template docs
     String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke";

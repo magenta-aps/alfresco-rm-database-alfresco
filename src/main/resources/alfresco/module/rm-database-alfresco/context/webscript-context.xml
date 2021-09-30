@@ -24,6 +24,7 @@
 
 	<bean id="webscript.database.weeklystat.post" class="dk.magenta.webscripts.database.WeeklyStat" parent="webscript">
 		<property name="WeeklyStatBean" ref="weeklyStatBean"/>
+		<property name="mailBean" ref="mailBean"/>
 	</bean>
 
 	<bean id="webscript.database.reports.post" class="dk.magenta.webscripts.database.Reports" parent="webscript">
@@ -52,6 +53,7 @@
 		<property name="entryBean" ref="entryBean"/>
 		<property name="databaseBean" ref="databaseBean"/>
 		<property name="nodeService" ref="NodeService"/>
+		<property name="printBean" ref="printBean"/>
 	</bean>
 
 	<bean id="webscript.entries.flowchart.post" class="dk.magenta.webscripts.entry.FlowChart" parent="webscript">

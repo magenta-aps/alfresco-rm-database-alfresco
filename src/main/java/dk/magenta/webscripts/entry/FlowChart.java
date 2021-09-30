@@ -1,9 +1,6 @@
 package dk.magenta.webscripts.entry;
 
-import dk.magenta.beans.DatabaseBean;
-import dk.magenta.beans.EntryBean;
-import dk.magenta.beans.FlowChartBean;
-import dk.magenta.beans.PropertyValuesBean;
+import dk.magenta.beans.*;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
@@ -33,6 +30,12 @@ public class FlowChart extends AbstractWebScript {
 
     private EntryBean entryBean;
     private DatabaseBean databaseBean;
+
+    public void setMailBean(MailBean mailBean) {
+        this.mailBean = mailBean;
+    }
+
+    private MailBean mailBean;
 
     public void setPropertyValuesBean(PropertyValuesBean propertyValuesBean) {
         this.propertyValuesBean = propertyValuesBean;
@@ -167,6 +170,14 @@ public class FlowChart extends AbstractWebScript {
                     result.put("entries", flowChartBean.nodeRefsTOData(entries));
                     result.put("total", entries.size());
                     break;
+                case "igangvaerendegr":
+                    sort = jsonProperties.getString("sort");
+                    desc = jsonProperties.getBoolean("desc");
+
+                    entries = flowChartBean.getEntriesByStateIgangvaerendeGR(siteShortName, defaultQuery, sort, desc);
+                    result.put("entries", flowChartBean.nodeRefsTOData(entries));
+                    result.put("total", entries.size());
+                    break;
                 case "supopl":
                     sort = jsonProperties.getString("sort");
                     desc = jsonProperties.getBoolean("desc");
@@ -208,10 +219,6 @@ public class FlowChart extends AbstractWebScript {
                     result = flowChartBean.getTotals(siteShortName, defaultQuery, userName);
                     break;
             }
-
-
-
-
         } catch (JSONException e) {
             System.out.println("json exception");
             e.printStackTrace();
