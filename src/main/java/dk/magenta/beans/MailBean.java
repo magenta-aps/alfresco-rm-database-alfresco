@@ -722,21 +722,6 @@ public class MailBean {
     }
 
     public NodeRef doChart(String requestedYear)  {
-
-        XYSeries series = new XYSeries("2016");
-        series.add(18, 567);
-        series.add(20, 612);
-        series.add(25, 800);
-        series.add(30, 980);
-        series.add(40, 1410);
-        series.add(50, 2350);
-
-        System.out.println("series.getItems().size()");
-        System.out.println(series.getItems().size());
-
-        System.out.println("series.getItems().get(0)");
-        System.out.println(series.getItems().get(0));
-
         XYSeries sent = weeklyStatBean.getWeekNodesForYearChartSent(requestedYear);
         XYSeries sentAkk = weeklyStatBean.getWeekNodesForYearChartSentAkk(requestedYear);
 
@@ -809,7 +794,7 @@ public class MailBean {
             NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
             QName qName = QName.createQName(DatabaseModel.CONTENT_MODEL_URI, "test");
             Map<QName, Serializable> properties = new HashMap<>();
-            properties.put(ContentModel.PROP_NAME, "tmpchart.png");
+            properties.put(ContentModel.PROP_NAME, "graf.png");
             ChildAssociationRef childAssociationRef = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS, qName, ContentModel.TYPE_CONTENT, properties);
             nodeService.setProperty(childAssociationRef.getChildRef(), ContentModel.PROP_NAME, childAssociationRef.getChildRef().getId());
 

@@ -143,8 +143,8 @@
             <ref bean="ServiceRegistry" />
         </property>
 
-        <property name="reportWaitingTimeBean">
-            <ref bean="reportWaitingTimeBean" />
+        <property name="weeklyStatBean">
+            <ref bean="weeklyStatBean" />
         </property>
 
     </bean>
@@ -226,6 +226,7 @@
         <property name="transactionService" ref="transactionService"/>
         <property name="contentService" ref="contentService"/>
         <property name="siteService" ref="siteService"/>
+        <property name="mailBean" ref="mailBean"/>
     </bean>
 
     <bean id="settingsBean" class="dk.magenta.beans.SettingsBean">

@@ -73,6 +73,12 @@ public class WeeklyStatBean {
 
     private DatabaseBean databaseBean;
 
+    public void setMailBean(MailBean mailBean) {
+        this.mailBean = mailBean;
+    }
+
+    private MailBean mailBean;
+
     public void setTransactionService(TransactionService transactionService) {
         this.transactionService = transactionService;
     }
@@ -966,4 +972,20 @@ public class WeeklyStatBean {
         String sent;
         String received;
     }
+
+    public boolean sendMailCurrentYear() throws Exception {
+        return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
+            LocalDateTime now = LocalDateTime.now();
+
+            NodeRef report = this.mailBean.doChart(String.valueOf(now.getYear()));
+
+            NodeRef[] attachmentList = new NodeRef[1];
+            attachmentList[0] = report;
+
+//            mailBean.sendEmailNoTransform(attachmentList,"ps.o.faelles.post@rm.dk", "rapport for sendte og modtagne erklæringer i indeværende år", "");
+            mailBean.sendEmailNoTransform(attachmentList,"fhp@magenta.dk", "", "TEST rapport for sendte og modtagne erklæringer i indeværende år");
+            return true;
+        });
+    }
+
 }
