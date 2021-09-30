@@ -195,37 +195,15 @@ public class ContentsBean {
 
         ContentWriter jpgWriter = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
 
-
         PDDocument document = PDDocument.load (reader.getContentInputStream());
 
         PDPage firstPage = (PDPage) document.getDocumentCatalog().getAllPages().get(0);
 
-        // tjek indhold.
-//        Map<String, PDXObjectImage>  images = firstPage.findResources().getImages();
-//        System.out.println("images");
-//        System.out.println(images);
-//        System.out.println(images.size());
-
-
-
-//        System.out.println(images.get("Im4"));
-//        System.out.println(images.get(0));
-//        System.out.println(images.get(1));
-
         File f = new File("tmp");
-
-//        PDXObjectImage test =  images.get("Im0");
-//        BufferedImage pdfImage = ImageIO.read(test.getRGBImage().get);
-
-
-
-//        test.getWidth()
-
 
         BufferedImage bim = firstPage.convertToImage(BufferedImage.TYPE_INT_RGB, 300);
         ImageIOUtil.writeImage(bim, "duff" + ".png", 300);
 
-//        ImageIO.write(images.get("TI1Obj2").getRGBImage(), "png", f);
         ImageIO.write(bim, "png", f);
 
         jpgWriter.setMimetype(MimetypeMap.MIMETYPE_IMAGE_PNG);
