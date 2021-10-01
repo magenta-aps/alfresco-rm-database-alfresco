@@ -57,7 +57,7 @@ public class PrintBean {
         header.getCellByIndex(3).addParagraph("cpr");
         header.getCellByIndex(4).addParagraph("Læge");
         header.getCellByIndex(5).addParagraph("Tiltrædes af");
-        header.getCellByIndex(6).addParagraph("Status");
+        header.getCellByIndex(6).addParagraph("Erklæring afgivet");
         header.getCellByIndex(7).addParagraph("Psykolog");
 //
         Font headerFont = new Font("Arial", StyleTypeDefinitions.FontStyle.BOLD, 8, Color.BLACK);
@@ -141,7 +141,10 @@ public class PrintBean {
             if (o.has("closed")) {
                 closed = (Boolean)o.get("closed");
 
-                if ( (closed) && (o.has("declarationDate"))) {
+                System.out.println("hvad er o.has(\"declarationDate\")");
+                System.out.println(o.has("declarationDate"));
+
+                if ( (!closed) && (o.has("declarationDate"))) {
                     closedString = "Afgivet, mangler afslutning";
                 }
                 else if ( (closed) && !(closedWithOutDeclaration)) {
@@ -162,7 +165,7 @@ public class PrintBean {
                 psychologist = (String)o.get("psychologist");
             }
             else {
-                psychologist = "Test Hansen";
+                psychologist = "";
             }
 
             row.getCellByIndex(0).setFont(font);
