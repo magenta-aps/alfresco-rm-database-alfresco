@@ -179,7 +179,6 @@ public class DocumentTemplateBean {
         info.postnr = String.valueOf(((Integer)nodeService.getProperty(declaration, DatabaseModel.PROP_POSTCODE)));
         info.by = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_CITY);
 
-
         info.laege = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
 
         int sagsnummer = (int)nodeService.getProperty(declaration, DatabaseModel.PROP_CASE_NUMBER);
@@ -207,7 +206,9 @@ public class DocumentTemplateBean {
 //        info.oprettetdato  = (day <= 9) ? "0" + day : String.valueOf(day) + "." + (month <= 9) ? ("0" + String.valueOf(month) ? month + "." + year;
 
 
+        // hent læge
 
+        info.doctor = (String)nodeService.getProperty(declaration, PROP_DOCTOR);
         return info;
     }
 
@@ -416,6 +417,53 @@ public class DocumentTemplateBean {
         return newFile.getNodeRef();
     }
 
+    public NodeRef generateBerigtigelseAfKonklusionDocument(NodeRef declaration) throws Exception {
+
+
+        NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+        List<String> list = Arrays.asList(DatabaseModel.PROP_BERIGTIGELSE );
+        List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
+
+        NodeRef templateDoc = children.get(0).getChildRef();
+        DeclarationInfo info = this.getProperties(declaration);
+
+        ContentReader contentReader = contentService.getReader(templateDoc, ContentModel.PROP_CONTENT);
+        TextDocument templateDocument = TextDocument.loadDocument(contentReader.getContentInputStream());
+
+        VariableField navnXXX = templateDocument.getVariableFieldByName("navnxxx");
+        navnXXX.updateField(info.fornavn + " " + info.efternavn, null);
+
+        VariableField cprXXX = templateDocument.getVariableFieldByName("navnxxx");
+        cprXXX.updateField(info.cpr, null);
+
+        VariableField doctorXXX = templateDocument.getVariableFieldByName("doctorxxx");
+        doctorXXX.updateField(info.doctor, null);
+
+        VariableField sagsnrXXX = templateDocument.getVariableFieldByName("sagsnrxxx");
+        sagsnrXXX.updateField(info.sagsnr, null);
+
+        VariableField journalXXX = templateDocument.getVariableFieldByName("journalnrxxx");
+        journalXXX.updateField(info.journalnummer, null);
+
+        VariableField voressagsnrXXX = templateDocument.getVariableFieldByName("voressagsnrxxx");
+        voressagsnrXXX.updateField(info.sagsnr, null);
+
+        VariableField cpr2xxx = templateDocument.getVariableFieldByName("cpr2xxx");
+        cpr2xxx.updateField(info.cpr, null);
+
+        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,6) + "_berigtigelse.odt", ContentModel.TYPE_CONTENT);
+
+        ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
+        writer.setMimetype("application/vnd.oasis.opendocument.text");
+
+        File f = new File("tmp");
+
+        templateDocument.save(f);
+        writer.putContent(f);
+
+        return newFile.getNodeRef();
+    }
+
 
     private class DeclarationInfo {
         public String cpr;
@@ -430,6 +478,7 @@ public class DocumentTemplateBean {
         public String politikreds;
         public String oprettetdato;
         public String journalnummer;
+        public String doctor;
     }
 
 //    private static void copyInputStreamToFile(InputStream inputStream, File file)
