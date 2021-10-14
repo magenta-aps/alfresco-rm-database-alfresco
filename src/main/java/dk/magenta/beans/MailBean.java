@@ -15,6 +15,11 @@ import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.jfree.chart.ChartUtilities;
+import org.jodconverter.core.document.DefaultDocumentFormatRegistry;
+import org.jodconverter.core.office.OfficeException;
+import org.jodconverter.core.office.OfficeUtils;
+import org.jodconverter.local.JodConverter;
+import org.jodconverter.local.office.LocalOfficeManager;
 import org.json.JSONException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -324,16 +329,48 @@ public class MailBean {
 
     }
 
+//    private NodeRef transform(NodeRef source) {
+//
+//        String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);
+//
+//        NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
+//
+//        // Create new PDF
+//        Map<QName, Serializable> documentLibaryProps = new HashMap<>();
+//        documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
+//
+//
+//        ChildAssociationRef pdf = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS,
+//                QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
+//                ContentModel.TYPE_CONTENT, documentLibaryProps);
+//
+//
+//        ContentData contentData = (ContentData) nodeService.getProperty(source, ContentModel.PROP_CONTENT);
+//        String originalMimeType = contentData.getMimetype();
+//
+//        ContentReader pptReader = contentService.getReader(source, ContentModel.PROP_CONTENT);
+//        ContentWriter pdfWriter = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
+//
+//        pdfWriter.setMimetype(MimetypeMap.MIMETYPE_PDF);
+//
+//        ContentTransformer pptToPdfTransformer = contentService.getTransformer(originalMimeType, MimetypeMap.MIMETYPE_PDF);
+//
+//        pptToPdfTransformer.transform(pptReader, pdfWriter);
+//        return pdf.getChildRef();
+//    }
+
     private NodeRef transform(NodeRef source) {
 
-        String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);
+        ContentReader reader = contentService.getReader(source, ContentModel.PROP_CONTENT);
+//        File outputFile = new File("document.pdf");
 
-        NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
 
         // Create new PDF
+        String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);
+        NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
+
         Map<QName, Serializable> documentLibaryProps = new HashMap<>();
         documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
-
 
         ChildAssociationRef pdf = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS,
                 QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
@@ -341,19 +378,36 @@ public class MailBean {
 
 
         ContentData contentData = (ContentData) nodeService.getProperty(source, ContentModel.PROP_CONTENT);
-        String originalMimeType = contentData.getMimetype();
-
-        ContentReader pptReader = contentService.getReader(source, ContentModel.PROP_CONTENT);
         ContentWriter pdfWriter = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
 
         pdfWriter.setMimetype(MimetypeMap.MIMETYPE_PDF);
 
-        ContentTransformer pptToPdfTransformer = contentService.getTransformer(originalMimeType, MimetypeMap.MIMETYPE_PDF);
 
-        pptToPdfTransformer.transform(pptReader, pdfWriter);
+        // Create an office manager using the default configuration.
+        // The default port is 2002. Note that when an office manager
+        // is installed, it will be the one used by default when
+        // a converter is created.
+        final LocalOfficeManager officeManager = LocalOfficeManager.builder()
+                .officeHome("/appl/alfresco/libreoffice")
+                .install()
+                .build();
+        try {
 
+            // Start an office process and connect to the started instance (on port 2002).
+            officeManager.start();
 
-
+            // Convert
+            JodConverter
+                    .convert(reader.getContentInputStream())
+                    .to(pdfWriter.getContentOutputStream()).as(DefaultDocumentFormatRegistry.PDF)
+                    .execute();
+        } catch (
+                OfficeException e) {
+            e.printStackTrace();
+        } finally {
+            // Stop the office process
+            OfficeUtils.stopQuietly(officeManager);
+        }
 
         return pdf.getChildRef();
     }
