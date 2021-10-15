@@ -433,7 +433,7 @@ public class DocumentTemplateBean {
         VariableField navnXXX = templateDocument.getVariableFieldByName("navnxxx");
         navnXXX.updateField(info.fornavn + " " + info.efternavn, null);
 
-        VariableField cprXXX = templateDocument.getVariableFieldByName("navnxxx");
+        VariableField cprXXX = templateDocument.getVariableFieldByName("cprxxx");
         cprXXX.updateField(info.cpr, null);
 
         VariableField doctorXXX = templateDocument.getVariableFieldByName("doctorxxx");

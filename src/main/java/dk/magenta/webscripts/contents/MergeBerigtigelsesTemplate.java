@@ -39,8 +39,8 @@ public class MergeBerigtigelsesTemplate extends AbstractWebScript {
 
         System.out.println("immer hefe weize");
 
-        NodeRef newDocument = documentTemplateBean.generateBerigtigelseAfKonklusionDocument(new NodeRef((String)json.get("id")));
-        result = JSONUtils.getObject("id", newDocument.toString());
+        NodeRef newDocument = documentTemplateBean.generateBerigtigelseAfKonklusionDocument(new NodeRef("workspace://SpacesStore/" + (String)json.get("id")));
+        result = JSONUtils.getObject("id", newDocument.getId());
         JSONUtils.write(webScriptWriter, result);
 
         AuthenticationUtil.clearCurrentSecurityContext();
