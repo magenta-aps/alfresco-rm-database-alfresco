@@ -2,6 +2,32 @@
 
 package dk.magenta.webscripts.contents;
 
+import bsh.EvalError;
+
+import freemarker.template.TemplateException;
+
+import org.apache.commons.beanutils.ConversionException;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.commons.io.IOUtils;
+
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+
 import dk.magenta.beans.ContentsBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
@@ -115,32 +141,42 @@ public class Rename extends AbstractWebScript {
         document.save(from);
 
         File f = new File("test");
+        File to = new File("test");
+//
+//        final LocalOfficeManager officeManager = LocalOfficeManager.builder()
+//                .install()
+//                .officeHome("/opt/libreoffice6.4")
+//                .portNumbers(9090)
+//                .build();
+//        try {
+//
+//            // Start an office process and connect to the started instance (on port 2002).
+//            officeManager.start();
+//
+//            // Convert
+//            JodConverter
+//                    .convert(from)
+//                    .to(f).as(DefaultDocumentFormatRegistry.PDF)
+//                    .execute();
+//
+//
+//
+//
+//
+//            pdfWriter.putContent(f);
+//
+//        } catch (
+//                OfficeException e) {
+//            e.printStackTrace();
+//        } finally {
+//            // Stop the office process
+//            OfficeUtils.stopQuietly(officeManager);
+//        }
 
-        final LocalOfficeManager officeManager = LocalOfficeManager.builder()
-                .officeHome("/opt/libreoffice6.4")
-                .install()
-                .build();
-        try {
 
-            // Start an office process and connect to the started instance (on port 2002).
-            officeManager.start();
-
-            // Convert
-            JodConverter
-                    .convert(from)
-                    .to(f).as(DefaultDocumentFormatRegistry.PDF)
-                    .execute();
-
-            pdfWriter.putContent(f);
-
-        } catch (
-                OfficeException e) {
-            e.printStackTrace();
-        } finally {
-            // Stop the office process
-            OfficeUtils.stopQuietly(officeManager);
-        }
-
+//            remoteConvert("https://oda-lool-test.rm.dk:9980/", from,MimetypeMap.MIMETYPE_OPENDOCUMENT_TEXT, to, MimetypeMap.MIMETYPE_PDF);
+            remoteConvert("https://oda-lool-test.rm.dk:9980/lool/convert-to/pdf", from,MimetypeMap.MIMETYPE_OPENDOCUMENT_TEXT, to, MimetypeMap.MIMETYPE_PDF);
+            pdfWriter.putContent(to);
 
             contentsBean.rename(new NodeRef(nodeRef), name);
 
@@ -154,5 +190,47 @@ public class Rename extends AbstractWebScript {
         }
 
     }
+
+    /**
+     * Handle remote OpenOffice server conversion
+     */
+    public void remoteConvert(String uri, File inputFile, String srcMimeType, File outputFile, String dstMimeType)
+            throws ConversionException {
+        PostMethod post = new PostMethod(uri);
+
+        try {
+            Part[] parts = {new FilePart(inputFile.getName(), inputFile), new StringPart("src_mime", srcMimeType),
+                    new StringPart("dst_mime", dstMimeType)};
+            post.setRequestEntity(new MultipartRequestEntity(parts, post.getParams()));
+            HttpClient httpclient = new HttpClient();
+            int rc = httpclient.executeMethod(post);
+
+            System.out.println("hvad er rc");
+            System.out.println(rc);
+            System.out.println(rc);
+
+
+            if (rc == HttpStatus.SC_OK) {
+                FileOutputStream fos = new FileOutputStream(outputFile);
+                BufferedInputStream bis = new BufferedInputStream(post.getResponseBodyAsStream());
+                IOUtils.copy(bis, fos);
+                bis.close();
+                fos.close();
+            } else {
+                throw new IOException("Error in conversion: " + rc);
+            }
+        } catch (HttpException e) {
+            throw new ConversionException("HTTP exception", e);
+        } catch (FileNotFoundException e) {
+            throw new ConversionException("File not found exeption", e);
+        } catch (IOException e) {
+            throw new ConversionException("IO exception", e);
+        } finally {
+            post.releaseConnection();
+        }
+    }
+
+
+
 }
 
