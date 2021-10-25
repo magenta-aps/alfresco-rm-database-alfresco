@@ -118,8 +118,6 @@ public class Rename extends AbstractWebScript {
         NodeRef tmpFolder = siteService.getContainer("retspsyk", DatabaseModel.PROP_TMP);
 
         Map<QName, Serializable> documentLibaryProps = new HashMap<>();
-//        documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
-
         ChildAssociationRef pdf = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS,
                 QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
                 ContentModel.TYPE_CONTENT, documentLibaryProps);
@@ -175,7 +173,7 @@ public class Rename extends AbstractWebScript {
 
 
 //            remoteConvert("https://oda-lool-test.rm.dk:9980/", from,MimetypeMap.MIMETYPE_OPENDOCUMENT_TEXT, to, MimetypeMap.MIMETYPE_PDF);
-            remoteConvert("https://oda-lool-test.rm.dk:9980/lool/convert-to/pdf", from,MimetypeMap.MIMETYPE_OPENDOCUMENT_TEXT, to, MimetypeMap.MIMETYPE_PDF);
+
             pdfWriter.putContent(to);
 
             contentsBean.rename(new NodeRef(nodeRef), name);
@@ -190,47 +188,6 @@ public class Rename extends AbstractWebScript {
         }
 
     }
-
-    /**
-     * Handle remote OpenOffice server conversion
-     */
-    public void remoteConvert(String uri, File inputFile, String srcMimeType, File outputFile, String dstMimeType)
-            throws ConversionException {
-        PostMethod post = new PostMethod(uri);
-
-        try {
-            Part[] parts = {new FilePart(inputFile.getName(), inputFile), new StringPart("src_mime", srcMimeType),
-                    new StringPart("dst_mime", dstMimeType)};
-            post.setRequestEntity(new MultipartRequestEntity(parts, post.getParams()));
-            HttpClient httpclient = new HttpClient();
-            int rc = httpclient.executeMethod(post);
-
-            System.out.println("hvad er rc");
-            System.out.println(rc);
-            System.out.println(rc);
-
-
-            if (rc == HttpStatus.SC_OK) {
-                FileOutputStream fos = new FileOutputStream(outputFile);
-                BufferedInputStream bis = new BufferedInputStream(post.getResponseBodyAsStream());
-                IOUtils.copy(bis, fos);
-                bis.close();
-                fos.close();
-            } else {
-                throw new IOException("Error in conversion: " + rc);
-            }
-        } catch (HttpException e) {
-            throw new ConversionException("HTTP exception", e);
-        } catch (FileNotFoundException e) {
-            throw new ConversionException("File not found exeption", e);
-        } catch (IOException e) {
-            throw new ConversionException("IO exception", e);
-        } finally {
-            post.releaseConnection();
-        }
-    }
-
-
 
 }
 

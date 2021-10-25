@@ -548,5 +548,9 @@
             <title>marks that a signature has been added for this user</title>
         </aspect>
 
+        <aspect name="rm:tmp">
+            <title>marks a node as temporary and set to be deleted > 5 min after its creation </title>
+        </aspect>
+
     </aspects>
 </model>

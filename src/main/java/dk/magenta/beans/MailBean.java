@@ -46,8 +46,7 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 
-import static dk.magenta.model.DatabaseModel.ASPECT_ADDSIGNATURE;
-import static dk.magenta.model.DatabaseModel.PROP_SUPERVISINGDOCTOR;
+import static dk.magenta.model.DatabaseModel.*;
 import static org.odftoolkit.simple.style.StyleTypeDefinitions.HorizontalAlignmentType.LEFT;
 
 
@@ -87,6 +86,12 @@ public class MailBean {
     public void setPropertyValuesBean(PropertyValuesBean propertyValuesBean) {
         this.propertyValuesBean = propertyValuesBean;
     }
+
+    public void setTransformBean(TransformBean transformBean) {
+        this.transformBean = transformBean;
+    }
+
+    private TransformBean transformBean;
 
     private PropertyValuesBean propertyValuesBean;
 
@@ -360,56 +365,13 @@ public class MailBean {
 //    }
 
     private NodeRef transform(NodeRef source) {
-
-        ContentReader reader = contentService.getReader(source, ContentModel.PROP_CONTENT);
-//        File outputFile = new File("document.pdf");
-
-
-        // Create new PDF
-        String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);
         NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
-
-        Map<QName, Serializable> documentLibaryProps = new HashMap<>();
-        documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
-
-        ChildAssociationRef pdf = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS,
-                QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
-                ContentModel.TYPE_CONTENT, documentLibaryProps);
-
-
-        ContentData contentData = (ContentData) nodeService.getProperty(source, ContentModel.PROP_CONTENT);
-        ContentWriter pdfWriter = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
-
-        pdfWriter.setMimetype(MimetypeMap.MIMETYPE_PDF);
-
-
-        // Create an office manager using the default configuration.
-        // The default port is 2002. Note that when an office manager
-        // is installed, it will be the one used by default when
-        // a converter is created.
-        final LocalOfficeManager officeManager = LocalOfficeManager.builder()
-                .officeHome("/appl/alfresco/libreoffice")
-                .install()
-                .build();
         try {
-
-            // Start an office process and connect to the started instance (on port 2002).
-            officeManager.start();
-
-            // Convert
-            JodConverter
-                    .convert(reader.getContentInputStream())
-                    .to(pdfWriter.getContentOutputStream()).as(DefaultDocumentFormatRegistry.PDF)
-                    .execute();
-        } catch (
-                OfficeException e) {
+            return transformBean.transformODTtoPDF(source, tmpFolder);
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            // Stop the office process
-            OfficeUtils.stopQuietly(officeManager);
         }
-
-        return pdf.getChildRef();
+        return null;
     }
 
     private void logEvent(NodeRef[] attachmentNodeRefs, String authority) {
@@ -698,7 +660,14 @@ public class MailBean {
 
         if (attachmentNodeRef != null) {
             NodeRef documentWithSignature = this.addSignature(attachmentNodeRef, declaration);
-            return this.transform(documentWithSignature);
+
+            NodeRef tmp =  this.transform(documentWithSignature);
+
+            // make sure to delete the node again
+            nodeService.addAspect(tmp,ASPECT_TMP,null);
+            return tmp;
+
+
         }
         else {
             return null;

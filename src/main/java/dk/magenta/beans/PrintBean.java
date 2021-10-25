@@ -2,8 +2,6 @@ package dk.magenta.beans;
 
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.content.MimetypeMap;
-import org.alfresco.repo.content.transform.ContentTransformer;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
@@ -19,6 +17,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import static dk.magenta.model.DatabaseModel.ASPECT_TMP;
 
 public class PrintBean {
 
@@ -37,6 +37,12 @@ public class PrintBean {
     private SiteService siteService;
     private NodeService nodeService;
     private ContentService contentService;
+
+    public void setTransformBean(TransformBean transformBean) {
+        this.transformBean = transformBean;
+    }
+
+    private TransformBean transformBean;
 
 
 
@@ -230,42 +236,58 @@ public class PrintBean {
 
         NodeRef pdf = this.transform(tmpNode.getChildRef());
 
-
-
         return pdf.getId();
     }
 
+
     private NodeRef transform(NodeRef source) {
-
-        String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);
-
         NodeRef tmpFolder = siteService.getContainer("retspsyk", DatabaseModel.PROP_TMP);
+        try {
 
-        // Create new PDF
-        Map<QName, Serializable> documentLibaryProps = new HashMap<>();
-//        documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
+            NodeRef tmp = transformBean.transformODTtoPDF(source, tmpFolder);
 
-        ChildAssociationRef pdf = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS,
-                QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
-                ContentModel.TYPE_CONTENT, documentLibaryProps);
+            // make sure to delete the node again
+            nodeService.addAspect(tmp,ASPECT_TMP,null);
 
-
-        ContentData contentData = (ContentData) nodeService.getProperty(source, ContentModel.PROP_CONTENT);
-        String originalMimeType = contentData.getMimetype();
-
-        ContentReader pptReader = contentService.getReader(source, ContentModel.PROP_CONTENT);
-        ContentWriter pdfWriter = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
-
-        pdfWriter.setMimetype(MimetypeMap.MIMETYPE_PDF);
-
-        ContentTransformer pptToPdfTransformer = contentService.getTransformer(originalMimeType, MimetypeMap.MIMETYPE_PDF);
-
-        System.out.println("hvad er ppToPdfTransformer");
-        System.out.println(pptToPdfTransformer);
-
-        pptToPdfTransformer.transform(pptReader, pdfWriter);
-
-        return pdf.getChildRef();
+            return tmp;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
+
+
+//    private NodeRef transform(NodeRef source) {
+//
+//        String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);
+//
+//        NodeRef tmpFolder = siteService.getContainer("retspsyk", DatabaseModel.PROP_TMP);
+//
+//        // Create new PDF
+//        Map<QName, Serializable> documentLibaryProps = new HashMap<>();
+////        documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
+//
+//        ChildAssociationRef pdf = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS,
+//                QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
+//                ContentModel.TYPE_CONTENT, documentLibaryProps);
+//
+//
+//        ContentData contentData = (ContentData) nodeService.getProperty(source, ContentModel.PROP_CONTENT);
+//        String originalMimeType = contentData.getMimetype();
+//
+//        ContentReader pptReader = contentService.getReader(source, ContentModel.PROP_CONTENT);
+//        ContentWriter pdfWriter = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
+//
+//        pdfWriter.setMimetype(MimetypeMap.MIMETYPE_PDF);
+//
+//        ContentTransformer pptToPdfTransformer = contentService.getTransformer(originalMimeType, MimetypeMap.MIMETYPE_PDF);
+//
+//        System.out.println("hvad er ppToPdfTransformer");
+//        System.out.println(pptToPdfTransformer);
+//
+//        pptToPdfTransformer.transform(pptReader, pdfWriter);
+//
+//        return pdf.getChildRef();
+//    }
 
 }
