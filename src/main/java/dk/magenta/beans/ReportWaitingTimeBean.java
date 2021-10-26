@@ -145,9 +145,6 @@ public class ReportWaitingTimeBean {
         List<NodeRef> nodeRefs = this.query("declarationDate", from, to, false);
         NodeRef spreadSheet = setupSpreadSheet(nodeRefs);
 
-
-
-
         return spreadSheet;
     }
 

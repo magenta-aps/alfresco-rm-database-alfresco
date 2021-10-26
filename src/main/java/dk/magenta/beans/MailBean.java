@@ -723,20 +723,6 @@ public class MailBean {
 
     public NodeRef doChart(String requestedYear)  {
 
-        XYSeries series = new XYSeries("2016");
-        series.add(18, 567);
-        series.add(20, 612);
-        series.add(25, 800);
-        series.add(30, 980);
-        series.add(40, 1410);
-        series.add(50, 2350);
-
-        System.out.println("series.getItems().size()");
-        System.out.println(series.getItems().size());
-
-        System.out.println("series.getItems().get(0)");
-        System.out.println(series.getItems().get(0));
-
         XYSeries sent = weeklyStatBean.getWeekNodesForYearChartSent(requestedYear);
         XYSeries sentAkk = weeklyStatBean.getWeekNodesForYearChartSentAkk(requestedYear);
 

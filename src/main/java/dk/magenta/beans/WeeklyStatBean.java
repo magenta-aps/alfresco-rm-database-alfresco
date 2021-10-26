@@ -109,6 +109,25 @@ public class WeeklyStatBean {
 
     private EntryBean entryBean;
 
+    public void setMailBean(MailBean mailBean) {
+        this.mailBean = mailBean;
+    }
+
+    private MailBean mailBean;
+
+    public boolean sendMail() throws Exception {
+        return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
+
+            Calendar cal = Calendar.getInstance();
+            NodeRef report = mailBean.doChart(String.valueOf(cal.get(Calendar.YEAR)));
+
+            NodeRef[] attachmentList = new NodeRef[1];
+            attachmentList[0] = report;
+
+            mailBean.sendEmailNoTransform(attachmentList,"ps.o.faelles.post@rm.dk", "rapport", "");
+            return true;
+        });
+    }
 
     private NodeRef getWeeklyStatFolder() {
 
