@@ -65,6 +65,7 @@ public interface DatabaseModel {
     QName PROP_DOCTOR = QName.createQName(RM_MODEL_URI, "doctor");
     QName PROP_SUPERVISINGDOCTOR = QName.createQName(RM_MODEL_URI, "supervisingDoctor");
     QName PROP_PSYCHOLOGIST = QName.createQName(RM_MODEL_URI, "psychologist");
+    QName PROP_HENVISENDEINSTANS = QName.createQName(RM_MODEL_URI, "referingAgency");
 
     /* ICD-10 diagnosis */
     QName PROP_MAIN_DIAGNOSIS = QName.createQName(RM_MODEL_URI, "mainDiagnosis");
@@ -163,6 +164,7 @@ public interface DatabaseModel {
 
     String PROP_SAMTYKKE_TDL_KONTAKT = "samtykketidkontakt.odt";
     String PROP_BERIGTIGELSE = "berigtigelse.odt";
+    String PROP_SUPPLERENDEUDTALELSE = "supplerendeudtalelse.odt";
 
     // template docs
     String PROP_TEMPLATE_DOC_SAMTYKKE = "samtykke";
