@@ -231,7 +231,14 @@
 
 	<bean id="webscript.contents.mergedoctemplate.post" class="dk.magenta.webscripts.contents.MergeDocTemplate" parent="webscript">
 		<property name="documentTemplateBean" ref="documentTemplateBean"/>
+	</bean>
 
+	<bean id="webscript.contents.mergeberigtigelsestemplate.post" class="dk.magenta.webscripts.contents.MergeBerigtigelsesTemplate" parent="webscript">
+		<property name="documentTemplateBean" ref="documentTemplateBean"/>
+	</bean>
+
+	<bean id="webscript.contents.mergesuppleredeudttemplate.post" class="dk.magenta.webscripts.contents.MergeSuppleredendeUdtTemplate" parent="webscript">
+		<property name="documentTemplateBean" ref="documentTemplateBean"/>
 	</bean>
 
 	<bean id="webscript.contents.getdownloadstatus.get" class="dk.magenta.webscripts.contents.GetDownloadStatus" parent="webscript">
