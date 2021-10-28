@@ -133,6 +133,7 @@ public interface DatabaseModel {
     QName ASPECT_ADDSIGNATURE = QName.createQName(RM_MODEL_URI, "addSignature");
 
     QName ASPECT_SIGNATUREADDEDTOUSER = QName.createQName(RM_MODEL_URI, "signatureAdded");
+    QName ASPECT_TMP = QName.createQName(RM_MODEL_URI, "tmp");
 
 
 
