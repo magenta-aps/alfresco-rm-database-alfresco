@@ -2,8 +2,6 @@ package dk.magenta.beans;
 
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.content.MimetypeMap;
-import org.alfresco.repo.content.transform.ContentTransformer;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.*;
@@ -12,27 +10,9 @@ import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
-import org.apache.poi.POITextExtractor;
-import org.apache.poi.extractor.ExtractorFactory;
-import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.common.field.VariableField;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.io.*;
-import java.net.URI;
 import java.util.*;
 
 import static dk.magenta.model.DatabaseModel.*;
@@ -179,7 +159,6 @@ public class DocumentTemplateBean {
         info.postnr = String.valueOf(((Integer)nodeService.getProperty(declaration, DatabaseModel.PROP_POSTCODE)));
         info.by = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_CITY);
 
-
         info.laege = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_DOCTOR);
 
         int sagsnummer = (int)nodeService.getProperty(declaration, DatabaseModel.PROP_CASE_NUMBER);
@@ -206,8 +185,28 @@ public class DocumentTemplateBean {
         info.oprettetdato  = strindDay + "." + strindMonth + "." + year;
 //        info.oprettetdato  = (day <= 9) ? "0" + day : String.valueOf(day) + "." + (month <= 9) ? ("0" + String.valueOf(month) ? month + "." + year;
 
+        if (nodeService.getProperty(declaration, DatabaseModel.PROP_DECLARATION_DATE) != null) {
+            Date declarationDate = (Date)nodeService.getProperty(declaration, DatabaseModel.PROP_DECLARATION_DATE);
 
+            cal = Calendar.getInstance();
 
+            cal.setTime(declarationDate);
+            year = cal.get(Calendar.YEAR);
+            day = cal.get(Calendar.DATE);
+            month = (cal.get(Calendar.MONTH)+1);
+
+            String declarationDay = (day <= 9) ? "0" + day : String.valueOf(day);
+            String declarationMonthMonth = (month <= 9) ? "0" + month : String.valueOf(month);
+
+            info.erklaeringAfgivet = declarationDay + "." + month + "." + year;
+
+        }
+
+        if (nodeService.getProperty(declaration, PROP_REFERING_AGENCY) != null) {
+            info.henvisendeInstans = (String)nodeService.getProperty(declaration, PROP_REFERING_AGENCY);
+        }
+
+        info.doctor = (String)nodeService.getProperty(declaration, PROP_DOCTOR);
         return info;
     }
 
@@ -416,6 +415,133 @@ public class DocumentTemplateBean {
         return newFile.getNodeRef();
     }
 
+    public NodeRef generateBerigtigelseAfKonklusionDocument(NodeRef declaration) throws Exception {
+        NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+        List<String> list = Arrays.asList(DatabaseModel.PROP_BERIGTIGELSE );
+        List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
+
+        NodeRef templateDoc = children.get(0).getChildRef();
+        DeclarationInfo info = this.getProperties(declaration);
+
+        ContentReader contentReader = contentService.getReader(templateDoc, ContentModel.PROP_CONTENT);
+        TextDocument templateDocument = TextDocument.loadDocument(contentReader.getContentInputStream());
+
+        VariableField navnXXX = templateDocument.getVariableFieldByName("navnxxx");
+        navnXXX.updateField(info.fornavn + " " + info.efternavn, null);
+
+        VariableField cprXXX = templateDocument.getVariableFieldByName("cprxxx");
+        cprXXX.updateField(info.cpr, null);
+
+        VariableField doctorXXX = templateDocument.getVariableFieldByName("doctorxxx");
+        doctorXXX.updateField(info.doctor, null);
+
+        VariableField afgivetdenXXX = templateDocument.getVariableFieldByName("datexxx");
+        afgivetdenXXX.updateField(info.erklaeringAfgivet, null);
+
+        VariableField sagsnrXXX = templateDocument.getVariableFieldByName("sagsnrxxx");
+        sagsnrXXX.updateField(info.sagsnr, null);
+
+        VariableField journalXXX = templateDocument.getVariableFieldByName("journalnrxxx");
+        journalXXX.updateField(info.journalnummer, null);
+
+        VariableField voressagsnrXXX = templateDocument.getVariableFieldByName("voressagsnrxxx");
+        voressagsnrXXX.updateField(info.sagsnr, null);
+
+        VariableField xxxHenviser = templateDocument.getVariableFieldByName("xxxhenviser");
+        xxxHenviser.updateField(info.henvisendeInstans, null);
+
+        VariableField cpr2xxx = templateDocument.getVariableFieldByName("cpr2xxx");
+        cpr2xxx.updateField(info.cpr, null);
+
+        Calendar cal = Calendar.getInstance();
+
+        cal.setTime(new Date());
+        int year = cal.get(Calendar.YEAR);
+        int day = cal.get(Calendar.DATE);
+        int month = (cal.get(Calendar.MONTH)+1);
+
+        String declarationDay = (day <= 9) ? "0" + day : String.valueOf(day);
+        String declarationMonthMonth = (month <= 9) ? "0" + month : String.valueOf(month);
+
+        VariableField dagsdatoxxx = templateDocument.getVariableFieldByName("dagsdatoxxx");
+        dagsdatoxxx.updateField(declarationDay + "." + declarationMonthMonth + "." + year, null);
+
+        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,6) + "_berigtigelse.odt", ContentModel.TYPE_CONTENT);
+
+        ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
+        writer.setMimetype("application/vnd.oasis.opendocument.text");
+
+        File f = new File("tmp");
+
+        templateDocument.save(f);
+        writer.putContent(f);
+
+        return newFile.getNodeRef();
+    }
+
+    public NodeRef generateSuppleredeUdtalelseDocument(NodeRef declaration) throws Exception {
+        NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+        List<String> list = Arrays.asList(DatabaseModel.PROP_SUPPLERENDEUDTALELSE );
+        List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
+
+        NodeRef templateDoc = children.get(0).getChildRef();
+        DeclarationInfo info = this.getProperties(declaration);
+
+        ContentReader contentReader = contentService.getReader(templateDoc, ContentModel.PROP_CONTENT);
+        TextDocument templateDocument = TextDocument.loadDocument(contentReader.getContentInputStream());
+
+        VariableField navnXXX = templateDocument.getVariableFieldByName("xxxfuldenavn");
+        navnXXX.updateField(info.fornavn + " " + info.efternavn, null);
+
+        VariableField cprXXX = templateDocument.getVariableFieldByName("xxxcpr");
+        cprXXX.updateField(info.cpr, null);
+
+        VariableField sagsnrXXX = templateDocument.getVariableFieldByName("xxxsagsnr");
+        sagsnrXXX.updateField(info.sagsnr, null);
+
+        VariableField doctorXXX = templateDocument.getVariableFieldByName("xxxafgivetaf");
+        doctorXXX.updateField(info.doctor, null);
+
+        VariableField journalXXX = templateDocument.getVariableFieldByName("xxxjournalnr");
+        journalXXX.updateField(info.journalnummer, null);
+
+        VariableField xxxHenviser = templateDocument.getVariableFieldByName("xxxhenviser");
+        xxxHenviser.updateField(info.henvisendeInstans, null);
+
+        VariableField afgivetdenXXX = templateDocument.getVariableFieldByName("xxxafgivelsesdato");
+        afgivetdenXXX.updateField(info.erklaeringAfgivet, null);
+
+        VariableField voressagsnrXXX = templateDocument.getVariableFieldByName("xxxvoressagsnr");
+        voressagsnrXXX.updateField(info.sagsnr, null);
+
+        VariableField cpr2xxx = templateDocument.getVariableFieldByName("xxxcpr2");
+        cpr2xxx.updateField(info.cpr, null);
+
+        Calendar cal = Calendar.getInstance();
+
+        cal.setTime(new Date());
+        int year = cal.get(Calendar.YEAR);
+        int day = cal.get(Calendar.DATE);
+        int month = (cal.get(Calendar.MONTH)+1);
+
+        String declarationDay = (day <= 9) ? "0" + day : String.valueOf(day);
+        String declarationMonthMonth = (month <= 9) ? "0" + month : String.valueOf(month);
+
+        VariableField dagsdatoxxx = templateDocument.getVariableFieldByName("dagsdatoxxx");
+        dagsdatoxxx.updateField(declarationDay + "." + declarationMonthMonth + "." + year, null);
+
+        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,6) + "_suppleredeUdt.odt", ContentModel.TYPE_CONTENT);
+
+        ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
+        writer.setMimetype("application/vnd.oasis.opendocument.text");
+
+        File f = new File("tmp");
+
+        templateDocument.save(f);
+        writer.putContent(f);
+
+        return newFile.getNodeRef();
+    }
 
     private class DeclarationInfo {
         public String cpr;
@@ -430,6 +556,9 @@ public class DocumentTemplateBean {
         public String politikreds;
         public String oprettetdato;
         public String journalnummer;
+        public String doctor;
+        public String henvisendeInstans;
+        public String erklaeringAfgivet;
     }
 
 //    private static void copyInputStreamToFile(InputStream inputStream, File file)
