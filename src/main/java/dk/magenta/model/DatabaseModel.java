@@ -185,7 +185,7 @@ public interface DatabaseModel {
     String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME_BUA = "samtykke_bua.odt";
     String PROP_TEMPLATE_DOC_KENDELSE_FILENAME_BUA = "kendelse_bua.odt";
 
-
+    QName PROP_EXPIRYDATE = QName.createQName(RM_MODEL_URI, "expirydate");
 
     /**
      * caselink properties
@@ -206,6 +206,7 @@ public interface DatabaseModel {
     QName ASPECT_BUA_USER = QName.createQName(RM_MODEL_URI, "bua_user");
     QName ASPECT_DECLARATIONMARKEDFOREDIT = QName.createQName(RM_MODEL_URI, "documentMarkedForEdit");
     QName ASPECT_REDFLAG = QName.createQName(RM_MODEL_URI, "redFlag");
+    QName ASPECT_EXPIRYUSER = QName.createQName(RM_MODEL_URI, "expiryUser");
 
     String USER_ALL = "Alle";
     String USER_ONLY_BUA = "BUA";

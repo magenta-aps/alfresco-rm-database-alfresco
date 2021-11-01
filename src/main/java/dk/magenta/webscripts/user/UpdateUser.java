@@ -1,6 +1,5 @@
 package dk.magenta.webscripts.user;
 
-import dk.magenta.beans.PropertyValuesBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.model.ContentModel;
@@ -16,7 +15,6 @@ import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.extensions.surf.util.Content;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
@@ -24,11 +22,9 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import static dk.magenta.model.DatabaseModel.ASPECT_EXPIRYUSER;
 
 public class UpdateUser extends AbstractWebScript {
 
@@ -114,8 +110,35 @@ public class UpdateUser extends AbstractWebScript {
 
                 NodeRef p = personService.getPerson(userName);
 
+                String stringDate = "";
+                // #45545 include the expiry date of the user account
+                if (nodeService.hasAspect(p, ASPECT_EXPIRYUSER)) {
+
+                    Date expDate = (Date)nodeService.getProperty(p, DatabaseModel.PROP_EXPIRYDATE);
+
+                    Calendar cal = Calendar.getInstance();
+                    int year;
+                    int day;
+                    int month;
+                    cal.setTime(expDate);
+                    year = cal.get(Calendar.YEAR);
+                    day = cal.get(Calendar.DATE);
+                    month = (cal.get(Calendar.MONTH)+1);
+
+                    String strindDay = (day <= 9) ? "0" + day : String.valueOf(day);
+                    String strindMonth = (month <= 9) ? "0" + month : String.valueOf(month);
+
+                    stringDate = strindDay + "." + strindMonth + "." + year;
+
+                }
+
+
                 try {
-                    result.put("result", nodeService.hasAspect(p, DatabaseModel.ASPECT_BUA_USER));
+                    JSONObject values = new JSONObject();
+                    values.put("bua", nodeService.hasAspect(p, DatabaseModel.ASPECT_BUA_USER));
+                    values.put("expiry_date", stringDate);
+
+                    result.put("result", values);
                     JSONUtils.write(webScriptWriter, result);
                 }
                 catch (JSONException j) {
@@ -134,6 +157,9 @@ public class UpdateUser extends AbstractWebScript {
                     p = personService.getPerson(userName);
 
                     String signature = webScriptRequest.getParameter("signature");
+                    String selectedDate = webScriptRequest.getParameter("selectedDate");
+                    System.out.println("hvad er selecteddate");
+                    System.out.println(selectedDate);
 
                     // den bliver ikke gemt med korrekt encoding - mellemrum forsvinder
 
@@ -166,6 +192,13 @@ public class UpdateUser extends AbstractWebScript {
                     }
                     else {
                         nodeService.removeAspect(p, DatabaseModel.ASPECT_BUA_USER);
+                    }
+
+                    if (selectedDate != null) {
+                        Map<QName, Serializable> properties = new HashMap<>();
+                        properties.put(DatabaseModel.PROP_EXPIRYDATE, selectedDate);
+
+                        nodeService.addAspect(p, ASPECT_EXPIRYUSER, properties);
                     }
 
                     AuthenticationUtil.clearCurrentSecurityContext();
