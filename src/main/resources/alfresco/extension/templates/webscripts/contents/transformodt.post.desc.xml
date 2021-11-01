@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>transformodt</shortname>
+    <description>transforms odt to pdf using the libreoffice online</description>
+    <url>/contents/transformodt</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
