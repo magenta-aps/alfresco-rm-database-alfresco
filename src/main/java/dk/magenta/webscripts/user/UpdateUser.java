@@ -114,21 +114,25 @@ public class UpdateUser extends AbstractWebScript {
                 // #45545 include the expiry date of the user account
                 if (nodeService.hasAspect(p, ASPECT_EXPIRYUSER)) {
 
-                    Date expDate = (Date)nodeService.getProperty(p, DatabaseModel.PROP_EXPIRYDATE);
+                    String expDate = (String)nodeService.getProperty(p, DatabaseModel.PROP_EXPIRYDATE);
 
-                    Calendar cal = Calendar.getInstance();
-                    int year;
-                    int day;
-                    int month;
-                    cal.setTime(expDate);
-                    year = cal.get(Calendar.YEAR);
-                    day = cal.get(Calendar.DATE);
-                    month = (cal.get(Calendar.MONTH)+1);
+                    System.out.println("expDate");
+                    System.out.println(expDate);
 
-                    String strindDay = (day <= 9) ? "0" + day : String.valueOf(day);
-                    String strindMonth = (month <= 9) ? "0" + month : String.valueOf(month);
+//                    Calendar cal = Calendar.getInstance();
+//                    int year;
+//                    int day;
+//                    int month;
+//                    cal.setTime(new Date(expDate));
+//                    year = cal.get(Calendar.YEAR);
+//                    day = cal.get(Calendar.DATE);
+//                    month = (cal.get(Calendar.MONTH)+1);
+//
+//                    String strindDay = (day <= 9) ? "0" + day : String.valueOf(day);
+//                    String strindMonth = (month <= 9) ? "0" + month : String.valueOf(month);
 
-                    stringDate = strindDay + "." + strindMonth + "." + year;
+//                    stringDate = strindDay + "." + strindMonth + "." + year;
+                    stringDate = expDate;
 
                 }
 
