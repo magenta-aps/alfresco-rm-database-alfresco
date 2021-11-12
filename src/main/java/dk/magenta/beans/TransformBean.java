@@ -21,10 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.odftoolkit.simple.TextDocument;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TransformBean {
 
@@ -49,10 +46,23 @@ public class TransformBean {
         this.transactionService = transactionService;
     }
 
+    private Properties properties;
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
     private TransactionService transactionService;
 
     private String getLOOLurl() {
         // todo get the url from alfresco-global.properties
+
+        System.out.println(properties.getProperty("lool_host"));
+        System.out.println(properties.getProperty("lool_host"));
+        System.out.println(properties.getProperty("lool_host"));
+        System.out.println(properties.getProperty("lool_host"));
+        System.out.println(properties.getProperty("lool_host"));
+
         return "https://oda-lool-test.rm.dk:9980/lool/convert-to/pdf";
     }
 

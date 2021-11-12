@@ -220,8 +220,6 @@
 	<bean id="webscript.contents.rename.post" class="dk.magenta.webscripts.contents.Rename" parent="webscript">
 		<property name="nodeService" ref="nodeService"/>
 		<property name="contentsBean" ref="contentsBean"/>
-		<property name="contentService" ref="contentService"/>
-		<property name="siteService" ref="siteService"/>
 	</bean>
 
 	<bean id="webscript.contents.validatetemplatename.post" class="dk.magenta.webscripts.contents.ValidateTemplateName" parent="webscript">
