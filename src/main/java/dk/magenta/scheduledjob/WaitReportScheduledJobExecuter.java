@@ -1,6 +1,7 @@
 package dk.magenta.scheduledjob;
 
 import dk.magenta.beans.ReportWaitingTimeBean;
+import dk.magenta.beans.WeeklyStatBean;
 import org.alfresco.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +15,13 @@ public class WaitReportScheduledJobExecuter {
     private ServiceRegistry serviceRegistry;
 
 
-    public void setReportWaitingTimeBean(ReportWaitingTimeBean reportWaitingTimeBean) {
-        this.reportWaitingTimeBean = reportWaitingTimeBean;
+    public void setWeeklyStatBean(WeeklyStatBean weeklyStatBean) {
+        this.weeklyStatBean = weeklyStatBean;
     }
 
-    private ReportWaitingTimeBean reportWaitingTimeBean;
+    private WeeklyStatBean weeklyStatBean;
+
+
 
     public void setServiceRegistry(ServiceRegistry serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
@@ -33,7 +36,11 @@ public class WaitReportScheduledJobExecuter {
         System.out.println("godow fra waitreport");
 
         try {
-            reportWaitingTimeBean.sendMail();
+            // #43768 change the report to be send to the akk. report
+
+            weeklyStatBean.sendMailCurrentYear();
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
