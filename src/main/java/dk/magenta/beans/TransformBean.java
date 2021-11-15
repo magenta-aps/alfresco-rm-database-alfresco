@@ -57,13 +57,15 @@ public class TransformBean {
     private String getLOOLurl() {
         // todo get the url from alfresco-global.properties
 
+
+        System.out.println("hvad er lool host");
         System.out.println(properties.getProperty("lool_host"));
         System.out.println(properties.getProperty("lool_host"));
         System.out.println(properties.getProperty("lool_host"));
         System.out.println(properties.getProperty("lool_host"));
         System.out.println(properties.getProperty("lool_host"));
 
-        return "https://oda-lool-test.rm.dk:9980/lool/convert-to/pdf";
+        return properties.getProperty("lool_host");
     }
 
     public NodeRef transformODTtoPDF(NodeRef source, NodeRef targetParent) throws Exception {
