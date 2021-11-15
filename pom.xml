@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>dk.magenta</groupId>
     <artifactId>rm-database-alfresco</artifactId>
-    <version>1.2.161</version>
+    <version>1.2.17</version>
     <name>rm-database-alfresco Platform Jar Module - SDK 3</name>
     <description>Platform JAR Module (to be included in the alfresco.war) - SDK 3</description>
     <packaging>jar</packaging>
