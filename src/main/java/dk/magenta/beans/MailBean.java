@@ -15,6 +15,11 @@ import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.jfree.chart.ChartUtilities;
+import org.jodconverter.core.document.DefaultDocumentFormatRegistry;
+import org.jodconverter.core.office.OfficeException;
+import org.jodconverter.core.office.OfficeUtils;
+import org.jodconverter.local.JodConverter;
+import org.jodconverter.local.office.LocalOfficeManager;
 import org.json.JSONException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -41,8 +46,7 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 
-import static dk.magenta.model.DatabaseModel.ASPECT_ADDSIGNATURE;
-import static dk.magenta.model.DatabaseModel.PROP_SUPERVISINGDOCTOR;
+import static dk.magenta.model.DatabaseModel.*;
 import static org.odftoolkit.simple.style.StyleTypeDefinitions.HorizontalAlignmentType.LEFT;
 
 
@@ -82,6 +86,12 @@ public class MailBean {
     public void setPropertyValuesBean(PropertyValuesBean propertyValuesBean) {
         this.propertyValuesBean = propertyValuesBean;
     }
+
+    public void setTransformBean(TransformBean transformBean) {
+        this.transformBean = transformBean;
+    }
+
+    private TransformBean transformBean;
 
     private PropertyValuesBean propertyValuesBean;
 
@@ -324,38 +334,44 @@ public class MailBean {
 
     }
 
+//    private NodeRef transform(NodeRef source) {
+//
+//        String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);
+//
+//        NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
+//
+//        // Create new PDF
+//        Map<QName, Serializable> documentLibaryProps = new HashMap<>();
+//        documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
+//
+//
+//        ChildAssociationRef pdf = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS,
+//                QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
+//                ContentModel.TYPE_CONTENT, documentLibaryProps);
+//
+//
+//        ContentData contentData = (ContentData) nodeService.getProperty(source, ContentModel.PROP_CONTENT);
+//        String originalMimeType = contentData.getMimetype();
+//
+//        ContentReader pptReader = contentService.getReader(source, ContentModel.PROP_CONTENT);
+//        ContentWriter pdfWriter = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
+//
+//        pdfWriter.setMimetype(MimetypeMap.MIMETYPE_PDF);
+//
+//        ContentTransformer pptToPdfTransformer = contentService.getTransformer(originalMimeType, MimetypeMap.MIMETYPE_PDF);
+//
+//        pptToPdfTransformer.transform(pptReader, pdfWriter);
+//        return pdf.getChildRef();
+//    }
+
     private NodeRef transform(NodeRef source) {
-
-        String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);
-
         NodeRef tmpFolder = siteService.getContainer(siteShortName, DatabaseModel.PROP_TMP);
-
-        // Create new PDF
-        Map<QName, Serializable> documentLibaryProps = new HashMap<>();
-        documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
-
-
-        ChildAssociationRef pdf = nodeService.createNode(tmpFolder, ContentModel.ASSOC_CONTAINS,
-                QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
-                ContentModel.TYPE_CONTENT, documentLibaryProps);
-
-
-        ContentData contentData = (ContentData) nodeService.getProperty(source, ContentModel.PROP_CONTENT);
-        String originalMimeType = contentData.getMimetype();
-
-        ContentReader pptReader = contentService.getReader(source, ContentModel.PROP_CONTENT);
-        ContentWriter pdfWriter = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
-
-        pdfWriter.setMimetype(MimetypeMap.MIMETYPE_PDF);
-
-        ContentTransformer pptToPdfTransformer = contentService.getTransformer(originalMimeType, MimetypeMap.MIMETYPE_PDF);
-
-        pptToPdfTransformer.transform(pptReader, pdfWriter);
-
-
-
-
-        return pdf.getChildRef();
+        try {
+            return transformBean.transformODTtoPDF(source, tmpFolder);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void logEvent(NodeRef[] attachmentNodeRefs, String authority) {
@@ -644,7 +660,14 @@ public class MailBean {
 
         if (attachmentNodeRef != null) {
             NodeRef documentWithSignature = this.addSignature(attachmentNodeRef, declaration);
-            return this.transform(documentWithSignature);
+
+            NodeRef tmp =  this.transform(documentWithSignature);
+
+            // make sure to delete the node again
+            nodeService.addAspect(tmp,ASPECT_TMP,null);
+            return tmp;
+
+
         }
         else {
             return null;
