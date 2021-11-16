@@ -441,6 +441,8 @@ public class DocumentTemplateBean {
         VariableField afgivetdenXXX2 = templateDocument.getVariableFieldByName("afgivetxxx2");
         afgivetdenXXX2.updateField(info.erklaeringAfgivet, null);
 
+        VariableField xxxHenviser = templateDocument.getVariableFieldByName("xxxhenviser");
+        xxxHenviser.updateField(info.henvisendeInstans, null);
 
 
         VariableField sagsnrXXX = templateDocument.getVariableFieldByName("sagsnrxxx");
@@ -448,6 +450,9 @@ public class DocumentTemplateBean {
 
         VariableField journalXXX = templateDocument.getVariableFieldByName("journalnrxxx");
         journalXXX.updateField(info.journalnummer, null);
+
+        VariableField journal2XXX = templateDocument.getVariableFieldByName("journalnr2xxx");
+        journal2XXX.updateField(info.journalnummer, null);
 
         VariableField voressagsnrXXX = templateDocument.getVariableFieldByName("voressagsnrxxx");
         voressagsnrXXX.updateField(info.sagsnr, null);
@@ -587,5 +592,5 @@ public class DocumentTemplateBean {
 }
 
 
-GGkrYu73mdk3NDg
+
 
