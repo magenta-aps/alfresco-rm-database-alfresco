@@ -33,11 +33,8 @@ public class WaitReportScheduledJobExecuter {
     public void execute() {
         LOG.info("Running the scheduled job");
 
-        System.out.println("godow fra waitreport");
-
         try {
             // #43768 change the report to be send to the akk. report
-
             weeklyStatBean.sendMailCurrentYear();
 
 

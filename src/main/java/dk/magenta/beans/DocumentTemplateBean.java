@@ -438,6 +438,11 @@ public class DocumentTemplateBean {
         VariableField afgivetdenXXX = templateDocument.getVariableFieldByName("datexxx");
         afgivetdenXXX.updateField(info.erklaeringAfgivet, null);
 
+        VariableField afgivetdenXXX2 = templateDocument.getVariableFieldByName("afgivetxxx2");
+        afgivetdenXXX2.updateField(info.erklaeringAfgivet, null);
+
+
+
         VariableField sagsnrXXX = templateDocument.getVariableFieldByName("sagsnrxxx");
         sagsnrXXX.updateField(info.sagsnr, null);
 
@@ -446,9 +451,6 @@ public class DocumentTemplateBean {
 
         VariableField voressagsnrXXX = templateDocument.getVariableFieldByName("voressagsnrxxx");
         voressagsnrXXX.updateField(info.sagsnr, null);
-
-        VariableField xxxHenviser = templateDocument.getVariableFieldByName("xxxhenviser");
-        xxxHenviser.updateField(info.henvisendeInstans, null);
 
         VariableField cpr2xxx = templateDocument.getVariableFieldByName("cpr2xxx");
         cpr2xxx.updateField(info.cpr, null);
@@ -463,7 +465,7 @@ public class DocumentTemplateBean {
         String declarationDay = (day <= 9) ? "0" + day : String.valueOf(day);
         String declarationMonthMonth = (month <= 9) ? "0" + month : String.valueOf(month);
 
-        VariableField dagsdatoxxx = templateDocument.getVariableFieldByName("dagsdatoxxx");
+        VariableField dagsdatoxxx = templateDocument.getVariableFieldByName("dagsdataxxx");
         dagsdatoxxx.updateField(declarationDay + "." + declarationMonthMonth + "." + year, null);
 
         FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,6) + "_berigtigelse.odt", ContentModel.TYPE_CONTENT);
@@ -505,11 +507,17 @@ public class DocumentTemplateBean {
         VariableField journalXXX = templateDocument.getVariableFieldByName("xxxjournalnr");
         journalXXX.updateField(info.journalnummer, null);
 
+        VariableField journal2XXX = templateDocument.getVariableFieldByName("xxxjournalnr2");
+        journal2XXX.updateField(info.journalnummer, null);
+
         VariableField xxxHenviser = templateDocument.getVariableFieldByName("xxxhenviser");
         xxxHenviser.updateField(info.henvisendeInstans, null);
 
         VariableField afgivetdenXXX = templateDocument.getVariableFieldByName("xxxafgivelsesdato");
         afgivetdenXXX.updateField(info.erklaeringAfgivet, null);
+
+        VariableField afgivet2denXXX = templateDocument.getVariableFieldByName("xxxafgivelsesdato2");
+        afgivet2denXXX.updateField(info.erklaeringAfgivet, null);
 
         VariableField voressagsnrXXX = templateDocument.getVariableFieldByName("xxxvoressagsnr");
         voressagsnrXXX.updateField(info.sagsnr, null);
@@ -520,9 +528,11 @@ public class DocumentTemplateBean {
         Calendar cal = Calendar.getInstance();
 
         cal.setTime(new Date());
+        System.out.println("cal");
+        System.out.println(cal.get(Calendar.MONTH));
         int year = cal.get(Calendar.YEAR);
         int day = cal.get(Calendar.DATE);
-        int month = (cal.get(Calendar.MONTH)+1);
+        int month = (cal.get(Calendar.MONTH))+1;
 
         String declarationDay = (day <= 9) ? "0" + day : String.valueOf(day);
         String declarationMonthMonth = (month <= 9) ? "0" + month : String.valueOf(month);
@@ -575,3 +585,7 @@ public class DocumentTemplateBean {
 //
 //    }
 }
+
+
+GGkrYu73mdk3NDg
+

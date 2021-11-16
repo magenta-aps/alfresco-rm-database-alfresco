@@ -983,7 +983,8 @@ public class WeeklyStatBean {
             attachmentList[0] = report;
 
 //            mailBean.sendEmailNoTransform(attachmentList,"ps.o.faelles.post@rm.dk", "rapport for sendte og modtagne erklæringer i indeværende år", "");
-            mailBean.sendEmailNoTransform(attachmentList,"fhp@magenta.dk", "", "TEST rapport for sendte og modtagne erklæringer i indeværende år");
+//            mailBean.sendEmailNoTransform(attachmentList,"fhp@magenta.dk", "", "TEST1 rapport for sendte og modtagne erklæringer i indeværende år");
+            mailBean.sendEmailNoTransform(attachmentList,"ps.o.faelles.post@rm.dk", "", "TEST - rapport for sendte og modtagne erklæringer i indeværende år");
             return true;
         });
     }

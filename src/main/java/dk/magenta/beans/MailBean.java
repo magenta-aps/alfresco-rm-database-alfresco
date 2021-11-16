@@ -287,7 +287,6 @@ public class MailBean {
             MimeBodyPart messagePart = new MimeBodyPart();
             messagePart.setText(body);
 
-
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messagePart);
 
@@ -745,6 +744,9 @@ public class MailBean {
     }
 
     public NodeRef doChart(String requestedYear)  {
+
+        System.out.println("doing chart");
+
         XYSeries sent = weeklyStatBean.getWeekNodesForYearChartSent(requestedYear);
         XYSeries sentAkk = weeklyStatBean.getWeekNodesForYearChartSentAkk(requestedYear);
 
