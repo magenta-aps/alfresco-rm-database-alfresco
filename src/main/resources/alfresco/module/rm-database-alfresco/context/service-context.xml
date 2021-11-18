@@ -334,6 +334,11 @@
         <property name="transactionService" ref="transactionService"/>
     </bean>
 
+    <bean id="userBean" class="dk.magenta.beans.UserBean">
+        <property name="nodeService" ref="nodeService"/>
+        <property name="personService" ref="personService"/>
+    </bean>
+
 
 
 </beans>
