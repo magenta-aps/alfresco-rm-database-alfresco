@@ -1,6 +1,7 @@
 package dk.magenta.webscripts.user;
 
 import dk.magenta.beans.PropertyValuesBean;
+import dk.magenta.beans.UserBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.model.ContentModel;
@@ -37,6 +38,12 @@ public class DeactivateUser extends AbstractWebScript {
         this.authenticationService = authenticationService;
     }
 
+
+    public void setUserBean(UserBean userBean) {
+        this.userBean = userBean;
+    }
+
+    private UserBean userBean;
 
     public void setAuthorityService(AuthorityService authorityService) {
         this.authorityService = authorityService;
@@ -84,20 +91,15 @@ public class DeactivateUser extends AbstractWebScript {
 
             String userName = params.get("userName");
 
-            siteService.removeMembership("retspsyk", userName);
-            authorityService.removeAuthority(DatabaseModel.GROUP_ALLOWEDTODELETE, userName);
+//            siteService.removeMembership("retspsyk", userName);
+//            authorityService.removeAuthority(DatabaseModel.GROUP_ALLOWEDTODELETE, userName);
+//            authorityService.removeAuthority(DatabaseModel.GROUP_TEMPLATEFOLDERVALUEMANAGER, userName);
+//            authorityService.removeAuthority(DatabaseModel.GROUP_SITEENTRYLOCKMANAGER, userName);
+//            authorityService.removeAuthority(DatabaseModel.GROUP_SITEPROPERTYVALUEMANAGER, userName);
+//            authorityService.removeAuthority(DatabaseModel.GROUP_SITEROLEMANAGER, userName);
 
+            userBean.deactivateUser(userName);
 
-            authorityService.removeAuthority(DatabaseModel.GROUP_TEMPLATEFOLDERVALUEMANAGER, userName);
-
-
-
-
-
-
-            authorityService.removeAuthority(DatabaseModel.GROUP_SITEENTRYLOCKMANAGER, userName);
-            authorityService.removeAuthority(DatabaseModel.GROUP_SITEPROPERTYVALUEMANAGER, userName);
-            authorityService.removeAuthority(DatabaseModel.GROUP_SITEROLEMANAGER, userName);
 
             AuthenticationUtil.clearCurrentSecurityContext();
 
