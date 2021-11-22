@@ -61,32 +61,46 @@ public class UserBean {
 
     NodeService nodeService;
 
-    public void deactivateExpUsers() throws ParseException {
+    public void setTransactionService(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
-        NodeRef container = personService.getPeopleContainer();
+    private TransactionService transactionService;
 
-        List<ChildAssociationRef> people = nodeService.getChildAssocs(container);
+    public boolean deactivateExpUsers() throws ParseException {
 
-        Iterator i = people.iterator();
-        Date now = new Date();
+        return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
+
+            NodeRef container = personService.getPeopleContainer();
+
+            List<ChildAssociationRef> people = nodeService.getChildAssocs(container);
+
+            Iterator i = people.iterator();
+            Date now = new Date();
 
 
 
-        while (i.hasNext()) {
-            NodeRef user = ((ChildAssociationRef)i.next()).getChildRef();
-//            System.out.println(user);
+            while (i.hasNext()) {
+                NodeRef user = ((ChildAssociationRef)i.next()).getChildRef();
+    //            System.out.println(user);
 
-            if (nodeService.hasAspect(user, ASPECT_EXPIRYUSER)) {
+                if (nodeService.hasAspect(user, ASPECT_EXPIRYUSER)) {
 
-                String d = (String) nodeService.getProperty(user, PROP_EXPIRYDATE);
-                Date expires = new SimpleDateFormat("yyyy-MM-dd").parse(d);
+                    String d = (String) nodeService.getProperty(user, PROP_EXPIRYDATE);
 
-                if (now.after(expires)) {
-                    System.out.println("you need to be deactivated");
-                    this.deactivateUser((String)nodeService.getProperty(user,ContentModel.PROP_USERNAME));
+                    if ( d != null) {
+                        Date expires = new SimpleDateFormat("yyyy-MM-dd").parse(d);
+
+                        if (now.after(expires)) {
+                            System.out.println("you need to be deactivated");
+                            this.deactivateUser((String)nodeService.getProperty(user,ContentModel.PROP_USERNAME));
+                            nodeService.removeAspect(user, ASPECT_EXPIRYUSER);
+                        }
+                    }
                 }
             }
-        }
+            return true;
+        });
     }
 
     public void deactivateUser (String userName) {

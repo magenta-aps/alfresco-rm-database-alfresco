@@ -234,8 +234,8 @@
             <ref bean="ServiceRegistry" />
         </property>
 
-        <property name="transformBean">
-            <ref bean="transformBean" />
+        <property name="userBean">
+            <ref bean="userBean" />
         </property>
 
     </bean>
@@ -339,6 +339,7 @@
         <property name="personService" ref="personService"/>
         <property name="authorityService" ref="authorityService"/>
         <property name="siteService" ref="siteService"/>
+        <property name="transactionService" ref="transactionService"/>
     </bean>
 
 

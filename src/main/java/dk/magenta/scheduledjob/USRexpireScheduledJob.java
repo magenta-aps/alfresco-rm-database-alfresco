@@ -16,12 +16,12 @@ public class USRexpireScheduledJob extends AbstractScheduledLockedJob implements
         // Extract the Job executer to use
         Object executerObj = jobData.get("jobExecuter");
 
-        if (executerObj == null || !(executerObj instanceof TmpCleanerScheduledJobExecuter)) {
+        if (executerObj == null || !(executerObj instanceof USRexpireScheduledJobExecuter)) {
             throw new AlfrescoRuntimeException(
                     "ScheduledJob data must contain valid 'Executer' reference");
         }
 
-        final TmpCleanerScheduledJobExecuter jobExecuter = (TmpCleanerScheduledJobExecuter) executerObj;
+        final USRexpireScheduledJobExecuter jobExecuter = (USRexpireScheduledJobExecuter) executerObj;
 
         AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<Object>() {
             public Object doWork() throws Exception {
