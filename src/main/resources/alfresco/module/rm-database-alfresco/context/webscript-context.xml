@@ -123,6 +123,12 @@
 		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 
+	<bean id="webscript.user.usertype.get" class="dk.magenta.webscripts.user.UserType" parent="webscript">
+		<property name="personService" ref="personService"/>
+		<property name="authenticationService" ref="authenticationService"/>
+		<property name="nodeService" ref="nodeService"/>
+	</bean>
+
 	<bean id="webscript.user.userSignature.get" class="dk.magenta.webscripts.user.UserSignature" parent="webscript">
 		<property name="siteService" ref="SiteService"/>
 		<property name="authorityService" ref="AuthorityService"/>

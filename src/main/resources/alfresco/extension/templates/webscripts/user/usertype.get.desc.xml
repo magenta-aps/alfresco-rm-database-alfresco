@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>usertype</shortname>
+    <description>tells weather a use is of the type bua or not</description>
+    <url>/usertype</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
