@@ -138,7 +138,7 @@ public interface DatabaseModel {
 
 
     QName PROP_PRIMARYSIGNATURE = QName.createQName(RM_MODEL_URI, "primarySignature");
-    QName PROP_SECONDARYSIGNATURE = QName.createQName(RM_MODEL_URI, "secondarySignature");
+    QName PlockROP_SECONDARYSIGNATURE = QName.createQName(RM_MODEL_URI, "secondarySignature");
 
 
 
@@ -250,3 +250,43 @@ public interface DatabaseModel {
 }
 
 
+
+
+    function checkAndSet( node) {
+        //print(node.name);
+
+        if (node.name.match("erklaering.odt")) {
+
+            if ( node.hasAspect("addSignature2") ) {
+                print ("nothing");
+            }
+            else {
+                print (node.name);
+                print("adding aspect");
+            }
+        }
+    }
+
+
+
+
+    function doIT(theFolder) {
+
+        for (var x in theFolder.children) {
+            var item = theFolder.children[x];
+
+            if (item.type == "{http://www.alfresco.org/model/content/1.0}folder" || item.type == "{http://www.rm.dk/model/database/1.0}forensicPsychiatryDeclaration") {
+                doIT(item);
+            }
+            else {
+                checkAndSet (item) ;
+            }
+        }
+    }
+
+
+    var n = search.findNode("workspace://SpacesStore/c4cd9590-2d44-4d25-a100-34e289a256c2");
+
+    print (n);
+
+    doIT(n);

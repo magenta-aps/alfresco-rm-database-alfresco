@@ -2,37 +2,17 @@ package dk.magenta.beans;
 
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.QueryUtils;
-import org.alfresco.model.ContentModel;
-import org.alfresco.repo.content.MimetypeMap;
-import org.alfresco.repo.content.transform.ContentTransformer;
-import org.alfresco.service.cmr.repository.*;
-import org.alfresco.service.cmr.search.ResultSet;
-import org.alfresco.service.cmr.search.SearchParameters;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
-import org.alfresco.service.namespace.QName;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 public class FlowChartBean {
 
@@ -675,7 +655,10 @@ public class FlowChartBean {
     }
 
 
-    public JSONObject getTotals(String siteShortName, String default_query, String user) throws JSONException {
+    public JSONObject getTotals(String siteShortName, String default_query, String user, String buaQuery) throws JSONException {
+
+        System.out.println("default_query");
+        System.out.println(default_query);
 
         JSONObject result = new JSONObject();
 
@@ -698,6 +681,8 @@ public class FlowChartBean {
 
         String defaultQueryForTemporaryEditedDeclaration = "-ASPECT:\"rm:skip_flowchart\"";
         defaultQueryForTemporaryEditedDeclaration += " AND ASPECT:\"rm:supopl\"";
+        defaultQueryForTemporaryEditedDeclaration += buaQuery;
+
 
         result.put("supopl",this.getEntriesByStateSUPOPL(siteShortName,defaultQueryForTemporaryEditedDeclaration, "@rm:creationDate", true).size());
 

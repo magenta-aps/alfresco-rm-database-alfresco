@@ -98,16 +98,19 @@ public class FlowChart extends AbstractWebScript {
 
 
 
-            userNameForbuaCheck = authenticationService.getCurrentUserName();
+        userNameForbuaCheck = authenticationService.getCurrentUserName();
+        String buaQuery = "";
 
-            if (nodeService.hasAspect(personService.getPerson(userNameForbuaCheck), DatabaseModel.ASPECT_BUA_USER)) {
-                defaultQuery += " AND ASPECT:\"rm:bua\"";
-                defaultQueryForTemporaryEditedDeclaration += "ASPECT:\"rm:bua\"";
-            }
-            else {
-                defaultQuery += " AND -ASPECT:\"rm:bua\"";
-                defaultQueryForTemporaryEditedDeclaration += "-ASPECT:\"rm:bua\"";
-            }
+        if (nodeService.hasAspect(personService.getPerson(userNameForbuaCheck), DatabaseModel.ASPECT_BUA_USER)) {
+            buaQuery += " AND ASPECT:\"rm:bua\"";
+            defaultQuery += " AND ASPECT:\"rm:bua\"";
+            defaultQueryForTemporaryEditedDeclaration += "ASPECT:\"rm:bua\"";
+        }
+        else {
+            buaQuery += " AND -ASPECT:\"rm:bua\"";
+            defaultQuery += " AND -ASPECT:\"rm:bua\"";
+            defaultQueryForTemporaryEditedDeclaration += "-ASPECT:\"rm:bua\"";
+        }
 
         defaultQuery += " AND -ASPECT:\"rm:skip_flowchart\"";
         defaultQueryForTemporaryEditedDeclaration += " AND -ASPECT:\"rm:skip_flowchart\"";
@@ -216,7 +219,7 @@ public class FlowChart extends AbstractWebScript {
                     break;
                 case "total":
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
-                    result = flowChartBean.getTotals(siteShortName, defaultQuery, userName);
+                    result = flowChartBean.getTotals(siteShortName, defaultQuery, userName, buaQuery);
                     break;
             }
         } catch (JSONException e) {
