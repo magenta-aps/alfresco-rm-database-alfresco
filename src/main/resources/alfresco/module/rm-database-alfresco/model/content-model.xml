@@ -552,5 +552,15 @@
             <title>marks a node as temporary and set to be deleted > 5 min after its creation </title>
         </aspect>
 
+        <aspect name="rm:expiryUser">
+            <title>marks the date when a user are supposed to get deactivated</title>
+            <properties>
+                <property name="rm:expirydate">
+                    <title>expiry date</title>
+                    <type>d:text</type>
+                </property>
+            </properties>
+        </aspect>
+
     </aspects>
 </model>

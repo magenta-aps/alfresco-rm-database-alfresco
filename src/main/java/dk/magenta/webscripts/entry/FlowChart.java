@@ -37,6 +37,12 @@ public class FlowChart extends AbstractWebScript {
 
     private MailBean mailBean;
 
+    public void setUserBean(UserBean userBean) {
+        this.userBean = userBean;
+    }
+
+    private UserBean userBean;
+
     public void setPropertyValuesBean(PropertyValuesBean propertyValuesBean) {
         this.propertyValuesBean = propertyValuesBean;
     }
@@ -220,6 +226,7 @@ public class FlowChart extends AbstractWebScript {
                 case "total":
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
                     result = flowChartBean.getTotals(siteShortName, defaultQuery, userName, buaQuery);
+                    userBean.deactivateExpUsers();
                     break;
             }
         } catch (JSONException e) {

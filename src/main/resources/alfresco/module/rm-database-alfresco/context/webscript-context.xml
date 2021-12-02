@@ -64,6 +64,7 @@
 		<property name="propertyValuesBean" ref="propertyValuesBean"/>
 		<property name="authenticationService" ref="authenticationService"/>
 		<property name="personService" ref="personService"/>
+		<property name="userBean" ref="userBean"/>
 	</bean>
 
 	<bean id="webscript.entries.waitinglist.get" class="dk.magenta.webscripts.entry.GetWaitingList" parent="webscript">
@@ -112,9 +113,8 @@
 	</bean>
 
 	<bean id="webscript.user.deactivateUser.get" class="dk.magenta.webscripts.user.DeactivateUser" parent="webscript">
-		<property name="siteService" ref="SiteService"/>
-		<property name="authorityService" ref="AuthorityService"/>
 		<property name="authenticationService" ref="authenticationService"/>
+		<property name="userBean" ref="userBean"/>
 	</bean>
 
 	<bean id="webscript.user.activateUser.get" class="dk.magenta.webscripts.user.ActivateUser" parent="webscript">
