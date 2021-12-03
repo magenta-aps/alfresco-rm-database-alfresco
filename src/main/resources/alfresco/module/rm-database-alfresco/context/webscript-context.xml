@@ -202,6 +202,10 @@
 		<property name="nodeService" ref="nodeService"/>
 	</bean>
 
+	<bean id="webscript.contents.addsignature.post" class="dk.magenta.webscripts.contents.AddSignature" parent="webscript">
+		<property name="nodeService" ref="nodeService"/>
+	</bean>
+
 	<bean id="webscript.contents.transformpdftojpg.post" class="dk.magenta.webscripts.contents.TransformPDFtoJPG" parent="webscript">
 		<property name="contentsBean" ref="contentsBean"/>
 	</bean>
