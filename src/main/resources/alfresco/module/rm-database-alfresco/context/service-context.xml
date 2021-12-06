@@ -330,6 +330,7 @@
 
     <bean id="transformBean" class="dk.magenta.beans.TransformBean">
         <property name="nodeService" ref="nodeService"/>
+        <property name="fileFolderService" ref="fileFolderService"/>
         <property name="contentService" ref="contentService"/>
         <property name="searchService" ref="searchService"/>
         <property name="transactionService" ref="transactionService"/>

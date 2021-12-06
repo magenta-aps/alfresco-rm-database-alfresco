@@ -1,8 +1,10 @@
 package dk.magenta.beans;
 
 
+import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
+import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchService;
@@ -46,6 +48,12 @@ public class TransformBean {
         this.transactionService = transactionService;
     }
 
+    public void setFileFolderService(FileFolderService fileFolderService) {
+        this.fileFolderService = fileFolderService;
+    }
+
+    private FileFolderService fileFolderService;
+
     private Properties properties;
 
     public void setProperties(Properties properties) {
@@ -72,6 +80,15 @@ public class TransformBean {
 
         Map<QName, Serializable> documentLibaryProps = new HashMap<>();
         documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
+
+        //todo check if a node with that name already exists, then delete if true
+
+        NodeRef exists = fileFolderService.searchSimple(targetParent, source_name + ".pdf");
+        if (exists != null) {
+            System.out.println("deleting node...");
+            System.out.println(exists);
+            nodeService.deleteNode(exists);
+        }
 
         ChildAssociationRef pdf = nodeService.createNode(targetParent, ContentModel.ASSOC_CONTAINS,
                                                          QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
