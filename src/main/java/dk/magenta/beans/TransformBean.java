@@ -56,21 +56,13 @@ public class TransformBean {
 
     private String getLOOLurl() {
         // todo get the url from alfresco-global.properties
-
-
-        System.out.println("hvad er lool host");
-        System.out.println(properties.getProperty("lool_host"));
-        System.out.println(properties.getProperty("lool_host"));
-        System.out.println(properties.getProperty("lool_host"));
-        System.out.println(properties.getProperty("lool_host"));
-        System.out.println(properties.getProperty("lool_host"));
-
         return properties.getProperty("lool_host");
     }
 
     public NodeRef transformODTtoPDF(NodeRef source, NodeRef targetParent) throws Exception {
 
         ContentReader source_content = contentService.getReader(source, ContentModel.PROP_CONTENT);
+        String source_name = (String)nodeService.getProperty(source, ContentModel.PROP_NAME);
 
         TextDocument document = TextDocument.loadDocument(source_content.getContentInputStream());
         File from = new File ("from");
@@ -79,6 +71,8 @@ public class TransformBean {
         File to = new File("to");
 
         Map<QName, Serializable> documentLibaryProps = new HashMap<>();
+        documentLibaryProps.put(ContentModel.PROP_NAME, source_name + ".pdf");
+
         ChildAssociationRef pdf = nodeService.createNode(targetParent, ContentModel.ASSOC_CONTAINS,
                                                          QName.createQName(ContentModel.USER_MODEL_URI, "thePDF"),
                                                          ContentModel.TYPE_CONTENT, documentLibaryProps);
@@ -89,6 +83,7 @@ public class TransformBean {
         ContentWriter pdfWriter = contentService.getWriter(pdf.getChildRef(), ContentModel.PROP_CONTENT, true);
         pdfWriter.setMimetype(MimetypeMap.MIMETYPE_PDF);
         pdfWriter.putContent(to);
+
 
         return pdf.getChildRef();
     }
@@ -108,11 +103,6 @@ public class TransformBean {
             post.setRequestEntity(new MultipartRequestEntity(parts, post.getParams()));
             HttpClient httpclient = new HttpClient();
             int rc = httpclient.executeMethod(post);
-
-            System.out.println("hvad er rc");
-            System.out.println(rc);
-            System.out.println(rc);
-
 
             if (rc == HttpStatus.SC_OK) {
                 FileOutputStream fos = new FileOutputStream(outputFile);

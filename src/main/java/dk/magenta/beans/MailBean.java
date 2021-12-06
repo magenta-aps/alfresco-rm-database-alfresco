@@ -190,6 +190,7 @@ public class MailBean {
 
                 NodeRef attachmentNodeRef = attachmentNodeRefs[i];
                 NodeRef transformed = null;
+                String fileName = "";
 
                 if (addSignature) {
                     if (nodeService.hasAspect(attachmentNodeRef, ASPECT_ADDSIGNATURE)) {
@@ -201,16 +202,41 @@ public class MailBean {
                         // copy the pdf to the folder, erklæring og test #45554
                         NodeRef folder = fileFolderService.searchSimple(declaration, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
                         FileInfo newFile = fileFolderService.copy(transformed, folder, "erklæring_underskrevet.pdf");
+
+                        fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString() + ".pdf";
                     }
                     else {
-                        transformed = this.transform(attachmentNodeRef);
+                        // only transform odf, #47443
+                        if (contentService.getReader(attachmentNodeRef, ContentModel.PROP_CONTENT).getMimetype().equals(MimetypeMap.MIMETYPE_OPENDOCUMENT_TEXT)) {
+                            transformed = this.transform(attachmentNodeRef);
+                            fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString() + ".pdf";
+                        }
+                        else {
+                            transformed = attachmentNodeRef;
+                            fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString();
+                        }
+
                     }
                 }
                 else {
-                    transformed = this.transform(attachmentNodeRef);
+                     // only transform odf, #47443
+                    if (contentService.getReader(attachmentNodeRef, ContentModel.PROP_CONTENT).getMimetype().equals(MimetypeMap.MIMETYPE_OPENDOCUMENT_TEXT)) {
+                        transformed = this.transform(attachmentNodeRef);
+                        fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString() + ".pdf";
+                    }
+                    else {
+                        transformed = attachmentNodeRef;
+                        fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString();
+                    }
+
+
 
                 }
-                pds_to_be_deleted.add(transformed);
+
+                // only delete if a transformation took place, #47443
+                if (contentService.getReader(attachmentNodeRef, ContentModel.PROP_CONTENT).getMimetype().equals(MimetypeMap.MIMETYPE_OPENDOCUMENT_TEXT)) {
+                    pds_to_be_deleted.add(transformed);
+                }
 
                 final MimeBodyPart attachment = new MimeBodyPart();
                 NodeRef finalTransformed = transformed;
@@ -236,8 +262,8 @@ public class MailBean {
 
                 }));
 
-                attachment.setFileName(nodeService.getProperty(transformed, ContentModel.PROP_NAME).toString());
-
+//                attachment.setFileName(nodeService.getProperty(transformed, ContentModel.PROP_NAME).toString());
+                attachment.setFileName(fileName);
                 multipart.addBodyPart(attachment);
             }
 
@@ -484,14 +510,6 @@ public class MailBean {
         cRow1A.setBorders(StyleTypeDefinitions.CellBordersType.NONE, border);
 
         cRow1A.setVerticalAlignment(StyleTypeDefinitions.VerticalAlignmentType.MIDDLE);
-
-
-        System.out.println("hvad er cRow1a");
-        System.out.println(cRow1A);
-
-        System.out.println("hvad er newTestFile");
-//        System.out.println(newTestFile);
-//        System.out.println(newTestFile.toURI());
 
         try {
             cRow1A.setImage(filePrimary.toURI()).setHorizontalPosition(StyleTypeDefinitions.FrameHorizontalPosition.LEFT);
@@ -745,7 +763,7 @@ public class MailBean {
 
     public NodeRef doChart(String requestedYear)  {
 
-        System.out.println("doing chart");
+
 
         XYSeries sent = weeklyStatBean.getWeekNodesForYearChartSent(requestedYear);
         XYSeries sentAkk = weeklyStatBean.getWeekNodesForYearChartSentAkk(requestedYear);
@@ -753,10 +771,6 @@ public class MailBean {
 
         XYSeries received = weeklyStatBean.getWeekNodesForYearChartReceived(requestedYear);
         XYSeries receivedAkk = weeklyStatBean.getWeekNodesForYearChartReceivedAkk(requestedYear);
-
-        System.out.println("chartA.getItems().size()");
-        System.out.println(sent.getItems().size());
-        System.out.println(received.getItems().size());
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(sent);
@@ -827,9 +841,6 @@ public class MailBean {
 
             writer.setMimetype("image/png");
             writer.putContent(f);
-
-            System.out.println("havd er nodeRef på billede?");
-            System.out.println(childAssociationRef.getChildRef());
 
             return childAssociationRef.getChildRef();
 
