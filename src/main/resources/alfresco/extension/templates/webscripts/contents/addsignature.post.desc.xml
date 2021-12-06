@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>add signature aspect</shortname>
+    <description>add signature aspect</description>
+    <url>/contents/addsignature</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
