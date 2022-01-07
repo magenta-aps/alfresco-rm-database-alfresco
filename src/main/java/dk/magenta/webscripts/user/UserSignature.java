@@ -124,9 +124,6 @@ public class UserSignature extends AbstractWebScript {
                 templateLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_SIGNATURE_LIBRARY);
                 NodeRef signatureNodeRef = nodeService.getChildByName(templateLibrary, ContentModel.ASSOC_CONTAINS, userName);
 
-                System.out.println("hvad er signatureNodeRef");
-                System.out.println(signatureNodeRef);
-
                 if (signatureNodeRef != null) {
                     try {
                         result.put("text", nodeService.getProperty(signatureNodeRef, DatabaseModel.PROP_SIGNATURE));
