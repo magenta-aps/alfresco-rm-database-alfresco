@@ -85,8 +85,6 @@ public class TransformBean {
 
         NodeRef exists = fileFolderService.searchSimple(targetParent, source_name + ".pdf");
         if (exists != null) {
-            System.out.println("deleting node...");
-            System.out.println(exists);
             nodeService.deleteNode(exists);
         }
 

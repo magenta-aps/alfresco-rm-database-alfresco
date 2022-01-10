@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Unlock entry</shortname>
+    <description>Unlocks entry</description>
+    <url>/entry/{uuid}/undoclosecaseentry</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>
