@@ -226,7 +226,6 @@ public class FlowChart extends AbstractWebScript {
                 case "total":
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
                     result = flowChartBean.getTotals(siteShortName, defaultQuery, userName, buaQuery);
-                    userBean.deactivateExpUsers();
                     break;
             }
         } catch (JSONException e) {
