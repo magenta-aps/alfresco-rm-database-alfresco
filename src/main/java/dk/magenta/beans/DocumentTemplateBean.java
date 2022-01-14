@@ -203,6 +203,9 @@ public class DocumentTemplateBean {
         }
 
         if (nodeService.getProperty(declaration, PROP_REFERING_AGENCY) != null) {
+
+            // todo her skal være titel, adresse, post, by som ligger som et objekt i nedenstående property
+
             info.henvisendeInstans = (String)nodeService.getProperty(declaration, PROP_REFERING_AGENCY);
         }
 
