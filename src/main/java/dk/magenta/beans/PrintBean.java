@@ -48,8 +48,6 @@ public class PrintBean {
 
 
     public String printEntriesToPDF(org.json.JSONArray entries) throws Exception {
-//    public NodeRef printEntriesToPDF(org.json.JSONArray entries) {
-        System.out.println("printEntriesTOPDF");
 
         TextDocument document = TextDocument.newTextDocument();
         Table table = document.addTable();
@@ -147,9 +145,6 @@ public class PrintBean {
             if (o.has("closed")) {
                 closed = (Boolean)o.get("closed");
 
-                System.out.println("hvad er o.has(\"declarationDate\")");
-                System.out.println(o.has("declarationDate"));
-
                 if ( (!closed) && (o.has("declarationDate"))) {
                     closedString = "Afgivet, mangler afslutning";
                 }
@@ -228,7 +223,7 @@ public class PrintBean {
                 ContentModel.TYPE_CONTENT, tmpNodeProperties);
 
 
-        System.out.println("hvad er tmpNode.getC");
+
         ContentWriter writer = contentService.getWriter(tmpNode.getChildRef(), ContentModel.PROP_CONTENT, true);
         writer.setMimetype("application/vnd.oasis.opendocument.text");
         writer.putContent(f);
@@ -281,9 +276,6 @@ public class PrintBean {
 //        pdfWriter.setMimetype(MimetypeMap.MIMETYPE_PDF);
 //
 //        ContentTransformer pptToPdfTransformer = contentService.getTransformer(originalMimeType, MimetypeMap.MIMETYPE_PDF);
-//
-//        System.out.println("hvad er ppToPdfTransformer");
-//        System.out.println(pptToPdfTransformer);
 //
 //        pptToPdfTransformer.transform(pptReader, pdfWriter);
 //

@@ -423,13 +423,6 @@ public class WeeklyStatBean {
             String received = (String)nodeService.getProperty(week, PROP_RECEIVED);
 
             receivedAkk = receivedAkk + Integer.valueOf(received);
-
-            System.out.println("sent");
-            System.out.println(received);
-            System.out.println("Double.valueOf(weekString), Double.valueOf(sent)");
-            System.out.println(Double.valueOf(weekString));
-            System.out.println(Double.valueOf(received));
-
             series.add(Double.valueOf(weekString), Double.valueOf(receivedAkk));
         }
         return series;
@@ -450,13 +443,6 @@ public class WeeklyStatBean {
 
             String weekString = (String)nodeService.getProperty(week, PROP_WEEK);
             String sent = (String)nodeService.getProperty(week, PROP_SENT);
-
-            System.out.println("sent");
-            System.out.println(sent);
-            System.out.println("Double.valueOf(weekString), Double.valueOf(sent)");
-            System.out.println(Double.valueOf(weekString));
-            System.out.println(Double.valueOf(sent));
-
             series.add(Double.valueOf(weekString), Double.valueOf(sent));
         }
         return series;
@@ -480,13 +466,6 @@ public class WeeklyStatBean {
             String sent = (String)nodeService.getProperty(week, PROP_SENT);
 
             sentAkk = sentAkk + Integer.valueOf(sent);
-
-            System.out.println("sent");
-            System.out.println(sent);
-            System.out.println("Double.valueOf(weekString), Double.valueOf(sent)");
-            System.out.println(Double.valueOf(weekString));
-            System.out.println(Double.valueOf(sent));
-
             series.add(Double.valueOf(weekString), Double.valueOf(sentAkk));
         }
         return series;
@@ -753,7 +732,6 @@ public class WeeklyStatBean {
 
 
             for (int i=0; i<=possibleStepsBack; i++) {
-//                System.out.println("hvad er i" + i);;
                 WeekNode w = weeks.get((weekNode.week-1) - i);  // (weekNode.week-1) as the array is indexed from 0
 
                 if (property.equals("received")) {
@@ -794,7 +772,7 @@ public class WeeklyStatBean {
 
     public NodeRef writeToDocumentChartB (String year, List<WeekNode> weeksC, List<WeekNode> weeksM1, List<WeekNode> weeksM2) {
 
-//        System.out.println("writing " + weeksC.size() + " of weeks" + "staring with [0] " + weeksC.get(0).week) ;
+
         NodeRef spreadSheetNodeRef = this.getSpreadSheetNodeRefChartB(year);
 
         return transactionService.getRetryingTransactionHelper().doInTransaction(() -> {

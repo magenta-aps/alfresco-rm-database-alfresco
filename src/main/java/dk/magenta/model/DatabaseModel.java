@@ -157,6 +157,7 @@ public interface DatabaseModel {
     String PROP_WEEKLYSTAT = "weeklyStat";
 
     String ATTR_DEFAULT_DECLARATION_FOLDER = "Erklæring og psykologisk undersøgelse";
+    String ATTR_DEFAULT_KORRESPONDANCE_FOLDER = "Korrespondance";
 
     String PROP_TMP = "tmp";
 
@@ -180,7 +181,7 @@ public interface DatabaseModel {
 
 
     String PROP_LOGFORMAILS = "mail_kvitteringer.odt";
-    String PROP_DEFAULTFOLDER_MAILRECEIPTS = "mailkvittering";
+    String PROP_DEFAULTFOLDER_MAILRECEIPTS = ATTR_DEFAULT_KORRESPONDANCE_FOLDER;
 
     String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME_BUA = "samtykke_bua.odt";
     String PROP_TEMPLATE_DOC_KENDELSE_FILENAME_BUA = "kendelse_bua.odt";

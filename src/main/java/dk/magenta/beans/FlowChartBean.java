@@ -657,9 +657,6 @@ public class FlowChartBean {
 
     public JSONObject getTotals(String siteShortName, String default_query, String user, String buaQuery) throws JSONException {
 
-        System.out.println("default_query");
-        System.out.println(default_query);
-
         JSONObject result = new JSONObject();
 
         result.put("ongoing",this.getEntriesByIgangvaerende(siteShortName, default_query, "@rm:creationDate", true).size());

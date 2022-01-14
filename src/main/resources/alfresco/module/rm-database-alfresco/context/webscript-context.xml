@@ -94,6 +94,12 @@
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
+	<bean id="webscript.entries.entry.undoclosecaseentry.put" class="dk.magenta.webscripts.entry.UndoCloseCaseEntry" parent="webscript">
+		<property name="entryBean" ref="entryBean"/>
+		<property name="authorityService" ref="AuthorityService"/>
+		<property name="authenticationService" ref="authenticationService"/>
+	</bean>
+
 	<bean id="webscript.propertyValues.propertyValues.get" class="dk.magenta.webscripts.propertyValues.GetPropertyValues" parent="webscript">
 		<property name="propertyValuesBean" ref="propertyValuesBean"/>
 	</bean>

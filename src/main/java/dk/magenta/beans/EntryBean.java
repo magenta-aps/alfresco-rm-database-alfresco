@@ -424,6 +424,17 @@ public class EntryBean {
 
     public void deleteEntry (NodeRef entryRef) { nodeService.deleteNode(entryRef); }
 
+
+    public void undoCloseCase(NodeRef entryRef) {
+        if (lockService.isLocked(entryRef)) {
+                lockService.unlock(entryRef);
+        }
+
+        // remove the closedDate property and set closeddate to null; https://redmine.magenta-aps.dk/issues/46977
+        nodeService.removeProperty(entryRef, DatabaseModel.PROP_CLOSED);
+        nodeService.setProperty(entryRef, DatabaseModel.PROP_CLOSED_DATE, null);
+    }
+
     private void lockEntry (NodeRef entryRef) {
 
 
@@ -444,7 +455,6 @@ public class EntryBean {
                 nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_SUPOPL);
             }
             if (nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT)) {
-
                 nodeService.removeAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT);
             }
 
@@ -651,8 +661,6 @@ public class EntryBean {
 
 
         sp.setLanguage("lucene");
-        System.out.println("hvad er skip");
-        System.out.println(skip);
         sp.setQuery(query);
 
         sp.setMaxItems(maxItems);
