@@ -2,6 +2,7 @@ package dk.magenta.beans;
 
 
 import dk.magenta.model.DatabaseModel;
+import dk.magenta.utils.JSONUtils;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.service.cmr.model.FileFolderService;
@@ -103,6 +104,25 @@ public class PropertyValuesBean {
         writer.setEncoding("UTF-8");
         writer.putContent(output.toString());
     }
+
+    public String getReferingAgentByKey( String key) throws JSONException{
+
+        JSONObject values = propertyValuesMap.get("retspsyk");
+
+        JSONArray agents = values.getJSONArray("referingAgency");
+
+        for (int i=0; i<= agents.length()-1; i++) {
+
+            String s = agents.getString(i);
+
+            JSONObject o = new JSONObject(s);
+
+            if (key.equals(o.get("title"))) {
+                return "" + o.get("title") + "\n" + o.get("adresse") + "\n" + o.get("postnr")  + " " + o.get("by") + "";
+            };
+        }
+        return "";
+    };
 
     public String getUserByUserName (String userName) throws JSONException {
 

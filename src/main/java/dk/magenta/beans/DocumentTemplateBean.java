@@ -10,6 +10,7 @@ import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+import org.json.JSONException;
 import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.common.field.VariableField;
 import java.io.*;
@@ -28,6 +29,12 @@ public class DocumentTemplateBean {
     }
 
     private PermissionService permissionService;
+
+    public void setPropertyValuesBean(PropertyValuesBean propertyValuesBean) {
+        this.propertyValuesBean = propertyValuesBean;
+    }
+
+    private PropertyValuesBean propertyValuesBean;
 
     public void setFileFolderService(FileFolderService fileFolderService) {
         this.fileFolderService = fileFolderService;
@@ -206,7 +213,23 @@ public class DocumentTemplateBean {
 
             // todo her skal være titel, adresse, post, by som ligger som et objekt i nedenstående property
 
-            info.henvisendeInstans = (String)nodeService.getProperty(declaration, PROP_REFERING_AGENCY);
+            // map key med value i property
+
+
+
+            String key = (String)nodeService.getProperty(declaration, PROP_REFERING_AGENCY);
+
+            try {
+                info.henvisendeInstans = propertyValuesBean.getReferingAgentByKey(key);
+
+                System.out.println("hvad er info");
+                System.out.println(info.henvisendeInstans);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+//
         }
 
         info.doctor = (String)nodeService.getProperty(declaration, PROP_DOCTOR);
