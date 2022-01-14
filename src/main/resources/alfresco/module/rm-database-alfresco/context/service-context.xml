@@ -47,6 +47,7 @@
         <property name="nodeService" ref="NodeService"/>
         <property name="contentService" ref="contentService"/>
         <property name="siteService" ref="siteService"/>
+        <property name="transformBean" ref="transformBean"/>
     </bean>
 
     <bean id="mailBean" class="dk.magenta.beans.MailBean">
