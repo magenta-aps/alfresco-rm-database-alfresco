@@ -2,6 +2,7 @@ package dk.magenta.beans;
 
 
 import dk.magenta.model.DatabaseModel;
+import dk.magenta.utils.JSONUtils;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.service.cmr.model.FileFolderService;
@@ -52,26 +53,56 @@ public class PropertyValuesBean {
             JSONObject result = new JSONObject();
 
             for (FileInfo fileInfo : fileInfos) {
-                JSONArray values = new JSONArray();
-                NodeRef nodeRef = fileInfo.getNodeRef();
-                ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
-                InputStream s = contentReader.getContentInputStream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(s));
+                if (fileInfo.getName().equals("referingAgency.txt")) {
+                    System.out.println("found referingAgency");
 
-                String line;
-                while ((line = br.readLine()) != null)
-                    values.put(line);
+                    JSONArray values = new JSONArray();
+                    NodeRef nodeRef = fileInfo.getNodeRef();
+                    ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
+                    InputStream s = contentReader.getContentInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(s));
 
-                s.close();
-                br.close();
+                    String line;
+                    System.out.println("hvad er line");
+                    while ((line = br.readLine()) != null) {
+                        System.out.println(line);
+                        values.put(line);
+                    }
 
-                String propertyName = fileInfo.getName().replace(".txt", "");
+                    s.close();
+                    br.close();
 
-                // cleanup if socialworker, secretary, doctor or psycologist -
+                    String propertyName = fileInfo.getName().replace(".txt", "");
 
-                // TODO code to cleanup
+                    // cleanup if socialworker, secretary, doctor or psycologist -
 
-                result.put(propertyName, values);
+                    // TODO code to cleanup
+
+                    result.put(propertyName, values);
+                }
+                else {
+
+                    JSONArray values = new JSONArray();
+                    NodeRef nodeRef = fileInfo.getNodeRef();
+                    ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
+                    InputStream s = contentReader.getContentInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(s));
+
+                    String line;
+                    while ((line = br.readLine()) != null)
+                        values.put(line);
+
+                    s.close();
+                    br.close();
+
+                    String propertyName = fileInfo.getName().replace(".txt", "");
+
+                    // cleanup if socialworker, secretary, doctor or psycologist -
+
+                    // TODO code to cleanup
+
+                    result.put(propertyName, values);
+                }
             }
             propertyValuesMap.put(siteShortName, result);
         }
@@ -102,7 +133,37 @@ public class PropertyValuesBean {
         writer.setMimetype(MimetypeMap.MIMETYPE_TEXT_PLAIN);
         writer.setEncoding("UTF-8");
         writer.putContent(output.toString());
+
+        // reload the properties if the property was referingAgency
+
+        if (property.equals("referingAgency")) {
+            try {
+                this.loadPropertyValues("retspsyk");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
+
+    public String getReferingAgentByKey( String key) throws JSONException{
+
+        JSONObject values = propertyValuesMap.get("retspsyk");
+
+        JSONArray agents = values.getJSONArray("referingAgency");
+
+        for (int i=0; i<= agents.length()-1; i++) {
+
+            String s = agents.getString(i);
+
+            JSONObject o = new JSONObject(s);
+
+            if (key.equals(o.get("title"))) {
+                return "" + o.get("title") + "\n" + o.get("adresse") + "\n" + o.get("postnr")  + " " + o.get("by") + "";
+            };
+        }
+        return "";
+    };
 
     public String getUserByUserName (String userName) throws JSONException {
 

@@ -88,6 +88,7 @@
         <property name="siteService" ref="SiteService"/>
         <property name="fileFolderService" ref="FileFolderService"/>
         <property name="PermissionService" ref="PermissionService"/>
+        <property name="propertyValuesBean" ref="propertyValuesBean"/>
     </bean>
 
     <!--    job for weekly report-->

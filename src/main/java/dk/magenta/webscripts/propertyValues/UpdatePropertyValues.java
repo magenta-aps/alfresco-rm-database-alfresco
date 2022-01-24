@@ -30,9 +30,14 @@ public class UpdatePropertyValues extends AbstractWebScript {
             JSONObject json = new JSONObject(c.getContent());
             String siteShortName = JSONUtils.getString(json, "siteShortName");
             String property = JSONUtils.getString(json, "property");
+
+            System.out.println("hvad er c.getContent()");
+            System.out.println(c.getContent());
+
             JSONArray values = JSONUtils.getArray(json, "values");
 
             propertyValuesBean.updatePropertyValues(siteShortName, property, values);
+
             result = JSONUtils.getSuccess();
 
         } catch (Exception e) {
