@@ -181,6 +181,8 @@ public class MailBean {
             messagePart.setText(body);
 
 
+
+
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messagePart);
 

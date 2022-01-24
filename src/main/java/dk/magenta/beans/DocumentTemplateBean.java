@@ -534,6 +534,71 @@ public class DocumentTemplateBean {
         return newFile.getNodeRef();
     }
 
+    public NodeRef generateBrevDocument(NodeRef declaration) throws Exception {
+        NodeRef nodeRef_templateFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+        List<String> list = Arrays.asList(DatabaseModel.PROP_FLETTEBREV );
+        List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateFolder, ContentModel.ASSOC_CONTAINS, list);
+
+        NodeRef templateDoc = children.get(0).getChildRef();
+        DeclarationInfo info = this.getProperties(declaration);
+
+        ContentReader contentReader = contentService.getReader(templateDoc, ContentModel.PROP_CONTENT);
+        TextDocument templateDocument = TextDocument.loadDocument(contentReader.getContentInputStream());
+
+        VariableField navnXXX = templateDocument.getVariableFieldByName("fuldnavnxxx");
+        navnXXX.updateField(info.fornavn + " " + info.efternavn, null);
+
+        VariableField cprXXX = templateDocument.getVariableFieldByName("cprxxx");
+        cprXXX.updateField(info.cpr, null);
+
+        VariableField journalXXX = templateDocument.getVariableFieldByName("journalnrxxx");
+        journalXXX.updateField(info.journalnummer, null);
+
+        VariableField journal2XXX = templateDocument.getVariableFieldByName("journalnr2xxx");
+        journal2XXX.updateField(info.journalnummer, null);
+
+        VariableField xxxHenviser = templateDocument.getVariableFieldByName("henviserxxx");
+        xxxHenviser.updateField(info.henvisendeInstans, null);
+
+        VariableField cpr2xxx = templateDocument.getVariableFieldByName("cpr2xxx");
+        cpr2xxx.updateField(info.cpr, null);
+
+        Calendar cal = Calendar.getInstance();
+
+        cal.setTime(new Date());
+        int year = cal.get(Calendar.YEAR);
+        int day = cal.get(Calendar.DATE);
+        int month = (cal.get(Calendar.MONTH))+1;
+
+        String declarationDay = (day <= 9) ? "0" + day : String.valueOf(day);
+        String declarationMonthMonth = (month <= 9) ? "0" + month : String.valueOf(month);
+
+        VariableField dagsdatoxxx = templateDocument.getVariableFieldByName("flettedatoxxx");
+        dagsdatoxxx.updateField(declarationDay + "." + declarationMonthMonth + "." + year, null);
+
+
+        List<String> criteria = Arrays.asList(DatabaseModel.PROP_DEFAULTFOLDER_MAILRECEIPTS);
+        List<ChildAssociationRef> mailFolder = nodeService.getChildrenByName(declaration, org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
+
+        NodeRef korrespondance_folder = mailFolder.get(0).getChildRef();
+
+        FileInfo newFile = fileFolderService.create(korrespondance_folder, info.cpr.substring(0,6) + "_brev.odt", ContentModel.TYPE_CONTENT);
+
+        ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
+        writer.setMimetype("application/vnd.oasis.opendocument.text");
+
+        File f = new File("tmp");
+
+        templateDocument.save(f);
+        writer.putContent(f);
+
+        // # https://redmine.magenta-aps.dk/issues/46005#note-11
+        Map<QName, Serializable> aspectProps = new HashMap<>();
+        nodeService.addAspect(newFile.getNodeRef(), ASPECT_ADDSIGNATURE, aspectProps);
+
+        return newFile.getNodeRef();
+    }
+
     private class DeclarationInfo {
         public String cpr;
         public String fornavn;
