@@ -562,5 +562,15 @@
             </properties>
         </aspect>
 
+        <aspect name="rm:signatureData">
+            <title>adds a users signature to the user node</title>
+            <properties>
+                <property name="rm:signature">
+                    <title>signature</title>
+                    <type>d:text</type>
+                </property>
+            </properties>
+        </aspect>
+
     </aspects>
 </model>

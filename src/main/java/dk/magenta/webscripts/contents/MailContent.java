@@ -287,7 +287,31 @@ public class MailContent extends AbstractWebScript {
                         criteria = Arrays.asList(DatabaseModel.PROP_LOGFORMAILS);
                         List<ChildAssociationRef> log = nodeService.getChildrenByName(mailFolder.get(0).getChildRef(), org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
 
-                        NodeRef log_node = log.get(0).getChildRef();
+                        NodeRef log_node;
+
+                        if (log.size() == 0) {
+                            NodeRef mail_folder = mailFolder.get(0).getChildRef();
+                            FileInfo newNode = fileFolderService.create(mail_folder, DatabaseModel.PROP_LOGFORMAILS, org.alfresco.model.ContentModel.TYPE_CONTENT);
+
+                            nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_VERSIONABLE, null);
+
+                            TextDocument log_entires = TextDocument.newTextDocument();
+                            File f = new File("tmp");
+                            log_entires.save(f);
+
+                            ContentWriter contentWriter = contentService.getWriter(newNode.getNodeRef(), org.alfresco.model.ContentModel.PROP_CONTENT, true);
+
+                            contentWriter.setMimetype("application/vnd.oasis.opendocument.text");
+
+                            contentWriter.putContent(f);
+
+                            nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_UNDELETABLE, null);
+
+                            log_node = newNode.getNodeRef();
+                        }
+                        else {
+                            log_node = log.get(0).getChildRef();
+                        }
 
                         ContentReader contentReader = contentService.getReader(log_node, org.alfresco.model.ContentModel.PROP_CONTENT);
 
