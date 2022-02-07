@@ -198,9 +198,17 @@ public class MailBean {
 
 
 
-            //workspace://SpacesStore/21bde8f5-8f38-4195-8f79-bf5eae4aeb6b
+            NodeRef nodeRef_templateDocFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
 
-            NodeRef img = new NodeRef("workspace://SpacesStore/21bde8f5-8f38-4195-8f79-bf5eae4aeb6b");
+            List<String> list = Arrays.asList(PROP_SIGNATUREIMAGE_FILENAME);
+            List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateDocFolder, ContentModel.ASSOC_CONTAINS, list);
+
+            NodeRef img = children.get(0).getChildRef();
+
+            System.out.println("jeg fandt img noderef");
+            System.out.println(img);
+
+//            NodeRef img = new NodeRef("workspace://SpacesStore/21bde8f5-8f38-4195-8f79-bf5eae4aeb6b");
 
             ContentReader reader = contentService.getReader(img, ContentModel.PROP_CONTENT);
 
