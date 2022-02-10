@@ -208,35 +208,86 @@ public class GetPaginetedEntries extends AbstractWebScript {
             }
 
             if (input.has("sanctionProposal")) {
+
+                JSONArray jsonArray = input.getJSONArray("sanctionProposal");
+                String querySanctionProposal = "";
+
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+                    if (i == 0) {
+                        querySanctionProposal = querySanctionProposal + "\"" + (String) jsonArray.get(i) + "\"";
+                    }
+                    else {
+                        querySanctionProposal = querySanctionProposal + " "  + "\"" +(String) jsonArray.get(i) + "\"";
+                    }
+                }
+
                 JSONObject o = new JSONObject();
                 o.put("key", "sanctionProposal");
-                o.put("value", "(" + input.get("sanctionProposal") + ")" );
+                o.put("value", "(" + querySanctionProposal + ")");
                 o.put("include", true);
                 queryArray.put(o);
             }
 
             if (input.has("placement")) {
+
+                JSONArray jsonArray = input.getJSONArray("placement");
+                String queryPlacement = "";
+
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+                    if (i == 0) {
+                        queryPlacement = queryPlacement + "\"" + (String) jsonArray.get(i) + "\"";
+                    }
+                    else {
+                        queryPlacement = queryPlacement + " "  + "\"" +(String) jsonArray.get(i) + "\"";
+                    }
+                }
+
                 JSONObject o = new JSONObject();
                 o.put("key", "placement");
-                o.put("value", input.get("placement"));
+                o.put("value", "(" + input.get("queryPlacement") + ")" );
                 o.put("include", true);
                 queryArray.put(o);
             }
 
             if (input.has("mainDiagnosis")) {
+
+                String queryStringMainCharge = "";
+                JSONArray jsonArray = input.getJSONArray("mainDiagnosis");
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+                    if (i == 0) {
+                        queryStringMainCharge = queryStringMainCharge + "\"" + (String) jsonArray.get(i) + "\"";
+                    }
+                    else {
+                        queryStringMainCharge = queryStringMainCharge + " "  + "\"" +(String) jsonArray.get(i) + "\"";
+                    }
+                }
+
                 JSONObject o = new JSONObject();
                 o.put("key", "mainDiagnosis");
-                o.put("value", input.get("mainDiagnosis"));
+                o.put("value", "(" + queryStringMainCharge + ")");
                 o.put("include", true);
                 queryArray.put(o);
             }
 
             if (input.has("status")) {
+
+                String queryStringMainCharge = "";
+                JSONArray jsonArray = input.getJSONArray("status");
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+                    if (i == 0) {
+                        queryStringMainCharge = queryStringMainCharge + "\"" + (String) jsonArray.get(i) + "\"";
+                    }
+                    else {
+                        queryStringMainCharge = queryStringMainCharge + " "  + "\"" +(String) jsonArray.get(i) + "\"";
+                    }
+                }
+
+
                 JSONObject o = new JSONObject();
                 o.put("key", "status");
-                o.put("value", input.get("status"));
-                    o.put("include", true);
-                    queryArray.put(o);
+                o.put("value", "(" + queryStringMainCharge + ")");
+                o.put("include", true);
+                queryArray.put(o);
             }
 
             if (input.has("givenDeclaration")) {
