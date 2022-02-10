@@ -207,7 +207,7 @@ public class MailBean {
                         fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString() + ".pdf";
 
                         // fixes name problem that causes errors in sending nodeRefs with signatures #48567
-                        FileInfo newFile = fileFolderService.copy(transformed, folder, fileName);
+                        FileInfo newFile = fileFolderService.copy(transformed, folder, "underskrevet" + fileName);
                     }
                     else {
                         // only transform odf, #47443
