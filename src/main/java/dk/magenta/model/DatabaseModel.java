@@ -179,10 +179,11 @@ public interface DatabaseModel {
     String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME = "samtykke.odt";
     String PROP_TEMPLATE_DOC_KENDELSE_FILENAME = "kendelse.odt";
 
-
-
     String PROP_LOGFORMAILS = "mail_kvitteringer.odt";
     String PROP_DEFAULTFOLDER_MAILRECEIPTS = ATTR_DEFAULT_KORRESPONDANCE_FOLDER;
+
+    String PROP_DEFAULTFOLDER_SIGNATUREIMAGE = PROP_TEMPLATE_LIBRARY;
+    String PROP_SIGNATUREIMAGE_FILENAME = "sig.png";
 
     String PROP_TEMPLATE_DOC_SAMTYKKE_FILENAME_BUA = "samtykke_bua.odt";
     String PROP_TEMPLATE_DOC_KENDELSE_FILENAME_BUA = "kendelse_bua.odt";

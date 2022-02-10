@@ -14,6 +14,7 @@ import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+import org.apache.commons.io.IOUtils;
 import org.jfree.chart.ChartUtilities;
 import org.jodconverter.core.document.DefaultDocumentFormatRegistry;
 import org.jodconverter.core.office.OfficeException;
@@ -34,12 +35,14 @@ import org.odftoolkit.simple.table.Table;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.imageio.ImageIO;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
 import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.io.*;
@@ -177,16 +180,56 @@ public class MailBean {
             msg.setSubject(subject);
             msg.setSentDate(new Date());
 
+            MimeBodyPart bodyText = new MimeBodyPart();
             MimeBodyPart messagePart = new MimeBodyPart();
-            messagePart.setText(body);
 
+            bodyText.setText(body);
+
+            String htmlBody = "<p align=left><img src=\"cid:senny\"> </p>";
+
+            messagePart.setContent(htmlBody, "text/html");
 
 
 
             Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(bodyText);
             multipart.addBodyPart(messagePart);
 
 
+            // second part (the image)
+
+
+
+            NodeRef nodeRef_templateDocFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+
+            List<String> list = Arrays.asList(PROP_SIGNATUREIMAGE_FILENAME);
+            List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateDocFolder, ContentModel.ASSOC_CONTAINS, list);
+
+            NodeRef img = children.get(0).getChildRef();
+
+            System.out.println("jeg fandt img noderef");
+            System.out.println(img);
+
+//            NodeRef img = new NodeRef("workspace://SpacesStore/21bde8f5-8f38-4195-8f79-bf5eae4aeb6b");
+
+            ContentReader reader = contentService.getReader(img, ContentModel.PROP_CONTENT);
+
+            File tmp = new File("img.png");
+            FileOutputStream out = new FileOutputStream(tmp);
+            IOUtils.copy(reader.getContentInputStream(), out);
+
+            MimeBodyPart signature = new MimeBodyPart();
+
+
+            DataSource fds1 = new FileDataSource(tmp);
+
+            System.out.println("hvad er fsd1");
+            System.out.println(fds1);
+
+            signature.setDataHandler(new DataHandler(fds1));
+            signature.addHeader("Content-ID","<senny>");
+
+            multipart.addBodyPart(signature);
 
             for (int i=0; i <= attachmentNodeRefs.length-1;i++) {
 
