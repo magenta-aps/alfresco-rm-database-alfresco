@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model name="rmpsy:psychModel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+
+    <!-- Optional meta-data about the model -->
+    <description>Model the Region Midts databaser</description>
+    <author>Magenta ApS</author>
+    <version>1.0</version>
+
+    <imports>
+        <!-- Import Alfresco Dictionary Definitions -->
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+        <!-- Import Alfresco Content Domain Model Definitions -->
+        <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+        <!-- Import Alfresco Site Domain Model Definitions -->
+        <import uri="http://www.alfresco.org/model/site/1.0" prefix="st"/>
+    </imports>
+
+    <!-- Custom namespace for Region Midt -->
+    <namespaces>
+        <namespace uri="http://www.rm.dk/model/psycdatabase/1.0" prefix="rmpsy"/>
+    </namespaces>
+
+    <!-- Constraints -->
+
+    <!-- Types -->
+
+    <types>
+        <type name="rmpsy:anvendtUndersoegelsesinst">
+            <title>Anvendte undersøgelsesinstrumenter</title>
+            <parent>cm:content</parent>
+            <properties>
+                <property name="rmpsy:id_anvendtUndersoegelsesinst">
+                    <title>id</title>
+                    <type>d:text</type>
+                </property>
+                <property name="rmpsy:name_anvendtUndersoegelsesinst">
+                    <title>name</title>
+                    <type>d:text</type>
+                </property>
+            </properties>
+        </type>
+
+    </types>
+
+    <!-- Aspects -->
+    <aspects>
+
+        <aspect name="rmpsy:psyc">
+            <title>psyc data</title>
+            <properties>
+                <property name="rmpsy:interviewRatingScales">
+                    <title>Psykiatriske interviews og ratingscales</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                </property>
+            </properties>
+        </aspect>
+
+
+    </aspects>
+</model>

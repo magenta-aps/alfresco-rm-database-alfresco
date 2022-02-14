@@ -11,6 +11,10 @@ public interface DatabaseModel {
 
     String RM_MODEL_URI = "http://www.rm.dk/model/database/1.0";
     String RM_MODEL_PREFIX = "rm";
+
+    String RMPSY_MODEL_URI = "http://www.rm.dk/model/psycdatabase/1.0";
+    String RMPSY_MODEL_PREFIX = "rmpsy";
+
     String DATABASE = "database";
 
     QName PROP_DATABASE_TYPE = QName.createQName(RM_MODEL_URI, "databaseType");
@@ -84,6 +88,14 @@ public interface DatabaseModel {
     QName TYPE_SIGNATURE = QName.createQName(RM_MODEL_URI, "signature");
     QName PROP_SIGNATURE = QName.createQName(RM_MODEL_URI, "signatureText");
 
+
+    /* psycdata*/
+
+//    QName ASPECT_PSYCDATA = QName.createQName(RM_MODEL_URI, "psyc");
+//    QName PROP_PSYCDATA_INTERVIEWRATINGSCALES = QName.createQName(RM_MODEL_URI, "interviewRatingScales");
+
+    QName ASPECT_PSYCDATA = QName.createQName(RMPSY_MODEL_URI, "psyc");
+    QName PROP_PSYCDATA_INTERVIEWRATINGSCALES = QName.createQName(RMPSY_MODEL_URI, "interviewRatingScales");
 
 
     QName PROP_MARKEDBY = QName.createQName(RM_MODEL_URI, "markedBy");

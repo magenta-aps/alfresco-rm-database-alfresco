@@ -362,6 +362,11 @@
             </properties>
         </type>
 
+
+
+
+
+
     </types>
 
     <!-- Aspects -->
@@ -377,10 +382,6 @@
         <aspect name="rm:openedit">
             <title>Marks a declaration as needing more additional information</title>
         </aspect>
-
-
-
-
 
         <aspect name="rm:sendMaillogs">
             <title>Attributes related to a template</title>
@@ -517,7 +518,6 @@
             <title>marks a declaration as need to be paid specialattention #36539 </title>
         </aspect>
 
-
         <aspect name="rm:returnDateForDeclaration">
             <title>The date a declaration has been returned</title>
             <properties>
@@ -561,6 +561,18 @@
                 </property>
             </properties>
         </aspect>
+
+<!--        <aspect name="rm:psyc">-->
+<!--            <title>psyc data</title>-->
+<!--            <properties>-->
+<!--                <property name="rm:interviewRatingScales">-->
+<!--                    <title>Psykiatriske interviews og ratingscales</title>-->
+<!--                    <type>d:text</type>-->
+<!--                    <multiple>true</multiple>-->
+<!--                </property>-->
+<!--            </properties>-->
+<!--        </aspect>-->
+
 
     </aspects>
 </model>

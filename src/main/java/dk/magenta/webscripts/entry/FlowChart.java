@@ -8,6 +8,7 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
+import org.alfresco.service.namespace.QName;
 import org.codehaus.groovy.transform.SourceURIASTTransformation;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,13 +19,14 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+
+import static dk.magenta.model.DatabaseModel.ASPECT_EXPIRYUSER;
+import static dk.magenta.model.DatabaseModel.ASPECT_PSYCDATA;
 
 public class FlowChart extends AbstractWebScript {
 
@@ -226,6 +228,15 @@ public class FlowChart extends AbstractWebScript {
                 case "total":
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
                     result = flowChartBean.getTotals(siteShortName, defaultQuery, userName, buaQuery);
+
+                    Map<QName, Serializable> properties = new HashMap<>();
+                    properties.put(DatabaseModel.PROP_PSYCDATA_INTERVIEWRATINGSCALES, "[\"solgaard\",\"lasssi\",\"gavl\"]");
+
+                    NodeRef n = new NodeRef("workspace://SpacesStore/5c11e08c-8064-494a-9074-3ff6d07ed81e");
+                    nodeService.addAspect(n, ASPECT_PSYCDATA, properties);
+
+
+
                     break;
             }
         } catch (JSONException e) {
