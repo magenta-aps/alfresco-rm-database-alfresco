@@ -12,8 +12,7 @@ public interface DatabaseModel {
     String RM_MODEL_URI = "http://www.rm.dk/model/database/1.0";
     String RM_MODEL_PREFIX = "rm";
 
-    String RMPSY_MODEL_URI = "http://www.rm.dk/model/psycdatabase/1.0";
-    String RMPSY_MODEL_PREFIX = "rmpsy";
+
 
     String DATABASE = "database";
 
@@ -94,8 +93,7 @@ public interface DatabaseModel {
 //    QName ASPECT_PSYCDATA = QName.createQName(RM_MODEL_URI, "psyc");
 //    QName PROP_PSYCDATA_INTERVIEWRATINGSCALES = QName.createQName(RM_MODEL_URI, "interviewRatingScales");
 
-    QName ASPECT_PSYCDATA = QName.createQName(RMPSY_MODEL_URI, "psyc");
-    QName PROP_PSYCDATA_INTERVIEWRATINGSCALES = QName.createQName(RMPSY_MODEL_URI, "interviewRatingScales");
+
 
 
     QName PROP_MARKEDBY = QName.createQName(RM_MODEL_URI, "markedBy");
@@ -166,6 +164,7 @@ public interface DatabaseModel {
     String PROP_FOLDER_TEMPLATE_LIBRARY = "folderTemplates";
     String PROP_SIGNATURE_LIBRARY = "signatureLibrary";
     String PROP_SHAREDFOLDER_BUA = "sharedFolderBua";
+    String PROP_PSYC_LIBRARY = "psycPropertiesValues";
     String PROP_WEEKLYSTAT = "weeklyStat";
 
     String ATTR_DEFAULT_DECLARATION_FOLDER = "Erklæring og psykologisk undersøgelse";
@@ -262,4 +261,21 @@ public interface DatabaseModel {
     QName PROP_YEAR = QName.createQName(RM_MODEL_URI, "year");
     QName PROP_RECEIVED = QName.createQName(RM_MODEL_URI, "received");
     QName PROP_SENT = QName.createQName(RM_MODEL_URI, "sent");
+
+
+    /* rmpsy */
+
+    String RMPSY_MODEL_URI = "http://www.rm.dk/model/psycdatabase/1.0";
+    String RMPSY_MODEL_PREFIX = "rmpsy";
+
+    QName ASPECT_PSYCDATA = QName.createQName(RMPSY_MODEL_URI, "psyc");
+    QName PROP_PSYCDATA_INTERVIEWRATINGSCALES = QName.createQName(RMPSY_MODEL_URI, "interviewRatingScales");
+
+    // types
+
+    QName TYPE_ANVENDTUNDERSOEGELSESINST = QName.createQName(RMPSY_MODEL_URI, "anvendtUndersoegelsesinst");
+    QName PROP_ANVENDTUNDERSOEGELSESINST_ID = QName.createQName(RMPSY_MODEL_URI, "id_anvendtUndersoegelsesinst");
+    QName PROP_ANVENDTUNDERSOEGELSESINST_NAME = QName.createQName(RMPSY_MODEL_URI, "name_anvendtUndersoegelsesinst");
+
+
 }

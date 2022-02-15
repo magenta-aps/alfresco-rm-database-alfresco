@@ -33,6 +33,12 @@ public class FlowChart extends AbstractWebScript {
     private EntryBean entryBean;
     private DatabaseBean databaseBean;
 
+    public void setPsycBean(PsycBean psycBean) {
+        this.psycBean = psycBean;
+    }
+
+    private PsycBean psycBean;
+
     public void setMailBean(MailBean mailBean) {
         this.mailBean = mailBean;
     }
@@ -235,6 +241,7 @@ public class FlowChart extends AbstractWebScript {
                     NodeRef n = new NodeRef("workspace://SpacesStore/5c11e08c-8064-494a-9074-3ff6d07ed81e");
                     nodeService.addAspect(n, ASPECT_PSYCDATA, properties);
 
+                    psycBean.createDummyData();
 
 
                     break;

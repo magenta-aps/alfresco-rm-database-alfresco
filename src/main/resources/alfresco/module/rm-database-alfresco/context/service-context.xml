@@ -347,6 +347,11 @@
         <property name="transactionService" ref="transactionService"/>
     </bean>
 
+    <bean id="psycBean" class="dk.magenta.beans.PsycBean">
+        <property name="siteService" ref="siteService"/>
+        <property name="nodeService" ref="nodeService"/>
+    </bean>
+
 
 
 </beans>
