@@ -166,6 +166,8 @@ public interface DatabaseModel {
 
     String PROP_SAMTYKKE_TDL_KONTAKT = "samtykketidkontakt.odt";
     String PROP_BERIGTIGELSE = "berigtigelse.odt";
+
+    String PROP_SUPPLERENDEUDTALELSE_FOLDER = "supplerende udtalelse";
     String PROP_SUPPLERENDEUDTALELSE = "supplerendeudtalelse.odt";
     String PROP_FLETTEBREV = "flettebrev.odt";
 
