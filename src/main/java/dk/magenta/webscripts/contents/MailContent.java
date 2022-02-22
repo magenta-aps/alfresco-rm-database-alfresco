@@ -287,7 +287,24 @@ public class MailContent extends AbstractWebScript {
                         criteria = Arrays.asList(DatabaseModel.PROP_LOGFORMAILS);
                         List<ChildAssociationRef> log = nodeService.getChildrenByName(mailFolder.get(0).getChildRef(), org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
 
-                        NodeRef log_node = log.get(0).getChildRef();
+
+                        NodeRef log_node = null;
+                        if (log.size() == 0) {
+                            // for some reason the textfile with the log has not been created
+                            FileInfo newNode = fileFolderService.create(mailFolder.get(0).getChildRef(), DatabaseModel.PROP_LOGFORMAILS, org.alfresco.model.ContentModel.TYPE_CONTENT);
+
+                            nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_VERSIONABLE, null);
+
+                            TextDocument log_entires = TextDocument.newTextDocument();
+                            log_entires.addParagraph(line);
+                            File f = new File("tmp");
+
+                            log_entires.save(f);
+                            log_node = newNode.getNodeRef();
+                        }
+                        else {
+                            log_node = log.get(0).getChildRef();
+                        }
 
                         ContentReader contentReader = contentService.getReader(log_node, org.alfresco.model.ContentModel.PROP_CONTENT);
 
