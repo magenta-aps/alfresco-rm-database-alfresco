@@ -246,9 +246,11 @@ public class MailBean {
 
                         // copy the pdf to the folder, erklæring og test #45554
                         NodeRef folder = fileFolderService.searchSimple(declaration, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
-                        FileInfo newFile = fileFolderService.copy(transformed, folder, "erklæring_underskrevet.pdf");
 
                         fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString() + ".pdf";
+
+                        // fixes name problem that causes errors in sending nodeRefs with signatures #48567
+                        FileInfo newFile = fileFolderService.copy(transformed, folder, "underskrevet_" + fileName);
                     }
                     else {
                         // only transform odf, #47443
