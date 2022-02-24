@@ -309,19 +309,10 @@ public class MailContent extends AbstractWebScript {
                             log_entires.save(f);
 
                             ContentWriter contentWriter = contentService.getWriter(newNode.getNodeRef(), org.alfresco.model.ContentModel.PROP_CONTENT, true);
-
                             contentWriter.setMimetype("application/vnd.oasis.opendocument.text");
-
                             contentWriter.putContent(f);
 
                             nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_UNDELETABLE, null);
-
-
-                            log_entires.addParagraph(line);
-                            File f = new File("tmp");
-
-                            log_entires.save(f);
-
                             log_node = newNode.getNodeRef();
                         }
                         else {
