@@ -333,9 +333,7 @@ public class MailContent extends AbstractWebScript {
                         properties.put("modifier", currentUser);
 
                         versionService.createVersion(log_node, properties);
-
                         ContentWriter contentWriter = contentService.getWriter(log_node, org.alfresco.model.ContentModel.PROP_CONTENT, true);
-
                         contentWriter.putContent(f);
 
                     }

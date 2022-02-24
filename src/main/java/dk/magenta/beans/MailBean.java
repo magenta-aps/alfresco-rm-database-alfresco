@@ -207,11 +207,6 @@ public class MailBean {
 
             NodeRef img = children.get(0).getChildRef();
 
-            System.out.println("jeg fandt img noderef");
-            System.out.println(img);
-
-//            NodeRef img = new NodeRef("workspace://SpacesStore/21bde8f5-8f38-4195-8f79-bf5eae4aeb6b");
-
             ContentReader reader = contentService.getReader(img, ContentModel.PROP_CONTENT);
 
             File tmp = new File("img.png");
@@ -222,9 +217,6 @@ public class MailBean {
 
 
             DataSource fds1 = new FileDataSource(tmp);
-
-            System.out.println("hvad er fsd1");
-            System.out.println(fds1);
 
             signature.setDataHandler(new DataHandler(fds1));
             signature.addHeader("Content-ID","<senny>");
@@ -244,8 +236,9 @@ public class MailBean {
                         pds_to_be_deleted.add(documentWithSignature);
                         transformed = this.transform(documentWithSignature);
 
-                        // copy the pdf to the folder, erklæring og test #45554
-                        NodeRef folder = fileFolderService.searchSimple(declaration, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
+                        // copy the pdf to the source of the attachmentNodeRef
+                        NodeRef folder = nodeService.getPrimaryParent(attachmentNodeRef).getParentRef();
+//                        NodeRef folder = fileFolderService.searchSimple(declaration, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
 
                         fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString() + ".pdf";
 
