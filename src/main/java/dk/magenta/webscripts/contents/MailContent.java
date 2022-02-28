@@ -204,6 +204,12 @@ public class MailContent extends AbstractWebScript {
 
 
                     String authority = (String) json.get("authority");
+                    String bcc = (String) json.get("bcc");
+                    System.out.println("hvad er bcc");
+                    System.out.println(bcc);
+                    System.out.println(bcc);
+                    System.out.println(bcc);
+                    System.out.println(bcc);
 
 
                     String caseid = (String) json.get("caseid");
@@ -215,7 +221,7 @@ public class MailContent extends AbstractWebScript {
 
 
 
-                    mailBean.sendEmail(nodeRefs, authority, body, subject, useSignature, declaration);
+                    mailBean.sendEmail(nodeRefs, authority, body, subject, useSignature, declaration, bcc);
 
 
                     // pak dette væk i en bean senere

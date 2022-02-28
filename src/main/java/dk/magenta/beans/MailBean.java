@@ -139,7 +139,7 @@ public class MailBean {
     }
 
 
-    public void sendEmail(NodeRef[] attachmentNodeRefs, String authority, String body, String subject, boolean addSignature, NodeRef declaration) throws Exception {
+    public void sendEmail(NodeRef[] attachmentNodeRefs, String authority, String body, String subject, boolean addSignature, NodeRef declaration, String bcc) throws Exception {
 
 
         logEvent(attachmentNodeRefs, authority);
@@ -176,6 +176,9 @@ public class MailBean {
             msg.setRecipient(Message.RecipientType.TO, toAddress);
             msg.setSubject(subject);
             msg.setSentDate(new Date());
+
+            msg.addRecipients(Message.RecipientType.TO, bcc);
+
 
             MimeBodyPart messagePart = new MimeBodyPart();
             messagePart.setText(body);
