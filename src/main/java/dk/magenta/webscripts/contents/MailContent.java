@@ -221,8 +221,6 @@ public class MailContent extends AbstractWebScript {
                     String query = "@rm\\:caseNumber:\"" + caseid + "\"";
                     declaration = entryBean.getEntry(query);
 
-
-
                     mailBean.sendEmail(nodeRefs, authority, body, subject, useSignature, declaration);
 
 
