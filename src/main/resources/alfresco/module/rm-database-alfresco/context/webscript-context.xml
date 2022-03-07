@@ -65,6 +65,9 @@
 		<property name="authenticationService" ref="authenticationService"/>
 		<property name="personService" ref="personService"/>
 		<property name="userBean" ref="userBean"/>
+	</bean>
+
+	<bean id="webscript.entries.psyc.post" class="dk.magenta.webscripts.entry.Psyc" parent="webscript">
 		<property name="psycBean" ref="psycBean"/>
 	</bean>
 

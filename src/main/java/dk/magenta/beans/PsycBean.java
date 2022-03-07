@@ -3,6 +3,7 @@ package dk.magenta.beans;
 
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
+import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.site.SiteService;
@@ -28,7 +29,18 @@ public class PsycBean {
 
     private NodeService nodeService;
 
-    public void createDummyData() {
+
+
+    public NodeRef getLibraryForInterviewRating() {
+        NodeRef psycLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_PSYC_LIBRARY);
+        String expression = DatabaseModel.PROP_PSYC_LIBRARY_INTERVIEWRATING;
+
+        NodeRef child = nodeService.getChildByName(psycLibrary, ContentModel.ASSOC_CONTAINS, expression);
+        return child;
+    }
+
+    // Data for Psykiatriske interviews og ratingscales
+    public void createDataForInterviewRating() {
 
         ArrayList<String> values = new ArrayList<>();
         values.add("PSE-10");
@@ -58,10 +70,9 @@ public class PsycBean {
         values.add("BRIEF");
         values.add("DIVA 2");
 
-        NodeRef psycLibrary = siteService.getContainer("retspsyk", DatabaseModel.PROP_PSYC_LIBRARY);
+        NodeRef library = this.getLibraryForInterviewRating();
 
         for (int i=0; i<=values.size()-1;i++ ) {
-
             String name = values.get(i);
             String id = String.valueOf(i);
 
@@ -69,10 +80,9 @@ public class PsycBean {
             props.put(DatabaseModel.PROP_ANVENDTUNDERSOEGELSESINST_ID, id);
             props.put(DatabaseModel.PROP_ANVENDTUNDERSOEGELSESINST_NAME, name);
 
-            nodeService.createNode(psycLibrary, ContentModel.ASSOC_CONTAINS,
+            nodeService.createNode(library, ContentModel.ASSOC_CONTAINS,
                     QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, name),
                     DatabaseModel.TYPE_ANVENDTUNDERSOEGELSESINST, props).getChildRef();
-
         }
     }
 

@@ -165,6 +165,17 @@ public interface DatabaseModel {
     String PROP_SIGNATURE_LIBRARY = "signatureLibrary";
     String PROP_SHAREDFOLDER_BUA = "sharedFolderBua";
     String PROP_PSYC_LIBRARY = "psycPropertiesValues";
+
+    // the six types of used instruments
+    String PROP_PSYC_LIBRARY_INTERVIEWRATING = "Psykiatriske_interviews_og_ratingscales";
+    String PROP_PSYC_LIBRARY_KOGNITIV = "Kognitive_og_neuropsykologiske_praestationstests";
+    String PROP_PSYC_LIBRARY_IMPLECITE = "Implicitte_projektive_tests";
+    String PROP_PSYC_LIBRARY_EXPLICIT = "Eksplicitte_spoergeskema_tests";
+    String PROP_PSYC_LIBRARY_MALERING = "Instrumenter_for_indikation_på_malingering";
+    String PROP_PSYC_LIBRARY_RISIKO = "Risikovurderingsinstrumenter";
+
+
+
     String PROP_WEEKLYSTAT = "weeklyStat";
 
     String ATTR_DEFAULT_DECLARATION_FOLDER = "Erklæring og psykologisk undersøgelse";

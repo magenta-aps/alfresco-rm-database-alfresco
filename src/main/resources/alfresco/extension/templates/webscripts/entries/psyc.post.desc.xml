@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>flowchart queries</shortname>
+    <description>flowchart queries</description>
+    <url>/database/{siteShortName}/psyc</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

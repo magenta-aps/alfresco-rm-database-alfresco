@@ -352,6 +352,16 @@
         <property name="nodeService" ref="nodeService"/>
     </bean>
 
+    <bean id="psycBeanValues" class="dk.magenta.beans.PsycValuesBean">
+        <property name="siteService" ref="siteService"/>
+        <property name="nodeService" ref="nodeService"/>
+        <property name="psycBean" ref="psycBean"/>
+        <property name="fileFolderService" ref="FileFolderService"/>
+        <property name="contentService" ref="contentService"/>
+    </bean>
+
+
+
 
 
 </beans>
