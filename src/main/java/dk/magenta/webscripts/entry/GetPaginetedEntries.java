@@ -208,9 +208,27 @@ public class GetPaginetedEntries extends AbstractWebScript {
             }
 
             if (input.has("sanctionProposal")) {
+
                 JSONObject o = new JSONObject();
                 o.put("key", "sanctionProposal");
-                o.put("value", "(" + input.get("sanctionProposal") + ")" );
+
+
+                JSONArray jsonArray = input.getJSONArray("sanctionProposal");
+                String queryStringSanctionProp = "";
+
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+
+                    String sanctionProposal = (String) jsonArray.get(i);
+
+                    if (i == 0) {
+                        queryStringSanctionProp = queryStringSanctionProp + "\"" + sanctionProposal + "\"";
+                    }
+                    else {
+                        queryStringSanctionProp = queryStringSanctionProp + " "  + "\"" + sanctionProposal + "\"";
+                    }
+                }
+
+                o.put("value", "(" + queryStringSanctionProp + ")");
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -218,12 +236,42 @@ public class GetPaginetedEntries extends AbstractWebScript {
             if (input.has("placement")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "placement");
-                o.put("value", input.get("placement"));
+
+                JSONArray jsonArray = input.getJSONArray("placement");
+                String queryStringPlacement = "";
+
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+
+                    // hack to support the import of the names without titles in the old system
+                    String placement = (String) jsonArray.get(i);
+
+                    if (i == 0) {
+                        queryStringPlacement = queryStringPlacement + "\"" + placement + "\"";
+                    }
+                    else {
+                        queryStringPlacement = queryStringPlacement + " "  + "\"" + placement + "\"";
+                    }
+                }
+
+
+                o.put("value", "(" + queryStringPlacement + ")");
                 o.put("include", true);
                 queryArray.put(o);
             }
 
             if (input.has("mainDiagnosis")) {
+
+                String queryStringMainCharge = "";
+                JSONArray jsonArray = input.getJSONArray("mainDiagnosis");
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+                    if (i == 0) {
+                        queryStringMainCharge = queryStringMainCharge + "\"" + (String) jsonArray.get(i) + "\"";
+                    }
+                    else {
+                        queryStringMainCharge = queryStringMainCharge + " "  + "\"" +(String) jsonArray.get(i) + "\"";
+                    }
+                }
+
                 JSONObject o = new JSONObject();
                 o.put("key", "mainDiagnosis");
                 o.put("value", input.get("mainDiagnosis"));
@@ -232,11 +280,24 @@ public class GetPaginetedEntries extends AbstractWebScript {
             }
 
             if (input.has("status")) {
+
+                String queryStringMainCharge = "";
+                JSONArray jsonArray = input.getJSONArray("status");
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+                    if (i == 0) {
+                        queryStringMainCharge = queryStringMainCharge + "\"" + (String) jsonArray.get(i) + "\"";
+                    }
+                    else {
+                        queryStringMainCharge = queryStringMainCharge + " "  + "\"" +(String) jsonArray.get(i) + "\"";
+                    }
+                }
+
+
                 JSONObject o = new JSONObject();
                 o.put("key", "status");
-                o.put("value", input.get("status"));
-                    o.put("include", true);
-                    queryArray.put(o);
+                o.put("value", "(" + queryStringMainCharge + ")");
+                o.put("include", true);
+                queryArray.put(o);
             }
 
             if (input.has("givenDeclaration")) {
@@ -254,11 +315,30 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 JSONObject o = new JSONObject();
                 o.put("key", "doctor");
 
-                // hack to support the import of the names without titles in the old system
-                String doctor = (String)input.get("doctor");
-                doctor = doctor.split("-")[0];
 
-                o.put("value", doctor.trim() + "*");
+                JSONArray jsonArray = input.getJSONArray("doctor");
+                String queryStringDoctor = "";
+
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+
+                    // hack to support the import of the names without titles in the old system
+                    String doctor = (String) jsonArray.get(i);
+                    doctor = doctor.split("-")[0];
+
+                    if (i == 0) {
+                        queryStringDoctor = queryStringDoctor + "\"" + doctor + "\"";
+                    }
+                    else {
+                        queryStringDoctor = queryStringDoctor + " "  + "\"" + doctor + "\"";
+                    }
+                }
+
+
+//                // hack to support the import of the names without titles in the old system
+//                String doctor = (String)input.get("doctor");
+//                doctor = doctor.split("-")[0];
+
+                o.put("value", "(" + queryStringDoctor + ")");
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -322,11 +402,29 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 JSONObject o = new JSONObject();
                 o.put("key", "psychologist");
 
-                // hack to support the import of the names without titles in the old system
-                String psychologist = (String)input.get("psychologist");
-                psychologist = psychologist.split("-")[0];
+                JSONArray jsonArray = input.getJSONArray("psychologist");
+                String queryStringPsychologist = "";
 
-                o.put("value", psychologist + "*");
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+
+                    // hack to support the import of the names without titles in the old system
+                    String psychologist = (String) jsonArray.get(i);
+                    psychologist = psychologist.split("-")[0];
+
+                    if (i == 0) {
+                        queryStringPsychologist = queryStringPsychologist + "\"" + psychologist + "\"";
+                    }
+                    else {
+                        queryStringPsychologist = queryStringPsychologist + " "  + "\"" + psychologist + "\"";
+                    }
+                }
+
+//
+//                // hack to support the import of the names without titles in the old system
+//                String psychologist = (String)input.get("psychologist");
+//                psychologist = psychologist.split("-")[0];
+
+                o.put("value", "(" + queryStringPsychologist + ")");
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -337,19 +435,36 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
                 if (input.getBoolean("socialEval"))
                     o.put("value", "NULL");
-                    o.put("include", false);
-                    queryArray.put(o);
+                o.put("include", false);
+                queryArray.put(o);
             }
 
             if (input.has("socialworker")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "socialworker");
 
-                // hack to support the import of the names without titles in the old system
-                String socialworker = (String)input.get("socialworker");
-                socialworker = socialworker.split("-")[0];
+                JSONArray jsonArray = input.getJSONArray("socialworker");
+                String queryStringSocialworker = "";
 
-                o.put("value", socialworker + "*");
+                for (int i=0; i <= jsonArray.length()-1;i++) {
+
+                    // hack to support the import of the names without titles in the old system
+                    String socialworker = (String) jsonArray.get(i);
+                    socialworker = socialworker.split("-")[0];
+
+                    if (i == 0) {
+                        queryStringSocialworker = queryStringSocialworker + "\"" + socialworker + "\"";
+                    }
+                    else {
+                        queryStringSocialworker = queryStringSocialworker + " "  + "\"" + socialworker + "\"";
+                    }
+                }
+
+//                // hack to support the import of the names without titles in the old system
+//                String socialworker = (String)input.get("socialworker");
+//                socialworker = socialworker.split("-")[0];
+
+                o.put("value", "(" + queryStringSocialworker + ")");
                 o.put("include", true);
                 queryArray.put(o);
             }
@@ -462,5 +577,3 @@ public class GetPaginetedEntries extends AbstractWebScript {
 // F.eks. curl -i -u admin:admin -X GET 'http://localhost:8080/alfresco/s/database/retspsyk/entry/445644-4545-4564-8848-1849155'
 
 //http://localhost:8080/alfresco/service/database/retspsyk/page_entries?skip=0&maxItems=10&keyValue=[{"key":"cprNumber","value" : "220111571234", "include" : "true"}]
-
-

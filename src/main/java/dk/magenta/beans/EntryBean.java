@@ -324,7 +324,22 @@ public class EntryBean {
 
         // updating the properties
         for (Map.Entry<QName, Serializable> property : properties.entrySet()) {
-            nodeService.setProperty(entryRef, property.getKey(), property.getValue());
+
+            // handle empty postcode, fix for redmine #47807
+            if (property.getKey().equals(DatabaseModel.PROP_POSTCODE)) {
+                if (property.getValue().equals("")) {
+                    nodeService.setProperty(entryRef, property.getKey(), null);
+                }
+                else {
+                    nodeService.setProperty(entryRef, property.getKey(), property.getValue());
+                }
+            }
+            else {
+                nodeService.setProperty(entryRef, property.getKey(), property.getValue());
+            }
+
+
+
             if (property.getKey().equals(DatabaseModel.PROP_DECLARATION_DATE)) {
                 erklaringdate = true;
             }
