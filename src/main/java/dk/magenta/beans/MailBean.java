@@ -14,6 +14,7 @@ import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+import org.apache.commons.io.IOUtils;
 import org.jfree.chart.ChartUtilities;
 import org.jodconverter.core.document.DefaultDocumentFormatRegistry;
 import org.jodconverter.core.office.OfficeException;
@@ -34,12 +35,14 @@ import org.odftoolkit.simple.table.Table;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.imageio.ImageIO;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
 import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.io.*;
@@ -139,7 +142,7 @@ public class MailBean {
     }
 
 
-    public void sendEmail(NodeRef[] attachmentNodeRefs, String authority, String body, String subject, boolean addSignature, NodeRef declaration) throws Exception {
+    public void sendEmail(NodeRef[] attachmentNodeRefs, String authority, String body, String subject, boolean addSignature, NodeRef declaration, String bcc) throws Exception {
 
 
         logEvent(attachmentNodeRefs, authority);
@@ -177,16 +180,50 @@ public class MailBean {
             msg.setSubject(subject);
             msg.setSentDate(new Date());
 
-            MimeBodyPart messagePart = new MimeBodyPart();
-            messagePart.setText(body);
+            MimeBodyPart bodyText = new MimeBodyPart();
+            msg.addRecipients(Message.RecipientType.TO, bcc);
 
+            MimeBodyPart messagePart = new MimeBodyPart();
+
+            bodyText.setText(body);
+
+            String htmlBody = "<p align=left><img src=\"cid:senny\"> </p>";
+
+            messagePart.setContent(htmlBody, "text/html");
 
 
 
             Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(bodyText);
             multipart.addBodyPart(messagePart);
 
 
+            // second part (the image)
+
+
+
+            NodeRef nodeRef_templateDocFolder = siteService.getContainer(DatabaseModel.TYPE_PSYC_SITENAME, DatabaseModel.PROP_TEMPLATE_LIBRARY);
+
+            List<String> list = Arrays.asList(PROP_SIGNATUREIMAGE_FILENAME);
+            List<ChildAssociationRef> children = nodeService.getChildrenByName(nodeRef_templateDocFolder, ContentModel.ASSOC_CONTAINS, list);
+
+            NodeRef img = children.get(0).getChildRef();
+
+            ContentReader reader = contentService.getReader(img, ContentModel.PROP_CONTENT);
+
+            File tmp = new File("img.png");
+            FileOutputStream out = new FileOutputStream(tmp);
+            IOUtils.copy(reader.getContentInputStream(), out);
+
+            MimeBodyPart signature = new MimeBodyPart();
+
+
+            DataSource fds1 = new FileDataSource(tmp);
+
+            signature.setDataHandler(new DataHandler(fds1));
+            signature.addHeader("Content-ID","<senny>");
+
+            multipart.addBodyPart(signature);
 
             for (int i=0; i <= attachmentNodeRefs.length-1;i++) {
 
@@ -201,11 +238,14 @@ public class MailBean {
                         pds_to_be_deleted.add(documentWithSignature);
                         transformed = this.transform(documentWithSignature);
 
-                        // copy the pdf to the folder, erklæring og test #45554
-                        NodeRef folder = fileFolderService.searchSimple(declaration, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
-                        FileInfo newFile = fileFolderService.copy(transformed, folder, "erklæring_underskrevet.pdf");
+                        // copy the pdf to the source of the attachmentNodeRef
+                        NodeRef folder = nodeService.getPrimaryParent(attachmentNodeRef).getParentRef();
+//                        NodeRef folder = fileFolderService.searchSimple(declaration, DatabaseModel.ATTR_DEFAULT_DECLARATION_FOLDER);
 
                         fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString() + ".pdf";
+
+                        // fixes name problem that causes errors in sending nodeRefs with signatures #48567
+                        FileInfo newFile = fileFolderService.copy(transformed, folder, "underskrevet_" + fileName);
                     }
                     else {
                         // only transform odf, #47443

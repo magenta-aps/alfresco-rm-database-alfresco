@@ -114,6 +114,10 @@ public class MailContent extends AbstractWebScript {
         try {
             json = new JSONObject(c.getContent());
             method = (String) json.get("method");
+
+            System.out.println("hvad indeholder json.");
+            System.out.println(json);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -184,6 +188,8 @@ public class MailContent extends AbstractWebScript {
 
             case "send":
 
+
+
                 try {
 
                     json = new JSONObject(c.getContent());
@@ -204,19 +210,24 @@ public class MailContent extends AbstractWebScript {
 
 
                     String authority = (String) json.get("authority");
+                    String bcc = (String) json.get("bcc");
+                    System.out.println("hvad er bcc");
+                    System.out.println(bcc);
+                    System.out.println(bcc);
+                    System.out.println(bcc);
+                    System.out.println(bcc);
 
 
                     String caseid = (String) json.get("caseid");
+                    String selectedDefaultBody = (String) json.get("selectedDefaultBody");
+                    String addSignatureToEmailBody = (String) json.get("selectedDefaultBody");
 
                     //TODO setup option for signitures
 
                     String query = "@rm\\:caseNumber:\"" + caseid + "\"";
                     declaration = entryBean.getEntry(query);
 
-
-
-                    mailBean.sendEmail(nodeRefs, authority, body, subject, useSignature, declaration);
-
+                    mailBean.sendEmail(nodeRefs, authority, body, subject, useSignature, declaration, bcc);
 
                     // pak dette væk i en bean senere
 
@@ -287,7 +298,29 @@ public class MailContent extends AbstractWebScript {
                         criteria = Arrays.asList(DatabaseModel.PROP_LOGFORMAILS);
                         List<ChildAssociationRef> log = nodeService.getChildrenByName(mailFolder.get(0).getChildRef(), org.alfresco.model.ContentModel.ASSOC_CONTAINS, criteria);
 
-                        NodeRef log_node = log.get(0).getChildRef();
+                        NodeRef log_node = null;
+
+                        if (log.size() == 0) {
+                            // for some reason the textfile with the log has not been created
+
+                            FileInfo newNode = fileFolderService.create(mailFolder.get(0).getChildRef(), DatabaseModel.PROP_LOGFORMAILS, org.alfresco.model.ContentModel.TYPE_CONTENT);
+                            nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_VERSIONABLE, null);
+
+                            TextDocument log_entires = TextDocument.newTextDocument();
+
+                            File f = new File("tmp");
+                            log_entires.save(f);
+
+                            ContentWriter contentWriter = contentService.getWriter(newNode.getNodeRef(), org.alfresco.model.ContentModel.PROP_CONTENT, true);
+                            contentWriter.setMimetype("application/vnd.oasis.opendocument.text");
+                            contentWriter.putContent(f);
+
+                            nodeService.addAspect(newNode.getNodeRef(), org.alfresco.model.ContentModel.ASPECT_UNDELETABLE, null);
+                            log_node = newNode.getNodeRef();
+                        }
+                        else {
+                            log_node = log.get(0).getChildRef();
+                        }
 
                         ContentReader contentReader = contentService.getReader(log_node, org.alfresco.model.ContentModel.PROP_CONTENT);
 
@@ -303,9 +336,7 @@ public class MailContent extends AbstractWebScript {
                         properties.put("modifier", currentUser);
 
                         versionService.createVersion(log_node, properties);
-
                         ContentWriter contentWriter = contentService.getWriter(log_node, org.alfresco.model.ContentModel.PROP_CONTENT, true);
-
                         contentWriter.putContent(f);
 
                     }

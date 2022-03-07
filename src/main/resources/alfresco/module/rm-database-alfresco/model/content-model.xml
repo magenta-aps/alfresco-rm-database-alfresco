@@ -562,17 +562,15 @@
             </properties>
         </aspect>
 
-<!--        <aspect name="rm:psyc">-->
-<!--            <title>psyc data</title>-->
-<!--            <properties>-->
-<!--                <property name="rm:interviewRatingScales">-->
-<!--                    <title>Psykiatriske interviews og ratingscales</title>-->
-<!--                    <type>d:text</type>-->
-<!--                    <multiple>true</multiple>-->
-<!--                </property>-->
-<!--            </properties>-->
-<!--        </aspect>-->
-
+        <aspect name="rm:signatureData">
+            <title>adds a users signature to the user node</title>
+            <properties>
+                <property name="rm:signature">
+                    <title>signature</title>
+                    <type>d:text</type>
+                </property>
+            </properties>
+        </aspect>
 
     </aspects>
 </model>

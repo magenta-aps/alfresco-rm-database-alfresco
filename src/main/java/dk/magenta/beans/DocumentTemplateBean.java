@@ -543,7 +543,10 @@ public class DocumentTemplateBean {
         VariableField dagsdatoxxx = templateDocument.getVariableFieldByName("dagsdatoxxx");
         dagsdatoxxx.updateField(declarationDay + "." + declarationMonthMonth + "." + year, null);
 
-        FileInfo newFile = fileFolderService.create(declaration, info.cpr.substring(0,6) + "_suppleredeUdt.odt", ContentModel.TYPE_CONTENT);
+        // #47220 make a folder for the document
+
+        FileInfo folder = fileFolderService.create(declaration, PROP_SUPPLERENDEUDTALELSE_FOLDER, ContentModel.TYPE_FOLDER);
+        FileInfo newFile = fileFolderService.create(folder.getNodeRef(), info.cpr.substring(0,6) + "_" + PROP_SUPPLERENDEUDTALELSE, ContentModel.TYPE_CONTENT);
 
         ContentWriter writer = contentService.getWriter(newFile.getNodeRef(), ContentModel.PROP_CONTENT, true);
         writer.setMimetype("application/vnd.oasis.opendocument.text");
@@ -657,7 +660,3 @@ public class DocumentTemplateBean {
 //
 //    }
 }
-
-
-
-
