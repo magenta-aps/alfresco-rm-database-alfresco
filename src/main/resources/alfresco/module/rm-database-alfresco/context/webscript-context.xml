@@ -69,6 +69,9 @@
 
 	<bean id="webscript.entries.psyc.post" class="dk.magenta.webscripts.entry.Psyc" parent="webscript">
 		<property name="psycBean" ref="psycBean"/>
+		<property name="psycValuesBean" ref="psycValuesBean"/>
+		<property name="nodeService" ref="NodeService"/>
+		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
 	<bean id="webscript.entries.waitinglist.get" class="dk.magenta.webscripts.entry.GetWaitingList" parent="webscript">

@@ -37,7 +37,7 @@ public class PsycValuesBean {
 
     private PsycBean psycBean;
 
-    private Map<String, JSONObject> propertyValuesMap = new HashMap<>();
+    private Map<String, JSONArray> propertyValuesMap = new HashMap<>();
 
     public void setFileFolderService(FileFolderService fileFolderService) {
         this.fileFolderService = fileFolderService;
@@ -51,47 +51,74 @@ public class PsycValuesBean {
         this.siteService = siteService;
     }
 
-    public JSONObject getPropertyValues (String siteShortName) {
-        return propertyValuesMap.get(siteShortName);
-    }
+//    public JSONObject getPropertyValues () {
+//        return propertyValuesMap.get();
+//    }
 
-    public void loadPropertyValues (String siteShortName) throws JSONException, FileNotFoundException, IOException {
+    public void loadPropertyValues () throws JSONException, FileNotFoundException, IOException {
 
         NodeRef rootFolderRef = siteService.getContainer("retspsyk", DatabaseModel.PROP_PSYC_LIBRARY);
 
+        System.out.println("hvad er rootFolderRef");
+        System.out.println(rootFolderRef);
+
         if(rootFolderRef != null) {
-            List<FileInfo> fileInfos = fileFolderService.listFiles(rootFolderRef);
+            List<FileInfo> folders = fileFolderService.listFolders(rootFolderRef);
+
+            System.out.println("fileInfos");
+            System.out.println(folders.size());
 
             JSONObject result = new JSONObject();
 
-            for (FileInfo fileInfo : fileInfos) {
+            for (FileInfo fileInfo : folders) {
+
+
+                JSONArray jsonArray = new JSONArray();
 
                 // each node wil be a folder
-
                 NodeRef instrumentRootFolder = fileInfo.getNodeRef();
+                System.out.println("instrumentRootFolder");
+                System.out.println(instrumentRootFolder);
+
+                System.out.println(nodeService.getProperty(instrumentRootFolder, ContentModel.PROP_NAME));
+
+                String instrumentName = (String)nodeService.getProperty(instrumentRootFolder, ContentModel.PROP_NAME);
 
                 // read the children
-
                 List<ChildAssociationRef> children = nodeService.getChildAssocs(instrumentRootFolder);
 
                 Iterator i = children.iterator();
 
                 while (i.hasNext()) {
                     ChildAssociationRef child = (ChildAssociationRef)i.next();
-                    System.out.println("hvad er child");
-                    System.out.println(child.getChildRef());
+//                    System.out.println("hvad er child");
+//                    System.out.println(child.getChildRef());
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id" , (String)nodeService.getProperty(child.getChildRef(), DatabaseModel.PROP_ANVENDTUNDERSOEGELSESINST_ID));
+                    jsonObject.put("name" , (String)nodeService.getProperty(child.getChildRef(), DatabaseModel.PROP_ANVENDTUNDERSOEGELSESINST_NAME));
+
+                    jsonArray.put(jsonObject);
                 }
+                propertyValuesMap.put(instrumentName, jsonArray);
             }
-//            propertyValuesMap.put(siteShortName, result);
+
         }
+    }
+
+    public void pingMap() {
+        System.out.println("er der noget i dit map?");
+        System.out.println(this.propertyValuesMap.size());
+        System.out.println(this.propertyValuesMap.get("Psykiatriske_interviews_og_ratingscales"));
+
     }
 
     public void updatePropertyValues (String siteShortName, String property, JSONArray values) throws JSONException, FileNotFoundException {
 
         NodeRef rootFolderRef = siteService.getContainer(siteShortName, DatabaseModel.PROP_VALUES);
 
-        JSONObject propertyValues = propertyValuesMap.get(siteShortName);
-        propertyValues.put(property, values);
+        JSONArray propertyValues = propertyValuesMap.get(siteShortName);
+        propertyValues.put(Integer.parseInt(property), values);
 
         List<String> path = new ArrayList<>(Collections.singletonList(property + ".txt"));
         FileInfo fileInfo = fileFolderService.resolveNamePath(rootFolderRef, path);
@@ -116,151 +143,18 @@ public class PsycValuesBean {
 
         if (property.equals("referingAgency")) {
             try {
-                this.loadPropertyValues("retspsyk");
+                this.loadPropertyValues();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
-    public String getReferingAgentByKey( String key) throws JSONException{
-
-        JSONObject values = propertyValuesMap.get("retspsyk");
-
-        JSONArray agents = values.getJSONArray("referingAgency");
-
-        for (int i=0; i<= agents.length()-1; i++) {
-
-            String s = agents.getString(i);
-
-            JSONObject o = new JSONObject(s);
-
-            if (key.equals(o.get("title"))) {
-                return "" + o.get("title") + "\n" + o.get("adresse") + "\n" + o.get("postnr")  + " " + o.get("by") + "";
-            };
-        }
-        return "";
-    };
-
-    public String getUserByUserName (String userName) throws JSONException {
-
-        // secretaries
-
-        JSONObject values = propertyValuesMap.get("retspsyk");
 
 
 
-        JSONArray secretaries = values.getJSONArray("secretary");
-        for (int i=0; i<= secretaries.length()-1; i++) {
-
-            String s = secretaries.getString(i);
-
-            if (s.contains(userName)) {
-                s = s.replace("(" + userName +")","").trim();
-                return s;
-            }
-        }
-
-        JSONArray socialworker = values.getJSONArray("socialworker");
-        for (int i=0; i<= socialworker.length()-1; i++) {
-
-            String s = socialworker.getString(i);
-
-            if (s.contains(userName)) {
-                s = s.replace("(" + userName +")","").trim();
-                return s;
-            }
-        }
-
-        JSONArray psychologist = values.getJSONArray("psychologist");
-        for (int i=0; i<= psychologist.length()-1; i++) {
-
-            String s = psychologist.getString(i);
-
-            if (s.contains(userName)) {
-                s = s.replace("(" + userName +")","").trim();
-                return s;
-            }
-        }
-
-        JSONArray doctor = values.getJSONArray("doctor");
-        for (int i=0; i<= doctor.length()-1; i++) {
-
-            String s = doctor.getString(i);
-
-            if (s.contains(userName)) {
-                s = s.replace("(" + userName +")","").trim();
-                return s;
-            }
-        }
-
-        return null;
-    }
-
-    public String getUserNameByUser (String userName) throws JSONException {
 
 
-
-        // secretaries
-
-        JSONObject values = propertyValuesMap.get("retspsyk");
-        JSONArray secretaries = values.getJSONArray("secretary");
-
-        for (int i=0; i<= secretaries.length()-1; i++) {
-
-            String s = secretaries.getString(i);
-
-            if (s.contains(userName)) {
-                s = s.replace(userName,"").trim();
-                s= s.replace("(","").trim();
-                s= s.replace(")","").trim();
-                return s;
-            }
-        }
-
-        JSONArray socialworker = values.getJSONArray("socialworker");
-        for (int i=0; i<= socialworker.length()-1; i++) {
-
-            String s = socialworker.getString(i);
-
-            if (s.contains(userName)) {
-                s = s.replace(userName,"").trim();
-                s= s.replace("(","").trim();
-                s= s.replace(")","").trim();
-                return s;
-            }
-        }
-
-        JSONArray psychologist = values.getJSONArray("psychologist");
-        for (int i=0; i<= psychologist.length()-1; i++) {
-
-            String s = psychologist.getString(i);
-
-            if (s.contains(userName)) {
-                s = s.replace(userName,"").trim();
-                s= s.replace("(","").trim();
-                s= s.replace(")","").trim();
-                return s;
-            }
-        }
-
-        JSONArray doctor = values.getJSONArray("doctor");
-
-        for (int i=0; i<= doctor.length()-1; i++) {
-
-            String s = doctor.getString(i);
-
-            if (s.contains(userName)) {
-                s = s.replace(userName,"").trim();
-                s= s.replace("(","").trim();
-                s= s.replace(")","").trim();
-                return s;
-            }
-        }
-
-        return null;
-    }
 
 }
 

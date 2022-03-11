@@ -48,11 +48,62 @@
         <aspect name="rmpsy:psyc">
             <title>psyc data</title>
             <properties>
-                <property name="rmpsy:interviewRatingScales">
+
+                <property name="rmpsy:psykologisk_undersoegelsestype">
+                    <title>Psykologisk undersøgelsestype</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                </property>
+
+                <property name="rmpsy:psykiatriske_interviews_og_ratingscales">
                     <title>Psykiatriske interviews og ratingscales</title>
                     <type>d:text</type>
                     <multiple>true</multiple>
                 </property>
+
+                <property name="rmpsy:kognitive_og_neuropsykologiske_praestationstests">
+                    <title>Kognitive_og_neuropsykologiske_praestationstests</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                </property>
+
+                <property name="rmpsy:implicitte_projektive_tests">
+                    <title>Implicitte_projektive_tests</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                </property>
+
+                <property name="rmpsy:eksplicitte_spoergeskema_tests">
+                    <title>Eksplicitte_spoergeskema_tests</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                </property>
+
+                <property name="rmpsy:instrumenter_for_indikation_på_malingering">
+                    <title>Instrumenter_for_indikation_på_malingering</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                </property>
+
+                <property name="rmpsy:risikovurderingsinstrumenter">
+                    <title>Risikovurderingsinstrumenter</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                </property>
+
+                <property name="rmpsy:psykologisk_vurdering_af_forekomst_af_malingering">
+                    <title>Psykologisk_vurdering_af_forekomst_af_malingering</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                </property>
+
+                <property name="rmpsy:konklusion_tags">
+                    <title>Konklusion_tags</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                </property>
+
+
             </properties>
         </aspect>
 

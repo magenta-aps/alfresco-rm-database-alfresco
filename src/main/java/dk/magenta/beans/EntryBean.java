@@ -658,8 +658,6 @@ public class EntryBean {
         SearchParameters sp = new SearchParameters();
         sp.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
 
-
-
         sp.setLanguage("lucene");
         sp.setQuery(query);
 

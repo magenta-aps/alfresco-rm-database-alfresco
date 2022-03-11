@@ -166,15 +166,19 @@ public interface DatabaseModel {
     String PROP_SHAREDFOLDER_BUA = "sharedFolderBua";
     String PROP_PSYC_LIBRARY = "psycPropertiesValues";
 
+
+    String PROP_PSYC_LIBRARY_PSYCH_TYPE = "psykologisk_undersoegelsestype";
+
     // the six types of used instruments
-    String PROP_PSYC_LIBRARY_INTERVIEWRATING = "Psykiatriske_interviews_og_ratingscales";
-    String PROP_PSYC_LIBRARY_KOGNITIV = "Kognitive_og_neuropsykologiske_praestationstests";
-    String PROP_PSYC_LIBRARY_IMPLECITE = "Implicitte_projektive_tests";
-    String PROP_PSYC_LIBRARY_EXPLICIT = "Eksplicitte_spoergeskema_tests";
-    String PROP_PSYC_LIBRARY_MALERING = "Instrumenter_for_indikation_på_malingering";
-    String PROP_PSYC_LIBRARY_RISIKO = "Risikovurderingsinstrumenter";
+    String PROP_PSYC_LIBRARY_INTERVIEWRATING = "psykiatriske_interviews_og_ratingscales";
+    String PROP_PSYC_LIBRARY_KOGNITIV = "kognitive_og_neuropsykologiske_praestationstests";
+    String PROP_PSYC_LIBRARY_IMPLECITE = "implicitte_projektive_tests";
+    String PROP_PSYC_LIBRARY_EXPLICIT = "eksplicitte_spoergeskema_tests";
+    String PROP_PSYC_LIBRARY_MALERING = "instrumenter_for_indikation_på_malingering";
+    String PROP_PSYC_LIBRARY_RISIKO = "risikovurderingsinstrumenter";
 
-
+    String PROP_PSYC_LIBRARY_PSYCH_MALERING = "psykologisk_vurdering_af_forekomst_af_malingering";
+    String PROP_PSYC_LIBRARY_KONKLUSION_TAGS = "konklusion_tags";
 
     String PROP_WEEKLYSTAT = "weeklyStat";
 
@@ -282,7 +286,18 @@ public interface DatabaseModel {
     String RMPSY_MODEL_PREFIX = "rmpsy";
 
     QName ASPECT_PSYCDATA = QName.createQName(RMPSY_MODEL_URI, "psyc");
-    QName PROP_PSYCDATA_INTERVIEWRATINGSCALES = QName.createQName(RMPSY_MODEL_URI, "interviewRatingScales");
+
+    QName PROPQNAME_PSYCDATA_PSYCH_TYPE = QName.createQName(RMPSY_MODEL_URI, "psykologisk_undersoegelsestype");
+
+    QName PROPQNAME_PSYCDATA_INTERVIEWRATING = QName.createQName(RMPSY_MODEL_URI, "psykiatriske_interviews_og_ratingscales");
+    QName PROPQNAME_PSYCDATA_KOGNITIV = QName.createQName(RMPSY_MODEL_URI, "kognitive_og_neuropsykologiske_praestationstests");
+    QName PROPQNAME_PSYCDATA_IMPLECITE = QName.createQName(RMPSY_MODEL_URI, "implicitte_projektive_tests");
+    QName PROPQNAME_PSYCDATA_EXPLICIT = QName.createQName(RMPSY_MODEL_URI, "eksplicitte_spoergeskema_tests");
+    QName PROPQNAME_PSYCDATA_MALERING = QName.createQName(RMPSY_MODEL_URI, "instrumenter_for_indikation_på_malingering");
+    QName PROPQNAME_PSYCDATA_RISIKO = QName.createQName(RMPSY_MODEL_URI, "risikovurderingsinstrumenter");
+
+    QName PROPQNAME_PSYCDATA_PSYCH_MALERING = QName.createQName(RMPSY_MODEL_URI, "psykologisk_vurdering_af_forekomst_af_malingering");
+    QName PROPQNAME_PSYCDATA_KONKLUSION_TAGS = QName.createQName(RMPSY_MODEL_URI, "konklusion_tags");
 
     // types
 
