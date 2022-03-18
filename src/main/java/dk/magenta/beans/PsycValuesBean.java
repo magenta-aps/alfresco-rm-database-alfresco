@@ -13,10 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class PsycValuesBean {
@@ -37,7 +34,11 @@ public class PsycValuesBean {
 
     private PsycBean psycBean;
 
-    private Map<String, JSONArray> propertyValuesMap = new HashMap<>();
+    private JSONArray propertyValuesMap = new JSONArray();
+
+    // ex map[instrumentType][id] -> så får du valuestreng
+
+    private Map<String, Map<String, String>> mapped = new HashMap<>();
 
     public void setFileFolderService(FileFolderService fileFolderService) {
         this.fileFolderService = fileFolderService;
@@ -55,18 +56,34 @@ public class PsycValuesBean {
 //        return propertyValuesMap.get();
 //    }
 
+    private void setupMapping() throws JSONException {
+
+        for (int i=0; i<=this.propertyValuesMap.length()-1;i++) {
+
+            JSONObject instrument = this.propertyValuesMap.getJSONObject(i);
+
+            String instrumentName = (String) instrument.get("instrumentname");
+            JSONArray jsonArray = (JSONArray) instrument.get("values");
+
+            Map<String, String> instruments = new HashMap<>();
+
+            for (int k=0; k <= jsonArray.length()-1;k++) {
+                JSONObject val = jsonArray.getJSONObject(k);
+                instruments.put(val.getString("id"), val.getString("name"));
+            }
+            this.mapped.put(instrumentName, instruments);
+        }
+    }
+
     public void loadPropertyValues () throws JSONException, FileNotFoundException, IOException {
+
+        propertyValuesMap = new JSONArray();
 
         NodeRef rootFolderRef = siteService.getContainer("retspsyk", DatabaseModel.PROP_PSYC_LIBRARY);
 
-        System.out.println("hvad er rootFolderRef");
-        System.out.println(rootFolderRef);
 
         if(rootFolderRef != null) {
             List<FileInfo> folders = fileFolderService.listFolders(rootFolderRef);
-
-            System.out.println("fileInfos");
-            System.out.println(folders.size());
 
             JSONObject result = new JSONObject();
 
@@ -77,10 +94,6 @@ public class PsycValuesBean {
 
                 // each node wil be a folder
                 NodeRef instrumentRootFolder = fileInfo.getNodeRef();
-                System.out.println("instrumentRootFolder");
-                System.out.println(instrumentRootFolder);
-
-                System.out.println(nodeService.getProperty(instrumentRootFolder, ContentModel.PROP_NAME));
 
                 String instrumentName = (String)nodeService.getProperty(instrumentRootFolder, ContentModel.PROP_NAME);
 
@@ -91,8 +104,6 @@ public class PsycValuesBean {
 
                 while (i.hasNext()) {
                     ChildAssociationRef child = (ChildAssociationRef)i.next();
-//                    System.out.println("hvad er child");
-//                    System.out.println(child.getChildRef());
 
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id" , (String)nodeService.getProperty(child.getChildRef(), DatabaseModel.PROP_ANVENDTUNDERSOEGELSESINST_ID));
@@ -100,54 +111,103 @@ public class PsycValuesBean {
 
                     jsonArray.put(jsonObject);
                 }
-                propertyValuesMap.put(instrumentName, jsonArray);
-            }
 
+                JSONObject o = new JSONObject();
+                o.put("instrumentname", instrumentName);
+                o.put("values", jsonArray);
+
+                propertyValuesMap.put(o);
+            }
         }
+
+        this.setupMapping();
     }
 
     public void pingMap() {
         System.out.println("er der noget i dit map?");
-        System.out.println(this.propertyValuesMap.size());
-        System.out.println(this.propertyValuesMap.get("Psykiatriske_interviews_og_ratingscales"));
-
+        System.out.println(this.propertyValuesMap.length());
+        System.out.println(this.propertyValuesMap);
     }
 
-    public void updatePropertyValues (String siteShortName, String property, JSONArray values) throws JSONException, FileNotFoundException {
+    public JSONArray getPropertyValues() {
+        return propertyValuesMap;
+    }
 
-        NodeRef rootFolderRef = siteService.getContainer(siteShortName, DatabaseModel.PROP_VALUES);
+//    public void updatePropertyValues (String siteShortName, String property, JSONArray values) throws JSONException, FileNotFoundException {
+//
+//        NodeRef rootFolderRef = siteService.getContainer(siteShortName, DatabaseModel.PROP_VALUES);
+//
+//        JSONArray propertyValues = propertyValuesMap.get(siteShortName);
+//        propertyValues.put(Integer.parseInt(property), values);
+//
+//        List<String> path = new ArrayList<>(Collections.singletonList(property + ".txt"));
+//        FileInfo fileInfo = fileFolderService.resolveNamePath(rootFolderRef, path);
+//        NodeRef nodeRef = fileInfo.getNodeRef();
+//
+//        StringBuilder output = new StringBuilder();
+//        int length = values.length();
+//        for(int i=0; i < length; i++) {
+//            String value = values.getString(i);
+//            output.append(value);
+//
+//            if(i + 1 != length)
+//                output.append("\n");
+//        }
+//
+//        ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
+//        writer.setMimetype(MimetypeMap.MIMETYPE_TEXT_PLAIN);
+//        writer.setEncoding("UTF-8");
+//        writer.putContent(output.toString());
+//
+//        // reload the properties if the property was referingAgency
+//
+//        if (property.equals("referingAgency")) {
+//            try {
+//                this.loadPropertyValues();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
-        JSONArray propertyValues = propertyValuesMap.get(siteShortName);
-        propertyValues.put(Integer.parseInt(property), values);
 
-        List<String> path = new ArrayList<>(Collections.singletonList(property + ".txt"));
-        FileInfo fileInfo = fileFolderService.resolveNamePath(rootFolderRef, path);
-        NodeRef nodeRef = fileInfo.getNodeRef();
 
-        StringBuilder output = new StringBuilder();
-        int length = values.length();
-        for(int i=0; i < length; i++) {
-            String value = values.getString(i);
-            output.append(value);
 
-            if(i + 1 != length)
-                output.append("\n");
+    public JSONObject formatIdsForFrontend(ArrayList ids, String instrumentName) throws JSONException {
+
+        // get the ids and names for the instrument
+
+        Map<String, String> instrumentValues = this.mapped.get((instrumentName));
+
+
+        JSONObject o = new JSONObject();
+
+        for (int i=0; i<=ids.size()-1;i++) {
+            String id = (String)ids.get(i);
+            System.out.println("hvad er mapped til: " + id);
+            System.out.println(instrumentValues.get(id));
+
         }
 
-        ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
-        writer.setMimetype(MimetypeMap.MIMETYPE_TEXT_PLAIN);
-        writer.setEncoding("UTF-8");
-        writer.putContent(output.toString());
+        return null;
+    }
 
-        // reload the properties if the property was referingAgency
+    public JSONObject getValuesForInstrument(String inst) throws JSONException {
 
-        if (property.equals("referingAgency")) {
-            try {
-                this.loadPropertyValues();
-            } catch (IOException e) {
-                e.printStackTrace();
+        int i = 0;
+
+        while (i<=this.propertyValuesMap.length()-1) {
+
+            JSONObject instrument = this.propertyValuesMap.getJSONObject(i);
+
+            if (instrument.get("instrumentname").equals(inst)) {
+                return instrument;
+            }
+            else {
+                i++;
             }
         }
+        return null;
     }
 
 
