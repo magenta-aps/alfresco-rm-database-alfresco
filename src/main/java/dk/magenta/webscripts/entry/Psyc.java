@@ -79,7 +79,8 @@ public class Psyc extends AbstractWebScript {
 
                 case "test":
                     Map<QName, Serializable> properties = new HashMap<>();
-                    properties.put(DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE, "[\"0\",\"2\",\"3\"]");
+                    properties.put(DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE, "0:t,1:t,2:f,3:t,4:f,5:t,6:f");
+//                    properties.put(DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE, "[\"0\",\"2\",\"3\"]"); dur ikke
 
                     NodeRef n = new NodeRef("workspace://SpacesStore/125074f7-3869-4e72-ab05-94dc0824db19");
                     nodeService.removeAspect(n, ASPECT_PSYCDATA);
@@ -137,42 +138,74 @@ public class Psyc extends AbstractWebScript {
 
                     break;
 
-                case "getInstruments":
+                case "getInstrumentsForDetailview":
 
                     // get the aspect for the observand
 
                     String caseid = jsonProperties.getString("caseid");
+                    String instrument = jsonProperties.getString("instrument");
                     String query = "@rm\\:caseNumber:\"" + caseid + "\"";
 
                     NodeRef observand = entryBean.getEntry(query);
 
                     if (nodeService.hasAspect(observand, ASPECT_PSYCDATA)) {
 
-                        ArrayList r = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE);
+                        // todo - make the 2nd param for getProperty variable
+                        ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE);
+                        System.out.println("idPsycData");
+                        System.out.println(idPsycData);
 
+                        ArrayList formattedList = new ArrayList<String>(Arrays.asList(((String)idPsycData.get(0)).split(",")));
+                        System.out.println("param");
+                        System.out.println(formattedList);
 
-                        // Map the id's to the real name - put this in the propertyvaluesBean - a method that given a group of id's maps them to two object, one with
-//                        the list of id's and one with the list of names
+                        ArrayList mappedValues = new ArrayList();
 
-                        System.out.println("r");
-                        System.out.println(r);
+                        // add the label for each id
 
-                        result.put(DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE, r);
+                        for (int i=0; i<= formattedList.size()-1;i++) {
+                        String inst = (String)formattedList.get(i);
 
+                        JSONObject instO = new JSONObject();
+                        instO.put("id",inst.split(":")[0]);
+                        instO.put("label",psycValuesBean.mapIdToLabel(inst.split(":")[0], DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE));
+                        instO.put("val",inst.split(":")[1].equals("t") ? true : false);
 
-                        System.out.println("output fra test");
+                        mappedValues.add(instO);
+                        }
 
+                        result.put("data", mappedValues);
+
+//                        result.put(DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE, formattedList);
                         JSONUtils.write(webScriptWriter, result);
-
-
-
-
-//                        StringList psyc = (StringList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE);
-
                     }
                     else {
                         // add the aspect and return empty
+                        nodeService.addAspect(observand, ASPECT_PSYCDATA, null);
+                        JSONUtils.write(webScriptWriter, result);
                     }
+
+
+                    break;
+                case "getInstrumentsForOverview":
+
+                    caseid = jsonProperties.getString("caseid");
+
+                    query = "@rm\\:caseNumber:\"" + caseid + "\"";
+                    observand = entryBean.getEntry(query);
+                    System.out.println("observand");
+                    System.out.println(observand);
+
+                    ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE);
+                    System.out.println("idPsycData");
+                    System.out.println(idPsycData);
+
+                    ArrayList param = new ArrayList<String>(Arrays.asList(((String)idPsycData.get(0)).split(",")));
+                    System.out.println("param");
+                    System.out.println(param);
+
+                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE, psycValuesBean.formatIdsForFrontend(param, DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE));
+                    JSONUtils.write(webScriptWriter, result);
 
 
                     break;

@@ -57,7 +57,6 @@ public class PsycValuesBean {
 //    }
 
     private void setupMapping() throws JSONException {
-
         for (int i=0; i<=this.propertyValuesMap.length()-1;i++) {
 
             JSONObject instrument = this.propertyValuesMap.getJSONObject(i);
@@ -172,6 +171,11 @@ public class PsycValuesBean {
 
 
 
+    public String mapIdToLabel(String id, String instrumentName) {
+        Map<String, String> instrumentValues = this.mapped.get((instrumentName));
+        return instrumentValues.get(id);
+    }
+
 
     public JSONObject formatIdsForFrontend(ArrayList ids, String instrumentName) throws JSONException {
 
@@ -181,15 +185,23 @@ public class PsycValuesBean {
 
 
         JSONObject o = new JSONObject();
+        ArrayList nameList = new ArrayList();
+        ArrayList idList = new ArrayList();
+        System.out.println("ids");
+        System.out.println(ids);
 
         for (int i=0; i<=ids.size()-1;i++) {
             String id = (String)ids.get(i);
             System.out.println("hvad er mapped til: " + id);
             System.out.println(instrumentValues.get(id));
-
+            idList.add(id);
+            nameList.add(instrumentValues.get(id));
         }
 
-        return null;
+        o.put("idList", idList);
+        o.put("nameList", nameList);
+
+        return o;
     }
 
     public JSONObject getValuesForInstrument(String inst) throws JSONException {
