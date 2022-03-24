@@ -23,6 +23,7 @@ import java.io.Writer;
 import java.util.*;
 
 import static dk.magenta.model.DatabaseModel.ASPECT_PSYCDATA;
+import static dk.magenta.model.DatabaseModel.RMPSY_MODEL_URI;
 
 public class Psyc extends AbstractWebScript {
 
@@ -79,7 +80,8 @@ public class Psyc extends AbstractWebScript {
 
                 case "test":
                     Map<QName, Serializable> properties = new HashMap<>();
-                    properties.put(DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE, "0:t,1:t,2:f,3:t,4:f,5:t,6:f");
+                    properties.put(DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE, "3,5,6");
+//                    properties.put(DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE, "0:f,1:f,2:f,3:t,4:f,5:t,6:f");
 //                    properties.put(DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE, "[\"0\",\"2\",\"3\"]"); dur ikke
 
                     NodeRef n = new NodeRef("workspace://SpacesStore/125074f7-3869-4e72-ab05-94dc0824db19");
@@ -88,44 +90,7 @@ public class Psyc extends AbstractWebScript {
 
                     psycValuesBean.loadPropertyValues();
 
-
-                    ArrayList ids = new ArrayList();
-                    ids.add("1");
-                    ids.add("4");
-                    ids.add("5");
-
-                    psycValuesBean.formatIdsForFrontend(ids,"psykologisk_undersoegelsestype");
-
-//                    String query = "";
-//
-//                    String base = "@rmpsy\\:psykologisk_undersoegelsestype: 1";
-//
-//                    for (int i=2; i<=1000;i++) {
-//                        base = base + " OR " + "@rmpsy\\:psykologisk_undersoegelsestype: " + i;
-//                    }
-//
-//
-//
-//                    query = base;
-//                    System.out.println("query");
-//                    System.out.println(query);
-//
-//                    List<NodeRef> list = entryBean.getEntriesbyQuery(query);
-//                    System.out.println("list");
-//                    System.out.println(list);
-
-//
-
-                    // indlæs alt
-                    // knyt det nye aspekt på - set hvordan det ser ud i nodebrowser
-                    // sæt værdier ind for et tilfældigt fil.
-
-
-
-//                     psycBean.createAllData();
-
-
-//                    psycValuesBean.pingMap();
+                    // psycBean.createAllData();
 
                     JSONArray list = psycValuesBean.getPropertyValues();
 
@@ -138,22 +103,58 @@ public class Psyc extends AbstractWebScript {
 
                     break;
 
+                case "saveInstrumentsForDetailview":
+
+                    String caseid = jsonProperties.getString("caseid");
+
+                    String instrument = jsonProperties.getString("instrument");
+                    System.out.println("instrument");
+                    System.out.println(instrument);
+
+                    String selected = jsonProperties.getString("selected");
+                    System.out.println("hvad er selected: ");
+                    System.out.println(selected);
+
+                    String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+
+                    System.out.println("instrument: ");
+                    System.out.println(instrument);
+
+                    NodeRef observand = entryBean.getEntry(query);
+                    QName instrumentQname = QName.createQName(RMPSY_MODEL_URI, instrument);
+
+                    nodeService.setProperty(observand,instrumentQname,selected);
+
+//                    ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, QName.createQName(RMPSY_MODEL_URI, instrument));
+
+
+                    break;
+
+
                 case "getInstrumentsForDetailview":
 
                     // get the aspect for the observand
 
-                    String caseid = jsonProperties.getString("caseid");
-                    String instrument = jsonProperties.getString("instrument");
-                    String query = "@rm\\:caseNumber:\"" + caseid + "\"";
+                    caseid = jsonProperties.getString("caseid");
+                    instrument = jsonProperties.getString("instrument");
+                    query = "@rm\\:caseNumber:\"" + caseid + "\"";
 
-                    NodeRef observand = entryBean.getEntry(query);
+                    System.out.println("instrument: ");
+                    System.out.println("instrument: ");
+                    System.out.println("instrument: ");
+                    System.out.println(instrument);
 
-                    if (nodeService.hasAspect(observand, ASPECT_PSYCDATA)) {
+                    observand = entryBean.getEntry(query);
+                    instrumentQname = QName.createQName(RMPSY_MODEL_URI, instrument);
 
-                        // todo - make the 2nd param for getProperty variable
-                        ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE);
+
+                    if (nodeService.hasAspect(observand, ASPECT_PSYCDATA) && (nodeService.getProperty(observand, instrumentQname) != null)) {
+
+                        ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, QName.createQName(RMPSY_MODEL_URI, instrument));
                         System.out.println("idPsycData");
                         System.out.println(idPsycData);
+                        System.out.println("System.out.println(idPsycData.contains(3));");
+                        System.out.println(idPsycData.contains(3));
 
                         ArrayList formattedList = new ArrayList<String>(Arrays.asList(((String)idPsycData.get(0)).split(",")));
                         System.out.println("param");
@@ -163,16 +164,52 @@ public class Psyc extends AbstractWebScript {
 
                         // add the label for each id
 
-                        for (int i=0; i<= formattedList.size()-1;i++) {
-                        String inst = (String)formattedList.get(i);
 
-                        JSONObject instO = new JSONObject();
-                        instO.put("id",inst.split(":")[0]);
-                        instO.put("label",psycValuesBean.mapIdToLabel(inst.split(":")[0], DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE));
-                        instO.put("val",inst.split(":")[1].equals("t") ? true : false);
+                        // setup the totallist of id: xx, label: xx, val: xx
 
-                        mappedValues.add(instO);
+                        System.out.println("antal for instrument:" + instrument);
+                        System.out.println("antal for instrument:" + instrument);
+                        System.out.println("antal for instrument:" + instrument);
+                        System.out.println(psycValuesBean.getLengthOfInstrumentList(instrument));
+
+
+
+
+                        for (int k=0; k<=psycValuesBean.getLengthOfInstrumentList(instrument)-1;k++) {
+
+                            System.out.println("formattedList.contains(String.valueOf(k));");
+                            System.out.println(formattedList.contains(String.valueOf(k)));
+
+                            JSONObject entry = new JSONObject();
+                            entry.put("id",k);
+                            entry.put("label",psycValuesBean.mapIdToLabel(String.valueOf(k), instrument));
+                            entry.put("val", formattedList.contains(String.valueOf(k)) ? true : false);
+
+                            mappedValues.add(entry);
                         }
+
+
+
+//                        for (int i=0; i<= formattedList.size()-1;i++) {
+//                        String inst = (String)formattedList.get(i);
+//
+//                        JSONObject instO = new JSONObject();
+//                        instO.put("id",inst.split(":")[0]);
+//                        instO.put("label",psycValuesBean.mapIdToLabel(inst.split(":")[0], DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE));
+//                        instO.put("val",inst.split(":")[1].equals("t") ? true : false);
+//
+//
+//                        }
+
+
+
+
+                           // get the length of the instrument category
+
+                           // make the list
+
+                          // set the selected values in the return list
+
 
                         result.put("data", mappedValues);
 
@@ -180,12 +217,36 @@ public class Psyc extends AbstractWebScript {
                         JSONUtils.write(webScriptWriter, result);
                     }
                     else {
-                        // add the aspect and return empty
-                        nodeService.addAspect(observand, ASPECT_PSYCDATA, null);
+                        // add the aspect and and make an empty default for that instrument
+
+
+
+                        // nodeService.addAspect(observand, ASPECT_PSYCDATA, null);
+
+                        System.out.println("getValuesForInstrument");
+                        System.out.println(instrument);
+                        JSONObject values = psycValuesBean.getValuesForInstrument(instrument);
+                        System.out.println("values");
+                        System.out.println(values.get("values"));
+
+                        ArrayList mappedValues = new ArrayList();
+                        JSONArray valuesArray = (JSONArray) values.get("values");
+
+                        for (int i=0; i<= valuesArray.length()-1;i++) {
+
+                            JSONObject val = (JSONObject) valuesArray.get(i);
+
+                            JSONObject instO = new JSONObject();
+                            instO.put("id",val.getString("id"));
+                            instO.put("label", val.getString("name"));
+                            instO.put("val",false);
+
+                            mappedValues.add(instO);
+                        }
+
+                        result.put("data", mappedValues);
                         JSONUtils.write(webScriptWriter, result);
                     }
-
-
                     break;
                 case "getInstrumentsForOverview":
 
@@ -209,6 +270,10 @@ public class Psyc extends AbstractWebScript {
 
 
                     break;
+
+//                case "createPsycPropertyValues":
+
+
                 case "total":
                     break;
             }

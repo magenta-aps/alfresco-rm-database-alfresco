@@ -3,7 +3,6 @@ package dk.magenta.beans;
 
 import dk.magenta.model.DatabaseModel;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
@@ -34,7 +33,7 @@ public class PsycValuesBean {
 
     private PsycBean psycBean;
 
-    private JSONArray propertyValuesMap = new JSONArray();
+    private JSONArray propertyValues = new JSONArray();
 
     // ex map[instrumentType][id] -> så får du valuestreng
 
@@ -57,9 +56,9 @@ public class PsycValuesBean {
 //    }
 
     private void setupMapping() throws JSONException {
-        for (int i=0; i<=this.propertyValuesMap.length()-1;i++) {
+        for (int i = 0; i<=this.propertyValues.length()-1; i++) {
 
-            JSONObject instrument = this.propertyValuesMap.getJSONObject(i);
+            JSONObject instrument = this.propertyValues.getJSONObject(i);
 
             String instrumentName = (String) instrument.get("instrumentname");
             JSONArray jsonArray = (JSONArray) instrument.get("values");
@@ -74,9 +73,13 @@ public class PsycValuesBean {
         }
     }
 
+    public int getLengthOfInstrumentList(String instrumentName) {
+        return mapped.get(instrumentName).size();
+    }
+
     public void loadPropertyValues () throws JSONException, FileNotFoundException, IOException {
 
-        propertyValuesMap = new JSONArray();
+        propertyValues = new JSONArray();
 
         NodeRef rootFolderRef = siteService.getContainer("retspsyk", DatabaseModel.PROP_PSYC_LIBRARY);
 
@@ -115,7 +118,7 @@ public class PsycValuesBean {
                 o.put("instrumentname", instrumentName);
                 o.put("values", jsonArray);
 
-                propertyValuesMap.put(o);
+                propertyValues.put(o);
             }
         }
 
@@ -124,55 +127,20 @@ public class PsycValuesBean {
 
     public void pingMap() {
         System.out.println("er der noget i dit map?");
-        System.out.println(this.propertyValuesMap.length());
-        System.out.println(this.propertyValuesMap);
+        System.out.println(this.propertyValues.length());
+        System.out.println(this.propertyValues);
     }
 
     public JSONArray getPropertyValues() {
-        return propertyValuesMap;
+        return propertyValues;
     }
-
-//    public void updatePropertyValues (String siteShortName, String property, JSONArray values) throws JSONException, FileNotFoundException {
-//
-//        NodeRef rootFolderRef = siteService.getContainer(siteShortName, DatabaseModel.PROP_VALUES);
-//
-//        JSONArray propertyValues = propertyValuesMap.get(siteShortName);
-//        propertyValues.put(Integer.parseInt(property), values);
-//
-//        List<String> path = new ArrayList<>(Collections.singletonList(property + ".txt"));
-//        FileInfo fileInfo = fileFolderService.resolveNamePath(rootFolderRef, path);
-//        NodeRef nodeRef = fileInfo.getNodeRef();
-//
-//        StringBuilder output = new StringBuilder();
-//        int length = values.length();
-//        for(int i=0; i < length; i++) {
-//            String value = values.getString(i);
-//            output.append(value);
-//
-//            if(i + 1 != length)
-//                output.append("\n");
-//        }
-//
-//        ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
-//        writer.setMimetype(MimetypeMap.MIMETYPE_TEXT_PLAIN);
-//        writer.setEncoding("UTF-8");
-//        writer.putContent(output.toString());
-//
-//        // reload the properties if the property was referingAgency
-//
-//        if (property.equals("referingAgency")) {
-//            try {
-//                this.loadPropertyValues();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-
 
     public String mapIdToLabel(String id, String instrumentName) {
         Map<String, String> instrumentValues = this.mapped.get((instrumentName));
+
+        System.out.println("hvad er instrumentValues");
+        System.out.println(instrumentValues);
+
         return instrumentValues.get(id);
     }
 
@@ -208,9 +176,9 @@ public class PsycValuesBean {
 
         int i = 0;
 
-        while (i<=this.propertyValuesMap.length()-1) {
+        while (i<=this.propertyValues.length()-1) {
 
-            JSONObject instrument = this.propertyValuesMap.getJSONObject(i);
+            JSONObject instrument = this.propertyValues.getJSONObject(i);
 
             if (instrument.get("instrumentname").equals(inst)) {
                 return instrument;
@@ -221,12 +189,5 @@ public class PsycValuesBean {
         }
         return null;
     }
-
-
-
-
-
-
-
 }
 
