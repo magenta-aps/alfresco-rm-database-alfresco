@@ -84,13 +84,15 @@ public class Psyc extends AbstractWebScript {
 //                    properties.put(DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE, "0:f,1:f,2:f,3:t,4:f,5:t,6:f");
 //                    properties.put(DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE, "[\"0\",\"2\",\"3\"]"); dur ikke
 
-                    NodeRef n = new NodeRef("workspace://SpacesStore/125074f7-3869-4e72-ab05-94dc0824db19");
-                    nodeService.removeAspect(n, ASPECT_PSYCDATA);
-                    nodeService.addAspect(n, ASPECT_PSYCDATA, properties);
+//                    NodeRef n = new NodeRef("workspace://SpacesStore/125074f7-3869-4e72-ab05-94dc0824db19");
+//                    nodeService.removeAspect(n, ASPECT_PSYCDATA);
+//                    nodeService.addAspect(n, ASPECT_PSYCDATA, properties);
+
+                    psycBean.createAllData();
 
                     psycValuesBean.loadPropertyValues();
 
-                    // psycBean.createAllData();
+
 
                     JSONArray list = psycValuesBean.getPropertyValues();
 
@@ -121,6 +123,14 @@ public class Psyc extends AbstractWebScript {
                     System.out.println(instrument);
 
                     NodeRef observand = entryBean.getEntry(query);
+
+
+                    if (!nodeService.hasAspect(observand, ASPECT_PSYCDATA)) {
+                        nodeService.addAspect(observand, ASPECT_PSYCDATA, null);
+                    }
+
+                    // check if it has the aspect or not
+
                     QName instrumentQname = QName.createQName(RMPSY_MODEL_URI, instrument);
 
                     nodeService.setProperty(observand,instrumentQname,selected);
@@ -171,9 +181,6 @@ public class Psyc extends AbstractWebScript {
                         System.out.println("antal for instrument:" + instrument);
                         System.out.println("antal for instrument:" + instrument);
                         System.out.println(psycValuesBean.getLengthOfInstrumentList(instrument));
-
-
-
 
                         for (int k=0; k<=psycValuesBean.getLengthOfInstrumentList(instrument)-1;k++) {
 

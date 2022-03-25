@@ -384,6 +384,7 @@ public class PsycBean {
         this.createDataForKognitivRating();
         this.createDataForImplicit();
         this.createDataForEksplicit();
+        this.createDataForRisiko();
         this.createDataForMalingering();
         this.createDataForPsykMalering();
         this.createDataForKonklusionTags();
