@@ -9,6 +9,7 @@ import org.alfresco.jlan.util.StringList;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
+import org.apache.poi.ss.formula.functions.T;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +22,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.*;
+
+import java.util.*;
+import org.json.*;
 
 import static dk.magenta.model.DatabaseModel.ASPECT_PSYCDATA;
 import static dk.magenta.model.DatabaseModel.RMPSY_MODEL_URI;
@@ -172,7 +176,7 @@ public class Psyc extends AbstractWebScript {
 
                         ArrayList mappedValues = new ArrayList();
 
-                        // add the label for each id
+
 
 
                         // setup the totallist of id: xx, label: xx, val: xx
@@ -194,6 +198,29 @@ public class Psyc extends AbstractWebScript {
 
                             mappedValues.add(entry);
                         }
+
+                        // sort by label
+
+                        Collections.sort(mappedValues, new Comparator<JSONObject>() {
+                            private static final String KEY_NAME = "label";
+                            @Override
+                            public int compare(JSONObject a, JSONObject b) {
+                                String str1 = new String();
+                                String str2 = new String();
+                                try {
+                                    str1 = (String)a.get(KEY_NAME);
+                                    str2 = (String)b.get(KEY_NAME);
+                                } catch(JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                return str1.compareTo(str2);
+                            }
+                        });
+
+                        System.out.println("Sorted JSON Array with Name: " + mappedValues);
+
+
+
 
 
 
@@ -251,6 +278,26 @@ public class Psyc extends AbstractWebScript {
                             mappedValues.add(instO);
                         }
 
+                        // sort by label
+
+                        Collections.sort(mappedValues, new Comparator<JSONObject>() {
+                            private static final String KEY_NAME = "label";
+                            @Override
+                            public int compare(JSONObject a, JSONObject b) {
+                                String str1 = new String();
+                                String str2 = new String();
+                                try {
+                                    str1 = (String)a.get(KEY_NAME);
+                                    str2 = (String)b.get(KEY_NAME);
+                                } catch(JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                return str1.compareTo(str2);
+                            }
+                        });
+
+                        System.out.println("Sorted JSON Array with Name: " + mappedValues);
+
                         result.put("data", mappedValues);
                         JSONUtils.write(webScriptWriter, result);
                     }
@@ -295,3 +342,7 @@ public class Psyc extends AbstractWebScript {
         }
     }
 }
+
+
+
+

@@ -132,7 +132,7 @@ public class PsycBean {
         values.add("WAIS-IV delprøver i udvalg");
 
 
-        values.add("d2-test");
+        values.add("D2-test");
         values.add("Trail-Making test");
         values.add("RBANS delprøver i udvalg");
         values.add("RBANS testbatteri");
