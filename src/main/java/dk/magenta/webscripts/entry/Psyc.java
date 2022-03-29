@@ -26,8 +26,7 @@ import java.util.*;
 import java.util.*;
 import org.json.*;
 
-import static dk.magenta.model.DatabaseModel.ASPECT_PSYCDATA;
-import static dk.magenta.model.DatabaseModel.RMPSY_MODEL_URI;
+import static dk.magenta.model.DatabaseModel.*;
 
 public class Psyc extends AbstractWebScript {
 
@@ -92,7 +91,7 @@ public class Psyc extends AbstractWebScript {
 //                    nodeService.removeAspect(n, ASPECT_PSYCDATA);
 //                    nodeService.addAspect(n, ASPECT_PSYCDATA, properties);
 
-                    psycBean.createAllData();
+//                    psycBean.createAllData();
 
                     psycValuesBean.loadPropertyValues();
 
@@ -311,9 +310,33 @@ public class Psyc extends AbstractWebScript {
                     System.out.println("observand");
                     System.out.println(observand);
 
-                    ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE);
+                    ArrayList idPsycDataType = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE);
                     System.out.println("idPsycData");
-                    System.out.println(idPsycData);
+                    System.out.println(idPsycDataType);
+
+                    ArrayList idPsycDataInterView = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_INTERVIEWRATING);
+                    ArrayList idPsycDataKognitiv = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_KOGNITIV);
+                    ArrayList idPsycDataImplecit = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_IMPLECITE);
+                    ArrayList idPsycDataExplicit = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_EXPLICIT);
+                    ArrayList idPsycDataMalering = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_MALERING);
+                    ArrayList idPsycDataRisko = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_RISIKO);
+
+                    ArrayList idPsycDataMalering = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_MALERING);
+                    ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_KONKLUSION_TAGS);
+
+
+                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE, idPsycDataType == null ? false : true);
+
+                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_INTERVIEWRATING, idPsycData == null ? false : true);
+                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_KOGNITIV, idPsycData == null ? false : true);
+                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_IMPLECITE, idPsycData == null ? false : true);
+                    result.put(PROP_PSYC_LIBRARY_EXPLICIT, idPsycData == null ? false : true);
+                    result.put(PROP_PSYC_LIBRARY_MALERING, idPsycData == null ? false : true);
+                    result.put(PROP_PSYC_LIBRARY_RISIKO, idPsycData == null ? false : true);
+
+                    result.put(DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_MALERING, idPsycData == null ? false : true);
+                    result.put(DatabaseModel.PROPQNAME_PSYCDATA_KONKLUSION_TAGS, idPsycData == null ? false : true);
+
 
                     ArrayList param = new ArrayList<String>(Arrays.asList(((String)idPsycData.get(0)).split(",")));
                     System.out.println("param");
