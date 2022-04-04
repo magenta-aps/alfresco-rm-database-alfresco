@@ -321,28 +321,27 @@ public class Psyc extends AbstractWebScript {
                     ArrayList idPsycDataMalering = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_MALERING);
                     ArrayList idPsycDataRisko = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_RISIKO);
 
-                    ArrayList idPsycDataMalering = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_MALERING);
+                    ArrayList idPsycDataPsycMalering = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_MALERING);
                     ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_KONKLUSION_TAGS);
 
 
                     result.put(DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE, idPsycDataType == null ? false : true);
 
-                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_INTERVIEWRATING, idPsycData == null ? false : true);
-                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_KOGNITIV, idPsycData == null ? false : true);
-                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_IMPLECITE, idPsycData == null ? false : true);
-                    result.put(PROP_PSYC_LIBRARY_EXPLICIT, idPsycData == null ? false : true);
-                    result.put(PROP_PSYC_LIBRARY_MALERING, idPsycData == null ? false : true);
-                    result.put(PROP_PSYC_LIBRARY_RISIKO, idPsycData == null ? false : true);
+                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_INTERVIEWRATING, idPsycDataInterView == null ? false : true);
+                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_KOGNITIV, idPsycDataKognitiv == null ? false : true);
+                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_IMPLECITE, idPsycDataImplecit == null ? false : true);
+                    result.put(PROP_PSYC_LIBRARY_EXPLICIT, idPsycDataExplicit == null ? false : true);
+                    result.put(PROP_PSYC_LIBRARY_MALERING, idPsycDataMalering == null ? false : true);
+                    result.put(PROP_PSYC_LIBRARY_RISIKO, idPsycDataRisko == null ? false : true);
 
-                    result.put(DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_MALERING, idPsycData == null ? false : true);
-                    result.put(DatabaseModel.PROPQNAME_PSYCDATA_KONKLUSION_TAGS, idPsycData == null ? false : true);
+                    result.put(PROP_PSYC_LIBRARY_PSYCH_MALERING, idPsycDataPsycMalering == null ? false : true);
+                    result.put(PROP_PSYC_LIBRARY_KONKLUSION_TAGS, idPsycData == null ? false : true);
 
 
                     ArrayList param = new ArrayList<String>(Arrays.asList(((String)idPsycData.get(0)).split(",")));
                     System.out.println("param");
                     System.out.println(param);
 
-                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE, psycValuesBean.formatIdsForFrontend(param, DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE));
                     JSONUtils.write(webScriptWriter, result);
 
 
