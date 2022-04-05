@@ -132,11 +132,16 @@ public class Psyc extends AbstractWebScript {
                         nodeService.addAspect(observand, ASPECT_PSYCDATA, null);
                     }
 
-                    // check if it has the aspect or not
 
                     QName instrumentQname = QName.createQName(RMPSY_MODEL_URI, instrument);
 
-                    nodeService.setProperty(observand,instrumentQname,selected);
+                    if (selected.equals("")) {
+                        nodeService.removeProperty(observand,instrumentQname);
+                    } else {
+                        nodeService.setProperty(observand,instrumentQname,selected);
+                    }
+
+
 
 //                    ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, QName.createQName(RMPSY_MODEL_URI, instrument));
 
@@ -237,11 +242,11 @@ public class Psyc extends AbstractWebScript {
 
 
 
-                           // get the length of the instrument category
+                        // get the length of the instrument category
 
-                           // make the list
+                        // make the list
 
-                          // set the selected values in the return list
+                        // set the selected values in the return list
 
 
                         result.put("data", mappedValues);
@@ -300,19 +305,72 @@ public class Psyc extends AbstractWebScript {
                         result.put("data", mappedValues);
                         JSONUtils.write(webScriptWriter, result);
                     }
+                    break;case "getInstrumentsForAdvancedSearch":
+
+                    // get the aspect for the observand
+
+
+                    instrument = jsonProperties.getString("instrument");
+
+
+                    System.out.println("instrument: ");
+                    System.out.println("instrument: ");
+                    System.out.println("instrument: ");
+                    System.out.println(instrument);
+
+                    System.out.println("getValuesForInstrument");
+                    System.out.println(instrument);
+                    JSONObject values = psycValuesBean.getValuesForInstrument(instrument);
+                    System.out.println("values");
+                    System.out.println(values.get("values"));
+
+                    ArrayList mappedValues = new ArrayList();
+                    JSONArray valuesArray = (JSONArray) values.get("values");
+
+                    for (int i=0; i<= valuesArray.length()-1;i++) {
+
+                        JSONObject val = (JSONObject) valuesArray.get(i);
+
+                        JSONObject instO = new JSONObject();
+                        instO.put("id",val.getString("id"));
+                        instO.put("label", val.getString("name"));
+                        instO.put("val",false);
+
+                        mappedValues.add(instO);
+                    }
+
+                    // sort by label
+                    Collections.sort(mappedValues, new Comparator<JSONObject>() {
+                        private static final String KEY_NAME = "label";
+                        @Override
+                        public int compare(JSONObject a, JSONObject b) {
+                            String str1 = new String();
+                            String str2 = new String();
+                            try {
+                                str1 = (String)a.get(KEY_NAME);
+                                str2 = (String)b.get(KEY_NAME);
+                            } catch(JSONException e) {
+                                e.printStackTrace();
+                            }
+                            return str1.compareTo(str2);
+                        }
+                    });
+
+                    System.out.println("Sorted JSON Array with Name: " + mappedValues);
+
+                    result.put("data", mappedValues);
+                    JSONUtils.write(webScriptWriter, result);
                     break;
+
                 case "getInstrumentsForOverview":
 
                     caseid = jsonProperties.getString("caseid");
 
                     query = "@rm\\:caseNumber:\"" + caseid + "\"";
                     observand = entryBean.getEntry(query);
-                    System.out.println("observand");
-                    System.out.println(observand);
+
 
                     ArrayList idPsycDataType = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_TYPE);
-                    System.out.println("idPsycData");
-                    System.out.println(idPsycDataType);
 
                     ArrayList idPsycDataInterView = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_INTERVIEWRATING);
                     ArrayList idPsycDataKognitiv = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_KOGNITIV);
@@ -325,7 +383,12 @@ public class Psyc extends AbstractWebScript {
                     ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_KONKLUSION_TAGS);
 
 
-                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE, idPsycDataType == null ? false : true);
+                    System.out.println("hvad er idPsyc");
+                    System.out.println(idPsycDataType);
+                    System.out.println("idPsycDataType == null ");
+                    System.out.println(idPsycDataType == null);
+
+                    result.put(DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE, (idPsycDataType == null ? false : true));
 
                     result.put(DatabaseModel.PROP_PSYC_LIBRARY_INTERVIEWRATING, idPsycDataInterView == null ? false : true);
                     result.put(DatabaseModel.PROP_PSYC_LIBRARY_KOGNITIV, idPsycDataKognitiv == null ? false : true);
@@ -337,10 +400,6 @@ public class Psyc extends AbstractWebScript {
                     result.put(PROP_PSYC_LIBRARY_PSYCH_MALERING, idPsycDataPsycMalering == null ? false : true);
                     result.put(PROP_PSYC_LIBRARY_KONKLUSION_TAGS, idPsycData == null ? false : true);
 
-
-                    ArrayList param = new ArrayList<String>(Arrays.asList(((String)idPsycData.get(0)).split(",")));
-                    System.out.println("param");
-                    System.out.println(param);
 
                     JSONUtils.write(webScriptWriter, result);
 
