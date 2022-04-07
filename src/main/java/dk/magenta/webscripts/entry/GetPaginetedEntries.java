@@ -307,7 +307,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 JSONObject o = new JSONObject();
                 o.put("key", "mainDiagnosis");
                 o.put("value", "(" + queryStringMainCharge + ")");
-                // o.put("value", input.get("mainDiagnosis"));
+
                 o.put("include", true);
                 queryArray.put(o);
             }

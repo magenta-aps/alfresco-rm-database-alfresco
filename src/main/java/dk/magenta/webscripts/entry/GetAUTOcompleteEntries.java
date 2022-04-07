@@ -2,9 +2,13 @@ package dk.magenta.webscripts.entry;
 
 import dk.magenta.beans.DatabaseBean;
 import dk.magenta.beans.EntryBean;
+import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import dk.magenta.utils.QueryUtils;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.security.AuthenticationService;
+import org.alfresco.service.cmr.security.PersonService;
 import org.json.JSONObject;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -20,6 +24,28 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
 
     private EntryBean entryBean;
     private DatabaseBean databaseBean;
+
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
+
+    private PersonService personService;
+
+    public GetAUTOcompleteEntries() {
+    }
+
+    public void setAuthenticationService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+
+    private AuthenticationService authenticationService;
+
+    public void setNodeService(NodeService nodeService) {
+        this.nodeService = nodeService;
+    }
+
+    private NodeService nodeService;
+
 
     public void setEntryBean(EntryBean entryBean) {
         this.entryBean = entryBean;
@@ -73,8 +99,17 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
                 query += " AND ISUNSET:\"rm:closed\"";
             }
 
-            System.out.println("hvad er query");
-            System.out.println(query);
+            // toggle bua
+
+            String userNameForbuaCheck = "";
+            userNameForbuaCheck = authenticationService.getCurrentUserName();
+
+            if (nodeService.hasAspect(personService.getPerson(userNameForbuaCheck), DatabaseModel.ASPECT_BUA_USER)) {
+                query += " AND ASPECT:\"rm:bua\"";
+            }
+            else {
+                query += " AND -ASPECT:\"rm:bua\"";
+            }
             List<NodeRef> nodeRefs = entryBean.getEntries(query, skip, maxItems, "@rm:creationDate", true);
 
             Iterator<NodeRef> i = nodeRefs.iterator();
@@ -101,8 +136,6 @@ public class GetAUTOcompleteEntries extends AbstractWebScript {
             // if onlyflow - make another query to fetch any closed cases that has been opened for sup.edit - ie has the aspect - rm:supopl
 
             if (onlyFlow != null && onlyFlow.equals("true")) {
-
-                System.out.println("query2 to get supopl");
 
                 input = req.getParameter("input"); // need to do this to preserve any replaced chars in the previous search
 
