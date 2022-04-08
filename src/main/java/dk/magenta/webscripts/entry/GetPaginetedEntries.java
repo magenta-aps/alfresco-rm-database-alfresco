@@ -81,36 +81,8 @@ public class GetPaginetedEntries extends AbstractWebScript {
 
             JSONObject input = new JSONObject(c.getContent());
 
-
-            String instrumentQuery = "";
-            if (input.has("instruments")) {
-
-                JSONObject instruments = input.getJSONObject("instruments");
-                System.out.println("tjek lige instruments..");
-                System.out.println(instruments.length());
-
-                Iterator i = instruments.keys();
-
-                while (i.hasNext()) {
-                    String instrument = (String) i.next();
-                    JSONObject values = instruments.getJSONObject(instrument);
-
-                    System.out.println("hvad er values");
-                    System.out.println(values);
-
-                    if (instrumentQuery.equals("")) {
-                        instrumentQuery = "(" + createInstrumentQuery(instrument, values) + ")";
-                    } else {
-                        instrumentQuery = instrumentQuery + " AND " + "(" + createInstrumentQuery(instrument, values) + ")";
-                    }
-                }
-
-                System.out.println("total query");
-                System.out.println(instrumentQuery);
-
-            }
-
             JSONArray queryArray = new JSONArray();
+
 
             LocalDateTime f_date = null;
 
@@ -516,6 +488,43 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 else if (bua.equals("PS")) {
                     query = query + " AND -ASPECT:\"rm:bua\"";
                 }
+            }
+
+            String instrumentQuery = "";
+            if (input.has("instruments")) {
+
+                JSONObject instruments = input.getJSONObject("instruments");
+                System.out.println("tjek lige instruments..");
+                System.out.println(instruments.length());
+
+                Iterator i = instruments.keys();
+
+                while (i.hasNext()) {
+                    String instrument = (String) i.next();
+                    JSONObject values = instruments.getJSONObject(instrument);
+
+                    System.out.println("hvad er values");
+                    System.out.println(values);
+
+
+
+                    String instrumentQuerypart = createInstrumentQuery(instrument, values);
+
+                    if (!instrumentQuerypart.equals("")) {
+                        if (instrumentQuery.equals("")) {
+                            instrumentQuery = "(" + instrumentQuerypart + ")";
+                        } else {
+                            instrumentQuery = instrumentQuery + " AND " + "(" + instrumentQuerypart + ")";
+                        }
+                    }
+                }
+
+                System.out.println("total query");
+                System.out.println(instrumentQuery);
+            }
+
+            if (!instrumentQuery.equals("")) {
+                query = query + " AND " + instrumentQuery;
             }
 
             System.out.println("the query");
