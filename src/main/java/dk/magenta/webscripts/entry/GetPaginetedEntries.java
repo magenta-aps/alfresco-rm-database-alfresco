@@ -74,9 +74,12 @@ public class GetPaginetedEntries extends AbstractWebScript {
             String keyValue = req.getParameter("keyValue");
 
 
+
             // setup query
 
             JSONObject input = new JSONObject(c.getContent());
+            System.out.println("hvad er input");
+            System.out.println(input);
 
             JSONArray queryArray = new JSONArray();
 
@@ -439,6 +442,26 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 queryArray.put(o);
             }
 
+            if (input.has("firstName")) {
+                String fornavn = input.getString("firstName");
+                JSONObject o = new JSONObject();
+
+                o.put("key", "firstName");
+                o.put("value", fornavn + "*");
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
+            if (input.has("cpr")) {
+                String cpr = input.getString("cpr");
+                JSONObject o = new JSONObject();
+
+                o.put("key", "cprNumber");
+                o.put("value", cpr + "*");
+                o.put("include", true);
+                queryArray.put(o);
+            }
+
             if (input.has("socialworker")) {
                 JSONObject o = new JSONObject();
                 o.put("key", "socialworker");
@@ -484,6 +507,8 @@ public class GetPaginetedEntries extends AbstractWebScript {
                     query = query + " AND -ASPECT:\"rm:bua\"";
                 }
             }
+
+
 
             System.out.println("the query");
             System.out.println(query);
