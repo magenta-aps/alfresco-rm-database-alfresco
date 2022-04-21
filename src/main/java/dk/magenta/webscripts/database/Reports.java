@@ -44,9 +44,16 @@ public class Reports extends AbstractWebScript {
 
                     String fromDate = JSONUtils.getString(json, "createdFrom");
                     String toDate = JSONUtils.getString(json, "createdTo");
+                    String statusCriteria = "";
 
-                    NodeRef report = reportWaitingTimeBean.getReport(fromDate, toDate);
+                    if (json.has("statusCriteria")) {
+                        statusCriteria = json.getString("statusCriteria");
+                    }
 
+                    System.out.println("hvad er statusCriteria");
+                    System.out.println(statusCriteria);
+
+                    NodeRef report = reportWaitingTimeBean.getReport(fromDate, toDate, statusCriteria);
 
                     result.put("spreadsheet", report);
                     break;

@@ -338,8 +338,6 @@ public class EntryBean {
                 nodeService.setProperty(entryRef, property.getKey(), property.getValue());
             }
 
-
-
             if (property.getKey().equals(DatabaseModel.PROP_DECLARATION_DATE)) {
                 erklaringdate = true;
             }
