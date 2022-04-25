@@ -82,6 +82,13 @@ public class EntryBean {
 
     public NodeRef addEntry (String siteShortName, String type, Map<QName, Serializable> properties, boolean bua) throws JSONException {
 
+
+        // reuse and old counter
+
+        // if
+
+        // else
+
         //Get counter for this site document library
 
         NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
