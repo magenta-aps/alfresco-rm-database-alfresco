@@ -231,6 +231,9 @@ public interface DatabaseModel {
     String DEFAULT_MAIL_TEXT_NAME = "standardtext.odt";
     String DEFAULT_POST_ACTIVE_REPORT_TEXT = "_aktivventetid.ods";
 
+    String statusCriteriaAmbulant = "2";
+    String statusCriteriaIndlagt = "3";
+
     String DEFAULT_MAIL_TEXT_RETURN = "standardtextReturnering.odt";
 
     String DEFAULT_MAIL_TEXT_SEND_VALUE = "send";
@@ -252,4 +255,7 @@ public interface DatabaseModel {
     QName PROP_YEAR = QName.createQName(RM_MODEL_URI, "year");
     QName PROP_RECEIVED = QName.createQName(RM_MODEL_URI, "received");
     QName PROP_SENT = QName.createQName(RM_MODEL_URI, "sent");
+
+
+
 }

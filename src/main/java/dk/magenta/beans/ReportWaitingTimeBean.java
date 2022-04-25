@@ -129,7 +129,7 @@ public class ReportWaitingTimeBean {
             String to_formattedDate = outputFormatter.format(now);
             String from_formattedDate = outputFormatter.format(nowMinus14);
 
-            NodeRef report = this.getReport(from_formattedDate, to_formattedDate);
+            NodeRef report = this.getReport(from_formattedDate, to_formattedDate, "");
 
             NodeRef[] attachmentList = new NodeRef[1];
             attachmentList[0] = report;
@@ -140,9 +140,9 @@ public class ReportWaitingTimeBean {
     }
 
 
-    public NodeRef getReport(String from, String to) throws Exception {
+    public NodeRef getReport(String from, String to, String statusCriteria) throws Exception {
 
-        List<NodeRef> nodeRefs = this.query("declarationDate", from, to, false);
+        List<NodeRef> nodeRefs = this.query("declarationDate", from, to, false, statusCriteria);
         NodeRef spreadSheet = setupSpreadSheet(nodeRefs);
 
 
@@ -173,7 +173,7 @@ public class ReportWaitingTimeBean {
 
     }
 
-    private List<NodeRef> query(String field, String startDate, String endDate, boolean bua) {
+    private List<NodeRef> query(String field, String startDate, String endDate, boolean bua, String statusCriteria) {
 
         String query = "";
         JSONArray queryArray = new JSONArray();
@@ -205,6 +205,68 @@ public class ReportWaitingTimeBean {
 
             // https://redmine.magenta-aps.dk/issues/37799 - filter out closed without a declaration
             query = query + "AND NOT @rm\\:closedWithoutDeclaration:\"true\"";
+
+            // skal du have en status med her? - så den kan vælge mellem kun - alle ambulante eller kun indlagte
+
+            // query ambulante
+
+            if (statusCriteria.equals(DatabaseModel.statusCriteriaAmbulant)) {
+
+                String[] status = new String[6];
+                status[0] = "Ambulant";
+                status[1] = "Ambulant/arrestant";
+                status[2] = "Ambulant/surrogatanbragt";
+
+                status[3] = "Gr-Ambulant";
+                status[4] = "Gr-Ambulant/arrestant";
+                status[5] = "Gr-Ambulant/surrogatanbragt";
+
+                String statusQuery = " AND ( ";
+
+                for (int i = 0; i <= status.length - 1; i++) {
+
+                    String state = status[i];
+                    if (statusQuery.equals(" AND ( ")) {
+                        statusQuery += QueryUtils.getParameterQuery("status", state, false);
+                    } else {
+                        statusQuery += " OR " + QueryUtils.getParameterQuery("status", state, false);
+                    }
+                }
+                statusQuery += ") ";
+
+                query += statusQuery;
+            }
+            else if (statusCriteria.equals(DatabaseModel.statusCriteriaIndlagt)) {
+
+                String[] status = new String[2];
+                status[0] = "Indlagt til observation";
+
+                status[1] = "Gr-Indlagt til observation";
+
+                String statusQuery = " AND ( ";
+
+                for (int i = 0; i <= status.length - 1; i++) {
+
+                    String state = status[i];
+                    if (statusQuery.equals(" AND ( ")) {
+                        statusQuery += QueryUtils.getParameterQuery("status", state, false);
+                    } else {
+                        statusQuery += " OR " + QueryUtils.getParameterQuery("status", state, false);
+                    }
+                }
+                statusQuery += ") ";
+
+                query += statusQuery;
+
+            }
+
+
+            // query indlagte
+
+            System.out.println("hvad blev din query?");
+            System.out.println(query);
+
+
 
             List<NodeRef> nodeRefs = entryBean.getEntries(query,0,1000,"@rm:caseNumber", true);
             return nodeRefs;
