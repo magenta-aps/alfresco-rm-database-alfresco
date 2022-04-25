@@ -334,6 +334,18 @@ public class EntryBean {
                     nodeService.setProperty(entryRef, property.getKey(), property.getValue());
                 }
             }
+            else if (property.getKey().equals(DatabaseModel.PROP_DECLARATION_DATE)) {
+
+                System.out.println("hvad er property.getValue()");
+                System.out.println(property.getValue());
+
+                if (property.getValue().equals("null")) {
+                    nodeService.removeProperty(entryRef, property.getKey());
+                }
+                else {
+                    nodeService.setProperty(entryRef, property.getKey(), property.getValue());
+                }
+            }
             else {
                 nodeService.setProperty(entryRef, property.getKey(), property.getValue());
             }
@@ -373,19 +385,18 @@ public class EntryBean {
             }
 
         }
+
+        // #49794
         // check if datefield "erklæaring afgivet is set - then close the case # 31284
-        else if (closedProp == null && erklaringdate) {
-            nodeService.setProperty(entryRef, DatabaseModel.PROP_CLOSED, true);
-            AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-            this.addMetaData(entryRef);
-
-            if (!nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SUPOPL) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT ) ) {
-                lockEntry(entryRef);
-            }
-
-
-
-        }
+//        else if (closedProp == null && erklaringdate) {
+//            nodeService.setProperty(entryRef, DatabaseModel.PROP_CLOSED, true);
+//            AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+//            this.addMetaData(entryRef);
+//
+//            if (!nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SUPOPL) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_SKIPFLOW) && !nodeService.hasAspect(entryRef, DatabaseModel.ASPECT_OPENEDIT ) ) {
+//                lockEntry(entryRef);
+//            }
+//        }
     }
 
     private void addMetaData(NodeRef entry) {
