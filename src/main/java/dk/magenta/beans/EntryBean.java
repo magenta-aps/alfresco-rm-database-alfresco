@@ -82,12 +82,17 @@ public class EntryBean {
 
     public NodeRef addEntry (String siteShortName, String type, Map<QName, Serializable> properties, boolean bua) throws JSONException {
 
-
         // reuse and old counter
 
-        // if
+        // if any avail tjek PROP_FREE_CASENUMBERS på docLibRef for bua/ikkebua
 
-        // else
+
+
+
+
+
+
+        // else, kør normal som nedenfor!
 
         //Get counter for this site document library
 
