@@ -64,6 +64,8 @@ public class GetPaginetedEntries extends AbstractWebScript {
         Writer webScriptWriter = res.getWriter();
         JSONObject result = new JSONObject();
 
+        JSONObject searchQueriesForPdf = new JSONObject();
+
         try {
             String siteShortName = templateArgs.get("siteShortName");
             int skip = Integer.valueOf(req.getParameter("skip"));
@@ -88,14 +90,14 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 JSONObject o = new JSONObject();
 
                 String f_formattedDate = (String)input.get("createdFromDate");
+                searchQueriesForPdf.put("createdFromDate", f_formattedDate);
 
                 o.put("key", "creationDate");
 
                 if (input.has("createdToDate")) {
-
-
                     String t_formattedDate = (String)input.get("createdToDate");
                     o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, t_formattedDate));
+                    searchQueriesForPdf.put("createdToDate", t_formattedDate);
                 }
                 else {
                     o.put("value", QueryUtils.dateRangeQuery(f_formattedDate, "MAX"));
@@ -107,6 +109,8 @@ public class GetPaginetedEntries extends AbstractWebScript {
                 JSONObject o = new JSONObject();
 
                 String t_formattedDate = (String)input.get("createdToDate");
+                searchQueriesForPdf.put("createdToDate", t_formattedDate);
+
                 o.put("key", "creationDate");
                 o.put("value", QueryUtils.dateRangeQuery("MIN",t_formattedDate));
                 o.put("include", true);
@@ -550,7 +554,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
             }
 
             if (input.has("preview")) {
-                String nodeRef = printBean.printEntriesToPDF(entries);
+                String nodeRef = printBean.printEntriesToPDF(entries, searchQueriesForPdf);
                 result.put("nodeRef", nodeRef);
             }
             else {

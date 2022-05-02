@@ -5,12 +5,14 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.odftoolkit.odfdom.type.Color;
 import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.style.Border;
 import org.odftoolkit.simple.style.Font;
 import org.odftoolkit.simple.style.StyleTypeDefinitions;
+import org.odftoolkit.simple.table.Column;
 import org.odftoolkit.simple.table.Row;
 import org.odftoolkit.simple.table.Table;
 import java.io.File;
@@ -47,9 +49,12 @@ public class PrintBean {
 
 
 
-    public String printEntriesToPDF(org.json.JSONArray entries) throws Exception {
+    public String printEntriesToPDF(org.json.JSONArray entries, JSONObject searchQueriesForPdf) throws Exception {
 
         TextDocument document = TextDocument.newTextDocument();
+
+        this.setupUsedSearchCriteries(searchQueriesForPdf, document.addTable(9,2));
+
         Table table = document.addTable();
 
         Row header = table.getRowByIndex(0);
@@ -234,6 +239,29 @@ public class PrintBean {
         return pdf.getId();
     }
 
+
+    private Table setupUsedSearchCriteries(JSONObject jsonObject, Table table) throws JSONException {
+
+
+        String from = "";
+        if (jsonObject.has("createdFromDate")) {
+            from = jsonObject.getString("createdFromDate");
+        }
+
+        String to = "";
+        if (jsonObject.has("createdToDate")) {
+            to = jsonObject.getString("createdToDate");
+        }
+
+        //column.getCellByIndex(0).addParagraph("Fra dato: " + from);
+        
+        Row row = table.getRowByIndex(0);
+        row.getCellByIndex(0).addParagraph("Fra dato: " + from);
+        row = table.getRowByIndex(1);
+        row.getCellByIndex(0).addParagraph("Til dato: " + to);
+
+        return table;
+    }
 
     private NodeRef transform(NodeRef source) {
         NodeRef tmpFolder = siteService.getContainer("retspsyk", DatabaseModel.PROP_TMP);
