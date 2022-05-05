@@ -125,6 +125,7 @@
 	<bean id="webscript.user.deactivateUser.get" class="dk.magenta.webscripts.user.DeactivateUser" parent="webscript">
 		<property name="authenticationService" ref="authenticationService"/>
 		<property name="userBean" ref="userBean"/>
+		<property name="authenticationService" ref="authenticationService"/>
 	</bean>
 
 	<bean id="webscript.user.activateUser.get" class="dk.magenta.webscripts.user.ActivateUser" parent="webscript">
