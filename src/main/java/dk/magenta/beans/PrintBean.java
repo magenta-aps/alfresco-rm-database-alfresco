@@ -253,12 +253,26 @@ public class PrintBean {
             to = jsonObject.getString("createdToDate");
         }
 
+        String mainCharge = "";
+        if (jsonObject.has("mainCharge")) {
+            mainCharge = jsonObject.getString("mainCharge");
+        }
+
+        String mainDiagnosis = "";
+        if (jsonObject.has("mainDiagnosis")) {
+            mainDiagnosis = jsonObject.getString("mainDiagnosis");
+        }
+
         //column.getCellByIndex(0).addParagraph("Fra dato: " + from);
         
         Row row = table.getRowByIndex(0);
         row.getCellByIndex(0).addParagraph("Fra dato: " + from);
         row = table.getRowByIndex(1);
         row.getCellByIndex(0).addParagraph("Til dato: " + to);
+        row = table.getRowByIndex(2);
+        row.getCellByIndex(0).addParagraph("Hovedsigtelse: " + mainCharge);
+        row = table.getRowByIndex(3);
+        row.getCellByIndex(0).addParagraph("Hoveddiagnose: " + mainDiagnosis);
 
         return table;
     }

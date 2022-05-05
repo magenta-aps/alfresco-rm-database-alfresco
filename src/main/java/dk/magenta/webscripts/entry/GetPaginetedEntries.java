@@ -203,6 +203,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
                         queryStringMainCharge = queryStringMainCharge + " "  + "\"" +(String) jsonArray.get(i) + "\"";
                     }
                 }
+                searchQueriesForPdf.put("mainCharge", input.getJSONArray("mainCharge").toString());
 
                 JSONObject o = new JSONObject();
                 o.put("key", "mainCharge");
@@ -275,6 +276,7 @@ public class GetPaginetedEntries extends AbstractWebScript {
                         queryStringMainCharge = queryStringMainCharge + " "  + "\"" +(String) jsonArray.get(i) + "\"";
                     }
                 }
+                searchQueriesForPdf.put("mainDiagnosis", input.getJSONArray("mainDiagnosis").toString());
 
                 JSONObject o = new JSONObject();
                 o.put("key", "mainDiagnosis");

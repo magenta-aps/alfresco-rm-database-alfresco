@@ -54,6 +54,11 @@ public class DeactivateUser extends AbstractWebScript {
     private boolean isMember() {
 
         String currentUser = authenticationService.getCurrentUserName();
+        System.out.println("currentUser");
+        System.out.println(currentUser);
+
+        System.out.println("authorityService");
+        System.out.println(authorityService);
 
         Set<String> auths = authorityService.getAuthoritiesForUser(currentUser);
         Iterator<String> authIt = auths.iterator();
