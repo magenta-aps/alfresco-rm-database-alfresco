@@ -263,16 +263,48 @@ public class PrintBean {
             mainDiagnosis = jsonObject.getString("mainDiagnosis");
         }
 
+        String closed = "";
+        if (jsonObject.has("closed")) {
+            if (jsonObject.getString("closed").equals("OPEN")) {
+                closed = "ikke afsluttet";
+            }
+            else {
+                closed = "afsluttet";
+            }
+        }
+        else  {
+            closed = "alle";
+        }
+
+        String waitingTime = "";
+        if (jsonObject.has("waitingTime")) {
+            waitingTime = jsonObject.getString("waitingTime");
+        }
+
+        String status = "";
+        if (jsonObject.has("status")) {
+            status = jsonObject.getString("status");
+        }
+
         //column.getCellByIndex(0).addParagraph("Fra dato: " + from);
         
-        Row row = table.getRowByIndex(0);
+        Row row = table.getRowByIndex(1);
         row.getCellByIndex(0).addParagraph("Fra dato: " + from);
         row = table.getRowByIndex(1);
         row.getCellByIndex(0).addParagraph("Til dato: " + to);
-        row = table.getRowByIndex(2);
+        row = table.getRowByIndex(1);
         row.getCellByIndex(0).addParagraph("Hovedsigtelse: " + mainCharge);
-        row = table.getRowByIndex(3);
+        row = table.getRowByIndex(1);
         row.getCellByIndex(0).addParagraph("Hoveddiagnose: " + mainDiagnosis);
+        row = table.getRowByIndex(1);
+        row.getCellByIndex(0).addParagraph("Sagsstatus: " + closed);
+        row = table.getRowByIndex(1);
+        row.getCellByIndex(0).addParagraph("Ventetid: " + waitingTime);
+        row = table.getRowByIndex(1);
+        row.getCellByIndex(0).addParagraph("Retslig status: " + status);
+
+
+
 
         return table;
     }
