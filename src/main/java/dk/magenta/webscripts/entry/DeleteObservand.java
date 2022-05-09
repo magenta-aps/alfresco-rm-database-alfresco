@@ -6,6 +6,8 @@ import dk.magenta.utils.JSONUtils;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.security.AuthenticationService;
+import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.json.JSONArray;
@@ -16,6 +18,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import javax.xml.crypto.Data;
+import javax.xml.soap.Node;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -37,6 +40,19 @@ public class DeleteObservand extends AbstractWebScript {
 
     private NodeService nodeService;
     private SiteService siteService;
+
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
+
+    private PersonService personService;
+
+
+    public void setAuthenticationService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+
+    private AuthenticationService authenticationService;
 
     public void setLockService(LockService lockService) {
         this.lockService = lockService;
@@ -65,46 +81,79 @@ public class DeleteObservand extends AbstractWebScript {
 
             String method = json.getString("method");
 
+            // service not implemented for bua
+            boolean bua = false;
+            String currentUser = authenticationService.getCurrentUserName();
+
+            NodeRef person = personService.getPerson(currentUser);
+            bua = nodeService.hasAspect(person, DatabaseModel.ASPECT_BUA);
+
             switch (method) {
                 case "delete":
 
-                    String uuid = json.getString("uuid");
 
-//                    String uuid = templateArgs.get("uuid");
-                    NodeRef nodeRef = entryBean.getNodeRef(uuid);
+                        if (!bua) {
 
-                    System.out.println("hvad er nodeRef");
-                    System.out.println(nodeRef);
+                            System.out.println("sletter nu");
 
-                    // slet sag, evt. lås den op først.
+                            String cpr = json.getString("cpr");
+                            String sagsnr = json.getString("caseNumber");
 
-                    // tilføj frigivet sagsnummer til jsonlisten i PROP_FREE_CASENUMBERS på docLibRef
+                            String query = "@rm\\:caseNumber:\"" + sagsnr + "\" AND ";
+                            query = query + "@rm\\:cprNumber:\"" + cpr + "\"";
 
-                    int sagsnummer = (int)nodeService.getProperty(nodeRef, DatabaseModel.PROP_CASE_NUMBER);
-                    addCaseNumberToReuseList(sagsnummer);
+                            System.out.println("hvad er query");
+                            System.out.println(query);
 
-                    lockService.unlock(nodeRef);
-                    entryBean.deleteEntry(nodeRef);
+                            NodeRef declaration = entryBean.getEntry(query);
 
-                    result = JSONUtils.getSuccess();
-                    JSONUtils.write(webScriptWriter, result);
+                            int sagsnummer = (int) nodeService.getProperty(declaration, DatabaseModel.PROP_CASE_NUMBER);
+                            addCaseNumberToReuseList(sagsnummer);
+
+                            lockService.unlock(declaration);
+                            entryBean.deleteEntry(declaration);
+
+                            result = JSONUtils.getSuccess();
+                            JSONUtils.write(webScriptWriter, result);
+                        }
 
                     break;
 
                 case "confirm":
 
-                    String cpr = json.getString("cpr");
-                    String sagsnr = json.getString("caseNumber");
+                    if (!bua) {
+                        String cpr = json.getString("cpr");
+                        String sagsnr = json.getString("caseNumber");
 
-                    String query = "@rm\\:caseNumber:\"" + sagsnr + "\" AND ";
-                    query = query + "@rm\\:cprNumber:\"" + cpr + "\"";
+                        String query = "@rm\\:caseNumber:\"" + sagsnr + "\" AND ";
+                        query = query + "@rm\\:cprNumber:\"" + cpr + "\"";
 
-                    System.out.println("hvad er query");
-                    System.out.println(query);
+                        System.out.println("hvad er query");
+                        System.out.println(query);
 
-                    NodeRef declaration = entryBean.getEntry(query);
+                        NodeRef declaration = entryBean.getEntry(query);
 
-                    System.out.println("har du fundet en declaration");
+                        System.out.println("har du fundet en declaration");
+                        System.out.println(declaration != null);
+
+                        result = new JSONObject();
+                        if (declaration != null) {
+
+                            String navn = (String)nodeService.getProperty(declaration, DatabaseModel.PROP_FULL_NAME);
+
+                            result.put("found", declaration != null);
+                            result.put("navn", navn);
+                            result.put("nodeRef", declaration);
+
+                            JSONUtils.write(webScriptWriter, result);
+                        }
+                        else {
+
+                            result.put("found", declaration != null);
+                            JSONUtils.write(webScriptWriter, result);
+
+                        }
+                    }
 
 
 

@@ -89,17 +89,22 @@ public class EntryBean {
         // reuse and old counter
 
         // if any avail tjek PROP_FREE_CASENUMBERS på docLibRef for bua/ikkebua
+        int nextCaseNumber = 0;
+        if (bua) {
 
-        int nextCaseNumber = this.reuseDeletedeCaseNumbers();
+        }
+        else {
+            nextCaseNumber = this.reuseDeletedeCaseNumbers();
+        }
 
         if (nextCaseNumber != 0) {
             counter = nextCaseNumber;
         }
-        // else, kør normal som nedenfor!
+        // else, kør normal som nedenfor
         else {
+
             if (bua) {
                 counter = (Integer) nodeService.getProperty(docLibRef, DatabaseModel.PROP_BUA_COUNTER);
-
             }
             else {
                 counter = (Integer) nodeService.getProperty(docLibRef, ContentModel.PROP_COUNTER);
@@ -777,11 +782,19 @@ public class EntryBean {
             String caseNumbers = (String) nodeService.getProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS);
 
             List<String> list = new ArrayList<String>(Arrays.asList(caseNumbers.split(",")));
-            int number = Integer.parseInt(list.remove(0));
 
-            nodeService.setProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS, String.join(", ", list));
+            String next = list.remove(0).trim();
 
-            return number;
+            if (!next.equals("")) {
+                int number = Integer.parseInt(next);
+                nodeService.setProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS, String.join(",", list));
+
+                return number;
+            }
+            else {
+                return 0;
+            }
+
         }
         else {
             return 0;
