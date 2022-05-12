@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Delete Entry</shortname>
+    <description>Delete entry</description>
+    <url>/database/{siteShortName}/deleteobservand</url>
+    <authentication>user</authentication>
+    <format default="json"/>
+</webscript>

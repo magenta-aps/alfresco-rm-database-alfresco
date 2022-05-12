@@ -102,6 +102,7 @@ public interface DatabaseModel {
 
 
     QName PROP_BUA_COUNTER = QName.createQName(RM_MODEL_URI, "buaCounter");
+    QName PROP_FREE_CASENUMBERS = QName.createQName(RM_MODEL_URI, "freeCaseNumbers");
 
 
     /* Generic */

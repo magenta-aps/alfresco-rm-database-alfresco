@@ -83,24 +83,48 @@ public class EntryBean {
     public NodeRef addEntry (String siteShortName, String type, Map<QName, Serializable> properties, boolean bua) throws JSONException {
 
         //Get counter for this site document library
-
         NodeRef docLibRef = siteService.getContainer(siteShortName, SiteService.DOCUMENT_LIBRARY);
-
         Integer counter;
 
+        // reuse and old counter
+
+        // if any avail tjek PROP_FREE_CASENUMBERS på docLibRef for bua/ikkebua
+        int nextCaseNumber = 0;
         if (bua) {
-            counter = (Integer) nodeService.getProperty(docLibRef, DatabaseModel.PROP_BUA_COUNTER);
 
         }
         else {
-            counter = (Integer) nodeService.getProperty(docLibRef, ContentModel.PROP_COUNTER);
+            nextCaseNumber = this.reuseDeletedeCaseNumbers();
         }
 
+        if (nextCaseNumber != 0) {
+            counter = nextCaseNumber;
+        }
+        // else, kør normal som nedenfor
+        else {
 
-        if(counter == null)
-            counter = 50000;
+            if (bua) {
+                counter = (Integer) nodeService.getProperty(docLibRef, DatabaseModel.PROP_BUA_COUNTER);
+            }
+            else {
+                counter = (Integer) nodeService.getProperty(docLibRef, ContentModel.PROP_COUNTER);
+            }
 
-        counter++;
+
+            if(counter == null)
+                counter = 50000;
+
+            counter++;
+
+            //Increment the site document library counter when the entry has been created successfully
+
+            if (bua) {
+                nodeService.setProperty(docLibRef, DatabaseModel.PROP_BUA_COUNTER, counter);
+            }
+            else {
+                nodeService.setProperty(docLibRef, ContentModel.PROP_COUNTER, counter);
+            }
+        }
 
         //Get entry key for this type
         String entryKey = TypeUtils.getEntryKey(type);
@@ -138,14 +162,7 @@ public class EntryBean {
                 nodeService.createNode(dayRef, ContentModel.ASSOC_CONTAINS, nameQName, typeQName, properties);
         NodeRef nodeRef = childAssociationRef.getChildRef();
 
-        //Increment the site document library counter when the entry has been created successfully
 
-        if (bua) {
-            nodeService.setProperty(docLibRef, DatabaseModel.PROP_BUA_COUNTER, counter);
-        }
-        else {
-            nodeService.setProperty(docLibRef, ContentModel.PROP_COUNTER, counter);
-        }
 
 
 
@@ -763,5 +780,36 @@ public class EntryBean {
         map.put("/transaction/path", "/app:company_home/st:sites/cm:retspsyk/cm:documentLibrary");
         auditComponent.recordAuditValues(root, map);
     }
+
+    // returns a number if any available, otherwise return null
+    private int reuseDeletedeCaseNumbers() {
+
+        // get property PROP_FREE_CASENUMBERS
+        NodeRef docLibRef = siteService.getContainer("retspsyk", SiteService.DOCUMENT_LIBRARY);
+
+        if (nodeService.getProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS) != null) {
+            String caseNumbers = (String) nodeService.getProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS);
+
+            List<String> list = new ArrayList<String>(Arrays.asList(caseNumbers.split(",")));
+
+            String next = list.remove(0).trim();
+
+            if (!next.equals("")) {
+                int number = Integer.parseInt(next);
+                nodeService.setProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS, String.join(",", list));
+
+                return number;
+            }
+            else {
+                return 0;
+            }
+
+        }
+        else {
+            return 0;
+        }
+    }
+
+
 }
 

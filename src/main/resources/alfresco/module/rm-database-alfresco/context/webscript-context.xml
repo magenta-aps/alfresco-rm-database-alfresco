@@ -94,6 +94,16 @@
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
 
+
+	<bean id="webscript.entries.deleteobservand.post" class="dk.magenta.webscripts.entry.DeleteObservand" parent="webscript">
+		<property name="entryBean" ref="entryBean"/>
+		<property name="nodeService" ref="nodeService"/>
+		<property name="siteService" ref="siteService"/>
+		<property name="lockService" ref="lockService"/>
+		<property name="authenticationService" ref="authenticationService"/>
+		<property name="personService" ref="PersonService"/>
+	</bean>
+
 	<bean id="webscript.entries.entry.unlock.put" class="dk.magenta.webscripts.entry.UnlockEntry" parent="webscript">
 		<property name="entryBean" ref="entryBean"/>
 	</bean>
