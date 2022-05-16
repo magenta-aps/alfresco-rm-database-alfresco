@@ -107,8 +107,9 @@ public class DeleteObservand extends AbstractWebScript {
 
                             NodeRef declaration = entryBean.getEntry(query);
 
-                            int sagsnummer = (int) nodeService.getProperty(declaration, DatabaseModel.PROP_CASE_NUMBER);
-                            addCaseNumberToReuseList(sagsnummer);
+                            // udkommenteret. Lone og Kristina besluttede ikke at genbruge numre på statusmødet d. 16. maj. 2022
+//                            int sagsnummer = (int) nodeService.getProperty(declaration, DatabaseModel.PROP_CASE_NUMBER);
+//                            addCaseNumberToReuseList(sagsnummer);
 
                             lockService.unlock(declaration);
                             entryBean.deleteEntry(declaration);
@@ -173,25 +174,37 @@ public class DeleteObservand extends AbstractWebScript {
 
     private void addCaseNumberToReuseList(int caseNumber) {
 
-        // get property PROP_FREE_CASENUMBERS
+
+
+
         NodeRef docLibRef = siteService.getContainer("retspsyk", SiteService.DOCUMENT_LIBRARY);
 
         System.out.println("hvad er nodeService.getProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS");
         System.out.println(nodeService.getProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS));
         System.out.println(nodeService.getProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS) != null);
 
-        if (nodeService.getProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS) != null ) {
+        if (nodeService.getProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS) != null) {
             String caseNumbers = (String) nodeService.getProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS);
 
             System.out.println("hvad er indlæst caseNumbers");
             System.out.println(caseNumbers);
 
-
-            List<String> list = new ArrayList<String>(Arrays.asList(caseNumbers.split(",")));
+            List<String> list = null;
+            if (!caseNumbers.equals("")) {
+                list = new ArrayList<String>(Arrays.asList(caseNumbers.split(",")));
+            }
+            else {
+                list = new ArrayList();
+            }
 
             list.add(String.valueOf(caseNumber));
-
             nodeService.setProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS, String.join(", ", list));
+
+
+
+
+
+
         }
         else {
             List<String> list = new ArrayList<String>();
@@ -200,7 +213,7 @@ public class DeleteObservand extends AbstractWebScript {
             nodeService.setProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS, String.join(", ", list));
         }
 
-        }
+    }
 
 }
 

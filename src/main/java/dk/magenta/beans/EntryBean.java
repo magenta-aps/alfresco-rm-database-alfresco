@@ -94,7 +94,8 @@ public class EntryBean {
 
         }
         else {
-            nextCaseNumber = this.reuseDeletedeCaseNumbers();
+//            nextCaseNumber = this.reuseDeletedeCaseNumbers();
+            nextCaseNumber = 0;
         }
 
         if (nextCaseNumber != 0) {
@@ -790,19 +791,25 @@ public class EntryBean {
         if (nodeService.getProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS) != null) {
             String caseNumbers = (String) nodeService.getProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS);
 
-            List<String> list = new ArrayList<String>(Arrays.asList(caseNumbers.split(",")));
+            if (!caseNumbers.equals("")) {
+                List<String> list = new ArrayList<String>(Arrays.asList(caseNumbers.split(",")));
 
-            String next = list.remove(0).trim();
+                String next = list.remove(0).trim();
 
-            if (!next.equals("")) {
-                int number = Integer.parseInt(next);
-                nodeService.setProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS, String.join(",", list));
+                if (!next.equals("")) {
+                    int number = Integer.parseInt(next);
+                    nodeService.setProperty(docLibRef, DatabaseModel.PROP_FREE_CASENUMBERS, String.join(",", list));
 
-                return number;
+                    return number;
+                }
+                else {
+                    return 0;
+                }
             }
             else {
                 return 0;
             }
+
 
         }
         else {
