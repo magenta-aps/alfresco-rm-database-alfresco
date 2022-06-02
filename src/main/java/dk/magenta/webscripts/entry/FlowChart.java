@@ -17,6 +17,7 @@ import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
+import javax.xml.soap.Node;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDateTime;
@@ -226,6 +227,11 @@ public class FlowChart extends AbstractWebScript {
                 case "total":
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
                     result = flowChartBean.getTotals(siteShortName, defaultQuery, userName, buaQuery);
+                    break;
+                case "resetEditLock":
+                    nodeRef = jsonProperties.getString("nodeRef");
+                    NodeRef n = new NodeRef(nodeRef);
+                    flowChartBean.resetReadOnlyLock(n);
                     break;
             }
         } catch (JSONException e) {
