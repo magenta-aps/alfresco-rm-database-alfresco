@@ -63,7 +63,6 @@ public class Psyc extends AbstractWebScript {
 
         Writer webScriptWriter = res.getWriter();
 
-
         JSONObject jsonProperties = null;
 
         JSONObject json = null;
