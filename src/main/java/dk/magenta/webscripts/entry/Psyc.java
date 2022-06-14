@@ -471,12 +471,37 @@ public class Psyc extends AbstractWebScript {
 
                     break;
                 case "createKonklusionTag":
-                    System.out.println("updateKonklusionTag");
-
                     newValue = jsonProperties.getString("newValue");
 
                     psycBean.newKonklusionTag(newValue);
                     psycValuesBean.loadPropertyValues();
+                    break;
+
+                case "saveKonklusionText":
+                    System.out.println("saveKonklusionText");
+
+                    caseid = jsonProperties.getString("caseid");
+
+                    query = "@rm\\:caseNumber:\"" + caseid + "\"";
+                    observand = entryBean.getEntry(query);
+
+                    newValue = jsonProperties.getString("newValue");
+
+                    psycBean.updateKonklusionText(observand, newValue);
+                    break;
+                case "getKonklusionText":
+                    System.out.println("saveKonklusionText");
+
+                    caseid = jsonProperties.getString("caseid");
+
+                    query = "@rm\\:caseNumber:\"" + caseid + "\"";
+                    observand = entryBean.getEntry(query);
+
+                    String text = psycBean.getKonklusionText(observand);
+
+                    result.put("data", text);
+                    JSONUtils.write(webScriptWriter, result);
+
 
                     break;
                 case "total":

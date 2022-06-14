@@ -446,10 +446,13 @@ public class PsycBean {
         fileFolderService.create(psycLibrary, PROP_PSYC_LIBRARY_KONKLUSION_TAGS, ContentModel.TYPE_FOLDER).getNodeRef();
     }
 
+    public void updateKonklusionText(NodeRef obs, String text) {
+        nodeService.setProperty(obs, PROPQNAME_PSYCDATA_KONKLUSION_FREETEXT, text);
+    }
 
-
-
-
+    public String getKonklusionText(NodeRef obs) {
+        return (String) nodeService.getProperty(obs, PROPQNAME_PSYCDATA_KONKLUSION_FREETEXT);
+    }
 }
 
 

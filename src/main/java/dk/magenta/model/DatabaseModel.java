@@ -303,6 +303,7 @@ public interface DatabaseModel {
 
     QName PROPQNAME_PSYCDATA_PSYCH_MALERING = QName.createQName(RMPSY_MODEL_URI, "psykologisk_vurdering_af_forekomst_af_malingering");
     QName PROPQNAME_PSYCDATA_KONKLUSION_TAGS = QName.createQName(RMPSY_MODEL_URI, "konklusion_tags");
+    QName PROPQNAME_PSYCDATA_KONKLUSION_FREETEXT = QName.createQName(RMPSY_MODEL_URI, "konklusion_freetext");
 
     // types
 
