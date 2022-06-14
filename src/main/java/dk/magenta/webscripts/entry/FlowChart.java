@@ -18,6 +18,7 @@ import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
+import javax.xml.soap.Node;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
@@ -132,6 +133,9 @@ public class FlowChart extends AbstractWebScript {
             jsonProperties = JSONUtils.getObject(json, "properties");
             String method = jsonProperties.getString("method");
 
+            System.out.println("hvad er method");
+            System.out.println(method);
+
             String sort = "";
             boolean desc = false;
 
@@ -228,6 +232,25 @@ public class FlowChart extends AbstractWebScript {
                 case "total":
                     userName = propertyValuesBean.getUserByUserName(authenticationService.getCurrentUserName());
                     result = flowChartBean.getTotals(siteShortName, defaultQuery, userName, buaQuery);
+                    break;
+                case "resetEditLock":
+
+                    System.out.println("json?");
+                    System.out.println(jsonProperties);
+
+                    String cpr = jsonProperties.getString("cpr");
+                    cpr = cpr.replace("-","");
+                    String sagsnr = jsonProperties.getString("caseNumber");
+
+                    String query = "@rm\\:caseNumber:\"" + sagsnr + "\" AND ";
+                    query = query + "@rm\\:cprNumber:\"" + cpr + "\"";
+
+                    System.out.println("hvad er query");
+                    System.out.println(query);
+
+                    NodeRef declaration = entryBean.getEntry(query);
+
+                    flowChartBean.resetReadOnlyLock(declaration);
                     break;
             }
         } catch (JSONException e) {

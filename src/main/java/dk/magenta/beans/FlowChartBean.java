@@ -728,6 +728,11 @@ public class FlowChartBean {
 
     }
 
-
+    public void resetReadOnlyLock(NodeRef n) {
+        System.out.println("hvad er din n");
+        System.out.println(n);
+        nodeService.setProperty(n, DatabaseModel.PROP_LOCKED_FOR_EDIT, false);
+        nodeService.setProperty(n, DatabaseModel.PROP_LOCKED_FOR_EDIT_BY, "");
+    }
 }
 
