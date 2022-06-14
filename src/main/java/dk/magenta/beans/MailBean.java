@@ -252,11 +252,18 @@ public class MailBean {
                         if (contentService.getReader(attachmentNodeRef, ContentModel.PROP_CONTENT).getMimetype().equals(MimetypeMap.MIMETYPE_OPENDOCUMENT_TEXT)) {
                             transformed = this.transform(attachmentNodeRef);
                             fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString() + ".pdf";
+
+                            // todo make a copy of the transformed odf - keep it in the same folder as the original ( attachmentNodeRef )
+                            // copy the pdf to the source of the attachmentNodeRef
+                            NodeRef folder = nodeService.getPrimaryParent(attachmentNodeRef).getParentRef();
+                            FileInfo newFile = fileFolderService.copy(transformed, folder, fileName);
                         }
                         else {
                             transformed = attachmentNodeRef;
                             fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString();
                         }
+
+
 
                     }
                 }
@@ -265,6 +272,11 @@ public class MailBean {
                     if (contentService.getReader(attachmentNodeRef, ContentModel.PROP_CONTENT).getMimetype().equals(MimetypeMap.MIMETYPE_OPENDOCUMENT_TEXT)) {
                         transformed = this.transform(attachmentNodeRef);
                         fileName = nodeService.getProperty(attachmentNodeRef, ContentModel.PROP_NAME).toString() + ".pdf";
+
+                        // todo make a copy of the transformed odf - keep it in the same folder as the original ( attachmentNodeRef )
+                        NodeRef folder = nodeService.getPrimaryParent(attachmentNodeRef).getParentRef();
+                        FileInfo newFile = fileFolderService.copy(transformed, folder, fileName);
+
                     }
                     else {
                         transformed = attachmentNodeRef;
@@ -307,6 +319,9 @@ public class MailBean {
 //                attachment.setFileName(nodeService.getProperty(transformed, ContentModel.PROP_NAME).toString());
                 attachment.setFileName(fileName);
                 multipart.addBodyPart(attachment);
+
+
+
             }
 
             msg.setContent(multipart);

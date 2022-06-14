@@ -14,9 +14,7 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static dk.magenta.model.DatabaseModel.*;
 
@@ -44,6 +42,43 @@ public class PsycBean {
         NodeRef psycLibrary = siteService.getContainer("retspsyk", PROP_PSYC_LIBRARY);
         NodeRef child = nodeService.getChildByName(psycLibrary, ContentModel.ASSOC_CONTAINS, library);
         return child;
+    }
+
+    public void updateKonklusionTag(String selected_id, String newValue) {
+
+        NodeRef library = this.getLibrary(DatabaseModel.PROP_PSYC_LIBRARY_KONKLUSION_TAGS);
+        List<ChildAssociationRef> children = nodeService.getChildAssocs(library);
+
+        Iterator i = children.iterator();
+        boolean found = false;
+
+        while (i.hasNext() && !found) {
+            ChildAssociationRef child = (ChildAssociationRef) i.next();
+            String id = (String)nodeService.getProperty(child.getChildRef(), DatabaseModel.PROP_ANVENDTUNDERSOEGELSESINST_ID);
+
+            if (id.equals(selected_id)) {
+                nodeService.setProperty(child.getChildRef(), DatabaseModel.PROP_ANVENDTUNDERSOEGELSESINST_NAME,newValue);
+                found = true;
+            }
+        }
+    }
+
+    public void newKonklusionTag(String newValue) {
+        NodeRef library = this.getLibrary(DatabaseModel.PROP_PSYC_LIBRARY_KONKLUSION_TAGS);
+        List<ChildAssociationRef> children = nodeService.getChildAssocs(library);
+
+        String name = newValue;
+
+        // sæt nyt id til antal children
+        String id = String.valueOf(children.size());
+
+        Map<QName, Serializable> props = new HashMap<>();
+        props.put(DatabaseModel.PROP_ANVENDTUNDERSOEGELSESINST_ID, id);
+        props.put(DatabaseModel.PROP_ANVENDTUNDERSOEGELSESINST_NAME, name);
+
+        nodeService.createNode(library, ContentModel.ASSOC_CONTAINS,
+                QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, name),
+                DatabaseModel.TYPE_ANVENDTUNDERSOEGELSESINST, props).getChildRef();
     }
 
     public void createDataForPSYCHTYPES() {

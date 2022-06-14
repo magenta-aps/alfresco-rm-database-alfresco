@@ -112,6 +112,7 @@ public interface DatabaseModel {
 
 
     QName PROP_BUA_COUNTER = QName.createQName(RM_MODEL_URI, "buaCounter");
+    QName PROP_FREE_CASENUMBERS = QName.createQName(RM_MODEL_URI, "freeCaseNumbers");
 
 
     /* Generic */
@@ -257,6 +258,9 @@ public interface DatabaseModel {
     String DEFAULT_MAIL_TEXT_NAME = "standardtext.odt";
     String DEFAULT_POST_ACTIVE_REPORT_TEXT = "_aktivventetid.ods";
 
+    String statusCriteriaAmbulant = "2";
+    String statusCriteriaIndlagt = "3";
+
     String DEFAULT_MAIL_TEXT_RETURN = "standardtextReturnering.odt";
 
     String DEFAULT_MAIL_TEXT_SEND_VALUE = "send";
@@ -278,6 +282,7 @@ public interface DatabaseModel {
     QName PROP_YEAR = QName.createQName(RM_MODEL_URI, "year");
     QName PROP_RECEIVED = QName.createQName(RM_MODEL_URI, "received");
     QName PROP_SENT = QName.createQName(RM_MODEL_URI, "sent");
+
 
 
     /* rmpsy */
@@ -304,6 +309,4 @@ public interface DatabaseModel {
     QName TYPE_ANVENDTUNDERSOEGELSESINST = QName.createQName(RMPSY_MODEL_URI, "anvendtUndersoegelsesinst");
     QName PROP_ANVENDTUNDERSOEGELSESINST_ID = QName.createQName(RMPSY_MODEL_URI, "id_anvendtUndersoegelsesinst");
     QName PROP_ANVENDTUNDERSOEGELSESINST_NAME = QName.createQName(RMPSY_MODEL_URI, "name_anvendtUndersoegelsesinst");
-
-
 }

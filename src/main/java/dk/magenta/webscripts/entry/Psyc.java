@@ -408,6 +408,77 @@ public class Psyc extends AbstractWebScript {
 //                case "createPsycPropertyValues":
 
 
+                case "getKonklusionTags":
+
+                    instrument = DatabaseModel.PROP_PSYC_LIBRARY_KONKLUSION_TAGS;
+
+                    System.out.println("instrument: ");
+                    System.out.println("instrument: ");
+                    System.out.println("instrument: ");
+                    System.out.println(instrument);
+
+                    System.out.println("getValuesForInstrument");
+                    System.out.println(instrument);
+                    values = psycValuesBean.getValuesForInstrument(instrument);
+                    System.out.println("values");
+                    System.out.println(values.get("values"));
+
+                    mappedValues = new ArrayList();
+                    valuesArray = (JSONArray) values.get("values");
+
+                    for (int i=0; i<= valuesArray.length()-1;i++) {
+
+                        JSONObject val = (JSONObject) valuesArray.get(i);
+
+                        JSONObject instO = new JSONObject();
+                        instO.put("id",val.getString("id"));
+                        instO.put("label", val.getString("name"));
+
+                        mappedValues.add(instO);
+                    }
+
+                    // sort by label
+                    Collections.sort(mappedValues, new Comparator<JSONObject>() {
+                        private static final String KEY_NAME = "label";
+                        @Override
+                        public int compare(JSONObject a, JSONObject b) {
+                            String str1 = new String();
+                            String str2 = new String();
+                            try {
+                                str1 = (String)a.get(KEY_NAME);
+                                str2 = (String)b.get(KEY_NAME);
+                            } catch(JSONException e) {
+                                e.printStackTrace();
+                            }
+                            return str1.compareTo(str2);
+                        }
+                    });
+
+                    System.out.println("Sorted JSON Array with Name: " + mappedValues);
+                    result.put("data", mappedValues);
+                    JSONUtils.write(webScriptWriter, result);
+
+                    break;
+
+                case "updateKonklusionTag":
+                    System.out.println("updateKonklusionTag");
+
+                    String id = jsonProperties.getString("id");
+                    String newValue = jsonProperties.getString("newValue");
+
+                    psycBean.updateKonklusionTag(id, newValue);
+                    psycValuesBean.loadPropertyValues();
+
+                    break;
+                case "createKonklusionTag":
+                    System.out.println("updateKonklusionTag");
+
+                    newValue = jsonProperties.getString("newValue");
+
+                    psycBean.newKonklusionTag(newValue);
+                    psycValuesBean.loadPropertyValues();
+
+                    break;
                 case "total":
                     break;
             }
