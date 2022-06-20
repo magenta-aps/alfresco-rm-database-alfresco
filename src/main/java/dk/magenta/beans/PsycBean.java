@@ -428,9 +428,6 @@ public class PsycBean {
     public void createRootFolders() {
 
         SiteInfo siteInfo = siteService.getSite("retspsyk");
-        System.out.println("siteinfo");
-        System.out.println(siteInfo);
-
         NodeRef psycLibrary = fileFolderService.create(siteInfo.getNodeRef(), PROP_PSYC_LIBRARY, ContentModel.TYPE_FOLDER).getNodeRef();
 
         fileFolderService.create(psycLibrary, PROP_PSYC_LIBRARY_PSYCH_TYPE, ContentModel.TYPE_FOLDER).getNodeRef();

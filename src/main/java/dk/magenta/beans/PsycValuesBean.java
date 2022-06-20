@@ -126,9 +126,6 @@ public class PsycValuesBean {
     }
 
     public void pingMap() {
-        System.out.println("er der noget i dit map?");
-        System.out.println(this.propertyValues.length());
-        System.out.println(this.propertyValues);
     }
 
     public JSONArray getPropertyValues() {
@@ -137,9 +134,6 @@ public class PsycValuesBean {
 
     public String mapIdToLabel(String id, String instrumentName) {
         Map<String, String> instrumentValues = this.mapped.get((instrumentName));
-
-        System.out.println("hvad er instrumentValues");
-        System.out.println(instrumentValues);
 
         return instrumentValues.get(id);
     }
@@ -155,13 +149,9 @@ public class PsycValuesBean {
         JSONObject o = new JSONObject();
         ArrayList nameList = new ArrayList();
         ArrayList idList = new ArrayList();
-        System.out.println("ids");
-        System.out.println(ids);
 
         for (int i=0; i<=ids.size()-1;i++) {
             String id = (String)ids.get(i);
-            System.out.println("hvad er mapped til: " + id);
-            System.out.println(instrumentValues.get(id));
             idList.add(id);
             nameList.add(instrumentValues.get(id));
         }
