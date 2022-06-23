@@ -6,8 +6,12 @@ import dk.magenta.beans.PsycValuesBean;
 import dk.magenta.model.DatabaseModel;
 import dk.magenta.utils.JSONUtils;
 import org.alfresco.jlan.util.StringList;
+import org.alfresco.model.ContentModel;
+import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.site.SiteInfo;
+import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.apache.poi.ss.formula.functions.T;
 import org.json.JSONArray;
@@ -52,6 +56,18 @@ public class Psyc extends AbstractWebScript {
 
     private EntryBean entryBean;
 
+    public void setFileFolderService(FileFolderService fileFolderService) {
+        this.fileFolderService = fileFolderService;
+    }
+
+    private FileFolderService fileFolderService;
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    private SiteService siteService;
+
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
 
@@ -72,13 +88,23 @@ public class Psyc extends AbstractWebScript {
             jsonProperties = JSONUtils.getObject(json, "properties");
             String method = jsonProperties.getString("method");
 
-            System.out.println("hvad er method");
-            System.out.println(method);
-
-            System.out.println("hvad er properties");
-            System.out.println(jsonProperties);
 
             switch (method) {
+
+                case "load":
+
+                    // check if exist
+                    SiteInfo siteInfo = siteService.getSite("retspsyk");
+                    NodeRef psycLibrary = fileFolderService.searchSimple(siteInfo.getNodeRef(), DatabaseModel.PROP_PSYC_LIBRARY);
+
+                    if (psycLibrary == null) {
+                        psycBean.createAllData();
+                        psycValuesBean.loadPropertyValues();
+                    }
+                    else {
+                        System.out.println("psycLibrary already exists...");
+                    }
+                    break;
 
                 case "test":
                     Map<QName, Serializable> properties = new HashMap<>();
@@ -92,7 +118,7 @@ public class Psyc extends AbstractWebScript {
 
 //                    psycBean.createAllData();
 
-                    psycValuesBean.loadPropertyValues();
+//                    psycValuesBean.loadPropertyValues();
 
 
 
@@ -112,17 +138,9 @@ public class Psyc extends AbstractWebScript {
                     String caseid = jsonProperties.getString("caseid");
 
                     String instrument = jsonProperties.getString("instrument");
-                    System.out.println("instrument");
-                    System.out.println(instrument);
 
                     String selected = jsonProperties.getString("selected");
-                    System.out.println("hvad er selected: ");
-                    System.out.println(selected);
-
                     String query = "@rm\\:caseNumber:\"" + caseid + "\"";
-
-                    System.out.println("instrument: ");
-                    System.out.println(instrument);
 
                     NodeRef observand = entryBean.getEntry(query);
 
@@ -156,11 +174,6 @@ public class Psyc extends AbstractWebScript {
                     instrument = jsonProperties.getString("instrument");
                     query = "@rm\\:caseNumber:\"" + caseid + "\"";
 
-                    System.out.println("instrument: ");
-                    System.out.println("instrument: ");
-                    System.out.println("instrument: ");
-                    System.out.println(instrument);
-
                     observand = entryBean.getEntry(query);
                     instrumentQname = QName.createQName(RMPSY_MODEL_URI, instrument);
 
@@ -168,31 +181,12 @@ public class Psyc extends AbstractWebScript {
                     if (nodeService.hasAspect(observand, ASPECT_PSYCDATA) && (nodeService.getProperty(observand, instrumentQname) != null)) {
 
                         ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, QName.createQName(RMPSY_MODEL_URI, instrument));
-                        System.out.println("idPsycData");
-                        System.out.println(idPsycData);
-                        System.out.println("System.out.println(idPsycData.contains(3));");
-                        System.out.println(idPsycData.contains(3));
-
                         ArrayList formattedList = new ArrayList<String>(Arrays.asList(((String)idPsycData.get(0)).split(",")));
-                        System.out.println("param");
-                        System.out.println(formattedList);
-
                         ArrayList mappedValues = new ArrayList();
 
 
-
-
                         // setup the totallist of id: xx, label: xx, val: xx
-
-                        System.out.println("antal for instrument:" + instrument);
-                        System.out.println("antal for instrument:" + instrument);
-                        System.out.println("antal for instrument:" + instrument);
-                        System.out.println(psycValuesBean.getLengthOfInstrumentList(instrument));
-
                         for (int k=0; k<=psycValuesBean.getLengthOfInstrumentList(instrument)-1;k++) {
-
-                            System.out.println("formattedList.contains(String.valueOf(k));");
-                            System.out.println(formattedList.contains(String.valueOf(k)));
 
                             JSONObject entry = new JSONObject();
                             entry.put("id",k);
@@ -203,7 +197,6 @@ public class Psyc extends AbstractWebScript {
                         }
 
                         // sort by label
-
                         Collections.sort(mappedValues, new Comparator<JSONObject>() {
                             private static final String KEY_NAME = "label";
                             @Override
@@ -219,52 +212,12 @@ public class Psyc extends AbstractWebScript {
                                 return str1.compareTo(str2);
                             }
                         });
-
-                        System.out.println("Sorted JSON Array with Name: " + mappedValues);
-
-
-
-
-
-
-//                        for (int i=0; i<= formattedList.size()-1;i++) {
-//                        String inst = (String)formattedList.get(i);
-//
-//                        JSONObject instO = new JSONObject();
-//                        instO.put("id",inst.split(":")[0]);
-//                        instO.put("label",psycValuesBean.mapIdToLabel(inst.split(":")[0], DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE));
-//                        instO.put("val",inst.split(":")[1].equals("t") ? true : false);
-//
-//
-//                        }
-
-
-
-
-                        // get the length of the instrument category
-
-                        // make the list
-
-                        // set the selected values in the return list
-
-
                         result.put("data", mappedValues);
-
-//                        result.put(DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE, formattedList);
                         JSONUtils.write(webScriptWriter, result);
                     }
                     else {
                         // add the aspect and and make an empty default for that instrument
-
-
-
-                        // nodeService.addAspect(observand, ASPECT_PSYCDATA, null);
-
-                        System.out.println("getValuesForInstrument");
-                        System.out.println(instrument);
                         JSONObject values = psycValuesBean.getValuesForInstrument(instrument);
-                        System.out.println("values");
-                        System.out.println(values.get("values"));
 
                         ArrayList mappedValues = new ArrayList();
                         JSONArray valuesArray = (JSONArray) values.get("values");
@@ -298,9 +251,6 @@ public class Psyc extends AbstractWebScript {
                                 return str1.compareTo(str2);
                             }
                         });
-
-                        System.out.println("Sorted JSON Array with Name: " + mappedValues);
-
                         result.put("data", mappedValues);
                         JSONUtils.write(webScriptWriter, result);
                     }
@@ -310,18 +260,7 @@ public class Psyc extends AbstractWebScript {
 
 
                     instrument = jsonProperties.getString("instrument");
-
-
-                    System.out.println("instrument: ");
-                    System.out.println("instrument: ");
-                    System.out.println("instrument: ");
-                    System.out.println(instrument);
-
-                    System.out.println("getValuesForInstrument");
-                    System.out.println(instrument);
                     JSONObject values = psycValuesBean.getValuesForInstrument(instrument);
-                    System.out.println("values");
-                    System.out.println(values.get("values"));
 
                     ArrayList mappedValues = new ArrayList();
                     JSONArray valuesArray = (JSONArray) values.get("values");
@@ -354,9 +293,6 @@ public class Psyc extends AbstractWebScript {
                             return str1.compareTo(str2);
                         }
                     });
-
-                    System.out.println("Sorted JSON Array with Name: " + mappedValues);
-
                     result.put("data", mappedValues);
                     JSONUtils.write(webScriptWriter, result);
                     break;
@@ -380,12 +316,6 @@ public class Psyc extends AbstractWebScript {
 
                     ArrayList idPsycDataPsycMalering = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_PSYCH_MALERING);
                     ArrayList idPsycData = (ArrayList) nodeService.getProperty(observand, DatabaseModel.PROPQNAME_PSYCDATA_KONKLUSION_TAGS);
-
-
-                    System.out.println("hvad er idPsyc");
-                    System.out.println(idPsycDataType);
-                    System.out.println("idPsycDataType == null ");
-                    System.out.println(idPsycDataType == null);
 
                     result.put(DatabaseModel.PROP_PSYC_LIBRARY_PSYCH_TYPE, (idPsycDataType == null ? false : true));
 
@@ -412,16 +342,7 @@ public class Psyc extends AbstractWebScript {
 
                     instrument = DatabaseModel.PROP_PSYC_LIBRARY_KONKLUSION_TAGS;
 
-                    System.out.println("instrument: ");
-                    System.out.println("instrument: ");
-                    System.out.println("instrument: ");
-                    System.out.println(instrument);
-
-                    System.out.println("getValuesForInstrument");
-                    System.out.println(instrument);
                     values = psycValuesBean.getValuesForInstrument(instrument);
-                    System.out.println("values");
-                    System.out.println(values.get("values"));
 
                     mappedValues = new ArrayList();
                     valuesArray = (JSONArray) values.get("values");
@@ -453,8 +374,6 @@ public class Psyc extends AbstractWebScript {
                             return str1.compareTo(str2);
                         }
                     });
-
-                    System.out.println("Sorted JSON Array with Name: " + mappedValues);
                     result.put("data", mappedValues);
                     JSONUtils.write(webScriptWriter, result);
 

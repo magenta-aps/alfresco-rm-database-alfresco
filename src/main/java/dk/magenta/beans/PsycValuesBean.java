@@ -121,7 +121,6 @@ public class PsycValuesBean {
                 propertyValues.put(o);
             }
         }
-
         this.setupMapping();
     }
 

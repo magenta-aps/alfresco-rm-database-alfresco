@@ -72,6 +72,8 @@
 		<property name="psycValuesBean" ref="psycValuesBean"/>
 		<property name="nodeService" ref="NodeService"/>
 		<property name="entryBean" ref="entryBean"/>
+		<property name="fileFolderService" ref="fileFolderService"/>
+		<property name="siteService" ref="siteService"/>
 	</bean>
 
 	<bean id="webscript.entries.waitinglist.get" class="dk.magenta.webscripts.entry.GetWaitingList" parent="webscript">
